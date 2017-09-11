@@ -1,19 +1,19 @@
-
-import asyncio
 import asyncpg
 from lib.pvpatch import apply_to_dict_patch
+from slim.utils import async_run
+
 apply_to_dict_patch()
 
-import math
 import config
 import peewee
-import playhouse.gfk
 from playhouse.db_url import connect
 from playhouse.shortcuts import model_to_dict
 from model.redis import redis
 
+# asyncpg 配置
+
+# TODO: 连接池
 asyncpg_conn = None
-db = connect(config.PGDATABASE_URI)
 
 
 def asyncpg_init(db_uri):
@@ -21,9 +21,14 @@ def asyncpg_init(db_uri):
         global asyncpg_conn
         asyncpg_conn = await asyncpg.connect(db_uri)
 
-    asyncio.get_event_loop().run_until_complete(create_conn())
+    async_run(create_conn())
 
-asyncpg_init(config.PGDATABASE_URI)
+
+asyncpg_init(config.DATABASE_URI)
+
+# peewee 配置
+
+db = connect(config.DATABASE_URI)
 
 
 class BaseModel(peewee.Model):
@@ -43,4 +48,3 @@ class BaseModel(peewee.Model):
     @classmethod
     def exists_by_pk(cls, value):
         return cls.select().where(cls._meta.primary_key == value).exists()
-
