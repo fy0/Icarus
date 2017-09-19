@@ -1,0 +1,18 @@
+
+.ic-container {
+    max-width: 1000px !important;
+    margin-left: auto;
+    margin-right: auto;
+    /* space for mobile devices 
+    padding-left: 10px;
+    padding-right: 10px;*/
+}
+
+a {
+    color: #337ab7;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #286090;
+}
