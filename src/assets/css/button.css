@@ -1,0 +1,34 @@
+
+.ic-btn {
+    border: none;
+    padding: 7px 12px;
+    font-size: 0.75em;
+    line-height: 1.25em;
+    text-decoration: none;
+    transition: background .15s;
+    color: #222;
+}
+
+.ic-btn.keep:hover {
+    color: #fff;
+}
+
+.ic-btn.blue {
+    color: #fff;
+    background-color: #5599F9;
+}
+
+.ic-btn.green {
+    color: #fff;
+    background-color: #55AA55;
+}
+
+.ic-btn.orange {
+    color: #fff;
+    background-color: #e45735;
+}
+
+.ic-btn.orange:not(.ic-btn.keep):hover {
+    color: #e45735;
+    background-color: #f7cdc2;
+}
