@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/components/index.vue'
+import Forum from '@/components/forum/forum.vue'
+import About from '@/components/about.vue'
 
 Vue.use(Router)
 
@@ -8,8 +9,13 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'index',
-            component: Index
+            name: 'forum',
+            component: Forum
+        },
+        {
+            path: '/about',
+            name: 'about',
+            component: About
         }
     ]
 })

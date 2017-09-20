@@ -11,12 +11,16 @@
         <transition name="custom" :enter-active-class="isXs ? 'animated fadeInRight':''">
             <div class="menu-lists" v-show="showNavmenuBtn">
                 <ul class="menu-list center">
-                    <li class="menu-item"><a href="#">社区</a></li>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum')">
+                        <a>社区</a>
+                    </router-link>
                     <li class="menu-item"><a href="#">文档</a></li>
                     <li class="menu-item"><a href="#">聊天室</a></li>
                     <li class="menu-item"><a href="#">管理</a></li>
                     <li class="menu-item"><a href="#">设置</a></li>
-                    <li class="menu-item"><a href="#">关于</a></li>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
+                        <a>关于</a>
+                    </router-link>
                 </ul>
 
                 <ul class="menu-list">
@@ -87,12 +91,12 @@
     flex-shrink: 0;
 }
 
-.menu-list > li {
-    display: unset;
-}
-
 .menu-list.center {
     flex: 1 0 auto;
+}
+
+.menu-item {
+    display: unset;
 }
 
 .menu-item > a {
@@ -104,6 +108,10 @@
 
 .menu-item > a:hover {
     background-color: #eee;
+}
+
+.menu-item.link-active > a {
+    color: #000;
 }
 
 /* 小屏 */
@@ -205,6 +213,14 @@ export default {
         xsLeave: function () {
             this.isXs = false
             this.showNavmenuBtn = true
+        },
+        navActive: function (...names) {
+            for (let name of names) {
+                if (name === this.$route.name) {
+                    return 'link-active'
+                }
+            }
+            return 'flag'
         }
     },
     components: {

@@ -1,4 +1,3 @@
-
 .ic-btn {
     border: none;
     padding: 7px 12px;
@@ -9,26 +8,22 @@
     color: #222;
 }
 
-.ic-btn.keep:hover {
-    color: #fff;
-}
-
-.ic-btn.blue {
+.ic-btn.blue.keep {
     color: #fff;
     background-color: #5599F9;
 }
 
-.ic-btn.green {
+.ic-btn.green.keep {
     color: #fff;
     background-color: #55AA55;
 }
 
-.ic-btn.orange {
+.ic-btn.orange.keep {
     color: #fff;
     background-color: #e45735;
 }
 
-.ic-btn.orange:not(.ic-btn.keep):hover {
+.ic-btn.orange:not(.keep):hover {
     color: #e45735;
     background-color: #f7cdc2;
 }

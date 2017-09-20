@@ -16,6 +16,7 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "normalize.css": "^7.0.0",
+    "nprogress": "^0.2.0",
     "vue": "^2.4.2",
     "vue-media": "^1.1.1",
     "vue-router": "^2.7.0"
