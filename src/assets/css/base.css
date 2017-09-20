@@ -1,11 +1,29 @@
+html {
+    background-color: #fff;
+    overflow-y: scroll;
+    font-family: "Segoe UI","Lucida Grande",Helvetica,Arial,"Microsoft YaHei",FreeSans,Arimo,"Droid Sans","wenquanyi micro hei","Hiragino Sans GB","Hiragino Sans GB W3",FontAwesome,sans-serif;
+}
+
+.ic-hr {
+    margin-bottom: 30px !important;
+    border-bottom: 1px solid rgb(239, 239, 239);
+}
+
+.ic-cn {
+    font-family: "Helvetica Neue",Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei","Wenquanyi Micro Hei",sans-serif;
+}
+
+.ic-eng {
+    font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
 
 .ic-container {
     max-width: 1000px !important;
     margin-left: auto;
     margin-right: auto;
-    /* space for mobile devices 
+    /* 为窄屏幕留白 */
     padding-left: 10px;
-    padding-right: 10px;*/
+    padding-right: 10px;
 }
 
 a {
@@ -15,4 +33,47 @@ a {
 
 a:hover {
     color: #286090;
+}
+
+/* 1em = 16px */
+/* xl lg md sm */
+
+.ic-hidden {
+    display: none;
+}
+
+/* < 568px */
+@media screen and (max-width: 35.5em) {
+    .ic-xs-hidden {
+        display: none !important;
+    }
+    .ic-xs { display: inherit; }
+}
+
+/* > 568px */
+@media screen and (min-width: 35.5em) {
+    .ic-sm-hidden {
+        display: none !important;
+    }
+}
+
+/* > 768px */
+@media screen and (min-width: 48em) {
+    .ic-md-hidden {
+        display: none !important;
+    }
+}
+
+/* > 1024px */
+@media screen and (min-width: 64em) {
+    .ic-lg-hidden {
+        display: none !important;
+    }
+}
+
+/* > 1280px */
+@media screen and (min-width: 80em) {
+    .ic-xl-hidden {
+        display: none !important;
+    }
 }

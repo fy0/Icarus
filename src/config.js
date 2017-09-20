@@ -1,7 +1,7 @@
 
 let config = {
     remote: {
-        API_SERVER: 'http://localhost:9999',
+        API_SERVER: 'http://localhost:9999'
     },
     title: 'test'
 }
