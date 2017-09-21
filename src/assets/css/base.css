@@ -51,19 +51,19 @@ a:hover {
 }
 
 /* > 568px */
-@media screen and (min-width: 35.5em) {
+@media screen and (min-width: 35.5em) and (max-width: 48em) {
     .ic-sm-hidden { display: none !important; }
     .ic-sm { display: inherit; width: auto; height: auto; opacity: unset; }
 }
 
 /* > 768px */
-@media screen and (min-width: 48em) {
+@media screen and (min-width: 48em) and (max-width: 64em) {
     .ic-md-hidden { display: none !important; }
     .ic-md { display: inherit; width: auto; height: auto; opacity: unset; }
 }
 
 /* > 1024px */
-@media screen and (min-width: 64em) {
+@media screen and (min-width: 64em) and (max-width: 80em) {
     .ic-lg-hidden { display: none !important; }
     .ic-lg { display: inherit; width: auto; height: auto; opacity: unset; }
 }

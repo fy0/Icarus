@@ -11,18 +11,18 @@
                 <h2><a href="#">水区</a></h2>
                 <p>社区的哪一个大佬我没有见过？我跟他们谈笑风生！</p>
             </div>
-            <div class="detail">
-                <div class="count ic-eng ic-xs-hidden">
+            <div class="detail ic-xs-hidden">
+                <div class="count ic-eng">
                     <span class="tip">24h</span>
                     <p class="num">1</p>
                     <p class="txt">Topics</p>
                 </div>
-                <div class="count ic-eng ic-xs-hidden">
+                <div class="count ic-eng">
                     <span class="tip">24h</span>
                     <p class="num">2</p>
                     <p class="txt">Replies</p>
                 </div>
-                <div class="recent ic-eng ic-md ic-hidden">
+                <div class="recent ic-eng ic-xs-hidden ic-sm-hidden">
                     <span class="line"></span>
                     <strong><a href="#">root</a></strong>
                     <div class="post-content">前三十个文本</div>
