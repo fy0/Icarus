@@ -103,7 +103,7 @@
     padding: .5em 1em;
     color: #777;
     text-decoration: none;
-    font-size: .9em;
+    font-size: .8em;
 }
 
 .menu-item > a:hover {
