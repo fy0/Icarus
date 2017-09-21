@@ -14,6 +14,7 @@ import './assets/css/button.css'
 import './tools.js'
 
 Vue.config.productionTip = false
+nprogress.configure({showSpinner: false})
 
 router.beforeEach(async function (to, from, next) {
     nprogress.start()

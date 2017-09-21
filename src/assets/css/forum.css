@@ -1,0 +1,134 @@
+/* .forum-box {} */
+
+.forum-topbtns {
+    display: flex;
+}
+
+.forum-topbtns > a {
+    margin-right: .35em;
+}
+
+#board-list {
+    margin-top: 3px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* 版块单项 */
+
+.board-item {
+    display: flex;
+    height: 4em;
+    margin-top: 0.5em;
+}
+
+.board-item > .title {
+    flex: 15 0 auto;
+    display: flex;
+    flex-direction: column;    
+    flex-basis: 0%;
+    overflow: hidden;
+    padding-top: 0.1em;
+}
+
+.board-item > .title > h2 {
+    margin: 0px;
+    flex: 1 0 0%;
+    font-size: 1em;
+    font-weight: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;    
+    overflow: hidden;
+    line-height: 2.1em;
+}
+
+.board-item > .title > p {
+    margin: 0px;
+    flex: 1 0 0%;
+    font-size: 0.8em;
+    color: #666;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.board-item .detail {
+    display: flex;
+    flex: 9 0 auto;
+    flex-basis: 0%;
+}
+
+.board-item > .detail > .count {
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-direction: column;
+    flex: 2 0 auto;
+    flex-basis: 0%;
+    overflow: hidden;
+}
+
+/* 板块条目 - 最近发言 */
+.board-item > .detail > .recent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    text-align: left;
+    font-size: .75em;
+    flex: 5 0 auto;
+    flex-basis: 0%;
+    overflow: hidden;
+    position: relative;
+}
+
+.board-item > .detail > .recent > .line {
+    position: absolute;
+    left: 0;
+    border-left: 4px solid #ccc;
+    height: 85%;
+    padding-left: 0;
+}
+
+.board-item > .detail > .recent > * {
+    padding-left: 1.25em;
+}
+
+
+/* 板块条目 - 计数 */
+.board-item > .detail > .count > .num {
+    font-size: 1.25em;
+    line-height: 22.67px;
+    text-align: center;
+    margin-top: 10px; /* em 与当前字号关联，因此不妥 */
+    margin-bottom: 0px;
+    flex-basis: 0%;
+}
+
+.board-item > .detail > .count > .board {
+    font-size: .85em;
+    line-height: 22.67px;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    flex-basis: 0%;
+}
+
+.board-item > .detail > .count > .tip {
+    position: absolute;
+    font-size: .625em;
+    right: 2em;
+    top: .5em;
+    flex-basis: 0%;
+    font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.board-item > .detail > .count > .txt {
+    color: #777;
+    font-weight: 300;
+    font-size: .75em;
+    margin-top: 0px;
+    flex-basis: 0%;
+}

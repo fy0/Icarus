@@ -3,18 +3,20 @@
     <top-btns></top-btns>
     <div id="board-list">
         <div class="board-item" v-for="i in [1,2]">
-            <div class="title">
-                <h2><a href="#">水区</a></h2>
-                <p>社区的哪一个大佬我没有见过？我跟他们谈笑风生！</p>
+            <div class="title" style="flex: 13 0 0%">
+                <h2><a href="#">AAAA</a></h2>
+                <p><a href="/user/root">root</a> 发布于 <time timestamp="1446111343">2年前</time></p>
             </div>
-            <div class="detail ic-xs-hidden">
+            <div class="detail ic-xs-hidden" style="flex: 11 0 0%">
                 <div class="count">
-                    <span class="tip">24h</span>
-                    <p class="num">1</p>
-                    <p class="txt">主题</p>
+                    <p class="board"><a href="/board/1">谈笑风生</a></p>
+                    <p class="txt">版块</p>
                 </div>
                 <div class="count">
-                    <span class="tip">24h</span>
+                    <p class="num">1</p>
+                    <p class="txt">点击</p>
+                </div>
+                <div class="count">
                     <p class="num">2</p>
                     <p class="txt">回复</p>
                 </div>
@@ -31,7 +33,6 @@
 </template>
 
 <style scoped>
-
 </style>
 
 <script>
