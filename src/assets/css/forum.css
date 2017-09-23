@@ -1,15 +1,6 @@
 /* .forum-box {} */
 
-.forum-topbtns {
-    display: flex;
-}
-
-.forum-topbtns > a {
-    margin-right: .35em;
-}
-
 #board-list {
-    margin-top: 3px;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
@@ -120,7 +111,7 @@
     position: absolute;
     font-size: .625em;
     right: 2em;
-    top: .5em;
+    top: .2em;
     flex-basis: 0%;
     font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
 }

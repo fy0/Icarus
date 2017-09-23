@@ -26,6 +26,16 @@ html {
     padding-right: 10px;
 }
 
+/* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
+.ic-topbtns {
+    display: flex;
+}
+
+.ic-topbtns > a {
+    display: block;
+    margin-right: .35em;
+}
+
 a {
     color: #337ab7;
     text-decoration: none;

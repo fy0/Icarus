@@ -16,7 +16,9 @@
                     </router-link>
                     <li class="menu-item"><a href="#">文档</a></li>
                     <li class="menu-item"><a href="#">聊天室</a></li>
-                    <li class="menu-item"><a href="#">管理</a></li>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
+                        <a>管理</a>
+                    </router-link>
                     <li class="menu-item"><a href="#">设置</a></li>
                     <router-link tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
                         <a>关于</a>
@@ -216,7 +218,7 @@ export default {
         },
         navActive: function (...names) {
             for (let name of names) {
-                if (name === this.$route.name) {
+                if (this.$route.name.startsWith(name)) {
                     return 'link-active'
                 }
             }
