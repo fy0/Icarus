@@ -8,6 +8,16 @@
     color: #222;
 }
 
+.ic-btn.blue.click {
+    color: #fff;
+    background-color: #5599F9;
+}
+
+.ic-btn.blue.click:hover {
+    color: #fff;
+    background-color: #66AAFF;
+}
+
 .ic-btn.blue.keep {
     color: #fff;
     background-color: #5599F9;
