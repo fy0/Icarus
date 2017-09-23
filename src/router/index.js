@@ -27,11 +27,6 @@ export default new Router({
             component: Admin
         },
         {
-            path: '/admin',
-            name: 'admin',
-            component: Admin
-        },
-        {
             path: '/admin/forum/board',
             name: 'admin_forum_board',
             component: AdminForumBoard

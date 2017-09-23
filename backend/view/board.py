@@ -1,8 +1,8 @@
 from slim.support.peewee import PeeweeView
-from model.user import User
+from model.board import Board
 from view import route
 
 
-@route('user')
+@route('board')
 class UserView(PeeweeView):
-    model = User
+    model = Board

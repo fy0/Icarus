@@ -13,7 +13,7 @@
         </thead>
 
         <tbody>
-            <tr v-for="i in test">
+            <tr v-for="i in boardInfo.items">
                 <td>{{i.id}}</td>
                 <td>{{i.title}}</td>
                 <td>{{i.brief}}</td>
@@ -30,13 +30,13 @@
     </table>
     <div class="board-add">
         <div class="board_title">
-            <input type="text" placeholder="版块名">
+            <input type="text" v-model="boardNewInfo.title" placeholder="版块名">
         </div>
         <div class="board_brief">
-            <input name="board_brief" type="text" placeholder="简介">
+            <input name="board_brief" v-model="boardNewInfo.desc" type="text" placeholder="简介">
         </div>
         <div class="btn">
-            <button class="ic-btn click blue">新建版块</button>
+            <button class="ic-btn click blue" @click="boardNew">新建版块</button>
         </div>
     </div>
 </admin-base>
@@ -72,11 +72,19 @@
 </style>
 
 <script>
+import api from '@/netapi.js'
+import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 
 export default {
     data () {
         return {
+            state,
+            boardNewInfo: {
+                title: '',
+                desc: ''
+            },
+            boardInfo: {},
             test: [
                 {
                     id: 1,
@@ -94,6 +102,38 @@ export default {
                 }
             ]
         }
+    },
+    methods: {
+        boardNew: async function () {
+            let ret = await api.board.new(this.boardNewInfo)
+            console.log(ret)
+        }
+    },
+    beforeRouteEnter: async (to, from, next) => {
+        let ret = await api.board.list()
+
+        if (ret.code === api.retcode.SUCCESS) {
+            return next(vm => {
+                vm.boardInfo = ret.data
+            })
+        }
+
+        // $.message_error(`错误：${api.retinfo[ret.code]}`);
+        return next('/')
+    },
+    beforeRouteUpdate: async function (to, from, next) {
+        /*
+        let page = to.params.page;
+        let ret = await api.recent(page);
+
+        if (ret.code == api.retcode.SUCCESS) {
+            this.page_info = ret.data;
+            return next();
+        }
+
+        $.message_error(`错误：${api.retinfo[ret.code]}`);
+        return next('/')
+        */
     },
     components: {
         AdminBase

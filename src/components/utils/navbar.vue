@@ -218,7 +218,7 @@ export default {
         },
         navActive: function (...names) {
             for (let name of names) {
-                if (this.$route.name.startsWith(name)) {
+                if (this.$route.name && this.$route.name.startsWith(name)) {
                     return 'link-active'
                 }
             }

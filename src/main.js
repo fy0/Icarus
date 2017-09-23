@@ -13,23 +13,29 @@ import './assets/css/base.css'
 import './assets/css/button.css'
 import './tools.js'
 
+import state from './state.js'
+import api from './netapi.js'
+// import config from './config.js'
+
 Vue.config.productionTip = false
 nprogress.configure({showSpinner: false})
 
 router.beforeEach(async function (to, from, next) {
     nprogress.start()
 
-    /*
-    if (!state.data.misc) {
+    if (!state.misc) {
         let ret = await api.misc()
-        Vue.set(state.data, 'misc', ret.data)
-
-        ret = await api.userInfo()
         if (ret.code === 0) {
-            Vue.set(state.data, 'user', ret.data)
+            Vue.set(state, 'misc', ret.data)
+            api.retcode = ret.data.retcode
+            api.retinfo = ret.data.retinfo_cn
         }
+
+        /* ret = await api.userInfo()
+        if (ret.code === 0) {
+            Vue.set(state, 'user', ret.data)
+        } */
     }
-    */
     next()
 })
 

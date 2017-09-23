@@ -19,7 +19,8 @@
     "nprogress": "^0.2.0",
     "vue": "^2.4.2",
     "vue-media": "^1.1.1",
-    "vue-router": "^2.7.0"
+    "vue-router": "^2.7.0",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
