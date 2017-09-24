@@ -24,9 +24,9 @@ class BOARD_STATE(StateObject):
 class Board(BaseModel):
     id = BlobField(primary_key=True)
     title = TextField(unique=True)  # max 128
-    creator = ForeignKeyField(User)
+    creator = ForeignKeyField(User, null=True)
     brief = TextField(null=True)  # max 256
-    txt = TextField(null=True)  # max 1024
+    desc = TextField(null=True)  # max 1024
     time = BigIntegerField(index=True)
     weight = IntegerField(index=True, default=0)
     color = BlobField(null=True, default=None)

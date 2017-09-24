@@ -1,0 +1,152 @@
+
+/* ==========================================================================
+   Component: Close
+ ============================================================================ */
+ .am-close {
+    display: inline-block;
+    text-align: center;
+    width: 24px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+
+.am-close:hover,
+.am-close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .5;
+    outline: none;
+}
+
+.am-close[class*="am-icon-"] {
+    font-size: 16px;
+}
+
+button.am-close {
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    /* Needed for Sarari */
+    border: 0;
+    -webkit-appearance: none;
+}
+
+a.am-close:hover {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modifiers
+ ============================================================================ */
+.am-close-alt {
+    border-radius: 50%;
+    background: #eee;
+    opacity: 0.7;
+    -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+                    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    /* Hover */
+}
+
+.am-close-alt:hover,
+.am-close-alt:focus {
+    opacity: 1;
+}
+
+.am-close-spin:hover {
+    -webkit-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+                    transform: rotate(360deg);
+}
+/* ==========================================================================
+   Component: Alert Plugin
+ ============================================================================ */
+.am-alert {
+    margin-bottom: 1em;
+    padding: 0.625em;
+    background: #0e90d2;
+    color: #fff;
+    border: 1px solid #0c7cb5;
+    border-radius: 0;
+}
+
+.am-alert a {
+    color: #fff;
+}
+
+.am-alert h1,
+.am-alert h2,
+.am-alert h3,
+.am-alert h4,
+.am-alert h5,
+.am-alert h6 {
+    color: inherit;
+}
+
+.am-alert .am-close {
+    opacity: .4;
+}
+
+.am-alert .am-close:hover {
+    opacity: .6;
+}
+
+/* Add margin if adjacent element */
+* + .am-alert {
+    margin-top: 1em;
+}
+
+/* Remove margin from the last-child */
+.am-alert > :last-child {
+    margin-bottom: 0;
+}
+
+/* within am-form-group */
+.am-form-group .am-alert {
+    margin: 5px 0 0;
+    padding: 0.25em 0.625em;
+    font-size: 1.3rem;
+}
+
+/* Close in alert */
+.am-alert > .am-close:first-child {
+    float: right;
+    height: auto;
+    margin: -3px -5px auto auto;
+}
+
+/* Remove margin from adjacent element */
+.am-alert > .am-close:first-child + * {
+    margin-top: 0;
+}
+
+.am-alert-secondary {
+    background-color: #eeeeee;
+    border-color: #dfdfdf;
+    color: #555555;
+}
+
+.am-alert-success {
+    background-color: #5eb95e;
+    border-color: #4bad4b;
+    color: #fff;
+}
+
+.am-alert-warning {
+    background-color: #F37B1D;
+    border-color: #e56c0c;
+    color: #fff;
+}
+
+.am-alert-danger {
+    background-color: #dd514c;
+    border-color: #d83832;
+    color: #fff;
+}

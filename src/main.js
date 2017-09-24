@@ -5,14 +5,17 @@ import App from './App'
 import router from './router'
 import nprogress from 'nprogress/nprogress.js'
 
+import 'lodash'
 import 'normalize.css'
 import 'animate.css'
 import 'nprogress/nprogress.css'
 
 import './assets/css/base.css'
 import './assets/css/button.css'
+import './assets/css/am-alert.css'
 import './tools.js'
 
+import './components/utils/msgbox.vue'
 import state from './state.js'
 import api from './netapi.js'
 // import config from './config.js'

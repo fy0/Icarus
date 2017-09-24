@@ -13,8 +13,8 @@
         </thead>
 
         <tbody>
-            <tr v-for="i in boardInfo.items">
-                <td>{{i.id}}</td>
+            <tr v-for="i, _ in boardInfo.items">
+                <td>{{_+1}}</td>
                 <td>{{i.title}}</td>
                 <td>{{i.brief}}</td>
                 <td>{{i.weight}}</td>
@@ -33,7 +33,7 @@
             <input type="text" v-model="boardNewInfo.title" placeholder="版块名">
         </div>
         <div class="board_brief">
-            <input name="board_brief" v-model="boardNewInfo.desc" type="text" placeholder="简介">
+            <input name="board_brief" v-model="boardNewInfo.brief" type="text" placeholder="简介">
         </div>
         <div class="btn">
             <button class="ic-btn click blue" @click="boardNew">新建版块</button>
@@ -82,7 +82,7 @@ export default {
             state,
             boardNewInfo: {
                 title: '',
-                desc: ''
+                brief: ''
             },
             boardInfo: {},
             test: [
@@ -106,6 +106,7 @@ export default {
     methods: {
         boardNew: async function () {
             let ret = await api.board.new(this.boardNewInfo)
+            // $.message_by_code(ret.code)
             console.log(ret)
         }
     },
@@ -118,7 +119,7 @@ export default {
             })
         }
 
-        // $.message_error(`错误：${api.retinfo[ret.code]}`);
+        $.message_error(`错误：${api.retinfo[ret.code]}`)
         return next('/')
     },
     beforeRouteUpdate: async function (to, from, next) {

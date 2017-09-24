@@ -16,7 +16,8 @@ export default {
         TOPIC_STATE_TXT: { ... }
     },
     */
-    'init': () => {
+    msgs: [],
+    init: () => {
         ;
     }
 }
