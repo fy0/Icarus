@@ -32,11 +32,11 @@ async function doFetch (url, method, params, data = null) {
     }
     if (params) url += `?${paramSerialize(params)}`
     if (method === 'POST') fetchParams.body = buildFormData(data)
-    return await fetch(url, fetchParams)
+    return fetch(url, fetchParams)
 }
 
-async function nget (url, params) { return await doFetch(url, 'GET', params) }
-async function npost (url, params, data) { return doFetch(url, 'POST', params, data) }
+async function nget (url, params) { return (await doFetch(url, 'GET', params)).json() }
+async function npost (url, params, data) { return (await doFetch(url, 'POST', params, data)).json() }
 
 class SlimViewRequest {
     constructor (path) {
@@ -44,32 +44,26 @@ class SlimViewRequest {
         this.urlPrefix = `${remote.API_SERVER}/api/${path}`
     }
 
-    async _wrap (promise) {
-        // 为什么 method 与 function 中的 await 行为不一致？
-        let ret = await promise
-        return await ret.json()
-    }
-
     async get (params) {
-        return this._wrap(await nget(`${this.urlPrefix}/get`, params))
+        return await nget(`${this.urlPrefix}/get`, params)
     }
 
     async list (params, page = 1, size = null) {
         let url = `${this.urlPrefix}/list/${page}`
         if (size) url += `/${size}`
-        return this._wrap(await nget(url, params))
+        return await nget(url, params)
     }
 
     async set (params, data) {
-        return this._wrap(await npost(`${this.urlPrefix}/set`, params, data))
+        return await npost(`${this.urlPrefix}/set`, params, data)
     }
 
     async new (data) {
-        return this._wrap(await npost(`${this.urlPrefix}/new`, null, data))
+        return await npost(`${this.urlPrefix}/new`, null, data)
     }
 
     async delete (params) {
-        return this._wrap(await npost(`${this.urlPrefix}/delete`, params))
+        return await npost(`${this.urlPrefix}/delete`, params)
     }
 }
 

@@ -26,7 +26,7 @@ nprogress.configure({showSpinner: false})
 router.beforeEach(async function (to, from, next) {
     nprogress.start()
 
-    if (!state.misc) {
+    if (state.misc === undefined) {
         let ret = await api.misc()
         if (ret.code === 0) {
             Vue.set(state, 'misc', ret.data)

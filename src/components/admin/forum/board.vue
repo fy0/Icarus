@@ -18,7 +18,7 @@
                 <td>{{i.title}}</td>
                 <td>{{i.brief}}</td>
                 <td>{{i.weight}}</td>
-                <td>{{i.state}}</td>
+                <td>{{state.misc.BOARD_STATE_TXT[i.state]}}</td>
                 <td>
                     <div class="pure-g">
                         <a item-id="${i.id}" class="btn-edit pure-u-12-24 pure-button button-secondary">编辑</a>
@@ -106,8 +106,7 @@ export default {
     methods: {
         boardNew: async function () {
             let ret = await api.board.new(this.boardNewInfo)
-            // $.message_by_code(ret.code)
-            console.log(ret)
+            $.message_by_code(ret.code)
         }
     },
     beforeRouteEnter: async (to, from, next) => {
@@ -119,22 +118,19 @@ export default {
             })
         }
 
-        $.message_error(`错误：${api.retinfo[ret.code]}`)
+        $.message_by_code(ret.code)
         return next('/')
     },
     beforeRouteUpdate: async function (to, from, next) {
-        /*
-        let page = to.params.page;
-        let ret = await api.recent(page);
+        let ret = await api.board.list()
 
-        if (ret.code == api.retcode.SUCCESS) {
-            this.page_info = ret.data;
-            return next();
+        if (ret.code === api.retcode.SUCCESS) {
+            this.boardInfo = ret.data
+            return next()
         }
 
-        $.message_error(`错误：${api.retinfo[ret.code]}`);
+        $.message_by_code(ret.code)
         return next('/')
-        */
     },
     components: {
         AdminBase

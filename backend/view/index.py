@@ -14,6 +14,6 @@ class TestViewBasic(BasicView):
         self.finish(RETCODE.SUCCESS, {
             'BOARD_STATE': BOARD_STATE.to_dict(),
             'BOARD_STATE_TXT': BOARD_STATE.txt,
-            'retcode': list(RETCODE.items()),
+            'retcode': RETCODE.to_dict(),
             'retinfo_cn': RETCODE.txt_cn,
         })

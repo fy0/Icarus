@@ -1,6 +1,6 @@
 
 import _ from 'lodash'
-import state from './state.js'
+import state from '@/state.js'
 
 $.media = {
     xs: {maxWidth: '35.5em'},
@@ -46,9 +46,8 @@ $.message_error = function (text) {
     $.message('error', text)
 }
 
-$.message_by_code = function (code) {
-    console.log(state.misc)
-    let text = state.misc.retinfo_cn[code]
-    if (code === 0) $.message_success(text)
+$.message_by_code = function (code, text = null) {
+    text = text || state.misc.retinfo_cn[code]
+    if (code === state.misc.retcode.SUCCESS) $.message_success(text)
     else $.message_error(text)
 }
