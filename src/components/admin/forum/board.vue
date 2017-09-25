@@ -84,23 +84,7 @@ export default {
                 title: '',
                 brief: ''
             },
-            boardInfo: {},
-            test: [
-                {
-                    id: 1,
-                    title: '水区',
-                    brief: '社区的哪一个大佬我没有见过？我跟他们谈笑风生！',
-                    weight: 0,
-                    state: 10
-                },
-                {
-                    id: 2,
-                    title: '水区',
-                    brief: '社区的哪一个大佬我没有见过？我跟他们谈笑风生！',
-                    weight: 0,
-                    state: 10
-                }
-            ]
+            boardInfo: {}
         }
     },
     methods: {

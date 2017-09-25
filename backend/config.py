@@ -1,3 +1,6 @@
+import hashlib
+from slim.utils import ObjectID
+
 PROJECT_NAME = 'Icarus'
 VERSION = '1.0.0'
 
@@ -9,6 +12,9 @@ COOKIE_SECRET = b"6aOO5ZC55LiN5pWj6ZW/5oGo77yM6Iqx5p+T5LiN6YCP5Lmh5oSB44CC"
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6378
+
+PASSWORD_HASH_FUNC = hashlib.sha256
+USER_ID_GENERATOR = ObjectID
 
 try:
     from private import *

@@ -27,10 +27,11 @@ async function doFetch (url, method, params, data = null) {
         credentials: 'include',
         headers: {
             'Accept': 'application/json'
-            // 'Content-Type': 'multipart/form-data;'
+            // 'Content-Type': 'application/json;'
         }
     }
     if (params) url += `?${paramSerialize(params)}`
+    // if (method === 'POST') fetchParams.body = JSON.stringify(data)
     if (method === 'POST') fetchParams.body = buildFormData(data)
     return fetch(url, fetchParams)
 }

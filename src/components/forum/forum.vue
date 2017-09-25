@@ -2,10 +2,10 @@
 <div class="ic-container forum-box">
     <top-btns></top-btns>
     <div id="board-list">
-        <div class="board-item" v-for="i in [1,2]">
+        <div class="board-item" v-for="i, _ in boardInfo.items">
             <div class="title">
-                <h2><a href="#">水区</a></h2>
-                <p>社区的哪一个大佬我没有见过？我跟他们谈笑风生！</p>
+                <h2><a href="#">{{i.title}}</a></h2>
+                <p>{{i.brief}}</p>
             </div>
             <div class="detail ic-xs-hidden">
                 <div class="count">
@@ -35,16 +35,43 @@
 </style>
 
 <script>
+import api from '@/netapi.js'
+import state from '@/state.js'
 import '@/assets/css/forum.css'
 import TopBtns from './topbtns.vue'
 
 export default {
     data () {
         return {
+            state,
+            boardInfo: {}
         }
     },
     components: {
         TopBtns
+    },
+    beforeRouteEnter: async (to, from, next) => {
+        let ret = await api.board.list()
+
+        if (ret.code === api.retcode.SUCCESS) {
+            return next(vm => {
+                vm.boardInfo = ret.data
+            })
+        }
+
+        $.message_by_code(ret.code)
+        return next('/')
+    },
+    beforeRouteUpdate: async function (to, from, next) {
+        let ret = await api.board.list()
+
+        if (ret.code === api.retcode.SUCCESS) {
+            this.boardInfo = ret.data
+            return next()
+        }
+
+        $.message_by_code(ret.code)
+        return next('/')
     }
 }
 </script>

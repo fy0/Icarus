@@ -1,7 +1,5 @@
-from typing import Mapping, Dict
-
 import time
-
+from typing import Mapping, Dict
 from slim.support.peewee import PeeweeView
 from model.board import Board
 from slim.utils import ObjectID
