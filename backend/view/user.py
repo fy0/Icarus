@@ -1,10 +1,9 @@
-import os
-import config
-import hmac
 from typing import Dict
+
+import config
+from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP, USER_STATE
-from slim.utils import ObjectID
 from view import route
 
 
@@ -12,16 +11,20 @@ from view import route
 class UserView(PeeweeView):
     model = User
 
-    def handle_query(self, values: Dict):
+    @staticmethod
+    def handle_query(values: Dict):
         if 'password' in values:
             values.update(User.gen_password_and_salt(values['password']))
-        return values
 
-    def handle_insert(self, values: Dict):
+    @staticmethod
+    def handle_insert(values: Dict):
         # 必须存在以下值：
         # username nickname password [email]
         # 自动填充或改写以下值：
         # id password salt group state key key_time reg_time
+
+        if not config.USER_ALLOW_SIGNUP:
+            return RETCODE.FAILED, '注册未开放'
 
         uid = User.gen_id()
         values['id'] = uid.digest()
@@ -38,5 +41,3 @@ class UserView(PeeweeView):
 
         values.update(User.gen_key())
         values['reg_time'] = uid.time
-
-        return values

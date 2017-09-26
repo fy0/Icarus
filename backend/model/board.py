@@ -38,3 +38,6 @@ class Board(BaseModel):
 
     class Meta:
         db_table = 'board'
+
+    def aa(self):
+        a = self.select().order_by().get()

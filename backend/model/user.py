@@ -49,7 +49,7 @@ class User(BaseModel):
 
     @classmethod
     def gen_id(cls):
-        return config.USER_ID_GENERATOR()
+        return config.ID_GENERATOR()
 
     @classmethod
     def gen_password_and_salt(cls, password_text):
