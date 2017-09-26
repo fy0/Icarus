@@ -1,23 +1,36 @@
 <template>
 <div id="app">
-    <navbar></navbar>
-    <router-view></router-view>
+    <navbar class="header"></navbar>
+    <router-view class="main"></router-view>
+    <my-footer class="footer"></my-footer>
     <msg-box></msg-box>
 </div>
 </template>
 
+<style scoped>
+#app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.main {
+    height: 100%;
+    width: 100%;
+}
+</style>
+
 <script>
 import Navbar from '@/components/utils/navbar.vue'
+import MyFooter from '@/components/utils/footer.vue'
 import MsgBox from '@/components/utils/msgbox.vue'
 
 export default {
     name: 'app',
     components: {
         Navbar,
+        MyFooter,
         MsgBox
     }
 }
 </script>
-
-<style>
-</style>
