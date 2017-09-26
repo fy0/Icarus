@@ -23,6 +23,16 @@
     background-color: #5599F9;
 }
 
+.ic-btn.green.click {
+    color: #fff;
+    background-color: #55AA55;
+}
+
+.ic-btn.green.click:hover {
+    color: #fff;
+    background-color: #449944;
+}
+
 .ic-btn.green.keep {
     color: #fff;
     background-color: #55AA55;

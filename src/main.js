@@ -12,6 +12,7 @@ import 'nprogress/nprogress.css'
 
 import './assets/css/base.css'
 import './assets/css/button.css'
+import './assets/css/form.css'
 import './assets/css/am-alert.css'
 import './tools.js'
 

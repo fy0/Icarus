@@ -1,16 +1,31 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
+import AccountSignin from '@/components/account/signin.vue'
+import AccountSignup from '@/components/account/signup.vue'
+
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
-import About from '@/components/about.vue'
 
 import Admin from '@/components/admin/admin.vue'
 import AdminForumBoard from '@/components/admin/forum/board.vue'
+
+import About from '@/components/about.vue'
 
 Vue.use(Router)
 
 export default new Router({
     routes: [
+        {
+            path: '/account/signin',
+            name: 'account_signin',
+            component: AccountSignin
+        },
+        {
+            path: '/account/signup',
+            name: 'account_signup',
+            component: AccountSignup
+        },
         {
             path: '/',
             name: 'forum',

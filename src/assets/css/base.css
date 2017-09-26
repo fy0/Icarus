@@ -4,6 +4,10 @@ html {
     font-family: "Segoe UI","Lucida Grande",Helvetica,Arial,"Microsoft YaHei",FreeSans,Arimo,"Droid Sans","wenquanyi micro hei","Hiragino Sans GB","Hiragino Sans GB W3",FontAwesome,sans-serif;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 .ic-hr {
     margin-bottom: 30px !important;
     border-bottom: 1px solid rgb(239, 239, 239);
@@ -18,7 +22,7 @@ html {
 }
 
 .ic-container {
-    max-width: 1000px !important;
+    max-width: 1020px !important;
     margin-left: auto;
     margin-right: auto;
     /* 为窄屏幕留白 */

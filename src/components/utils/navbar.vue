@@ -1,7 +1,7 @@
 <template>
 <header class="ic-nav">
     <div class="ic-container ic-navbtns">
-        <a class="ic-brand-heading ic-eng " href="#">Icarus</a>
+        <a class="ic-brand-heading ic-eng" href="#">Icarus</a>
 
         <a href="#" @click="navmenuToggle" :class="showNavmenuBtn ? 'x' : ''" class="ic-xs ic-hidden" id="navmenu-toggle-icon">
             <s class="bar"></s>
@@ -26,8 +26,12 @@
                 </ul>
 
                 <ul class="menu-list">
-                    <li class="menu-item"><a href="#">注册</a></li>
-                    <li class="menu-item"><a href="#">登录</a></li>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'account_signup' }" :class="navActive('account_signup')">
+                        <a>注册</a>
+                    </router-link>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'account_signin' }" :class="navActive('account_signin')">
+                        <a>登录</a>
+                    </router-link>                    
                 </ul>
             </div>
         </transition>
