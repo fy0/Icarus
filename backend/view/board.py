@@ -12,11 +12,11 @@ from view import route
 class UserView(PeeweeView):
     model = Board
 
-    @staticmethod
-    def handle_read(values: Dict):
+    @classmethod
+    def handle_read(cls, values: Dict):
         pass
 
-    @staticmethod
-    def handle_insert(values: Dict):
+    @classmethod
+    def handle_insert(cls, values: Dict):
         values['id'] = config.ID_GENERATOR().digest()
         values['time'] = int(time.time())

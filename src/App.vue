@@ -9,14 +9,13 @@
 
 <style scoped>
 #app {
-    height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 .main {
-    height: 100%;
     width: 100%;
+    flex: 1;
 }
 </style>
 
