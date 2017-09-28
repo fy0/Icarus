@@ -63,3 +63,16 @@ class User(BaseModel):
         key = os.urandom(16)
         key_time = int(time.time())
         return {'key': key, 'key_time': key_time}
+
+    @classmethod
+    def auth(cls, username, password_text):
+        try:
+            u = cls.get(cls.username == username)
+        except DoesNotExist:
+            return False
+
+        m = hmac.new(u.salt.tobytes(), digestmod=config.PASSWORD_HASH_FUNC)
+        m.update(password_text.encode('utf-8'))
+
+        if u.password.tobytes() == m.digest():
+            return u

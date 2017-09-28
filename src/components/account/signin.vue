@@ -3,16 +3,16 @@
     <div class="login">
         <h3 class="title">登录</h3>
         <form class="ic-form">
-            <div class="ic-form-row">
-                <label for="username">帐号/邮箱/昵称</label>
-                <input type="text" name="username" id="username" v-model="info.account">
-            </div>
-            <div class="ic-form-row">
+            <check-row :check="!info.username || checkUsername" :text='checkUsernameText'>
+                <label for="username">帐号</label>
+                <input type="text" name="username" id="username" v-model="info.username">
+            </check-row>
+            <check-row :check="(!info.password) || checkPassword" :text='checkPasswordText'>
                 <label for="password">密码</label>
                 <input type="password" name="password" id="password" v-model="info.password">
-            </div>
+            </check-row>
             <div class="ic-form-row">
-                <input class="ic-btn green click" type="submit" name="" value="登 录">
+                <input class="ic-btn green click" type="submit" @click.prevent="login" name="" value="登 录">
             </div>
         </form>
     </div>
@@ -25,7 +25,6 @@
 }
 
 .box {
-    height: 80vh;
     display: flex;
     align-items: center;
 }
@@ -60,14 +59,58 @@
 </style>
 
 <script>
+import api from '@/netapi.js'
+import state from '@/state.js'
+import CheckRow from './checkrow.vue'
+
 export default {
     data () {
         return {
             info: {
-                account: '',
+                username: '',
                 password: ''
             }
         }
+    },
+    computed: {
+        checkUsernameText: function () {
+            return `应为 ${state.misc.USERNAME_MIN}-${state.misc.USERNAME_MAX} 个英文字母打头的数字与英文字符组合`
+        },
+        checkUsername: function () {
+            if (this.info.username.length < state.misc.USERNAME_MIN) return false
+            if (this.info.username.length > state.misc.USERNAME_MAX) return false
+            if (!/^[a-zA-Z][a-zA-Z0-9]+$/.test(this.info.username)) return false
+            return true
+        },
+        checkPasswordText: function () {
+            return `应在 ${state.misc.PASSWORD_MIN}-${state.misc.PASSWORD_MAX} 个字符之间`
+        },
+        checkPassword: function () {
+            if (this.info.password.length < state.misc.PASSWORD_MIN) return false
+            if (this.info.password.length > state.misc.PASSWORD_MAX) return false
+            return true
+        }
+    },
+    methods: {
+        login: async function () {
+            if (this.checkUsername && this.checkPassword) {
+                let ret = await api.user.signin(this.info)
+                if (ret.code === api.retcode.SUCCESS) {
+                    let userinfo = ret.data
+                    console.log(userinfo)
+                } else {
+                    $.message_by_code(ret.code)
+                }
+
+                ret = await api.user.get({username: this.info.username}, 'test')
+                console.log(ret)
+            } else {
+                $.message_error('请填写所有必填项')
+            }
+        }
+    },
+    components: {
+        CheckRow
     }
 }
 </script>

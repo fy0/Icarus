@@ -20,12 +20,13 @@ function buildFormData (obj) {
     return formData
 }
 
-async function doFetch (url, method, params, data = null) {
+async function doFetch (url, method, params, data = null, role = null) {
     let fetchParams = {
         method: method,
         mode: 'cors',
         credentials: 'include',
         headers: {
+            'Role': role,
             'Accept': 'application/json'
             // 'Content-Type': 'application/json;'
         }
@@ -36,8 +37,8 @@ async function doFetch (url, method, params, data = null) {
     return fetch(url, fetchParams)
 }
 
-async function nget (url, params) { return (await doFetch(url, 'GET', params)).json() }
-async function npost (url, params, data) { return (await doFetch(url, 'POST', params, data)).json() }
+async function nget (url, params, role = null) { return (await doFetch(url, 'GET', params, null, role)).json() }
+async function npost (url, params, data, role = null) { return (await doFetch(url, 'POST', params, data, role)).json() }
 
 class SlimViewRequest {
     constructor (path) {
@@ -45,26 +46,32 @@ class SlimViewRequest {
         this.urlPrefix = `${remote.API_SERVER}/api/${path}`
     }
 
-    async get (params) {
-        return await nget(`${this.urlPrefix}/get`, params)
+    async get (params, role = null) {
+        return await nget(`${this.urlPrefix}/get`, params, role)
     }
 
-    async list (params, page = 1, size = null) {
+    async list (params, page = 1, size = null, role = null) {
         let url = `${this.urlPrefix}/list/${page}`
         if (size) url += `/${size}`
-        return await nget(url, params)
+        return await nget(url, params, role)
     }
 
-    async set (params, data) {
-        return await npost(`${this.urlPrefix}/set`, params, data)
+    async set (params, data, role = null) {
+        return await npost(`${this.urlPrefix}/set`, params, data, role)
     }
 
-    async new (data) {
-        return await npost(`${this.urlPrefix}/new`, null, data)
+    async new (data, role = null) {
+        return await npost(`${this.urlPrefix}/new`, null, data, role)
     }
 
-    async delete (params) {
-        return await npost(`${this.urlPrefix}/delete`, params)
+    async delete (params, role = null) {
+        return await npost(`${this.urlPrefix}/delete`, params, null, role)
+    }
+}
+
+class UserViewRequest extends SlimViewRequest {
+    async signin (data) {
+        return await npost(`${this.urlPrefix}/signin`, null, data)
     }
 }
 
@@ -85,6 +92,6 @@ export default {
         return await nget(`${remote.API_SERVER}/api/misc/info`)
     },
 
-    user: new SlimViewRequest('user'),
+    user: new UserViewRequest('user'),
     board: new SlimViewRequest('board')
 }
