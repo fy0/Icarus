@@ -3,9 +3,9 @@
     <div class="login">
         <h3 class="title">登录</h3>
         <form class="ic-form">
-            <check-row :check="!info.username || checkUsername" :text='checkUsernameText'>
-                <label for="username">帐号</label>
-                <input type="text" name="username" id="username" v-model="info.username">
+            <check-row :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
+                <label for="email">邮箱</label>
+                <input type="email" name="email" id="email" v-model="info.email">
             </check-row>
             <check-row :check="(!info.password) || checkPassword" :text='checkPasswordText'>
                 <label for="password">密码</label>
@@ -73,14 +73,9 @@ export default {
         }
     },
     computed: {
-        checkUsernameText: function () {
-            return `应为 ${state.misc.USERNAME_MIN}-${state.misc.USERNAME_MAX} 个英文字母打头的数字与英文字符组合`
-        },
-        checkUsername: function () {
-            if (this.info.username.length < state.misc.USERNAME_MIN) return false
-            if (this.info.username.length > state.misc.USERNAME_MAX) return false
-            if (!/^[a-zA-Z][a-zA-Z0-9]+$/.test(this.info.username)) return false
-            return true
+        checkEmail: function () {
+            let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+            return mail.test(this.info.email)
         },
         checkPasswordText: function () {
             return `应在 ${state.misc.PASSWORD_MIN}-${state.misc.PASSWORD_MAX} 个字符之间`
@@ -93,7 +88,7 @@ export default {
     },
     methods: {
         login: async function () {
-            if (this.checkUsername && this.checkPassword) {
+            if (this.checkEmail && this.checkPassword) {
                 let ret = await api.user.signin(this.info)
                 if (ret.code === api.retcode.SUCCESS) {
                     let userinfo = ret.data

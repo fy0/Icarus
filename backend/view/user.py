@@ -2,22 +2,18 @@ import re
 import config
 from typing import Dict
 
-from slim.base.permission import Permissions, Ability, BaseUser
+from slim.base.permission import Permissions, Ability, BaseUser, AbilityRecord, AbilityColumn
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP, USER_STATE
-from slim.utils import to_hex
+from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va
 
 
 class SigninForm(ValidateForm):
-    username = StringField('用户名', validators=[
-        va.required(),
-        va.Length(config.USERNAME_FOR_REG_MIN, config.USERNAME_FOR_REG_MAX),
-        va.Regexp('^[a-zA-Z][a-zA-Z0-9]+$', message='用户名应为英文与数字的组合，同时首字为英文')
-    ])
+    email = StringField('邮箱', validators=[va.required(), va.Email()])
 
     password = StringField('密码', validators=[
         va.required(),
@@ -31,8 +27,6 @@ class SignupForm(SigninForm):
         va.EqualTo('password')
     ])
 
-    email = StringField('邮箱', validators=[va.required(), va.Email()])
-
 
 @route('user')
 class UserView(PeeweeView):
@@ -44,9 +38,8 @@ class UserView(PeeweeView):
         cls.use('signin', 'POST')
 
     def get_current_user(self):
-        user = BaseUser()
-        user.roles = [None, 'test', 'admin']
-        return user
+        key = self.get_secure_cookie('u')
+        return User.get_by_key(to_bin(key))
 
     @classmethod
     def permission_init(cls):
@@ -54,10 +47,22 @@ class UserView(PeeweeView):
         visitor = Ability(None, {
             'user': {
                 'id': ['query', 'read'],
-                'username': ['query', 'read'],
-                'group': ['read']
+                'group': ['read'],
+
+                'email': ['create'],
+                'password': ['create'],
             }
         })
+
+        def func(ability, user, cur_action, record: AbilityRecord) -> bool:
+            return False
+            #return True
+
+        visitor.add_record_rule(
+            ['query', 'read', 'write'],
+            AbilityColumn('user', 'key'),
+            func=func
+        )
 
         test = Ability('test', {
             'user': {
@@ -80,36 +85,20 @@ class UserView(PeeweeView):
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
-        u = User.auth(data['username'], data['password'])
+        u = User.auth(data['email'], data['password'])
         if u:
             expires = 30 if 'remember' in data else None
-            self.set_secure_cookie('u', u.key.tobytes(), max_age=expires)
+            self.set_secure_cookie('u', u.key.hex(), max_age=expires)
             self.finish(RETCODE.SUCCESS, '登录成功')
         else:
-            self.finish(RETCODE.FAILED)
-
-    @classmethod
-    def handle_query(cls, info: ParamsQueryInfo):
-        return
-        args = info.args
-        ret = None
-        for i in args:
-            if i[0] == 'password':
-                ret = User.gen_password_and_salt(i[2])
-                i[2] = to_hex(ret['password'])
-                break
-        if ret:
-            args.append(['salt', '=', to_hex(ret['salt'])])
-        print(ret)
-        print(info)
+            self.finish(RETCODE.FAILED, '登录失败！')
 
     @classmethod
     def handle_insert(cls, values: Dict):
         # 必须存在以下值：
-        # username password [email]
+        # email password
         # 自动填充或改写以下值：
         # id password salt group state key key_time reg_time
-
         if not config.USER_ALLOW_SIGNUP:
             return RETCODE.FAILED, '注册未开放'
 

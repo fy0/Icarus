@@ -26,10 +26,13 @@ async function doFetch (url, method, params, data = null, role = null) {
         mode: 'cors',
         credentials: 'include',
         headers: {
-            'Role': role,
             'Accept': 'application/json'
             // 'Content-Type': 'application/json;'
         }
+    }
+    if (role) {
+        // 不然的话服务器回收到一个 'null' 的 str
+        fetchParams.headers['Role'] = role
     }
     if (params) url += `?${paramSerialize(params)}`
     // if (method === 'POST') fetchParams.body = JSON.stringify(data)

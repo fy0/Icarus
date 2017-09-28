@@ -5,6 +5,7 @@ import time
 from peewee import *
 
 import config
+from slim.base.permission import BaseUser
 from slim.utils import StateObject
 from model import BaseModel
 
@@ -25,9 +26,9 @@ class USER_STATE(StateObject):
     txt = {DEL: '删除', NORMAL: '正常'}
 
 
-class User(BaseModel):
+class User(BaseModel, BaseUser):
     id = BlobField(primary_key=True)
-    username = CharField(index=True, unique=True, max_length=32)
+    email = CharField(index=True, max_length=128)
     nickname = CharField(index=True, max_length=32, null=True, default=None)
     password = BlobField()
     salt = BlobField()  # auto
@@ -39,13 +40,14 @@ class User(BaseModel):
     key_time = BigIntegerField()
     reg_time = BigIntegerField()
 
-    # email
-    # authcode  邮箱验证
-
     class Meta:
         db_table = 'user'
 
     #object_type = OBJECT_TYPES.USER
+
+    @property
+    def roles(self):
+        return [None]
 
     @classmethod
     def gen_id(cls):
@@ -65,9 +67,16 @@ class User(BaseModel):
         return {'key': key, 'key_time': key_time}
 
     @classmethod
-    def auth(cls, username, password_text):
+    def get_by_key(cls, key):
         try:
-            u = cls.get(cls.username == username)
+            return cls.get(cls.key == key)
+        except DoesNotExist:
+            return None
+
+    @classmethod
+    def auth(cls, email, password_text):
+        try:
+            u = cls.get(cls.email == email)
         except DoesNotExist:
             return False
 
