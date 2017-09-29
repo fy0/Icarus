@@ -17,6 +17,7 @@ export default {
     },
     */
     msgs: [],
+    user_id: null,
     init: () => {
         ;
     }

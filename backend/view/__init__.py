@@ -8,3 +8,4 @@ class ValidateForm(Form):
 
     class Meta:
         locales = ['zh_CN']
+

@@ -6,6 +6,7 @@ import AccountSignup from '@/components/account/signup.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
+import ForumBoard from '@/components/forum/board.vue'
 
 import Admin from '@/components/admin/admin.vue'
 import AdminForumBoard from '@/components/admin/forum/board.vue'
@@ -35,6 +36,11 @@ export default new Router({
             path: '/recent',
             name: 'forum_recent',
             component: ForumRecent
+        },
+        {
+            path: '/board/:id(\\S+)/:name(.+)?',
+            name: 'forum_board',
+            component: ForumBoard
         },
         {
             path: '/admin',

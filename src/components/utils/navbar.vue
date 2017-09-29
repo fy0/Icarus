@@ -25,13 +25,18 @@
                     </router-link>
                 </ul>
 
-                <ul class="menu-list">
+                <ul class="menu-list" v-if="!state.user">
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_signup' }" :class="navActive('account_signup')">
                         <a>注册</a>
                     </router-link>
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_signin' }" :class="navActive('account_signin')">
                         <a>登录</a>
                     </router-link>                    
+                </ul>
+                <ul class="menu-list" v-else>
+                    <li class="menu-item"><a href="#">头像</a></li>
+                    <li class="menu-item"><a href="#">{{state.user.email}}</a></li>
+                    <li class="menu-item"><a href="#" @click="signout">注销</a></li>
                 </ul>
             </div>
         </transition>
@@ -195,12 +200,16 @@
 
 
 <script>
+import Vue from 'vue'
 import Media from 'vue-media'
+import state from '@/state.js'
+import api from '@/netapi.js'
 
 export default {
     name: 'hello',
     data () {
         return {
+            state,
             m: $.media,
             isXs: true,
             showNavmenuBtn: false
@@ -227,6 +236,13 @@ export default {
                 }
             }
             return 'flag'
+        },
+        signout: async function () {
+            let ret = await api.user.signout()
+            if (ret.code === api.retcode.SUCCESS) {
+                $.message_success('登出成功')
+                Vue.delete(state, 'user')
+            }
         }
     },
     components: {

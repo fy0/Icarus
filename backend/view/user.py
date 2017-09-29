@@ -12,6 +12,13 @@ from view import route, ValidateForm
 from wtforms import StringField, validators as va
 
 
+class UserMixin:
+    def get_current_user(self):
+        key = self.get_secure_cookie('u')
+        if key:
+            return User.get_by_key(to_bin(key))
+
+
 class SigninForm(ValidateForm):
     email = StringField('邮箱', validators=[va.required(), va.Email()])
 
@@ -29,21 +36,19 @@ class SignupForm(SigninForm):
 
 
 @route('user')
-class UserView(PeeweeView):
+class UserView(UserMixin, PeeweeView):
     model = User
 
     @classmethod
     def interface(cls):
         super().interface()
         cls.use('signin', 'POST')
-
-    def get_current_user(self):
-        key = self.get_secure_cookie('u')
-        return User.get_by_key(to_bin(key))
+        cls.use('signout', 'POST')
+        cls.use('get_userid', 'GET')
 
     @classmethod
     def permission_init(cls):
-        cls.permission: Permissions
+        permission: Permissions = cls.permission
         visitor = Ability(None, {
             'user': {
                 'id': ['query', 'read'],
@@ -54,30 +59,46 @@ class UserView(PeeweeView):
             }
         })
 
-        def func(ability, user, cur_action, record: AbilityRecord) -> bool:
-            return False
-            #return True
-
-        visitor.add_record_rule(
-            ['query', 'read', 'write'],
-            AbilityColumn('user', 'key'),
-            func=func
-        )
-
-        test = Ability('test', {
+        normal_user = Ability('user', {
             'user': {
                 'nickname': ['query', 'read', 'write'],
-                'key': ['query', 'read']
+                #'key': ['query', 'read']
             }
         }, based_on=visitor)
+
+        def user_info_get_check(ability, user, cur_action, record: AbilityRecord) -> bool:
+            if user:
+                return record.get('id') == user.id
+
+        normal_user.add_record_rule(
+            ['read'],
+            AbilityColumn('user', 'email'),
+            func=user_info_get_check
+        )
+
+        normal_user.add_record_rule(
+            ['query', 'read', 'write'],
+            AbilityColumn('user', 'key'),
+            func=user_info_get_check
+        )
 
         admin = Ability('admin', {
             'user': '*'
         })
 
-        cls.permission.add(visitor)
-        cls.permission.add(test)
-        cls.permission.add(admin)
+        permission.add(visitor)
+        permission.add(normal_user)
+        permission.add(admin)
+
+    async def get_userid(self):
+        if self.current_user:
+            self.finish(RETCODE.SUCCESS, {'id': to_hex(self.current_user.id)})
+        else:
+            self.finish(RETCODE.PERMISSION_DENIED)
+
+    async def signout(self):
+        self.del_cookie('u')
+        self.finish(RETCODE.SUCCESS)
 
     async def signin(self):
         data = await self.post_data()
@@ -89,7 +110,7 @@ class UserView(PeeweeView):
         if u:
             expires = 30 if 'remember' in data else None
             self.set_secure_cookie('u', u.key.hex(), max_age=expires)
-            self.finish(RETCODE.SUCCESS, '登录成功')
+            self.finish(RETCODE.SUCCESS, {'id': u.id})
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 

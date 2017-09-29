@@ -35,11 +35,20 @@ router.beforeEach(async function (to, from, next) {
             api.retinfo = ret.data.retinfo_cn
         }
 
-        /* ret = await api.userInfo()
-        if (ret.code === 0) {
+        if (!state.user) {
+            let ret = await api.user.getUserId()
+            if (ret.code !== api.retcode.SUCCESS) {
+                return next()
+            }
+
+            ret = await api.user.get({id: ret.data.id}, 'user')
+            if (ret.code !== api.retcode.SUCCESS) {
+                return next()
+            }
             Vue.set(state, 'user', ret.data)
-        } */
+        }
     }
+
     next()
 })
 

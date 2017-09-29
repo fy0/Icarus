@@ -13,6 +13,7 @@ function paramSerialize (obj) {
 }
 
 function buildFormData (obj) {
+    if (!obj) return
     let formData = new FormData()
     for (let [k, v] of Object.entries(obj)) {
         formData.append(k, v)
@@ -75,6 +76,14 @@ class SlimViewRequest {
 class UserViewRequest extends SlimViewRequest {
     async signin (data) {
         return await npost(`${this.urlPrefix}/signin`, null, data)
+    }
+
+    async getUserId () {
+        return await nget(`${this.urlPrefix}/get_userid`, null)
+    }
+
+    async signout () {
+        return await npost(`${this.urlPrefix}/signout`)
     }
 }
 

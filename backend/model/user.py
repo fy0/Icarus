@@ -47,7 +47,7 @@ class User(BaseModel, BaseUser):
 
     @property
     def roles(self):
-        return [None]
+        return [None, 'user']
 
     @classmethod
     def gen_id(cls):

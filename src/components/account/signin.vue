@@ -67,7 +67,7 @@ export default {
     data () {
         return {
             info: {
-                username: '',
+                email: '',
                 password: ''
             }
         }
@@ -91,14 +91,18 @@ export default {
             if (this.checkEmail && this.checkPassword) {
                 let ret = await api.user.signin(this.info)
                 if (ret.code === api.retcode.SUCCESS) {
-                    let userinfo = ret.data
-                    console.log(userinfo)
+                    ret = await api.user.get({id: ret.data.id}, 'user')
+                    if (ret.code !== api.retcode.SUCCESS) return
+                    state.user = ret.data
+
+                    console.log(state.user)
+                    $.message_success('登录成功，正在回到首页……')
+                    this.$router.replace('/')
                 } else {
                     $.message_by_code(ret.code)
                 }
-
-                ret = await api.user.get({username: this.info.username}, 'test')
-                console.log(ret)
+                // ret = await api.user.get({username: this.info.username}, 'test')
+                // console.log(ret)
             } else {
                 $.message_error('请填写所有必填项')
             }
