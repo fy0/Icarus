@@ -16,7 +16,7 @@ class UserMixin:
     def get_current_user(self):
         key = self.get_secure_cookie('u')
         if key:
-            return User.get_by_key(to_bin(key))
+            return User.get_by_key(key)
 
 
 class SigninForm(ValidateForm):
@@ -109,7 +109,7 @@ class UserView(UserMixin, PeeweeView):
         u = User.auth(data['email'], data['password'])
         if u:
             expires = 30 if 'remember' in data else None
-            self.set_secure_cookie('u', u.key.hex(), max_age=expires)
+            self.set_secure_cookie('u', u.key.tobytes(), max_age=expires)
             self.finish(RETCODE.SUCCESS, {'id': u.id})
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
