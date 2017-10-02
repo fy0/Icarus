@@ -13,7 +13,7 @@ class BoardForum(ValidateForm):
     name = StringField('板块名', validators=[va.required(), va.Length(1, 30)])
 
     brief = StringField('简介', validators=[
-        va.required(),
+        # va.required(),  # 注：必填和下面的0冲突，长度为零会视为空
         va.Length(0, 256)
     ])
 

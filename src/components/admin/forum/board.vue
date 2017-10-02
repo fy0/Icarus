@@ -15,7 +15,7 @@
         <tbody>
             <tr v-for="i, _ in boardInfo.items">
                 <td>{{_+1}}</td>
-                <td>{{i.title}}</td>
+                <td>{{i.name}}</td>
                 <td>{{i.brief}}</td>
                 <td>{{i.weight}}</td>
                 <td>{{state.misc.BOARD_STATE_TXT[i.state]}}</td>
@@ -29,8 +29,8 @@
         </tbody>
     </table>
     <div class="board-add">
-        <div class="board_title">
-            <input type="text" v-model="boardNewInfo.title" placeholder="版块名">
+        <div class="board_name">
+            <input type="text" v-model="boardNewInfo.name" placeholder="版块名">
         </div>
         <div class="board_brief">
             <input name="board_brief" v-model="boardNewInfo.brief" type="text" placeholder="简介">
@@ -49,7 +49,7 @@
     justify-content: space-between;
 }
 
-.board-add > .board_title {
+.board-add > .board_name {
     flex: 6 0 0%;
     margin-right: 10px;
 }
@@ -81,16 +81,29 @@ export default {
         return {
             state,
             boardNewInfo: {
-                title: '',
+                name: '',
                 brief: ''
             },
             boardInfo: {}
         }
     },
     methods: {
+        reloadInfo: async function () {
+            let ret = await api.board.list()
+
+            if (ret.code === api.retcode.SUCCESS) {
+                this.boardInfo = ret.data
+                return ret
+            } else {
+                $.message_by_code(ret.code)
+            }
+        },
         boardNew: async function () {
             let ret = await api.board.new(this.boardNewInfo)
             $.message_by_code(ret.code)
+            if (ret.code === api.retcode.SUCCESS) {
+                this.reloadInfo()
+            }
         }
     },
     beforeRouteEnter: async (to, from, next) => {
@@ -106,15 +119,8 @@ export default {
         return next('/')
     },
     beforeRouteUpdate: async function (to, from, next) {
-        let ret = await api.board.list()
-
-        if (ret.code === api.retcode.SUCCESS) {
-            this.boardInfo = ret.data
-            return next()
-        }
-
-        $.message_by_code(ret.code)
-        return next('/')
+        let ret = await this.reloadInfo()
+        return (ret) ? next() : next('/')
     },
     components: {
         AdminBase

@@ -23,7 +23,7 @@ class BOARD_STATE(StateObject):
 
 class Board(BaseModel):
     id = BlobField(primary_key=True)
-    title = TextField(unique=True)  # max 128
+    name = TextField(unique=True)  # max 128
     creator = ForeignKeyField(User, null=True)
     brief = TextField(null=True)  # max 256
     desc = TextField(null=True)  # max 1024
