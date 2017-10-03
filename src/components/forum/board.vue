@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container" v-if="board">
-    <aside style="background-color: ${ board.get_color() }">
+    <aside style="background-color: #777777">
         <h3 class="name">{{ board.name }}</h3>
         <div class="brief">{{ board.brief }}</div>
     </aside>
@@ -25,9 +25,7 @@
         <div class="topic-list" v-else>还未有人发言 ...</div>
 
         <div class="board-info">
-            <a href="#" class="topic-new-btn fade-transition">
-                发表主题
-            </a>
+            <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
             <div class="board-note fade-transition" style="margin-top:5px">
                 <p><strong>版块公告</strong></p>
                 <div>版主很懒，什么也没有写</div>
@@ -53,7 +51,7 @@ aside > .brief {
 aside {
     background: #1f8dd6;
     padding: 1em 1em;
-    /* border-radius: 3px; */
+    border-radius: 3px;
     color: #fff;
 }
 

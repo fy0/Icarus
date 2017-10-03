@@ -15,11 +15,16 @@
   },
   "dependencies": {
     "animate.css": "^3.5.2",
+    "font-awesome": "^4.7.0",
+    "marked": "^0.3.6",
     "normalize.css": "^7.0.0",
     "nprogress": "^0.2.0",
+    "prismjs": "^1.8.1",
     "vue": "^2.4.2",
     "vue-media": "^1.1.1",
+    "vue-multiselect": "^2.0.3",
     "vue-router": "^2.7.0",
+    "vue-simplemde": "^0.4.4",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

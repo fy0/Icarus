@@ -1,7 +1,5 @@
 from typing import Dict
-
 import time
-
 import config
 from model.topic import Topic
 from slim.retcode import RETCODE
