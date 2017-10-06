@@ -21,7 +21,7 @@ class BoardForm(ValidateForm):
 
 @route('board')
 class UserView(PeeweeView):
-    model = Board
+    options = PeeweeView.options_cls(model=Board, list_page_size=-1)
 
     @classmethod
     def handle_read(cls, values: Dict):

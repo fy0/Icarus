@@ -4,7 +4,7 @@
     <div id="board-list">
         <div class="board-item" v-for="i, _ in boardInfo.items">
             <div class="title">
-                <h2><router-link :to="{ name: 'forum_board', params: {id: i.id} }">社区</router-link></h2>
+                <h2><router-link :to="{ name: 'forum_board', params: {id: i.id} }">{{i.name}}</router-link></h2>
                 <p>{{i.brief}}</p>
             </div>
             <div class="detail ic-xs-hidden">

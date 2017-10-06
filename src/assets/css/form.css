@@ -1,7 +1,7 @@
 
-.ic-form input[type=number], .ic-form input[type=search], .ic-form input[type=text], .ic-form input[type=password], .ic-form input[type=datetime], 
-.ic-form input[type=datetime-local], .ic-form input[type=date], .ic-form input[type=month], .ic-form input[type=time], .ic-form input[type=week], 
-.ic-form input[type=email], .ic-form input[type=url], .ic-form input[type=tel], .ic-form input[type=color], .ic-form select, .ic-form textarea, .ic-form-field {
+.ic-form > .form-item input[type=number], .ic-form > .form-item input[type=search], .ic-form > .form-item input[type=text], .ic-form > .form-item input[type=password], .ic-form > .form-item input[type=datetime], 
+.ic-form > .form-item input[type=datetime-local], .ic-form > .form-item input[type=date], .ic-form > .form-item input[type=month], .ic-form > .form-item input[type=time], .ic-form > .form-item input[type=week], 
+.ic-form > .form-item input[type=email], .ic-form > .form-item input[type=url], .ic-form > .form-item input[type=tel], .ic-form > .form-item input[type=color], .ic-form > .form-item select, .ic-form > .form-item textarea, .ic-form > .form-item-field {
     border-color: #eee !important;
     background-color: #fff;
     border: 1px solid #ccc;
@@ -11,9 +11,4 @@
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
     transition: border linear .2s,box-shadow linear .2s;
     box-sizing: border-box;
-}
-
-.ic-form-row > label {
-    display: block;
-    margin-bottom: 7px;
 }

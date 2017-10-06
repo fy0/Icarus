@@ -8,8 +8,10 @@
 
     <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
         <div class="form-item">
-            <input type="text" name="title" v-model="title" placeholder="这里填写标题，最长50个字" style="width: 100%; font-weight: bolder;">
-            <multiselect v-model="value" :options="options"></multiselect>
+            <input type="text" name="title" v-model="topicInfo.title" placeholder="这里填写标题，最长50个字">
+        </div>
+        <div class="form-item2">
+            <multiselect v-model="topicInfo.board" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" label="name" style="z-index: 2" open-direction="bottom" track-by="name"></multiselect>
         </div>
         <div class="form-item">
             <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" placeholder="这里填写内容 ..." rows="15" autofocus></markdown-editor>
@@ -22,7 +24,16 @@
 </template>
 
 
-<style>
+<style scoped>
+#form_topic input[name='title'] {
+    padding: 19px 12px;
+    width: 100%;
+    font-weight: bolder;
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid #e8e8e8;
+}
+
 .edit-page-title {
     display: flex;
     justify-content: space-between;
@@ -39,6 +50,12 @@
     margin-bottom: 10px;
 }
 
+.form-item2 {
+    /* 此举是为了避免 ic-form 对 input 的样式覆盖。
+        不然select会出现外框套内框这样的事情 */
+    margin-bottom: 10px;
+}
+
 .el-select > .el-input > input[readonly] {
     background-color: #fff;
     color: #1f2d3d;    
@@ -46,23 +63,24 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
-import state from '@/state.js'
-import markdownEditor from 'vue-simplemde/src/markdown-editor'
-import 'simplemde/dist/simplemde.min.css'
-import Prism from 'prismjs'
 import _ from 'lodash'
+import Prism from 'prismjs'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
+import markdownEditor from 'vue-simplemde/src/markdown-editor'
+import 'simplemde/dist/simplemde.min.css'
+import api from '@/netapi.js'
+import state from '@/state.js'
 
 export default {
     data () {
         return {
             loading: false,
-            value: null,
-            options: ['list', 'of', 'options'],
+            boardList: [],
 
             topicInfo: {
+                title: '',
+                board: null,
                 content: ''
             },
 
@@ -86,9 +104,6 @@ export default {
                 }
             },
 
-            title: '',
-            link_to: '',
-            date: new Date(),
             topicState: state.misc.TOPIC_STATE.NORMAL,
             editing_data: null
         }
@@ -106,6 +121,9 @@ export default {
         }
     },
     methods: {
+        getSelectOptionName ({ name, brief }) {
+            return `${name} — [${brief}]`
+        },
         send: async function (e) {
             let formdata = new FormData($('#form_topic')[0])
             let title = (formdata.get('title') || '').trim()
@@ -209,7 +227,7 @@ export default {
         }
     },
     watch: {
-        title: _.debounce(function (val, oldVal) {
+        'topicInfo.title': _.debounce(function (val, oldVal) {
             localStorage.setItem('topic-post-title', val)
         }, 5000)
     },
@@ -219,6 +237,13 @@ export default {
             return next('/')
         }
 
+        let ret = await api.board.list()
+        if (ret.code) {
+            $.message_by_code(ret.code)
+            return next('/')
+        }
+        let boardList = ret.data.items
+
         if (to.name === 'topic_edit') {
             let ret = await api.topicGet(to.params.id)
             if (ret.code) {
@@ -227,7 +252,36 @@ export default {
             }
             to.params.editing_data = ret.data
         }
-        next()
+
+        next(vm => {
+            vm.boardList = boardList
+        })
+    },
+    beforeRouteUpdate: async function (to, from, next) {
+        if (!state.user) {
+            $.message_error('抱歉，无权访问此页面')
+            return next('/')
+        }
+
+        let ret = await api.board.list()
+        if (ret.code) {
+            $.message_by_code(ret.code)
+            return next('/')
+        }
+        let boardList = ret.data.items
+
+        if (to.name === 'topic_edit') {
+            let ret = await api.topicGet(to.params.id)
+            if (ret.code) {
+                $.message_error('抱歉，发生了错误')
+                return next('/')
+            }
+            to.params.editing_data = ret.data
+        }
+
+        next(vm => {
+            vm.boardList = boardList
+        })
     },
     components: {
         Multiselect,
