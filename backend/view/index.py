@@ -27,6 +27,10 @@ class TestViewBasic(BasicView):
             'PASSWORD_MIN': config.PASSWORD_MIN,
             'PASSWORD_MAX': config.PASSWORD_MAX,
 
+            'TOPIC_TITLE_LENGTH_MIN': config.TOPIC_TITLE_LENGTH_MIN,
+            'TOPIC_TITLE_LENGTH_MAX': config.TOPIC_TITLE_LENGTH_MAX,
+            'TOPIC_CONTENT_LENGTH_MAX': config.TOPIC_CONTENT_LENGTH_MAX,
+
             'retcode': RETCODE.to_dict(),
             'retinfo_cn': RETCODE.txt_cn,
         })

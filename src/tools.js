@@ -1,6 +1,7 @@
-
 import _ from 'lodash'
 import state from '@/state.js'
+
+let messageId = 1
 
 $.media = {
     xs: {maxWidth: '35.5em'},
@@ -10,7 +11,7 @@ $.media = {
     xl: {minWidth: '80em'}
 }
 
-$.message = function (type, text) {
+$.message = function (type, text, timeout = 3000) {
     // type: default, secondary, success, warning, error
     let convert = {
         'default': '',
@@ -19,35 +20,48 @@ $.message = function (type, text) {
         'warning': 'am-alert-warning',
         'error': 'am-alert-danger'
     }
-    let data = {type, text, class: convert[type]}
+    let data = {type, text, class: convert[type], id: messageId++}
     state.msgs.push(data)
     _.delay(() => {
         state.msgs.splice(state.msgs.indexOf(data), 1)
-    }, 3000)
+    }, timeout)
 }
 
-$.message_text = function (text) {
-    $.message('default', text)
+$.message_text = function (text, timeout = 3000) {
+    $.message('default', text, timeout)
 }
 
-$.message_secondary = function (text) {
-    $.message('secondary', text)
+$.message_secondary = function (text, timeout = 3000) {
+    $.message('secondary', text, timeout)
 }
 
-$.message_success = function (text) {
-    $.message('success', text)
+$.message_success = function (text, timeout = 3000) {
+    $.message('success', text, timeout)
 }
 
-$.message_warning = function (text) {
-    $.message('warning', text)
+$.message_warning = function (text, timeout = 3000) {
+    $.message('warning', text, timeout)
 }
 
-$.message_error = function (text) {
-    $.message('error', text)
+$.message_error = function (text, timeout = 3000) {
+    $.message('error', text, timeout)
 }
 
-$.message_by_code = function (code, text = null) {
+$.message_by_code = function (code, text = null, timeout = 3000) {
     text = text || state.misc.retinfo_cn[code]
-    if (code === state.misc.retcode.SUCCESS) $.message_success(text)
-    else $.message_error(text)
+    if (code === state.misc.retcode.SUCCESS) $.message_success(text, timeout)
+    else $.message_error(text, timeout)
+}
+
+$.message_by_form = function (code, data, alias, timeout = 6000) {
+    if (code) {
+        for (let [k, errs] of Object.entries(data)) {
+            for (let err of errs) {
+                let name = alias[k] || k
+                $.message_by_code(code, `${name}：${err}`, timeout)
+            }
+        }
+    } else {
+        $.message_by_code(code, timeout)
+    }
 }

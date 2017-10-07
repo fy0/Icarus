@@ -75,9 +75,9 @@ export default {
     data () {
         return {
             info: {
+                email: '',
                 password: '',
                 password2: '',
-                email: '',
                 verify: ''
             }
         }
@@ -104,7 +104,7 @@ export default {
             if (this.checkPassword && this.checkPassword2 && this.checkEmail) {
                 let ret = await api.user.new(this.info)
                 if (ret.code !== api.retcode.SUCCESS) {
-                    $.message_error(ret.data)
+                    $.message_by_form(ret.code, ret.data, {email: '邮箱', password: '密码', password2: '重复密码', verify: '验证码'})
                 } else {
                     let userinfo = ret.data
                     console.log(userinfo)

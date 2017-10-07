@@ -3,6 +3,7 @@ var utils = require('./utils')
 var config = require('../config')
 var webpack = require('webpack')
 var vueLoaderConfig = require('./vue-loader.conf')
+var LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -27,6 +28,7 @@ module.exports = {
     }
   },
   plugins: [
+    new LodashModuleReplacementPlugin,
     new webpack.ProvidePlugin({
       $: resolve('src/tools.js'),
     }),

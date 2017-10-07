@@ -10,6 +10,7 @@
     position: absolute;
     color: red;
     font-size: .75em;
+    margin-top: 3px;
 }
 
 .error > input {
