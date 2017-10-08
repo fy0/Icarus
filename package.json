@@ -25,6 +25,7 @@
     "vue-multiselect": "^2.0.3",
     "vue-router": "^2.7.0",
     "vue-simplemde": "^0.4.4",
+    "vuelidate": "^0.6.0",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

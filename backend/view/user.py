@@ -104,7 +104,7 @@ class UserView(UserMixin, PeeweeView):
         data = await self.post_data()
         form = SigninForm(**data)
         if not form.validate():
-            return RETCODE.FAILED, form.errors
+            return self.finish(RETCODE.FAILED, form.errors)
 
         u = User.auth(data['email'], data['password'])
         if u:

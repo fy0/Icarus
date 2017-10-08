@@ -3,11 +3,11 @@
     <div class="login">
         <h3 class="title">登录</h3>
         <form class="ic-form">
-            <check-row :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
+            <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
                 <label for="email">邮箱</label>
                 <input type="email" name="email" id="email" v-model="info.email">
             </check-row>
-            <check-row :check="(!info.password) || checkPassword" :text='checkPasswordText'>
+            <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
                 <label for="password">密码</label>
                 <input type="password" name="password" id="password" v-model="info.password">
             </check-row>
@@ -69,7 +69,8 @@ export default {
             info: {
                 email: '',
                 password: ''
-            }
+            },
+            formErrors: {}
         }
     },
     computed: {
@@ -95,16 +96,16 @@ export default {
                     if (ret.code !== api.retcode.SUCCESS) return
                     state.user = ret.data
 
-                    console.log(state.user)
                     $.message_success('登录成功，正在回到首页……')
                     this.$router.replace('/')
                 } else {
+                    this.formErrors = ret.data
                     $.message_by_code(ret.code)
                 }
                 // ret = await api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
             } else {
-                $.message_error('请填写所有必填项')
+                $.message_error('请正确填写所有项目')
             }
         }
     },

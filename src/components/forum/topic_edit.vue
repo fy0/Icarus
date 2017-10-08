@@ -8,7 +8,7 @@
 
     <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
         <div class="ic-form-row">
-            <input type="text" name="title" v-model="topicInfo.title" placeholder="这里填写标题，最长50个字">
+            <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${state.misc.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.TOPIC_TITLE_LENGTH_MAX} 字`">
         </div>
         <div class="form-select-row">
             <multiselect v-model="topicInfo.board" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" label="name" style="z-index: 2" open-direction="bottom" track-by="name"></multiselect>
@@ -74,6 +74,7 @@ import state from '@/state.js'
 export default {
     data () {
         return {
+            state,
             loading: false,
             boardList: [],
 
@@ -108,9 +109,6 @@ export default {
         }
     },
     computed: {
-        topicStateOptions: function () {
-            return Object.entries(state.misc.TOPIC_STATE_TXT)
-        },
         is_edit () {
             return this.$route.name === 'topic_edit'
         },

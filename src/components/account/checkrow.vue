@@ -1,7 +1,7 @@
 <template>
 <div class="ic-form-row" :class="isError ? 'error' : ''">
     <slot></slot>
-    <span class="tip" v-if="isError">{{text}}</span>
+    <span class="tip" v-if="isError">{{errtext}}</span>
 </div>
 </template>
 
@@ -22,11 +22,18 @@
 export default {
     props: {
         check: {},
-        text: String
+        text: String,
+        results: Array
     },
     computed: {
         isError: function () {
-            return (!this.check)
+            return (this.results && this.results.length) || (!this.check)
+        },
+        errtext: function () {
+            if (this.results && this.results.length) {
+                return this.results[0]
+            }
+            return this.text
         }
     },
     data () {
