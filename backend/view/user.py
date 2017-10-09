@@ -114,8 +114,7 @@ class UserView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 
-    @classmethod
-    def handle_insert(cls, values: Dict):
+    def handle_insert(self, values: Dict):
         # 必须存在以下值：
         # email password
         # 自动填充或改写以下值：

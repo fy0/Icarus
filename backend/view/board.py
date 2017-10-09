@@ -24,7 +24,7 @@ class UserView(PeeweeView):
     options = PeeweeView.options_cls(model=Board, list_page_size=-1)
 
     @classmethod
-    def handle_read(cls, values: Dict):
+    def handle_read(self, values: Dict):
         pass
 
     @classmethod

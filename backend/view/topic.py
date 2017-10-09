@@ -1,11 +1,15 @@
 from typing import Dict
 import time
 import config
+from model.board import Board
 from model.topic import Topic
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
+from slim.utils import to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, IntegerField
+
+from view.user import UserMixin
 
 
 class TopicForm(ValidateForm):
@@ -21,18 +25,23 @@ class TopicForm(ValidateForm):
 
 
 @route('topic')
-class UserView(PeeweeView):
+class TopicView(UserMixin, PeeweeView):
     model = Topic
 
-    @classmethod
-    def handle_read(cls, values: Dict):
+    def handle_read(self, values: Dict):
         pass
 
-    @classmethod
-    def handle_insert(cls, values: Dict):
+    def handle_insert(self, values: Dict):
         form = TopicForm(**values)
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
+        # peewee 独有
+        values['board'] = to_bin(values['board_id'])
+        values['user'] = self.current_user
+        # values['board_id'] = to_bin(values['board_id'])
+        # values['user_id'] = self.current_user.id
+
+        # 以下通用
         values['id'] = config.ID_GENERATOR().digest()
         values['time'] = int(time.time())

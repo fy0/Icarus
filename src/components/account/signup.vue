@@ -69,7 +69,7 @@
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
-import CheckRow from './checkrow.vue'
+import CheckRow from '../utils/checkrow.vue'
 
 export default {
     data () {

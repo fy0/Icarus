@@ -7,17 +7,17 @@
     </div>
 
     <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
-        <div class="ic-form-row">
+        <check-row :results="formErrors.title" :multi="true">
             <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${state.misc.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.TOPIC_TITLE_LENGTH_MAX} 字`">
-        </div>
-        <div class="form-select-row">
+        </check-row>
+        <check-row :results="formErrors.board" :multi="true">
             <multiselect v-model="topicInfo.board" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" label="name" style="z-index: 2" open-direction="bottom" track-by="name"></multiselect>
-        </div>
-        <div class="ic-form-row">
+        </check-row>
+        <check-row :multi="true">
             <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" placeholder="这里填写内容 ..." rows="15" autofocus></markdown-editor>
-        </div>
+        </check-row>
         <div class="ic-form-row">
-            <button class="ic-btn click blue" style="float: right" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
+            <button class="ic-btn click blue" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
         </div>
     </form>
 </div>
@@ -62,6 +62,21 @@
 }
 </style>
 
+<style>
+/* 这部分内容是动态生成的 因此写在scope中无效 */
+.ic-form > .ic-form-row.error > div.markdown-editor > div.editor-toolbar {
+    opacity: 1; /* 上下颜色一致 */
+    border-color: #FF6060 !important;
+}
+
+.ic-form > .ic-form-row.error > .markdown-editor > .cm-s-paper {
+    border-left-color: #FF6060 !important;
+    border-right-color: #FF6060 !important;
+    border-bottom-color: #FF6060 !important;
+}
+
+</style>
+
 <script>
 import Prism from 'prismjs'
 import Multiselect from 'vue-multiselect'
@@ -70,6 +85,7 @@ import markdownEditor from 'vue-simplemde/src/markdown-editor'
 import 'simplemde/dist/simplemde.min.css'
 import api from '@/netapi.js'
 import state from '@/state.js'
+import CheckRow from '../utils/checkrow.vue'
 
 export default {
     data () {
@@ -82,6 +98,10 @@ export default {
                 title: '',
                 board: null,
                 content: ''
+            },
+
+            formErrors: {
+                title: []
             },
 
             mdeConfig: {
@@ -122,42 +142,23 @@ export default {
             return `${name} — [${brief}]`
         },
         send: async function (e) {
-            if (!this.topicInfo.title) {
-                $.message_error('请输入一个标题！')
-                return false
-            }
-
-            if (this.topicInfo.title.length < state.misc.TITLE_LENGTH_MIN) {
-                $.message_error(`标题应不少于 ${state.misc.TITLE_LENGTH_MIN} 个字！`)
-                return false
-            }
-
-            if (this.topicInfo.title.length > state.misc.TITLE_LENGTH_MAX) {
-                $.message_error(`标题应不多于 {TITLE_LENGTH_MAX} 个字！`)
-                return false
-            }
-
-            // 允许页面内容为空
-            // if (!content) return;
-
             let ret
             let successText
             let failedText
 
             this.loading = true
+            this.topicInfo.board_id = this.topicInfo.board.id
             if (this.is_edit) {
-                ret = await api.topicEdit(this.$route.params.id, this.topicInfo)
+                ret = await api.topic.update(this.$route.params.id, this.topicInfo)
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'
             } else {
-                ret = await api.topicNew(this.topicInfo)
+                ret = await api.topic.new(this.topicInfo)
                 successText = '发表成功！已自动跳转至文章页面。'
-                failedText = ret.msg || '编辑失败！'
+                failedText = ret.msg || '新建失败！'
             }
 
             if (ret.code === 0) {
-                this.editor.toTextArea()
-                this.editor = null
                 localStorage.setItem('topic-post-cache-clear', 1)
                 this.$router.push({name: 'topic', params: { id: ret.data.id }})
                 $.message_success(successText)
@@ -239,6 +240,7 @@ export default {
         })
     },
     components: {
+        CheckRow,
         Multiselect,
         markdownEditor
     }
