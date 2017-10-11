@@ -6,19 +6,21 @@
     </aside>
 
     <div class="board-page-box">
-        <div class="topic-list" v-if="topics.length">
-            <div class="pure-g ic-board-item">
-                <div class="pure-u-18-24 title">
-                    <h2><a href="${ url_for('topic', i.id) }">${ i.title|h }</a></h2>
-                    <p><a href="#">${i.user.username|h}</a> 发布于 <time timestamp="${i.time}">${i.time}</time></p>
+        <div class="topic-list" v-if="topics.items.length">
+            <div class="board-item" v-for="i in topics.items">
+                <div class="title">
+                    <h2><a href="#">{{ i.title }}</a></h2>
+                    <p><a href="#">{{i.user_id}}</a> 发布于 <time timestamp="${i.time}">{{i.time}}</time></p>
                 </div>
-                <div class="pure-u-3-24 ic-text-center info ic-eng">
-                    <p class="num">${i.view_count}</p>
-                    <p class="txt">Click</p>
-                </div>
-                <div class="pure-u-3-24 ic-text-center info ic-eng">
-                    <p class="num">${i.reply_count}</p>
-                    <p class="txt">Replies</p>
+                <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
+                    <div class="count">
+                        <p class="num">1</p>
+                        <p class="txt">点击</p>
+                    </div>
+                    <div class="count">
+                        <p class="num">2</p>
+                        <p class="txt">回复</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,11 +64,11 @@ aside {
 }
 
 .board-page-box > .topic-list {
-    flex: 17 0 auto;
+    flex: 3 0 auto;
 }
 
 .board-page-box > .board-info {
-    flex: 7 0 auto;
+    flex: 1 0 auto;
 }
 
 .topic-new-btn {
@@ -107,10 +109,14 @@ export default {
     },
     beforeRouteEnter: async (to, from, next) => {
         let ret = await api.board.get({id: to.params.id})
+        if (ret.code) next('/')
 
-        if (ret.code === api.retcode.SUCCESS) {
+        let retList = await api.topic.list({board_id: to.params.id})
+        if (retList.code === api.retcode.SUCCESS) {
             return next(vm => {
+                console.log(retList.data)
                 vm.board = ret.data
+                vm.topics = retList.data
             })
         }
 

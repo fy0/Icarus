@@ -3,12 +3,12 @@ import time
 import config
 from model.board import Board
 from model.topic import Topic
+from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, IntegerField
-
 from view.user import UserMixin
 
 
@@ -31,16 +31,16 @@ class TopicView(UserMixin, PeeweeView):
     def handle_read(self, values: Dict):
         pass
 
+    def handle_query(self, info: ParamsQueryInfo):
+        pass
+
     def handle_insert(self, values: Dict):
         form = TopicForm(**values)
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
-        # peewee 独有
-        values['board'] = to_bin(values['board_id'])
-        values['user'] = self.current_user
-        # values['board_id'] = to_bin(values['board_id'])
-        # values['user_id'] = self.current_user.id
+        values['board_id'] = to_bin(values['board_id'])
+        values['user_id'] = self.current_user.id
 
         # 以下通用
         values['id'] = config.ID_GENERATOR().digest()
