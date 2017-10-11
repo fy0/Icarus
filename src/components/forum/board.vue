@@ -23,6 +23,7 @@
                     </div>
                 </div>
             </div>
+            <paginator :page-info='topics' :route-name='"forum_board"'></paginator>
         </div>
         <div class="topic-list" v-else>还未有人发言 ...</div>
 
@@ -98,6 +99,7 @@ aside {
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/forum.css'
+import Paginator from '../utils/paginator.vue'
 
 export default {
     data () {
@@ -133,6 +135,9 @@ export default {
 
         $.message_by_code(ret.code)
         return next('/')
+    },
+    components: {
+        Paginator
     }
 }
 </script>

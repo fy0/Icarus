@@ -45,7 +45,7 @@ export default new Router({
         },
         // 板块页面
         {
-            path: '/board/:id(\\S+)/:name(.+)?',
+            path: '/board/:id(\\S+)/:page(\\d+)?/:name(.+)?',
             name: 'forum_board',
             component: ForumBoard
         },
