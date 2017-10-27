@@ -9,7 +9,7 @@
         <div class="topic-list" v-if="topics.items.length">
             <div class="board-item" v-for="i in topics.items">
                 <div class="title">
-                    <h2><a href="#">{{ i.title }}</a></h2>
+                    <h2><router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link></h2>
                     <p><a href="#">{{i.user_id}}</a> 发布于 <time timestamp="${i.time}">{{i.time}}</time></p>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
@@ -115,10 +115,18 @@ export default {
 
         let retList = await api.topic.list({board_id: to.params.id})
         if (retList.code === api.retcode.SUCCESS) {
-            return next(vm => {
-                console.log(retList.data)
+            return next(async (vm) => {
                 vm.board = ret.data
                 vm.topics = retList.data
+
+                let userIDs = new Set()
+                for (let i of retList.data.items) {
+                    userIDs.add(i.user_id)
+                }
+
+                let a = await api.user.list({'id.in': JSON.stringify(userIDs)})
+                console.log(userIDs)
+                console.log(a)
             })
         }
 

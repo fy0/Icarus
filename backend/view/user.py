@@ -14,9 +14,12 @@ from wtforms import StringField, validators as va
 
 class UserMixin:
     def get_current_user(self):
-        key = self.get_secure_cookie('u')
-        if key:
-            return User.get_by_key(key)
+        try:
+            key = self.get_secure_cookie('u')
+            if key:
+                return User.get_by_key(key)
+        except:
+            self.del_cookie('u')
 
 
 class SigninForm(ValidateForm):
@@ -52,6 +55,7 @@ class UserView(UserMixin, PeeweeView):
         visitor = Ability(None, {
             'user': {
                 'id': ['query', 'read'],
+                'nickname': ['read'],
                 'group': ['read'],
 
                 'email': ['create'],

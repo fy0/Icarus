@@ -58,7 +58,7 @@
 
 .el-select > .el-input > input[readonly] {
     background-color: #fff;
-    color: #1f2d3d;    
+    color: #1f2d3d;
 }
 </style>
 

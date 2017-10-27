@@ -8,7 +8,7 @@ from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin
 from view import route, ValidateForm
-from wtforms import StringField, validators as va, IntegerField
+from wtforms import validators as va, StringField, IntegerField
 from view.user import UserMixin
 
 

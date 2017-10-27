@@ -8,6 +8,7 @@ import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
 import ForumBoard from '@/components/forum/board.vue'
 import ForumTopcEdit from '@/components/forum/topic_edit.vue'
+import ForumTopic from '@/components/forum/topic.vue'
 
 import Admin from '@/components/admin/admin.vue'
 import AdminForumBoard from '@/components/admin/forum/board.vue'
@@ -37,29 +38,35 @@ export default new Router({
             name: 'forum',
             component: Forum
         },
-        // 最近发布
+        // 论坛 - 最近发布
         {
             path: '/recent',
             name: 'forum_recent',
             component: ForumRecent
         },
-        // 板块页面
+        // 论坛 - 板块页面
         {
             path: '/board/:id(\\S+)/:page(\\d+)?/:name(.+)?',
             name: 'forum_board',
             component: ForumBoard
         },
-        // 主题新建
+        // 论坛 - 主题新建
         {
-            path: '/forum/topic/new',
+            path: '/topic/new',
             name: 'forum_topic_new',
             component: ForumTopcEdit
         },
-        // 主题编辑
+        // 论坛 - 主题编辑
         {
-            path: '/forum/topic/edit/:id(\\S+)',
+            path: '/topic/edit/:id(\\S+)',
             name: 'forum_topic_edit',
             component: ForumTopcEdit
+        },
+        // 论坛 - 文章页面
+        {
+            path: '/topic/:id(\\S+)',
+            name: 'forum_topic',
+            component: ForumTopic
         },
 
         // 管理

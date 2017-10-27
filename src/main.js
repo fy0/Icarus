@@ -103,7 +103,8 @@ router.beforeEach(async function (to, from, next) {
         if (!state.user) {
             let ret = await api.user.getUserId()
             if (ret.code !== api.retcode.SUCCESS) {
-                return next('/')
+                // 未登录，后续不必进行
+                return next()
             }
 
             ret = await api.user.get({id: ret.data.id}, 'user')
