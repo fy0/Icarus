@@ -1,24 +1,57 @@
 <!-- 用户头像 -->
 <template>
-<div class="sa-avatar">A</div>
+<router-link class="sa-avatar" :to="linkTo" :style="style">{{char}}</router-link>
 </template>
 
 <style>
 .sa-avatar {
-    width:50px;
-    height:50px;
-    line-height:50px;
-    font-size:40px;
-    background-color:#63a9f0
+    user-select: none;
+    text-align: center;
+    border-radius: 4px;
 }
 </style>
 
 <script>
+import murmurhash from 'murmurhash'
+
 export default {
     props: {
+        user: {},
+        size: {
+            default: 50
+        }
     },
-    data () {
-        return {
+    computed: {
+        linkTo: function () {
+            return {
+                name: 'user_page',
+                params: {id: this.user.id}
+            }
+        },
+        char: function () {
+            return this.user.name[0].toUpperCase()
+        },
+        style: function () {
+            let size, fsize
+            let bgColor = murmurhash.v3(this.user.name).toString(16).slice(0, 6)
+            if (typeof this.size === 'string') {
+                // 用于百分比模式
+                // 现在还不能正常工作，因为并没有字体大小随父节点动态变化的css
+                // 先只考虑纯css，那么以后再说
+                size = ''
+                fsize = ''
+            } else {
+                size = `${this.size}px`
+                fsize = `${this.size - 10}px`
+            }
+            return {
+                'width': size,
+                'height': size,
+                'font-size': fsize,
+                'line-height': size,
+                'color': 'white',
+                'background-color': '#' + bgColor
+            }
         }
     }
 }

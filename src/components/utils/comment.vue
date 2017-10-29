@@ -2,9 +2,13 @@
 <template>
 <div class="ic-comment-list">
     <div class="ic-comment">
-        <avatar class="avatar"></avatar>
+        <avatar :user="user" class="avatar"></avatar>
         <div class="content">
-            <div class="head">用户名</div>
+            <div class="head">
+                <span>#1</span>
+                <b>{{user.name}}</b>
+                <span>2017-10-29 13:11</span>
+            </div>
             <div class="post">123</div>
         </div>
     </div>
@@ -64,6 +68,10 @@ import Avatar from './avatar.vue'
 export default {
     data () {
         return {
+            user: {
+                id: 'asdasd',
+                name: 'John Doe'
+            }
         }
     },
     components: {

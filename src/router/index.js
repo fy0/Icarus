@@ -32,6 +32,13 @@ export default new Router({
             component: AccountSignup
         },
 
+        // 用户页面
+        {
+            path: '/user/:id(\\S+)',
+            name: 'user_page',
+            component: About
+        },
+
         // 主页面
         {
             path: '/',
