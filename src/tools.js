@@ -65,3 +65,15 @@ $.message_by_form = function (code, data, alias, timeout = 6000) {
         $.message_by_code(code, timeout)
     }
 }
+
+$.tpReg = function (name, func) {
+    state.test.items.push([name, func])
+}
+
+$.tpRemove = function () {
+    ;
+}
+
+$.tpClear = function () {
+    state.test.items.clear()
+}

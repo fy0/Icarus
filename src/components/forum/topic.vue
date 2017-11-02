@@ -11,7 +11,7 @@
     <div class="content typo">
         <h1>{{topic.title}}</h1>
         <div v-html="marked(topic.content || '')"></div>
-        <comment></comment>
+        <comment-list></comment-list>
 
         <!--
         <div class="comment-container">
@@ -91,7 +91,7 @@ import marked from 'marked'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/forum.css'
-import comment from '../utils/comment.vue'
+import CommentList from '../utils/comment-list.vue'
 
 export default {
     data () {
@@ -118,7 +118,7 @@ export default {
         return next('/')
     },
     components: {
-        comment
+        CommentList
     }
 }
 </script>

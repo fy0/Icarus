@@ -1,12 +1,12 @@
 <!-- 评论 -->
 <template>
 <div class="ic-comment-list">
-    <div class="ic-comment">
-        <avatar :user="user" class="avatar"></avatar>
+    <div v-for="i in items" class="ic-comment">
+        <avatar :user="i.user" class="avatar"></avatar>
         <div class="content">
             <div class="head">
                 <span>#1</span>
-                <b>{{user.name}}</b>
+                <b>{{i.user.name}}</b>
                 <span>2017-10-29 13:11</span>
             </div>
             <div class="post">123</div>
@@ -68,10 +68,30 @@ import Avatar from './avatar.vue'
 export default {
     data () {
         return {
-            user: {
-                id: 'asdasd',
-                name: 'John Doe'
+            items: [
+                {
+                    user: {
+                        id: 'asdasd',
+                        name: 'John Doe'
+                    }
+                }
+            ]
+        }
+    },
+    mounted: function () {
+        this.addTest()
+    },
+    methods: {
+        addTest: function () {
+            let func = () => {
+                this.items.push({
+                    user: {
+                        id: 'asdasd',
+                        name: 'John Doe'
+                    }
+                })
             }
+            $.tpReg('增加一条评论', func)
         }
     },
     components: {
