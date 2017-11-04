@@ -75,5 +75,5 @@ $.tpRemove = function () {
 }
 
 $.tpClear = function () {
-    state.test.items.clear()
+    state.test.items = []
 }

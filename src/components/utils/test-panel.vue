@@ -1,7 +1,7 @@
 <template>
 <div class="test-panel">
-    <button @click="hello">测试面板</button>
-    <button v-for="i in state.test.items" @click="i[1]">{{i[0]}}</button>
+    <button class="ic-btn click" @click="hello">测试面板</button>
+    <button :key="i" v-for="i in state.test.items" @click="i[1]">{{i[0]}}</button>
 </div>
 </template>
 

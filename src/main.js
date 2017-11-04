@@ -9,6 +9,7 @@ import 'animate.css'
 import 'font-awesome/css/font-awesome.css'
 import 'lodash'
 import 'normalize.css'
+import 'material-design-lite'
 import 'nprogress/nprogress.css'
 
 import marked from 'marked'
@@ -91,6 +92,7 @@ nprogress.configure({showSpinner: false})
 
 router.beforeEach(async function (to, from, next) {
     nprogress.start()
+    $.tpClear()
 
     if (state.misc === undefined) {
         let ret = await api.misc()

@@ -91,7 +91,10 @@ export default {
                     }
                 })
             }
-            $.tpReg('增加一条评论', func)
+            $.tpReg('一条评论', func)
+        },
+        removeTest: function () {
+            ;
         }
     },
     components: {
