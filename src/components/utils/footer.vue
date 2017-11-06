@@ -9,7 +9,6 @@ footer {
     padding: 1pc 10px 24px;
     border-top: 1px solid #eee;
     color: #999;
-    font-size: 14px;
     line-height: 1.2;
 }
 </style>

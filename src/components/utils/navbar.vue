@@ -1,7 +1,7 @@
 <template>
 <header class="ic-nav">
     <div class="ic-container ic-navbtns">
-        <a class="ic-brand-heading ic-eng" href="#">Icarus</a>
+        <a class="ic-brand-heading" href="#">Icarus</a>
 
         <a href="#" @click="navmenuToggle" :class="showNavmenuBtn ? 'x' : ''" class="ic-xs ic-hidden" id="navmenu-toggle-icon">
             <s class="bar"></s>
@@ -54,7 +54,7 @@
 .ic-nav {
     border-bottom: 1px solid #ddd;
     margin-bottom: 15px;
-    height: 40px;
+    height: 56px;
 }
 
 /* 内容 */
@@ -79,8 +79,9 @@
     color: #000;
     text-decoration: none;
     white-space: nowrap;
-    font-size: 1.125em;
+    font-size: 1.5em;
     margin-right: 0.5em;
+    margin-top: -2px;
 }
 
 .ic-brand-heading:hover {
@@ -114,7 +115,7 @@
     padding: .5em 1em;
     color: #777;
     text-decoration: none;
-    font-size: .8em;
+    font-size: 1em;
 }
 
 .menu-item > a:hover {
@@ -165,7 +166,7 @@
         align-self: flex-start;
         flex: 0 0 auto;
         margin-right: -10px;
-        margin-top: 40px;
+        margin-top: 56px;
 
         border: 1px solid #ddd;
         background-color: #fff;

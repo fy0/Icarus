@@ -8,9 +8,12 @@ import nprogress from 'nprogress/nprogress.js'
 import 'animate.css'
 import 'font-awesome/css/font-awesome.css'
 import 'lodash'
-import 'normalize.css'
 import 'material-design-lite'
 import 'nprogress/nprogress.css'
+// muse-ui 包含 normalize.css
+import MuseUI from 'muse-ui'
+import 'muse-ui/dist/muse-ui.css'
+Vue.use(MuseUI)
 
 import marked from 'marked'
 import Prism from 'prismjs'

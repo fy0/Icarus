@@ -1,7 +1,10 @@
 html {
     background-color: #fff;
     overflow-y: scroll;
-    font-family: "Segoe UI","Lucida Grande",Helvetica,Arial,"Microsoft YaHei",FreeSans,Arimo,"Droid Sans","wenquanyi micro hei","Hiragino Sans GB","Hiragino Sans GB W3",FontAwesome,sans-serif;
+}
+
+body, button, input, select, textarea {
+    font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans, FontAwesome, sans-serif;
 }
 
 * {
@@ -11,14 +14,6 @@ html {
 .ic-hr {
     margin-bottom: 30px !important;
     border-bottom: 1px solid rgb(239, 239, 239);
-}
-
-.ic-cn {
-    font-family: "Helvetica Neue",Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei","Wenquanyi Micro Hei",sans-serif;
-}
-
-.ic-eng {
-    font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif !important;
 }
 
 .ic-container {

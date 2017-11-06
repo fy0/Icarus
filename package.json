@@ -17,6 +17,7 @@
     "animate.css": "^3.5.2",
     "font-awesome": "^4.7.0",
     "marked": "^0.3.6",
+    "muse-ui": "^2.1.0",
     "normalize.css": "^7.0.0",
     "nprogress": "^0.2.0",
     "prismjs": "^1.8.1",
