@@ -1,11 +1,15 @@
 <template>
 <div class="ic-container">
 
-<div class="nav">
-    <router-link :to="{ name: 'forum' }">社区</router-link>
-    <span>»</span>
-    <router-link :to="{ name: 'forum_board', params: {id: board.id} }">{{board.name}}</router-link></h2>
-</div>
+<mu-breadcrumb class="nav">
+    <mu-breadcrumb-item href="#">
+        <router-link :to="{ name: 'forum' }">社区</router-link>
+    </mu-breadcrumb-item>
+    <mu-breadcrumb-item href="#">
+        <router-link :to="{ name: 'forum_board', params: {id: board.id} }">{{board.name}}</router-link>
+    </mu-breadcrumb-item>
+    <mu-breadcrumb-item>{{topic.title}}</mu-breadcrumb-item>
+</mu-breadcrumb>
 
 <div class="topic-box">
     <div class="content typo">
@@ -83,7 +87,6 @@
 .topic-box > .info {
     flex: 6 0 0%;
 }
-
 </style>
 
 <script>

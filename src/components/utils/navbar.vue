@@ -31,7 +31,7 @@
                     </router-link>
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_signin' }" :class="navActive('account_signin')">
                         <a>登录</a>
-                    </router-link>                    
+                    </router-link>
                 </ul>
                 <ul class="menu-list" v-else>
                     <li class="menu-item"><a href="#">头像</a></li>
@@ -81,7 +81,7 @@
     white-space: nowrap;
     font-size: 1.5em;
     margin-right: 0.5em;
-    margin-top: -2px;
+    margin-top: -3px;
 }
 
 .ic-brand-heading:hover {

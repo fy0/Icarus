@@ -1,4 +1,5 @@
 import config
+from aiohttp import web
 from model.board import BOARD_STATE
 from model.topic import TOPIC_STATE
 from slim.base.view import BasicView

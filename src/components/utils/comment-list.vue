@@ -3,14 +3,14 @@
 <div class="ic-comment-list">
     <div v-for="i in items" class="ic-comment">
         <avatar :user="i.user" class="avatar"></avatar>
-        <div class="content">
+        <mu-paper class="content" :zDepth="1">
             <div class="head">
                 <span>#1</span>
                 <b>{{i.user.name}}</b>
                 <span>2017-10-29 13:11</span>
             </div>
             <div class="post">123</div>
-        </div>
+        </mu-paper>
     </div>
 </div>
 </template>
@@ -18,7 +18,8 @@
 <style>
 /* 注意：评论样式不在 scope 之内，故意为之 */
 .ic-comment {
-    display: flex;
+    display: flex;    
+    margin-bottom: 1em;
 }
 
 .ic-comment > .content > .head {

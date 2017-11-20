@@ -1,9 +1,9 @@
 <template>
 <div class="ic-container" v-if="board">
-    <aside style="background-color: #777777">
+    <mu-paper class="board-title" :zDepth="1" style="background-color: #777777">
         <h3 class="name">{{ board.name }}</h3>
         <div class="brief">{{ board.brief }}</div>
-    </aside>
+    </mu-paper>
 
     <div class="board-page-box">
         <div class="topic-list" v-if="topics.items.length">
@@ -51,7 +51,7 @@ aside > .brief {
     font-size: 0.9em;
 }
 
-aside {
+.board-title {
     background: #1f8dd6;
     padding: 1em 1em;
     border-radius: 3px;
