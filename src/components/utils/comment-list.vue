@@ -33,7 +33,6 @@
     flex: 1 0 0%;
     margin-left: 15px;
 
-    border: 1px solid #ddd;
     border-radius: 3px;
     background: #fff;
     padding: 1px;
