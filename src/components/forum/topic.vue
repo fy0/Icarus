@@ -16,49 +16,7 @@
         <h1>{{topic.title}}</h1>
         <div v-html="marked(topic.content || '')"></div>
         <comment-list></comment-list>
-
-        <!--
-        <div class="comment-container">
-            <div class="comment-info">
-                <span class="comment-info-title">{{comments_length}} 条评论</span>
-                <span class="comment-info-line"></span>
-            </div>
-
-            <div class="comment" v-for="(i, index) in comments" :key="index">
-                <div class="ic-comment-body">
-                    <div class="ic-comment-content" v-html="marked(i.content)"></div>
-                    <div class="ic-comment-meta">
-                        <b>{{i.user.name}}</b>
-                        <time>{{time_to_text(i.time)}}</time>
-                        <span> | </span>
-                        <span>#{{i.id}}</span>
-                    </div>
-                </div>
-                <div class="divider-line" v-if="index != comments.length-1"></div>
-            </div>
-
-            <div v-if="comments_page > 1">
-                <span v-for="index in comments_page" :key="index">
-                    <span class="comment-page-btn" v-if="$route.params.cmtpage == index">{{index}}</span>
-                    <router-link class="comment-page-btn" v-else :to="{ name: 'topic', params: {id: topic.id, cmtpage: index}}" replace>{{index}}</router-link>
-                </span>
-            </div>
-
-            <div v-if="state.data.user" style="margin-top: 20px">
-                <form method="POST">
-                    <div>
-                        <textarea name="content" rows="5" placeholder="" style="width:100%;border-color:#d9d9d9" v-model="user_comment_text"></textarea>
-                    </div>
-                    <div>
-                        <el-button @click="commentPost">发表</el-button>
-                        <span style="margin-left:10px" id="reply_msg"></span>
-                    </div>
-                </form>
-            </div>
-            <div style="padding: 20px" v-else>
-                需要 <router-link :to="{ path: `/signin` }">登录</router-link> 后方可回复, 如果你还没有账号你可以 <router-link :to="{ path: `/signup` }">注册</router-link> 一个帐号。
-            </div> 
-        </div>-->
+        <comment-post></comment-post>
     </div>
     <div class="info">
     </div>
@@ -95,6 +53,7 @@ import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/forum.css'
 import CommentList from '../utils/comment-list.vue'
+import CommentPost from '../utils/comment-post.vue'
 
 export default {
     data () {
@@ -121,7 +80,8 @@ export default {
         return next('/')
     },
     components: {
-        CommentList
+        CommentList,
+        CommentPost
     }
 }
 </script>

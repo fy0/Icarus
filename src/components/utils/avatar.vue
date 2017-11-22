@@ -29,11 +29,11 @@ export default {
             }
         },
         char: function () {
-            return this.user.name[0].toUpperCase()
+            return this.user.nickname[0].toUpperCase()
         },
         style: function () {
             let size, fsize
-            let bgColor = murmurhash.v3(this.user.name).toString(16).slice(0, 6)
+            let bgColor = murmurhash.v3(this.user.nickname).toString(16).slice(0, 6)
             if (typeof this.size === 'string') {
                 // 用于百分比模式
                 // 现在还不能正常工作，因为并没有字体大小随父节点动态变化的css

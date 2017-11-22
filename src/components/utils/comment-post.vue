@@ -1,17 +1,17 @@
 <!-- 评论 -->
 <template>
-<div class="ic-comment-list">
-    <div v-for="i in items" :key="i.id" class="ic-comment">
-        <avatar :user="i.user" class="avatar"></avatar>
+<div class="ic-comment-post" v-if="state.user" style="margin-top: 20px">
+    <div class="ic-comment">
+        <avatar :user="state.user" class="avatar"></avatar>
         <mu-paper class="content" :zDepth="1">
-            <div class="head">
-                <span>#1</span>
-                <b>{{i.user.name}}</b>
-                <span>2017-10-29 13:11</span>
-            </div>
-            <div class="post">123</div>
+            <textarea name="content" rows="5" placeholder="" style="width:100%;border-color:#d9d9d9" v-model="commentText"></textarea>
+            <mu-raised-button @click="commentPost">发表</mu-raised-button>
+            <span style="margin-left:10px" id="reply_msg"></span>
         </mu-paper>
     </div>
+</div>
+<div style="padding: 20px" v-else>
+    需要 <router-link :to="{ path: `/signin` }">登录</router-link> 后方可回复, 如果你还没有账号你可以 <router-link :to="{ path: `/signup` }">注册</router-link> 一个帐号。
 </div>
 </template>
 
@@ -63,35 +63,35 @@
 </style>
 
 <script>
+import state from '@/state.js'
 import Avatar from './avatar.vue'
 
 export default {
     data () {
         return {
-            items: [
-                {
-                    user: {
-                        id: 'asdasd',
-                        nickname: 'John Doe'
-                    }
-                }
-            ]
+            state,
+            commentText: ''
         }
     },
     mounted: function () {
         this.addTest()
     },
     methods: {
+        commentPost: async function () {
+            ;
+        },
         addTest: function () {
+            /*
             let func = () => {
                 this.items.push({
                     user: {
                         id: 'asdasd',
-                        nickname: 'John Doe'
+                        name: 'John Doe'
                     }
                 })
             }
-            $.tpReg('一条评论', func)
+            $.tpReg('发表', func)
+            */
         },
         removeTest: function () {
             ;
