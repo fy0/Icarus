@@ -15,14 +15,13 @@
     <div class="content typo">
         <h1>{{topic.title}}</h1>
         <div v-html="marked(topic.content || '')"></div>
+        <p class="ic-hr"></p>
         <comment-list></comment-list>
-        <comment-post></comment-post>
+        <comment-post :item="topic"></comment-post>
     </div>
     <div class="info">
     </div>
 </div>
-
-<p class="ic-hr"></p>
 
 </div>
 </template>

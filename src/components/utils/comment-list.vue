@@ -22,14 +22,14 @@
     margin-bottom: 1em;
 }
 
-.ic-comment > .content > .head {
+.ic-comment .content > .head {
     padding-bottom: .6em;
 }
 
-.ic-comment > .content > .post {
+.ic-comment .content > .post {
 }
 
-.ic-comment > .content {
+.ic-comment .content {
     flex: 1 0 0%;
     margin-left: 15px;
 
@@ -40,7 +40,7 @@
     padding: .6em;
 }
 
-.ic-comment > .content:before, .ic-comment > .content:after {
+.ic-comment .content:before, .ic-comment .content:after {
     content:" ";
     border-top-color:transparent !important; 
     border-bottom-color:transparent !important; 
@@ -51,11 +51,11 @@
     width:0; 
     left:-16px; 
     top:12px;
-    color: #aaa;
+    color: #ccc;
     position:absolute
 }
 
-.ic-comment > .content:after {
+.ic-comment .content:after {
     float:left;
     left:-15px;
     border-color: #fff;

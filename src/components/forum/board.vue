@@ -7,10 +7,10 @@
 
     <div class="board-page-box">
         <div class="topic-list" v-if="topics.items.length">
-            <div class="board-item" v-for="i in topics.items">
+            <div class="board-item" :key="i.id" v-for="i in topics.items">
                 <div class="title">
                     <h2><router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link></h2>
-                    <p><a href="#">{{i.user_id}}</a> 发布于 <time timestamp="${i.time}">{{i.time}}</time></p>
+                    <p><a href="#">{{userinfo[i.user_id].nickname}}</a> 发布于 <time timestamp="${i.time}">{{i.time}}</time></p>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
                     <div class="count">
@@ -106,7 +106,13 @@ export default {
         return {
             state,
             board: null,
-            topics: []
+            topics: [],
+            userinfo: {}
+        }
+    },
+    methods: {
+        test: function (id) {
+            ;
         }
     },
     beforeRouteEnter: async (to, from, next) => {
@@ -116,17 +122,19 @@ export default {
         let retList = await api.topic.list({board_id: to.params.id})
         if (retList.code === api.retcode.SUCCESS) {
             return next(async (vm) => {
-                vm.board = ret.data
-                vm.topics = retList.data
-
                 let userIDs = new Set()
                 for (let i of retList.data.items) {
                     userIDs.add(i.user_id)
                 }
 
-                let a = await api.user.list({'id.in': JSON.stringify(userIDs)})
-                console.log(userIDs)
-                console.log(a)
+                let userinfo = await api.user.list({'id.in': JSON.stringify(userIDs)})
+                for (let i of userinfo.data.items) {
+                    vm.userinfo[i.id] = i
+                }
+
+                // Tip: 注意，先给出文章列表的话，渲染时会找不到用户信息从而报错。
+                vm.board = ret.data
+                vm.topics = retList.data
             })
         }
 

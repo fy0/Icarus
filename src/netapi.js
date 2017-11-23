@@ -106,5 +106,6 @@ export default {
 
     user: new UserViewRequest('user'),
     board: new SlimViewRequest('board'),
-    topic: new SlimViewRequest('topic')
+    topic: new SlimViewRequest('topic'),
+    comment: new SlimViewRequest('comment')
 }
