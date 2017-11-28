@@ -20,6 +20,7 @@
     "muse-ui": "^2.1.0",
     "normalize.css": "^7.0.0",
     "nprogress": "^0.2.0",
+    "objectid-js": "^1.0.2patch1",
     "prismjs": "^1.8.1",
     "vue": "^2.4.2",
     "vue-media": "^1.1.1",

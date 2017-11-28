@@ -1,7 +1,7 @@
 <!-- 评论 -->
 <template>
-<div class="ic-comment-post" v-if="state.user" style="margin-top: 20px">
-    <div class="ic-comment">
+<div class="ic-comment-post">
+    <div class="ic-comment" v-if="state.user">
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box">
             <mu-paper :zDepth="editing ? 2 : 1" class="content">
@@ -12,15 +12,31 @@
             </mu-paper>
         </div>
     </div>
-</div>
-<div style="padding: 20px" v-else>
-    需要 <router-link :to="{ path: `/signin` }">登录</router-link> 后方可回复, 如果你还没有账号你可以 <router-link :to="{ path: `/signup` }">注册</router-link> 一个帐号。
+
+    <div class="ic-comment" v-else>
+        <avatar :anonymous="true" class="avatar"></avatar>
+        <div class="right-box">
+            <mu-paper :zDepth="editing ? 2 : 1" class="content">
+                需要 <router-link :to="{ name: `account_signin` }">登录</router-link> 后方可回复, 如果你还没有账号你可以 <router-link :to="{ name: `account_signup` }">注册</router-link> 一个帐号。
+            </mu-paper>
+        </div>
+    </div>
 </div>
 </template>
 
 <style scoped>
+.ic-comment-post {
+    margin-top: 20px
+}
+
+.ic-comment .content {
+    min-height: 50px;
+}
+
 .right-box {
     flex: 1 0 0%;
+    /* 视觉误差吧，总之加上之后舒服了一些*/
+    margin-top: 1px;
 }
 
 .commentArea {

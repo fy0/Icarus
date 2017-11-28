@@ -4,6 +4,7 @@
     @touchstart="dragStart" @touchmove="dragMove" @touchend="dragEnd"
 >
     <mu-raised-button @click="hello" label="测试面板" primary/>
+    <mu-raised-button @click="chat_test" label="chat.test" primary/>
     <mu-raised-button :key="i[0]" v-for="i in state.test.items" @click="i[1]" :label="i[0]" primary/>
 </div>
 </template>
@@ -21,6 +22,7 @@
 </style>
 
 <script>
+import ws from '@/ws.js'
 import state from '@/state.js'
 
 export default {
@@ -34,8 +36,10 @@ export default {
     },
     mounted: async function () {
         let data = JSON.parse(localStorage.getItem('_test_panel'))
-        this.top = data.t
-        this.right = data.r
+        if (data) {
+            this.top = data.t
+            this.right = data.r
+        }
     },
     computed: {
         panelStyle: function () {
@@ -48,6 +52,14 @@ export default {
     methods: {
         hello: function () {
             alert('hello!')
+        },
+
+        chat_test: async function () {
+            console.log(1111)
+            await ws.conn.execute('chat.test', null, (data) => {
+                console.log('process', data)
+            })
+            console.log(222)
         },
 
         mouseOut: function (e) {

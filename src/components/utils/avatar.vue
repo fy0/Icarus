@@ -1,13 +1,21 @@
 <!-- 用户头像 -->
 <template>
-<router-link class="sa-avatar" :to="linkTo" :style="style">{{char}}</router-link>
+<router-link class="sa-avatar" :style="style" :to="linkTo" >
+    <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
+</router-link>
 </template>
 
 <style>
 .sa-avatar {
-    user-select: none;
     text-align: center;
     border-radius: 4px;
+    user-select: none;
+}
+
+.sa-avatar .paper {
+    color: #fff;
+    border-radius: 4px;
+    background-color: #00000000
 }
 </style>
 
@@ -17,23 +25,35 @@ import murmurhash from 'murmurhash'
 export default {
     props: {
         user: {},
+        anonymous: {
+            default: false
+        },
         size: {
             default: 50
         }
     },
     computed: {
         linkTo: function () {
-            return {
-                name: 'user_page',
-                params: {id: this.user.id}
+            if (this.anonymous) {
+                // 未登录用户
+                return {
+                    name: 'account_signup'
+                }
+            } else {
+                return {
+                    name: 'user_page',
+                    params: {id: this.user.id}
+                }
             }
         },
         char: function () {
+            if (this.anonymous) return '?'
             return this.user.nickname[0].toUpperCase()
         },
         style: function () {
-            let size, fsize
-            let bgColor = murmurhash.v3(this.user.nickname).toString(16).slice(0, 6)
+            let size, fsize, bgColor
+            if (this.anonymous) bgColor = '334455'
+            else bgColor = murmurhash.v3(this.user.nickname).toString(16).slice(0, 6)
             if (typeof this.size === 'string') {
                 // 用于百分比模式
                 // 现在还不能正常工作，因为并没有字体大小随父节点动态变化的css

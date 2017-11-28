@@ -8,4 +8,6 @@ import config
 
 json_patch.apply()
 app = app_init(config.COOKIE_SECRET, enable_log=config.DEBUG, route=route)
-web.run_app(app, host=config.HOST, port=config.PORT)
+
+if __name__ == '__main__':
+    web.run_app(app, host=config.HOST, port=config.PORT)

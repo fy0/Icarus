@@ -1,5 +1,5 @@
 import locale
-from slim.base.helper import Route
+from slim.base.route import Route
 from wtforms import Form
 
 route = Route()

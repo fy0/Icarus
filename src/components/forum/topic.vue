@@ -54,29 +54,46 @@ import '@/assets/css/forum.css'
 import CommentList from '../utils/comment-list.vue'
 import CommentPost from '../utils/comment-post.vue'
 
+let fetchData = async function (params, next, component = null) {
+    let ret = await api.topic.get({id: params.id})
+    if (ret.code) next('/')
+    let ret2 = await api.board.get({id: ret.data.board_id})
+    if (ret2.code) next('/')
+
+    let done = (vm) => {
+        vm.topic = ret.data
+        vm.board = ret2.data
+    }
+
+    if (component) {
+        done(component)
+        next()
+    } else next(done)
+}
+
 export default {
     data () {
         return {
             state,
-            board: {},
+            board: { id: 1 }, // warning fix
             topic: {}
         }
     },
     methods: {
         marked
     },
-    beforeRouteEnter: async (to, from, next) => {
-        let ret = await api.topic.get({id: to.params.id})
-        if (ret.code) next('/')
-        let ret2 = await api.board.get({id: ret.data.board_id})
-        if (ret2.code) next('/')
-        return next(async (vm) => {
-            vm.topic = ret.data
-            vm.board = ret2.data
-        })
+    created () {
+        // fetchData(this.$route.params, this.$router.replace, this)
+        // this.fetchData()
     },
-    beforeRouteUpdate: async function (to, from, next) {
-        return next('/')
+    mounted: function () {
+    },
+    beforeRouteUpdate: async (to, from, next) => {
+        this.topic = null
+        fetchData(to.params, next, this)
+    },
+    beforeRouteEnter: async (to, from, next) => {
+        fetchData(to.params, next)
     },
     components: {
         CommentList,

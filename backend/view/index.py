@@ -2,13 +2,13 @@ import config
 from aiohttp import web
 from model.board import BOARD_STATE
 from model.topic import TOPIC_STATE
-from slim.base.view import BasicView
+from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from view import route
 
 
 @route('/misc')
-class TestViewBasic(BasicView):
+class TestBaseView(BaseView):
     @classmethod
     def interface(cls):
         cls.use('info', 'GET')

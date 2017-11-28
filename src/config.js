@@ -1,7 +1,8 @@
 
 let config = {
     remote: {
-        API_SERVER: 'http://localhost:9999'
+        API_SERVER: 'http://localhost:9999',
+        WS_SERVER: 'ws://localhost:9999/ws'
     },
     title: 'test'
 }
