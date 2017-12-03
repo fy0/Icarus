@@ -16,7 +16,7 @@
         <h1>{{topic.title}}</h1>
         <div v-html="marked(topic.content || '')"></div>
         <p class="ic-hr"></p>
-        <comment-list></comment-list>
+        <comment-list :item="topic"></comment-list>
         <comment-post :item="topic"></comment-post>
     </div>
     <div class="info">

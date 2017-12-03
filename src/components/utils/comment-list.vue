@@ -1,7 +1,7 @@
 <!-- 评论 -->
 <template>
 <div class="ic-comment-list">
-    <div v-for="i in items" :key="i.id" class="ic-comment">
+    <div v-for="i in page.items" :key="i.id" class="ic-comment">
         <avatar :user="i.user" class="avatar"></avatar>
         <mu-paper class="content" :zDepth="1">
             <div class="head">
@@ -64,27 +64,28 @@
 
 <script>
 import Avatar from './avatar.vue'
+import api from '@/netapi.js'
 
 export default {
-    data () {
-        return {
-            items: [
-                {
-                    user: {
-                        id: 'asdasd',
-                        nickname: 'John Doe'
-                    }
-                }
-            ]
+    props: {
+        item: {
+            type: Object
         }
     },
-    mounted: function () {
+    data () {
+        return {
+            page: { info: {}, items: [] }
+        }
+    },
+    created: async function () {
         this.addTest()
+    },
+    mounted: async function () {
     },
     methods: {
         addTest: function () {
             let func = () => {
-                this.items.push({
+                this.page.items.push({
                     user: {
                         id: 'asdasd',
                         nickname: 'John Doe'
@@ -95,6 +96,19 @@ export default {
         },
         removeTest: function () {
             ;
+        }
+    },
+    watch: {
+        'item': async function (val) {
+            // 似乎 mounted 和 created 中都读不到 item.id
+            let ret = await api.comment.get({id: this.item.id})
+            if (ret.code === api.retcode.SUCCESS) {
+                this.page = ret.data
+            } else if (ret.code === api.retcode.NOT_FOUND) {
+                ;
+            } else {
+                ;
+            }
         }
     },
     components: {

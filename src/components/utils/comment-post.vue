@@ -71,8 +71,10 @@ export default {
             commentText: ''
         }
     },
-    mounted: function () {
+    created: function () {
         this.addTest()
+    },
+    mounted: function () {
     },
     methods: {
         onEditorFocus: async function () {
