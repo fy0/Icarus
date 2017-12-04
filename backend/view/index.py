@@ -1,6 +1,7 @@
 import config
 from aiohttp import web
 from model.board import BOARD_STATE
+from model.post import POST_TYPES
 from model.topic import TOPIC_STATE
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
@@ -15,6 +16,8 @@ class TestBaseView(BaseView):
 
     async def info(self):
         self.finish(RETCODE.SUCCESS, {
+            'POST_TYPES': POST_TYPES.to_dict(),
+
             'BOARD_STATE': BOARD_STATE.to_dict(),
             'BOARD_STATE_TXT': BOARD_STATE.txt,
 

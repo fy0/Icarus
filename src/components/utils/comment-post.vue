@@ -5,7 +5,7 @@
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box">
             <mu-paper :zDepth="editing ? 2 : 1" class="content">
-                <textarea @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentText"></textarea>
+                <textarea @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
             </mu-paper>
             <mu-paper :zDepth="editing ? 2 : 1" class="postBtnBox">
                 <mu-raised-button class="postBtn" @click="commentPost">发表</mu-raised-button>
@@ -62,19 +62,25 @@ import Avatar from './avatar.vue'
 
 export default {
     props: {
-        item: Object
+        item: Object,
+        postType: {}
     },
     data () {
         return {
             state,
             editing: false,
-            commentText: ''
+            commentInfo: {
+                related_id: null,
+                related_type: null,
+                content: ''
+            }
         }
     },
     created: function () {
         this.addTest()
     },
     mounted: function () {
+        ;
     },
     methods: {
         onEditorFocus: async function () {
@@ -84,7 +90,10 @@ export default {
             this.editing = false
         },
         commentPost: async function () {
-            let ret = await api.comment.new(this.topicInfo)
+            this.commentInfo.related_id = this.item.id
+            this.commentInfo.related_type = this.postType
+            let ret = await api.comment.new(this.commentInfo)
+            $.message_by_code(ret.code)
             console.log(ret)
         },
         addTest: function () {

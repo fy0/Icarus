@@ -17,7 +17,7 @@
         <div v-html="marked(topic.content || '')"></div>
         <p class="ic-hr"></p>
         <comment-list :item="topic"></comment-list>
-        <comment-post :item="topic"></comment-post>
+        <comment-post :item="topic" :post-type="POST_TYPES.TOPIC"></comment-post>
     </div>
     <div class="info">
     </div>
@@ -75,6 +75,7 @@ export default {
     data () {
         return {
             state,
+            POST_TYPES: state.misc.POST_TYPES,
             board: { id: 1 }, // warning fix
             topic: {}
         }

@@ -19,12 +19,10 @@ class Comment(BaseModel):
     id = BlobField(primary_key=True)
     related_id = BlobField(index=True)  # 被评论文章
     related_type = IntegerField(index=True)  # 被评论文章的类型
-    extra_id = BlobField(index=True, null=True)  # 关联ID
     user = ForeignKeyField(User)  # 发布用户
-    send_to_id = BlobField(null=True)  # 是否是回复某个评论
     time = BigIntegerField(index=True)  # 发布时间
     state = IntegerField(default=COMMENT_STATE.NORMAL)  # 当前状态
-    content = TextField()  # 文本，varchar(4096)
+    content = TextField()  # 文本
 
     class Meta:
         db_table = 'comment'

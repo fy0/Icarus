@@ -101,7 +101,7 @@ export default {
     watch: {
         'item': async function (val) {
             // 似乎 mounted 和 created 中都读不到 item.id
-            let ret = await api.comment.get({id: this.item.id})
+            let ret = await api.comment.list({related_id: this.item.id})
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data
             } else if (ret.code === api.retcode.NOT_FOUND) {
