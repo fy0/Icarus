@@ -50,11 +50,15 @@ class SlimViewRequest {
         this.urlPrefix = `${remote.API_SERVER}/api/${path}`
     }
 
-    async get (params, role = null) {
+    async get (params, loadfk = {}, role = null) {
+        if (Object.keys(loadfk).length) params.loadfk = JSON.stringify(loadfk)
         return await nget(`${this.urlPrefix}/get`, params, role)
     }
 
     async list (params, page = 1, size = null, role = null) {
+        if (params && params.loadfk && Object.keys(params.loadfk).length) {
+            params.loadfk = JSON.stringify(params.loadfk)
+        }
         let url = `${this.urlPrefix}/list/${page}`
         if (size) url += `/${size}`
         return await nget(url, params, role)

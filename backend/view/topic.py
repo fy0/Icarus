@@ -45,3 +45,10 @@ class TopicView(UserMixin, PeeweeView):
         # 以下通用
         values['id'] = config.ID_GENERATOR().digest()
         values['time'] = int(time.time())
+
+
+from slim.utils.debug import Debug
+
+debug = Debug()
+debug.add_view(TopicView, TopicForm)
+debug.serve(route, '/debug')

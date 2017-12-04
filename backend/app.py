@@ -1,13 +1,5 @@
-from slim import app_init
-from slim.utils import json_patch
-from aiohttp import web
-from view import route
-import model._models
-import view._views
+from slim import Application, json_patch
 import config
 
 json_patch.apply()
-app = app_init(config.COOKIE_SECRET, enable_log=config.DEBUG, route=route)
-
-if __name__ == '__main__':
-    web.run_app(app, host=config.HOST, port=config.PORT)
+app = Application(cookies_secret=config.COOKIE_SECRET, enable_log=config.DEBUG)

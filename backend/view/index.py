@@ -8,7 +8,7 @@ from slim.retcode import RETCODE
 from view import route
 
 
-@route('/misc')
+@route('misc')
 class TestBaseView(BaseView):
     @classmethod
     def interface(cls):

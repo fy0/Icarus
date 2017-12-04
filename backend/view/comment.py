@@ -36,6 +36,7 @@ class CommentView(UserMixin, PeeweeView):
             return self.finish(RETCODE.INVALID_HTTP_POSTDATA, "评论内容不能为空")
 
         values['id'] = CustomID().to_bin()
+        values['related_id'] = cid.to_bin()
         values['related_type'] = int(values['related_type'])
         values['user_id'] = self.current_user
         values['time'] = int(time.time())

@@ -10,7 +10,7 @@
             <div class="board-item" :key="i.id" v-for="i in topics.items">
                 <div class="title">
                     <h2><router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link></h2>
-                    <p><a href="#">{{userinfo[i.user_id].nickname}}</a> 发布于 <time timestamp="${i.time}">{{i.time}}</time></p>
+                    <p><a href="#">{{i.user_id.nickname}}</a> 发布于 <time timestamp="${i.time}">{{i.time}}</time></p>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
                     <div class="count">
@@ -106,8 +106,7 @@ export default {
         return {
             state,
             board: null,
-            topics: [],
-            userinfo: {}
+            topics: []
         }
     },
     methods: {
@@ -119,9 +118,10 @@ export default {
         let ret = await api.board.get({id: to.params.id})
         if (ret.code) next('/')
 
-        let retList = await api.topic.list({board_id: to.params.id})
+        let retList = await api.topic.list({board_id: to.params.id, loadfk: {'user_id': null}})
         if (retList.code === api.retcode.SUCCESS) {
             return next(async (vm) => {
+                /*
                 let userIDs = new Set()
                 for (let i of retList.data.items) {
                     userIDs.add(i.user_id)
@@ -131,6 +131,7 @@ export default {
                 for (let i of userinfo.data.items) {
                     vm.userinfo[i.id] = i
                 }
+                */
 
                 // Tip: 注意，先给出文章列表的话，渲染时会找不到用户信息从而报错。
                 vm.board = ret.data

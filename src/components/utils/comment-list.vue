@@ -2,11 +2,11 @@
 <template>
 <div class="ic-comment-list">
     <div v-for="i in page.items" :key="i.id" class="ic-comment">
-        <avatar :user="i.user" class="avatar"></avatar>
+        <avatar :user="i.user_id" class="avatar"></avatar>
         <mu-paper class="content" :zDepth="1">
             <div class="head">
                 <span>#1</span>
-                <b>{{i.user.name}}</b>
+                <b>{{i.user_id.name}}</b>
                 <span>2017-10-29 13:11</span>
             </div>
             <div class="post">123</div>
@@ -86,7 +86,7 @@ export default {
         addTest: function () {
             let func = () => {
                 this.page.items.push({
-                    user: {
+                    user_id: {
                         id: 'asdasd',
                         nickname: 'John Doe'
                     }
@@ -101,7 +101,7 @@ export default {
     watch: {
         'item': async function (val) {
             // 似乎 mounted 和 created 中都读不到 item.id
-            let ret = await api.comment.list({related_id: this.item.id})
+            let ret = await api.comment.list({related_id: this.item.id, loadfk: {user_id: null}})
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data
             } else if (ret.code === api.retcode.NOT_FOUND) {

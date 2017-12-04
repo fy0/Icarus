@@ -1,8 +1,9 @@
 import locale
+import app
 from slim.base.route import Route
 from wtforms import Form
 
-route = Route()
+route = app.app.route
 
 
 class ValidateForm(Form):
