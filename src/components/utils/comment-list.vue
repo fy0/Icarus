@@ -18,7 +18,7 @@
 <style>
 /* 注意：评论样式不在 scope 之内，故意为之 */
 .ic-comment {
-    display: flex;    
+    display: flex;
     margin-bottom: 1em;
 }
 
@@ -78,7 +78,7 @@ export default {
         }
     },
     created: async function () {
-        this.addTest()
+        // this.addTest()
     },
     mounted: async function () {
     },

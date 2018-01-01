@@ -121,18 +121,6 @@ export default {
         let retList = await api.topic.list({board_id: to.params.id, loadfk: {'user_id': null}})
         if (retList.code === api.retcode.SUCCESS) {
             return next(async (vm) => {
-                /*
-                let userIDs = new Set()
-                for (let i of retList.data.items) {
-                    userIDs.add(i.user_id)
-                }
-
-                let userinfo = await api.user.list({'id.in': JSON.stringify(userIDs)})
-                for (let i of userinfo.data.items) {
-                    vm.userinfo[i.id] = i
-                }
-                */
-
                 // Tip: 注意，先给出文章列表的话，渲染时会找不到用户信息从而报错。
                 vm.board = ret.data
                 vm.topics = retList.data

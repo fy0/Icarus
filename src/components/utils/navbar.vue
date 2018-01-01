@@ -34,8 +34,8 @@
                     </router-link>
                 </ul>
                 <ul class="menu-list" v-else>
-                    <li class="menu-item"><a href="#">头像</a></li>
-                    <li class="menu-item"><a href="#">{{state.user.email}}</a></li>
+                    <li class="menu-item" style="padding: 0px 5px"><avatar :user="state.user" :size="28" class="avatar"></avatar></li>
+                    <li class="menu-item"><a href="#">{{state.user.nickname}}</a></li>
                     <li class="menu-item"><a href="#" @click="signout">注销</a></li>
                 </ul>
             </div>
@@ -205,6 +205,7 @@ import Vue from 'vue'
 import Media from 'vue-media'
 import state from '@/state.js'
 import api from '@/netapi.js'
+import Avatar from './avatar.vue'
 
 export default {
     name: 'hello',
@@ -247,7 +248,8 @@ export default {
         }
     },
     components: {
-        Media
+        Media,
+        Avatar
     }
 }
 </script>
