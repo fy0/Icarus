@@ -2,7 +2,7 @@
 <div class="ic-container forum-box">
     <top-btns></top-btns>
     <div id="board-list">
-        <div class="board-item" v-for="i in topics.items">
+        <div class="board-item" :key="i.id" v-for="i in topics.items">
             <div class="title" style="flex: 13 0 0%">
                 <h2>
                     <router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link>

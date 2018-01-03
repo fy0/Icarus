@@ -3,6 +3,7 @@ from aiohttp import web
 from model.board import BOARD_STATE
 from model.post import POST_TYPES
 from model.topic import TOPIC_STATE
+from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from view import route
@@ -23,6 +24,9 @@ class TestBaseView(BaseView):
 
             'TOPIC_STATE': TOPIC_STATE.to_dict(),
             'TOPIC_STATE_TXT': BOARD_STATE.txt,
+
+            'USER_GROUP': USER_GROUP.to_dict(),
+            'USER_GROUP_TXT': USER_GROUP.txt,
 
             'USERNAME_MIN': config.USERNAME_MIN,
             'USERNAME_MAX': config.USERNAME_MAX,

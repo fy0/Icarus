@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import AccountSignin from '@/components/account/signin.vue'
 import AccountSignup from '@/components/account/signup.vue'
+import AccountUserPage from '@/components/account/userpage.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
@@ -36,7 +37,7 @@ export default new Router({
         {
             path: '/user/:id(\\S+)',
             name: 'user_page',
-            component: About
+            component: AccountUserPage
         },
 
         // 主页面

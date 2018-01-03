@@ -41,7 +41,7 @@
             </div>
         </transition>
     </div>
-    
+
     <!--<media :query="m.xs" @media-enter="xsEnter" @media-leave="xsLeave"></media>-->
     <media :query="m.sm" @media-enter="xsLeave" @media-leave="xsEnter"></media>
 </header>
@@ -54,7 +54,7 @@
 .ic-nav {
     border-bottom: 1px solid #ddd;
     margin-bottom: 15px;
-    height: 56px;
+    height: 50px;
 }
 
 /* 内容 */
