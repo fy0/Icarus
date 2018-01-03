@@ -18,7 +18,9 @@
                     <mu-timeline>
                         <mu-timeline-item :key="i.id" v-for="i in tabs.topic.topics.items">
                             <span slot="time">{{i.time}}</span>
-                            <span slot="des">{{i.title}}</span>
+                            <span slot="des">发表了一篇主题
+                                <router-link :to="{ name: 'forum_topic', params: {id: i.id} }">《{{i.title}}》</router-link>
+                            </span>
                         </mu-timeline-item>
                     </mu-timeline>
                 </div>

@@ -36,7 +36,7 @@ export default new Router({
         // 用户页面
         {
             path: '/user/:id(\\S+)',
-            name: 'user_page',
+            name: 'account_userpage',
             component: AccountUserPage
         },
 
@@ -54,7 +54,7 @@ export default new Router({
         },
         // 论坛 - 板块页面
         {
-            path: '/board/:id(\\S+)/:page(\\d+)?/:name(.+)?',
+            path: '/board/:id([a-z0-9]+)/:page(\\d+)?/:name(.+)?',
             name: 'forum_board',
             component: ForumBoard
         },

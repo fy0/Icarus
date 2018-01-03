@@ -1,5 +1,8 @@
 <template>
-<div class="ic-container" v-if="board">
+<div v-if="loading" class="ic-container loading">
+    <mu-circular-progress :size="180" :strokeWidth="1" color="red"/>
+</div>
+<div v-else-if="board" class="ic-container">
     <mu-paper class="board-title" :zDepth="1" style="background-color: #777777">
         <h3 class="name">{{ board.name }}</h3>
         <div class="brief">{{ board.brief }}</div>
@@ -10,7 +13,10 @@
             <div class="board-item" :key="i.id" v-for="i in topics.items">
                 <div class="title">
                     <h2><router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link></h2>
-                    <p><a href="#">{{i.user_id.nickname}}</a> 发布于 <time timestamp="${i.time}">{{i.time}}</time></p>
+                    <p>
+                        <router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link>
+                        <span> 发布于 <time timestamp="${i.time}">{{i.time}}</time></span>
+                    </p>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
                     <div class="count">
@@ -42,6 +48,12 @@
 </template>
 
 <style scoped>
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 aside > .name {
     margin-top:0;
     font-size: 0.9em;
@@ -105,6 +117,7 @@ export default {
     data () {
         return {
             state,
+            loading: true,
             board: null,
             topics: []
         }
@@ -112,34 +125,34 @@ export default {
     methods: {
         test: function (id) {
             ;
+        },
+        fetchData: async function () {
+            this.loading = true
+            let params = this.$route.params
+            let ret = await api.board.get({id: params.id})
+
+            if (ret.code) {
+                $.message_by_code(ret.code)
+                this.loading = false
+                return
+            }
+
+            let retList = await api.topic.list({board_id: params.id, loadfk: {'user_id': null}}, params.page)
+            if (retList.code === api.retcode.SUCCESS) {
+                this.board = ret.data
+                this.topics = retList.data
+            }
+            this.loading = false
         }
     },
-    beforeRouteEnter: async (to, from, next) => {
-        let ret = await api.board.get({id: to.params.id})
-        if (ret.code) next('/')
-
-        let retList = await api.topic.list({board_id: to.params.id, loadfk: {'user_id': null}})
-        if (retList.code === api.retcode.SUCCESS) {
-            return next(async (vm) => {
-                // Tip: 注意，先给出文章列表的话，渲染时会找不到用户信息从而报错。
-                vm.board = ret.data
-                vm.topics = retList.data
-            })
-        }
-
-        $.message_by_code(ret.code)
-        return next('/')
+    created () {
+        // 组件创建完后获取数据，
+        // 此时 data 已经被 observed 了
+        this.fetchData()
     },
-    beforeRouteUpdate: async function (to, from, next) {
-        let ret = await api.board.get({id: to.params.id})
-
-        if (ret.code === api.retcode.SUCCESS) {
-            this.board = ret.data
-            return next()
-        }
-
-        $.message_by_code(ret.code)
-        return next('/')
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        '$route': 'fetchData'
     },
     components: {
         Paginator

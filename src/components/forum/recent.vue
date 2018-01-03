@@ -7,7 +7,10 @@
                 <h2>
                     <router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link>
                 </h2>
-                <p><a href="/user/root">{{i.user_id.nickname}}</a> 发布于 <time timestamp="1446111343">2年前</time></p>
+                <p>
+                    <router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link>
+                    <span> 发布于 <time timestamp="1446111343">2年前</time></span>
+                </p>
             </div>
             <div class="detail ic-xs-hidden" style="flex: 11 0 0%">
                 <div class="count">
