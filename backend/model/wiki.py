@@ -3,8 +3,7 @@ import random
 import time
 from peewee import *
 from slim.utils import StateObject
-
-from model import BaseModel
+from model import BaseModel, MyTimestampField
 from model.user import User
 # from model.board import Board
 
@@ -34,8 +33,8 @@ class WIKI_STATE(StateObject):
 
 class WikiArticle(BaseModel):
     id = BlobField(primary_key=True)
-    user = ForeignKeyField(User, index=True)
-    time = BigIntegerField(index=True)
+    user_id = BlobField(index=True)
+    time = MyTimestampField(index=True)
     state = IntegerField(default=WIKI_STATE.APPLY, index=True)
 
     major_ver = IntegerField()

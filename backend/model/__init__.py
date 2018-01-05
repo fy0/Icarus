@@ -30,6 +30,10 @@ from model.redis import redis
 db = connect(config.DATABASE_URI)
 
 
+class MyTimestampField(peewee.BigIntegerField):
+    pass
+
+
 class BaseModel(peewee.Model):
     class Meta:
         database = db

@@ -28,6 +28,11 @@ class TopicForm(ValidateForm):
 class TopicView(UserMixin, PeeweeView):
     model = Topic
 
+    @classmethod
+    def cls_init(cls, check_options=True):
+        super().cls_init(check_options)
+        cls.add_soft_foreign_key('user_id', 'user')
+
     def handle_read(self, values: Dict):
         pass
 
@@ -47,8 +52,14 @@ class TopicView(UserMixin, PeeweeView):
         values['time'] = int(time.time())
 
 
+'''
 from slim.utils.debug import Debug
 
 debug = Debug()
 debug.add_view(TopicView, TopicForm)
 debug.serve(route, '/debug')
+'''
+
+TopicView.add_soft_foreign_key('user_id', 'user')
+TopicView.add_soft_foreign_key('board_id', 'board')
+TopicView.add_soft_foreign_key('last_edit_user_id', 'user')

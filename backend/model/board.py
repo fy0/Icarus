@@ -3,7 +3,7 @@ import time
 from peewee import *
 from slim.utils.state_obj import StateObject
 
-from model import BaseModel
+from model import BaseModel, MyTimestampField
 from model.user import User
 
 
@@ -24,10 +24,10 @@ class BOARD_STATE(StateObject):
 class Board(BaseModel):
     id = BlobField(primary_key=True)
     name = TextField(unique=True)  # max 128
-    creator = ForeignKeyField(User, null=True)
+    creator_id = BlobField(index=True, null=True)  # 创建者ID
     brief = TextField(null=True)  # max 256
     desc = TextField(null=True)  # max 1024
-    time = BigIntegerField(index=True)
+    time = MyTimestampField(index=True)  # 发布时间
     weight = IntegerField(index=True, default=0)
     color = BlobField(null=True, default=None)
     state = IntegerField(default=BOARD_STATE.NORMAL)
@@ -38,6 +38,3 @@ class Board(BaseModel):
 
     class Meta:
         db_table = 'board'
-
-    def aa(self):
-        a = self.select().order_by().get()

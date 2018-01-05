@@ -5,9 +5,9 @@ import time
 from peewee import *
 
 import config
-from slim.base.permission import BaseUser
+from slim.base.user import BaseUser
 from slim.utils import StateObject
-from model import BaseModel
+from model import BaseModel, MyTimestampField
 
 
 class USER_GROUP(StateObject):
@@ -37,8 +37,12 @@ class User(BaseModel, BaseUser):
     state = IntegerField(index=True)
 
     key = BlobField(index=True)
-    key_time = BigIntegerField()
-    reg_time = BigIntegerField()
+    key_time = MyTimestampField()
+    reg_time = MyTimestampField()
+
+    number = IntegerField(default=0)  # 序号，第N个用户，暂时不启用
+    credit = IntegerField(default=0)  # 积分，会消费
+    reputation = IntegerField(default=0)  # 声望，不会消失
 
     class Meta:
         db_table = 'user'

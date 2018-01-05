@@ -40,3 +40,6 @@ class CommentView(UserMixin, PeeweeView):
         values['related_type'] = int(values['related_type'])
         values['user_id'] = self.current_user
         values['time'] = int(time.time())
+
+
+CommentView.add_soft_foreign_key('user_id', 'user')

@@ -1,8 +1,7 @@
 import re
 import config
-from typing import Dict
-
-from slim.base.permission import Permissions, Ability, BaseUser, AbilityRecord, AbilityColumn
+from typing import Dict, Type
+from slim.base.user import BaseUserMixin, BaseUser
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -10,16 +9,13 @@ from model.user import User, USER_GROUP, USER_STATE
 from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va
+from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn
 
 
-class UserMixin:
-    def get_current_user(self):
-        try:
-            key = self.get_secure_cookie('u')
-            if key:
-                return User.get_by_key(key)
-        except:
-            self.del_cookie('u')
+class UserMixin(BaseUserMixin):
+    @property
+    def user_cls(self) -> Type[BaseUser]:
+        return User
 
 
 class SigninForm(ValidateForm):
@@ -41,13 +37,6 @@ class SignupForm(SigninForm):
 @route('user')
 class UserView(UserMixin, PeeweeView):
     model = User
-
-    @classmethod
-    def interface(cls):
-        super().interface()
-        cls.use('signin', 'POST')
-        cls.use('signout', 'POST')
-        cls.use('get_userid', 'GET')
 
     @classmethod
     def permission_init(cls):
@@ -94,16 +83,19 @@ class UserView(UserMixin, PeeweeView):
         permission.add(normal_user)
         permission.add(admin)
 
+    @route.interface('GET')
     async def get_userid(self):
         if self.current_user:
             self.finish(RETCODE.SUCCESS, {'id': to_hex(self.current_user.id)})
         else:
             self.finish(RETCODE.PERMISSION_DENIED)
 
+    @route.interface('POST')
     async def signout(self):
         self.del_cookie('u')
         self.finish(RETCODE.SUCCESS)
 
+    @route.interface('POST')
     async def signin(self):
         data = await self.post_data()
         form = SigninForm(**data)

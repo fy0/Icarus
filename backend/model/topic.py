@@ -1,6 +1,6 @@
 ﻿from slim.utils import StateObject
 from peewee import *
-from model import db, BaseModel
+from model import db, BaseModel, MyTimestampField
 from model.user import User
 from model.board import Board
 
@@ -17,13 +17,13 @@ class TOPIC_STATE(StateObject):
 class Topic(BaseModel):
     id = BlobField(primary_key=True)
     title = TextField(index=True)
-    user = ForeignKeyField(User, index=True)
-    board = ForeignKeyField(Board, index=True)
-    time = BigIntegerField(index=True)
+    user_id = BlobField(index=True)
+    board_id = BlobField(index=True)
+    time = MyTimestampField(index=True)
     state = IntegerField(default=TOPIC_STATE.NORMAL, index=True)
 
-    edit_time = BigIntegerField(index=True, null=True)
-    last_edit_user = ForeignKeyField(User, related_name="last_edit_user_id", null=True)
+    edit_time = MyTimestampField(index=True, null=True)
+    last_edit_user_id = BlobField(index=True, null=True)
     content = TextField()
 
     sticky_weight = IntegerField(index=True, default=0)  # 置顶权重
