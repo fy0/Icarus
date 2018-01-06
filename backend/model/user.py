@@ -28,8 +28,8 @@ class USER_STATE(StateObject):
 
 class User(BaseModel, BaseUser):
     id = BlobField(primary_key=True)
-    email = CharField(index=True, max_length=128)
-    nickname = CharField(index=True, max_length=32, null=True, default=None)
+    email = CharField(index=True, unique=True, max_length=128)
+    nickname = CharField(index=True, unique=True, max_length=32)
     password = BlobField()
     salt = BlobField()  # auto
 
@@ -40,6 +40,7 @@ class User(BaseModel, BaseUser):
     key_time = MyTimestampField()
     reg_time = MyTimestampField()
 
+    phone = TextField(null=True, default=None)  # 大陆地区
     number = IntegerField(default=0)  # 序号，第N个用户，暂时不启用
     credit = IntegerField(default=0)  # 积分，会消费
     reputation = IntegerField(default=0)  # 声望，不会消失

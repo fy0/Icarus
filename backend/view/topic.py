@@ -2,6 +2,7 @@ from typing import Dict
 import time
 import config
 from model.board import Board
+from model.statistic import Statistic, statistic_new
 from model.topic import Topic
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
@@ -29,9 +30,11 @@ class TopicView(UserMixin, PeeweeView):
     model = Topic
 
     @classmethod
-    def cls_init(cls, check_options=True):
-        super().cls_init(check_options)
+    def ready(cls):
+        cls.add_soft_foreign_key('id', 'statistic')
         cls.add_soft_foreign_key('user_id', 'user')
+        cls.add_soft_foreign_key('board_id', 'board')
+        cls.add_soft_foreign_key('last_edit_user_id', 'user')
 
     def handle_read(self, values: Dict):
         pass
@@ -51,6 +54,9 @@ class TopicView(UserMixin, PeeweeView):
         values['id'] = config.ID_GENERATOR().digest()
         values['time'] = int(time.time())
 
+        # 添加统计记录
+        statistic_new(values['id'])
+
 
 '''
 from slim.utils.debug import Debug
@@ -59,7 +65,3 @@ debug = Debug()
 debug.add_view(TopicView, TopicForm)
 debug.serve(route, '/debug')
 '''
-
-TopicView.add_soft_foreign_key('user_id', 'user')
-TopicView.add_soft_foreign_key('board_id', 'board')
-TopicView.add_soft_foreign_key('last_edit_user_id', 'user')

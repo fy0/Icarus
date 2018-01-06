@@ -1,7 +1,5 @@
 <template>
-<div v-if="loading" class="ic-container loading">
-    <mu-circular-progress :size="180" :strokeWidth="1" color="red"/>
-</div>
+<loading v-if="loading"/>
 <div v-else-if="board" class="ic-container">
     <mu-paper class="board-title" :zDepth="1" style="background-color: #777777">
         <h3 class="name">{{ board.name }}</h3>
@@ -111,7 +109,6 @@ aside > .brief {
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/forum.css'
-import Paginator from '../utils/paginator.vue'
 
 export default {
     data () {
@@ -155,7 +152,6 @@ export default {
         '$route': 'fetchData'
     },
     components: {
-        Paginator
     }
 }
 </script>

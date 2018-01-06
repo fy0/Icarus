@@ -23,6 +23,9 @@ body, button, input, select, textarea {
     /* 为窄屏幕留白 */
     padding-left: 10px;
     padding-right: 10px;
+    
+    display: flex;
+    flex-direction: column;
 }
 
 .pure-table {
@@ -93,6 +96,7 @@ body, button, input, select, textarea {
 /* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
 .ic-topbtns {
     display: flex;
+    margin-bottom: 10px;
 }
 
 .ic-topbtns > a {

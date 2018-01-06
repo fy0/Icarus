@@ -1,5 +1,6 @@
 <template>
-<div class="ic-container">
+<loading v-if="pageLoading"/>
+<div v-else class="ic-container">
     <div class="edit-page-title">
         <h3 class="" v-if="!is_edit">新建主题</h3>
         <h3 class="" v-else>编辑主题</h3>
@@ -91,6 +92,7 @@ export default {
     data () {
         return {
             state,
+            pageLoading: true,
             loading: false,
             boardList: [],
 
@@ -160,13 +162,43 @@ export default {
 
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
-                // this.$router.push({name: 'topic', params: { id: ret.data.id }})
+                this.$router.push({name: 'topic', params: { id: ret.data.id }})
                 $.message_success(successText)
             } else {
                 $.message_error(failedText)
                 // 注意：发布成功会跳转，故不做复位，失败则复位
                 this.loading = false
             }
+        },
+        fetchData: async function () {
+            this.pageLoading = true
+            let params = this.$route.params
+
+            if (!state.user) {
+                $.message_error('抱歉，无权访问此页面，请返回')
+                return
+            }
+
+            let ret = await api.board.list()
+            if (ret.code) {
+                $.message_by_code(ret.code)
+                return
+            }
+            let boardList = ret.data.items
+
+            if (this.$route.name === 'topic_edit') {
+                let ret = await api.topicGet(params.id)
+                if (ret.code) {
+                    $.message_error('抱歉，发生了错误')
+                    return
+                }
+                this.editing_data = ret.data
+            }
+
+            this.boardList = boardList
+            if (boardList.length) this.topicInfo.board = boardList[0]
+
+            this.pageLoading = false
         }
     },
     mounted: async function () {
@@ -182,62 +214,13 @@ export default {
             // this.title = localStorage.getItem('topic-post-title') || ''
         }
     },
+    created () {
+        this.fetchData()
+    },
     watch: {
         'topicInfo.title': _.debounce(function (val, oldVal) {
             localStorage.setItem('topic-post-title', val)
         }, 5000)
-    },
-    beforeRouteEnter: async (to, from, next) => {
-        if (!state.user) {
-            $.message_error('抱歉，无权访问此页面')
-            return next('/')
-        }
-
-        let ret = await api.board.list()
-        if (ret.code) {
-            $.message_by_code(ret.code)
-            return next('/')
-        }
-        let boardList = ret.data.items
-
-        if (to.name === 'topic_edit') {
-            let ret = await api.topicGet(to.params.id)
-            if (ret.code) {
-                $.message_error('抱歉，发生了错误')
-                return next('/')
-            }
-            to.params.editing_data = ret.data
-        }
-
-        next(vm => {
-            vm.boardList = boardList
-        })
-    },
-    beforeRouteUpdate: async function (to, from, next) {
-        if (!state.user) {
-            $.message_error('抱歉，无权访问此页面')
-            return next('/')
-        }
-
-        let ret = await api.board.list()
-        if (ret.code) {
-            $.message_by_code(ret.code)
-            return next('/')
-        }
-        let boardList = ret.data.items
-
-        if (to.name === 'topic_edit') {
-            let ret = await api.topicGet(to.params.id)
-            if (ret.code) {
-                $.message_error('抱歉，发生了错误')
-                return next('/')
-            }
-            to.params.editing_data = ret.data
-        }
-
-        next(vm => {
-            vm.boardList = boardList
-        })
     },
     components: {
         CheckRow,

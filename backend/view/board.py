@@ -1,6 +1,7 @@
 import time
 from typing import Mapping, Dict
 import config
+from model.statistic import statistic_new
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.board import Board
@@ -35,3 +36,6 @@ class UserView(PeeweeView):
 
         values['id'] = config.ID_GENERATOR().digest()
         values['time'] = int(time.time())
+
+        # 添加统计记录
+        statistic_new(values['id'])

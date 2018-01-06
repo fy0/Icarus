@@ -1,7 +1,8 @@
 <template>
 <div class="ic-container forum-box">
     <top-btns></top-btns>
-    <div id="board-list">
+    <loading v-if="loading"/>
+    <div v-if="topics.items && topics.items.length" id="board-list">
         <div class="board-item" :key="i.id" v-for="i in topics.items">
             <div class="title" style="flex: 13 0 0%">
                 <h2>
@@ -20,11 +21,11 @@
                     <p class="txt">版块</p>
                 </div>
                 <div class="count">
-                    <p class="num">1</p>
+                    <p class="num">{{i.statistic.click_count}}</p>
                     <p class="txt">点击</p>
                 </div>
                 <div class="count">
-                    <p class="num">2</p>
+                    <p class="num">{{i.statistic.comment_count}}</p>
                     <p class="txt">回复</p>
                 </div>
                 <div class="recent ic-xs-hidden ic-sm-hidden">
@@ -36,6 +37,7 @@
             </div>
         </div>
     </div>
+    <div v-else>尚未有人发言……</div>
 </div>
 </template>
 
@@ -51,22 +53,29 @@ import TopBtns from './topbtns.vue'
 export default {
     data () {
         return {
+            loading: true,
             topics: []
         }
     },
-    beforeRouteEnter: async (to, from, next) => {
-        let retList = await api.topic.list({
-            order: 'sticky_weight.desc,weight.desc,time.desc',
-            loadfk: {'user_id': null, 'board_id': null}
-        })
-        if (retList.code === api.retcode.SUCCESS) {
-            return next(async (vm) => {
-                vm.topics = retList.data
+    methods: {
+        fetchData: async function () {
+            this.loading = true
+            let retList = await api.topic.list({
+                order: 'sticky_weight.desc,weight.desc,time.desc',
+                loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 'statistic'}}
             })
-        }
+            if (retList.code === api.retcode.SUCCESS) {
+                this.topics = retList.data
+                this.loading = false
+                return
+            }
 
-        $.message_by_code(retList.code)
-        return next('/')
+            $.message_by_code(retList.code)
+            this.loading = false
+        }
+    },
+    created () {
+        this.fetchData()
     },
     components: {
         TopBtns

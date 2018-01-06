@@ -1,6 +1,8 @@
 import re
 import config
 from typing import Dict, Type
+
+from model.statistic import statistic_new
 from slim.base.user import BaseUserMixin, BaseUser
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
@@ -8,7 +10,7 @@ from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP, USER_STATE
 from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
-from wtforms import StringField, validators as va
+from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn
 
 
@@ -27,7 +29,28 @@ class SigninForm(ValidateForm):
     ])
 
 
+def nickname_check(form, field):
+    # 至少两个汉字，或以汉字/英文字符开头至少4个字符
+    text = '至少两个汉字，或以汉字/英文字符开头至少4个字符'
+    name = field.data
+    # 检查首字符，检查有无非法字符
+    if not re.match(r'^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$', name):
+        raise ValidationError(text)
+    # 若长度大于4，直接许可
+    if len(name) >= 4:
+        return True
+    # 长度小于4，检查其中汉字数量
+    if not (len(re.findall(r'[\u4e00-\u9fa5]', name)) >= 2):
+        raise ValidationError(text)
+
+
 class SignupForm(SigninForm):
+    nickname = StringField('昵称', validators=[
+        va.required(),
+        va.Length(2, 32),
+        nickname_check
+    ])
+
     password2 = StringField('重复密码', validators=[
         va.required(),
         va.EqualTo('password')
@@ -112,7 +135,7 @@ class UserView(UserMixin, PeeweeView):
 
     def handle_insert(self, values: Dict):
         # 必须存在以下值：
-        # email password
+        # email password nickname
         # 自动填充或改写以下值：
         # id password salt group state key key_time reg_time
         if not config.USER_ALLOW_SIGNUP:
@@ -137,3 +160,6 @@ class UserView(UserMixin, PeeweeView):
 
         values.update(User.gen_key())
         values['reg_time'] = uid.time
+
+        # 添加统计记录
+        statistic_new(values['id'])

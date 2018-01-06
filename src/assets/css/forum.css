@@ -12,7 +12,7 @@
 .board-item {
     display: flex;
     height: 4em;
-    margin-top: 0.5em;
+    margin-bottom: 10px;
 }
 
 .board-item > .title {

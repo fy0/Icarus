@@ -7,6 +7,10 @@
                 <label for="email">邮箱</label>
                 <input type="email" name="email" id="email" v-model="info.email">
             </check-row>
+            <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
+                <label for="nickname">昵称</label>
+                <input type="text" name="nickname" id="nickname" v-model="info.nickname">
+            </check-row>
             <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
                 <label for="password">密码</label>
                 <input type="password" name="password" id="password" v-model="info.password">
@@ -15,7 +19,7 @@
                 <label for="password2">重复密码</label>
                 <input type="password" name="password2" id="password2" v-model="info.password2">
             </check-row>
-            <check-row :results="formErrors.verify">
+            <check-row :results="formErrors.verify" v-if="0">
                 <label for="verify">验证码</label>
                 <input type="text" name="verify" id="verify" v-model="info.verify">
             </check-row>
@@ -76,6 +80,7 @@ export default {
         return {
             info: {
                 email: '',
+                nickname: '',
                 password: '',
                 password2: '',
                 verify: ''
@@ -95,6 +100,20 @@ export default {
         checkPassword2: function () {
             return this.info.password === this.info.password2
         },
+        checkNickname: function () {
+            if ((this.info.nickname < 2) || (this.info.nickname > 32)) return false
+            // 检查首字符，检查有无非法字符
+            if (!/^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$/.test(this.info.nickname)) {
+                return false
+            }
+            // 若长度大于4，直接许可
+            if (this.info.nickname.length >= 4) {
+                return true
+            }
+            // 长度小于4，检查其中汉字数量
+            let m = this.info.nickname.match(/[\u4e00-\u9fa5]/gi)
+            if (m && m.length >= 2) return true
+        },
         checkEmail: function () {
             let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
             return mail.test(this.info.email)
@@ -111,6 +130,7 @@ export default {
                     let userinfo = ret.data
                     console.log(userinfo)
                     $.message_by_code(ret.code)
+                    this.$router.push({name: 'forum', params: {}})
                 }
             } else {
                 $.message_error('请正确填写所有项目')

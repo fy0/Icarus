@@ -205,7 +205,6 @@ import Vue from 'vue'
 import Media from 'vue-media'
 import state from '@/state.js'
 import api from '@/netapi.js'
-import Avatar from './avatar.vue'
 
 export default {
     name: 'hello',
@@ -248,8 +247,7 @@ export default {
         }
     },
     components: {
-        Media,
-        Avatar
+        Media
     }
 }
 </script>
