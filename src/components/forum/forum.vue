@@ -58,7 +58,9 @@ export default {
         TopBtns
     },
     beforeRouteEnter: async (to, from, next) => {
-        let ret = await api.board.list()
+        let ret = await api.board.list({
+            loadfk: {'id': {'as': 'statistic'}}
+        })
 
         if (ret.code === api.retcode.SUCCESS) {
             return next(vm => {
@@ -70,7 +72,9 @@ export default {
         return next('/')
     },
     beforeRouteUpdate: async function (to, from, next) {
-        let ret = await api.board.list()
+        let ret = await api.board.list({
+            loadfk: {'id': {'as': 'statistic'}}
+        })
 
         if (ret.code === api.retcode.SUCCESS) {
             this.boardInfo = ret.data

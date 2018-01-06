@@ -18,11 +18,11 @@
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
                     <div class="count">
-                        <p class="num">1</p>
+                        <p class="num">{{i.statistic.click_count}}</p>
                         <p class="txt">点击</p>
                     </div>
                     <div class="count">
-                        <p class="num">2</p>
+                        <p class="num">{{i.statistic.comment_count}}</p>
                         <p class="txt">回复</p>
                     </div>
                 </div>
@@ -134,7 +134,12 @@ export default {
                 return
             }
 
-            let retList = await api.topic.list({board_id: params.id, loadfk: {'user_id': null}}, params.page)
+            let retList = await api.topic.list({
+                board_id: params.id,
+                order: 'sticky_weight.desc,weight.desc,time.desc',
+                loadfk: {'user_id': null, 'id': {'as': 'statistic'}}
+            }, params.page)
+
             if (retList.code === api.retcode.SUCCESS) {
                 this.board = ret.data
                 this.topics = retList.data

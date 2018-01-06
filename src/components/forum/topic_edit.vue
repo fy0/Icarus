@@ -162,7 +162,7 @@ export default {
 
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
-                this.$router.push({name: 'topic', params: { id: ret.data.id }})
+                this.$router.push({name: 'forum_topic', params: { id: ret.data.id }})
                 $.message_success(successText)
             } else {
                 $.message_error(failedText)

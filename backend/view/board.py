@@ -25,6 +25,10 @@ class UserView(PeeweeView):
     options = PeeweeView.options_cls(model=Board, list_page_size=-1)
 
     @classmethod
+    def ready(cls):
+        cls.add_soft_foreign_key('id', 'statistic')
+
+    @classmethod
     def handle_read(self, values: Dict):
         pass
 
