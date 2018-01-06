@@ -93,11 +93,13 @@ import api from './netapi.js'
 import Paginator from './components/utils/paginator.vue'
 import Loading from './components/utils/loading.vue'
 import Avatar from './components/utils/avatar.vue'
+import ICTime from './components/utils/ic-time.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
 Vue.component('paginator', Paginator)
 Vue.component('loading', Loading)
 Vue.component('avatar', Avatar)
+Vue.component('ic-time', ICTime)
 
 Vue.config.productionTip = false
 nprogress.configure({showSpinner: false})

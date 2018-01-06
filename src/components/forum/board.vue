@@ -13,7 +13,7 @@
                     <h2><router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link></h2>
                     <p>
                         <router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link>
-                        <span> 发布于 <time timestamp="${i.time}">{{i.time}}</time></span>
+                        <span> 发布于 <ic-time :timestamp="i.time" /></span>
                     </p>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
