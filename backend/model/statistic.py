@@ -11,12 +11,14 @@ class Statistic(BaseModel):
     click_count = IntegerField(default=0)
     comment_count = IntegerField(default=0)
     topic_count = IntegerField(default=0)
+    # last_comment = BlobField(null=True)
 
     # topic
     views = ArrayField(BlobField, null=True)
     # click_count = IntegerField(default=0)
     # comment_count = IntegerField(default=0)
     follow_count = IntegerField(default=0)
+    # last_comment = BlobField(null=True)
 
     # user
     # click_count = IntegerField(default=0)

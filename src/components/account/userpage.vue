@@ -4,7 +4,11 @@
         <div class="left">
             <avatar :user="user" :size="164" class="avatar"></avatar>            
             <p>{{user.nickname}}</p>
-            <p>{{state.misc.USER_GROUP_TXT[user.group]}}</p>
+            <div>
+                <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>
+                <div>加入时间</div>
+                <div>第N名用户</div>
+            </div>
         </div>
         <div class="right">
             <mu-tabs :value="activeTab" @change="handleTabChange" class="api-view-tabs">
@@ -27,10 +31,19 @@
                 <mu-circular-progress v-else :strokeWidth="5" :size="90" color="red"/>
             </div>
             <div class="tab" v-if="activeTab === 'tab2'">
-                <h2>Tab Two</h2>
-                <p>
-                    这是第二个 tab
-                </p>
+                <div v-if="tabs.comment.data">
+                    <mu-timeline>
+                        <mu-timeline-item :key="i.id" v-for="i in tabs.comment.data.items">
+                            <span slot="time"><ic-time :timestamp="i.time"></ic-time></span>
+                            <span slot="des">发表了一条评论
+                                <div>
+                                    <router-link :to="{ name: 'forum_topic', params: {id: i.related_id} }">{{i.content}}</router-link>
+                                </div>
+                            </span>
+                        </mu-timeline-item>
+                    </mu-timeline>
+                </div>
+                <mu-circular-progress v-else :strokeWidth="5" :size="90" color="red"/>
             </div>
             <div class="tab" v-if="activeTab === 'tab3'">
                 <h2>Tab Three</h2>
@@ -49,11 +62,12 @@
 }
 
 .userpage > .left {
-    flex: 1 0 auto;
+    flex: 1 0 0%;
 }
 
 .userpage > .right {
     flex: 8 0 auto;
+    padding: 0 40px;
 }
 
 .api-view-tabs {
@@ -88,6 +102,9 @@ export default {
             tabs: {
                 topic: {
                     topics: null
+                },
+                comment: {
+                    data: null
                 }
             },
             state
@@ -104,11 +121,22 @@ export default {
                 order: 'time.desc',
                 loadfk: {'user_id': null, 'board_id': null}
             })
-
             this.tabs.topic.topics = retList.data
+        },
+        tabCommentLoad: async function () {
+            let uid = this.user.id
+            let retList = await api.comment.list({
+                user_id: uid,
+                order: 'time.desc',
+                loadfk: {}
+            })
+            this.tabs.comment.data = retList.data
         },
         handleTabChange (val) {
             this.activeTab = val
+            if (val === 'tab2') {
+                this.tabCommentLoad()
+            }
         },
         handleActive () {
             console.log(111)

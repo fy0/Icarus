@@ -24,7 +24,7 @@ class CommentView(UserMixin, PeeweeView):
             return self.finish(RETCODE.INVALID_HTTP_POSTDATA, "被评论的内容不存在")
 
         try:
-            cid = CustomID(values['related_id'])
+            cid = config.ID_GENERATOR(values['related_id'])
             post = POST_TYPES.get_post(relate_type, cid)
 
             if not post:
@@ -35,10 +35,10 @@ class CommentView(UserMixin, PeeweeView):
         if 'content' not in values or not values['content']:
             return self.finish(RETCODE.INVALID_HTTP_POSTDATA, "评论内容不能为空")
 
-        values['id'] = CustomID().to_bin()
+        values['id'] = config.ID_GENERATOR().to_bin()
         values['related_id'] = cid.to_bin()
         values['related_type'] = int(values['related_type'])
-        values['user_id'] = self.current_user
+        values['user_id'] = self.current_user.id
         values['time'] = int(time.time())
 
 

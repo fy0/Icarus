@@ -2,7 +2,7 @@
 <div class="ic-container forum-box">
     <top-btns></top-btns>
 
-    <div id="board-list">
+    <div id="board-list" v-if="boardInfo.items && boardInfo.items.length">
         <div class="board-item" :key= "i.id" v-for="i, _ in boardInfo.items">
             <div class="title">
                 <h2><router-link :to="{ name: 'forum_board', params: {id: i.id} }">{{i.name}}</router-link></h2>
@@ -11,12 +11,12 @@
             <div class="detail ic-xs-hidden">
                 <div class="count">
                     <span class="tip">24h</span>
-                    <p class="num">1</p>
+                    <p class="num">{{i.s.click_count}}</p>
                     <p class="txt">主题</p>
                 </div>
                 <div class="count">
                     <span class="tip">24h</span>
-                    <p class="num">2</p>
+                    <p class="num">{{i.s.comment_count}}</p>
                     <p class="txt">回复</p>
                 </div>
                 <div class="recent ic-xs-hidden ic-sm-hidden">
@@ -27,6 +27,10 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div v-else>
+        <p>欢迎来到这里，站点已成功建立。</p>
+        <p>下面，前往 <router-link :to="{ name: 'admin_forum_board' }"><a>管理界面</a></router-link> 添加板块。</p>
     </div>
 </div>
 </template>
@@ -59,7 +63,10 @@ export default {
     },
     beforeRouteEnter: async (to, from, next) => {
         let ret = await api.board.list({
-            loadfk: {'id': {'as': 'statistic'}}
+            loadfk: {'id': [
+                {'as': 's'},
+                {'as': 's24h', 'table': 's24'}
+            ]}
         })
 
         if (ret.code === api.retcode.SUCCESS) {

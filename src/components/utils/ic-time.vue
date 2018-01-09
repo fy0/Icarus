@@ -1,6 +1,6 @@
 <!-- 时间戳转时间或 xx 时间前 -->
 <template>
-<span>{{getTime()}}</span>
+<span :title="getRealTime()">{{getTime()}}</span>
 </template>
 
 <style scoped>
@@ -33,7 +33,7 @@ export default {
             }
             return format
         },
-        timestampToXXAgo: function (timestamp) {
+        timestampToXXAgo: function (timestamp, ago = true) {
             timestamp = Number(timestamp)
             if (timestamp === 0) {
                 return '从未'
@@ -41,31 +41,40 @@ export default {
             let date = new Date()
             let now = date.getTime() / 1000
             let offset = now - timestamp
-            let str = (() => {
-                switch (offset) {
-                case !(offset < 30):
-                    return '刚刚'
-                case !(offset < 60):
-                    return '一分钟内'
-                case !(offset < 60 * 60):
-                    return Math.floor(offset / 60) + '分钟前'
-                case !(offset < 60 * 60 * 24):
-                    return Math.floor(offset / (60 * 60)) + '小时前'
-                case !(offset < 60 * 60 * 24 * 30):
-                    return Math.floor(offset / (60 * 60 * 24)) + '天前'
-                case !(offset < 60 * 60 * 24 * 30 * 12):
-                    return Math.floor(offset / (60 * 60 * 24 * 30)) + '月前'
-                case !(offset < 60 * 60 * 24 * 30 * 12 * 20):
-                    return (offset / (60 * 60 * 24 * 30 * 12)).toFixed(1) + '年前'
-                default:
-                    date.setTime(timestamp * 1000)
-                    return this.DateFormat(date, 'yyyy-MM-dd hh:mm')
+            let val = null
+
+            if (ago) {
+                if (offset < 0) {
+                    val = '未来'
+                } else if (offset < 30) {
+                    val = '刚刚'
+                } else if (offset < 60) {
+                    val = '一分钟内'
+                } else if (offset < 60 * 60) {
+                    val = Math.floor(offset / 60) + '分钟前'
+                } else if (offset < 60 * 60 * 24) {
+                    val = Math.floor(offset / (60 * 60)) + '小时前'
+                } else if (offset < 60 * 60 * 24 * 30) {
+                    val = Math.floor(offset / (60 * 60 * 24)) + '天前'
+                } else if (offset < 60 * 60 * 24 * 30 * 12) {
+                    val = Math.floor(offset / (60 * 60 * 24 * 30)) + '月前'
+                } else if (offset < 60 * 60 * 24 * 30 * 12 * 20) {
+                    val = (offset / (60 * 60 * 24 * 30 * 12)).toFixed(1) + '年前'
                 }
-            })()
-            return str
+            }
+
+            if (!val) {
+                date.setTime(timestamp * 1000)
+                val = this.DateFormat(date, 'yyyy-MM-dd hh:mm')
+            }
+
+            return val
         },
         getTime: function () {
             return this.timestampToXXAgo(this.timestamp)
+        },
+        getRealTime: function () {
+            return this.timestampToXXAgo(this.timestamp, false)
         }
     }
 }

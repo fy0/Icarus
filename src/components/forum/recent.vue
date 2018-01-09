@@ -2,7 +2,7 @@
 <div class="ic-container forum-box">
     <top-btns></top-btns>
     <loading v-if="loading"/>
-    <div v-if="topics.items && topics.items.length" id="board-list">
+    <div v-else-if="topics.items && topics.items.length" id="board-list">
         <div class="board-item" :key="i.id" v-for="i in topics.items">
             <div class="title" style="flex: 13 0 0%">
                 <h2>
@@ -10,7 +10,7 @@
                 </h2>
                 <p>
                     <router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link>
-                    <span> 发布于 <time timestamp="1446111343">2年前</time></span>
+                    <span> 发布于 <ic-time :timestamp="i.time" /></span>
                 </p>
             </div>
             <div class="detail ic-xs-hidden" style="flex: 11 0 0%">

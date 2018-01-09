@@ -22,11 +22,13 @@ class BoardForm(ValidateForm):
 
 @route('board')
 class UserView(PeeweeView):
-    options = PeeweeView.options_cls(model=Board, list_page_size=-1)
+    model = Board
+    LIST_PAGE_SIZE = -1
 
     @classmethod
     def ready(cls):
-        cls.add_soft_foreign_key('id', 'statistic')
+        cls.add_soft_foreign_key('id', 'statistic', 's')
+        cls.add_soft_foreign_key('id', 'statistic24h', 's24')
 
     @classmethod
     def handle_read(self, values: Dict):

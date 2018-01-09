@@ -6,18 +6,18 @@
         <router-link :to="{ name: 'forum' }">社区</router-link>
     </mu-breadcrumb-item>
     <mu-breadcrumb-item href="#">
-        <router-link :to="{ name: 'forum_board', params: {id: board.id} }">{{board.name}}</router-link>
+        <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
     </mu-breadcrumb-item>
     <mu-breadcrumb-item>{{topic.title}}</mu-breadcrumb-item>
 </mu-breadcrumb>
 
 <div class="topic-box">
-    <div class="content typo">
-        <h1>{{topic.title}}</h1>
-        <div v-html="marked(topic.content || '')"></div>
+    <div class="article typo">
+        <!--<h1>{{topic.title}}</h1>-->
+        <div class="content" v-html="marked(topic.content || '')"></div>
         <p class="ic-hr"></p>
-        <comment-list :item="topic"></comment-list>
-        <comment-post :item="topic" :post-type="POST_TYPES.TOPIC"></comment-post>
+        <comment-list :item="topic" :cur-page="commentPage" />
+        <comment-post :item="topic" :on-success="commentSuccess" :post-type="POST_TYPES.TOPIC"></comment-post>
     </div>
     <div class="info">
     </div>
@@ -26,16 +26,23 @@
 </div>
 </template>
 
+<style>
+/* scope中加不上这个 我很奇怪，这是为了让图片等不将父元素撑开 */
+.topic-box > .article > .content * {
+    max-width: 100%;
+}
+</style>
+
 <style scoped>
 .topic-box {
     display: flex;
 }
 
-.topic-box > .content {
+.topic-box > .article {
     flex: 18 0 0%;
 }
 
-.topic-box > .content > h1 {
+.topic-box > .article > h1 {
     font-size: 28px;
     line-height: 48px;
     text-align: center;    
@@ -54,47 +61,50 @@ import '@/assets/css/forum.css'
 import CommentList from '../utils/comment-list.vue'
 import CommentPost from '../utils/comment-post.vue'
 
-let fetchData = async function (params, next, component = null) {
-    let ret = await api.topic.get({id: params.id})
-    if (ret.code) next('/')
-    let ret2 = await api.board.get({id: ret.data.board_id})
-    if (ret2.code) next('/')
-
-    let done = (vm) => {
-        vm.topic = ret.data
-        vm.board = ret2.data
-    }
-
-    if (component) {
-        done(component)
-        next()
-    } else next(done)
-}
-
 export default {
     data () {
         return {
             state,
+            commentPage: 1,
+            loading: true,
             POST_TYPES: state.misc.POST_TYPES,
-            board: { id: 1 }, // warning fix
-            topic: {}
+            topic: { board_id: {id: 1} }
         }
     },
     methods: {
-        marked
+        marked,
+        commentSuccess: function () {
+            // this.$router.replace({name: 'forum_topic', params: {id: this.topic.id}})
+            this.$router.go(0)
+        },
+        fetchData: async function () {
+            this.loading = true
+            let params = this.$route.params
+            let ret = await api.topic.get({
+                id: params.id,
+                loadfk: {user_id: null, board_id: null}
+            })
+
+            if (ret.code === api.retcode.SUCCESS) {
+                this.topic = ret.data
+                let pageNumber = this.$route.query.page
+                if (pageNumber) this.commentPage = parseInt(pageNumber)
+            } else {
+                $.message_by_code(ret.code)
+            }
+
+            this.loading = false
+        }
+    },
+    watch: {
+        '$route.query.page': async function (val) {
+            this.commentPage = val
+        }
     },
     created () {
-        // fetchData(this.$route.params, this.$router.replace, this)
-        // this.fetchData()
+        this.fetchData()
     },
     mounted: function () {
-    },
-    beforeRouteUpdate: async (to, from, next) => {
-        this.topic = null
-        fetchData(to.params, next, this)
-    },
-    beforeRouteEnter: async (to, from, next) => {
-        fetchData(to.params, next)
     },
     components: {
         CommentList,

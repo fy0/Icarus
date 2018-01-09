@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <paginator :page-info='topics' :route-name='"forum_board"'></paginator>
+            <paginator :page-info='topics' :route-name='"forum_board"' />
         </div>
         <div class="topic-list" v-else>还未有人发言 ...</div>
 

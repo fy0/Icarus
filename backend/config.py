@@ -1,7 +1,7 @@
 import hashlib
 
-from lib.customid import CustomID
 from slim.utils import ObjectID
+from slim.utils import CustomID
 
 PROJECT_NAME = 'Icarus'
 VERSION = '1.0.0'

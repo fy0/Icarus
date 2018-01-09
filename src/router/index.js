@@ -72,7 +72,7 @@ export default new Router({
         },
         // 论坛 - 文章页面
         {
-            path: '/topic/:id(\\S+)',
+            path: '/topic/:id([a-zA-Z0-9]+)',
             name: 'forum_topic',
             component: ForumTopic
         },

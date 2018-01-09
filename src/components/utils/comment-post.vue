@@ -8,7 +8,7 @@
                 <textarea @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
             </mu-paper>
             <mu-paper :zDepth="editing ? 2 : 1" class="postBtnBox">
-                <mu-raised-button class="postBtn" @click="commentPost">发表</mu-raised-button>
+                <mu-raised-button label="发表" class="postBtn" @click="commentPost" primary />
             </mu-paper>
         </div>
     </div>
@@ -58,12 +58,12 @@
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
-import Avatar from './avatar.vue'
 
 export default {
     props: {
         item: Object,
-        postType: {}
+        postType: {},
+        onSuccess: Function
     },
     data () {
         return {
@@ -77,7 +77,6 @@ export default {
         }
     },
     created: function () {
-        this.addTest()
     },
     mounted: function () {
         ;
@@ -94,27 +93,14 @@ export default {
             this.commentInfo.related_type = this.postType
             let ret = await api.comment.new(this.commentInfo)
             $.message_by_code(ret.code)
-            console.log(ret)
-        },
-        addTest: function () {
-            /*
-            let func = () => {
-                this.items.push({
-                    user: {
-                        id: 'asdasd',
-                        name: 'John Doe'
-                    }
-                })
+            if (ret.code === 0) {
+                this.editing = false
+                this.commentInfo.content = ''
             }
-            $.tpReg('发表', func)
-            */
-        },
-        removeTest: function () {
-            ;
+            if (this.onSuccess) this.onSuccess()
         }
     },
     components: {
-        Avatar
     }
 }
 </script>

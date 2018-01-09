@@ -78,7 +78,7 @@ class UserView(UserMixin, PeeweeView):
         normal_user = Ability('user', {
             'user': {
                 'nickname': ['query', 'read', 'write'],
-                #'key': ['query', 'read']
+                # 'key': ['query', 'read']
             }
         }, based_on=visitor)
 

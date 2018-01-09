@@ -1,15 +1,16 @@
 <!-- 评论 -->
 <template>
 <div class="ic-comment-list">
-    <div v-for="i in page.items" :key="i.id" class="ic-comment">
+    <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
+    <div v-for="i, _ in page.items" :key="i.id" class="ic-comment">
         <avatar :user="i.user_id" class="avatar"></avatar>
         <mu-paper class="content" :zDepth="1">
             <div class="head">
-                <span>#1</span>
+                <span>#{{(curPage - 1) * page.info.page_size + _ + 1}}</span>
                 <b>{{i.user_id.name}}</b>
-                <span>2017-10-29 13:11</span>
+                <span><ic-time :timestamp="i.time" /></span>
             </div>
-            <div class="post">123</div>
+            <div class="post">{{i.content}}</div>
         </mu-paper>
     </div>
 </div>
@@ -63,14 +64,22 @@
 </style>
 
 <script>
-import Avatar from './avatar.vue'
 import api from '@/netapi.js'
 
 export default {
     props: {
         item: {
             type: Object
-        }
+        },
+        curPage: {
+            type: Number,
+            default: 1
+        },
+        withPost: {
+            default: false
+        },
+        postType: {},
+        onSuccess: Function
     },
     data () {
         return {
@@ -96,12 +105,9 @@ export default {
         },
         removeTest: function () {
             ;
-        }
-    },
-    watch: {
-        'item': async function (val) {
-            // 似乎 mounted 和 created 中都读不到 item.id
-            let ret = await api.comment.list({related_id: this.item.id, loadfk: {user_id: null}})
+        },
+        fetchData: async function () {
+            let ret = await api.comment.list({related_id: this.item.id, loadfk: {user_id: null}}, this.curPage)
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data
             } else if (ret.code === api.retcode.NOT_FOUND) {
@@ -111,8 +117,16 @@ export default {
             }
         }
     },
+    watch: {
+        'item': async function (val) {
+            // 似乎 mounted 和 created 中都读不到 item.id
+            this.fetchData()
+        },
+        'curPage': async function (val) {
+            this.fetchData()
+        }
+    },
     components: {
-        Avatar
     }
 }
 </script>

@@ -6,6 +6,7 @@
 
 from peewee import *
 
+from config import ID_GENERATOR
 from slim.utils.customid import CustomID
 from slim.utils.state_obj import StateObject
 from model import BaseModel
@@ -24,7 +25,7 @@ class POST_TYPES(StateObject):
         from model.topic import Topic
         from model.wiki import WikiItem
 
-        if type(related_id) == CustomID:
+        if type(related_id) == ID_GENERATOR:
             related_id = related_id.to_bin()
 
         if type(related_type) == str:

@@ -1,6 +1,5 @@
 <template>
 <div class="ic-container">
-    <top-btns></top-btns>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>

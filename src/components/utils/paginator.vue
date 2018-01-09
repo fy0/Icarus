@@ -102,6 +102,10 @@ export default {
     props: {
         pageInfo: Object,
         routeName: String,
+        linkMethod: {
+            type: String,
+            default: 'params' // params, query
+        },
         pageKey: {
             type: String,
             default: 'page'
@@ -116,8 +120,7 @@ export default {
         toInfo: function (page) {
             return {
                 name: this.routeName,
-                params: {
-                    p: 'p',
+                [this.linkMethod]: {
                     [this.pageKey]: page
                 }
             }

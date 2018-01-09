@@ -51,14 +51,14 @@ class SlimViewRequest {
     }
 
     async get (params, role = null) {
-        if (params && params.loadfk && Object.keys(params.loadfk).length) {
+        if (params && params.loadfk) {
             params.loadfk = JSON.stringify(params.loadfk)
         }
         return await nget(`${this.urlPrefix}/get`, params, role)
     }
 
     async list (params, page = 1, size = null, role = null) {
-        if (params && params.loadfk && Object.keys(params.loadfk).length) {
+        if (params && params.loadfk) {
             params.loadfk = JSON.stringify(params.loadfk)
         }
         let url = `${this.urlPrefix}/list/${page}`

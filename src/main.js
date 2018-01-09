@@ -8,7 +8,6 @@ import nprogress from 'nprogress/nprogress.js'
 import 'animate.css'
 import 'font-awesome/css/font-awesome.css'
 import 'lodash'
-import 'material-design-lite'
 import 'nprogress/nprogress.css'
 // muse-ui 包含 normalize.css
 import MuseUI from 'muse-ui'
@@ -18,6 +17,8 @@ Vue.use(MuseUI)
 
 import marked from 'marked'
 import Prism from 'prismjs'
+import 'prismjs/themes/prism-tomorrow.css'
+
 import 'prismjs/components/prism-autohotkey.js'
 import 'prismjs/components/prism-bash.js'
 import 'prismjs/components/prism-batch.js'
