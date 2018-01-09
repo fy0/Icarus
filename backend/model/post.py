@@ -15,9 +15,10 @@ from model import BaseModel
 class POST_TYPES(StateObject):
     NONE    =  0
     USER    = 10
-    TOPIC   = 20
-    WIKI    = 30
-    COMMENT = 40
+    BOARD   = 20
+    TOPIC   = 30
+    WIKI    = 40
+    COMMENT = 50
 
     @classmethod
     def get_post(cls, related_type, related_id):

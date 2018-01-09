@@ -110,7 +110,7 @@
 .board-item > .detail > .count > .tip {
     position: absolute;
     font-size: .625em;
-    right: 2em;
+    right: 15%;
     top: .2em;
     flex-basis: 0%;
     font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;

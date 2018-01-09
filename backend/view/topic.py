@@ -1,8 +1,8 @@
 from typing import Dict
 import time
 import config
-from model.board import Board
-from model.statistic import Statistic, statistic_new
+from model.post import POST_TYPES
+from model.statistic import Statistic, statistic_new, statistic_add_topic, statistic_add_topic_click
 from model.topic import Topic
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
@@ -36,8 +36,14 @@ class TopicView(UserMixin, PeeweeView):
         cls.add_soft_foreign_key('board_id', 'board')
         cls.add_soft_foreign_key('last_edit_user_id', 'user')
 
+    async def get(self):
+        await super().get()
+        if self.ret_val['code'] == RETCODE.SUCCESS:
+            vals = getattr(self, '_val_bak', None)
+            if vals: statistic_add_topic_click(*vals)
+
     def handle_read(self, values: Dict):
-        pass
+        self._val_bak = [values['id'], values['board_id']]
 
     def handle_query(self, info: ParamsQueryInfo):
         pass
@@ -55,7 +61,10 @@ class TopicView(UserMixin, PeeweeView):
         values['time'] = int(time.time())
 
         # 添加统计记录
-        statistic_new(values['id'])
+        statistic_new(POST_TYPES.TOPIC, values['id'])
+
+    def after_insert(self, values: Dict):
+        statistic_add_topic(values['board_id'], values['id'])
 
 
 '''

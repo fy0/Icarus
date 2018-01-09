@@ -1,6 +1,7 @@
 import time
 from typing import Mapping, Dict
 import config
+from model.post import POST_TYPES
 from model.statistic import statistic_new
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -21,7 +22,7 @@ class BoardForm(ValidateForm):
 
 
 @route('board')
-class UserView(PeeweeView):
+class BoardView(PeeweeView):
     model = Board
     LIST_PAGE_SIZE = -1
 
@@ -44,4 +45,4 @@ class UserView(PeeweeView):
         values['time'] = int(time.time())
 
         # 添加统计记录
-        statistic_new(values['id'])
+        statistic_new(POST_TYPES.BOARD, values['id'])

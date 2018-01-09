@@ -1,6 +1,6 @@
 <!-- 用户头像 -->
 <template>
-<div  style="display: flex">
+<div style="display: flex">
 <router-link class="sa-avatar" :style="style" :to="linkTo" >
     <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
 </router-link>

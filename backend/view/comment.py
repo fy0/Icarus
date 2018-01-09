@@ -2,6 +2,7 @@ import time
 import config
 from typing import Dict
 
+from model.statistic import statistic_add_comment
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model.post import POST_TYPES
@@ -17,6 +18,10 @@ from view.user import UserMixin
 @route('comment')
 class CommentView(UserMixin, PeeweeView):
     model = Comment
+
+    @classmethod
+    def ready(cls):
+        cls.add_soft_foreign_key('user_id', 'user')
 
     def handle_insert(self, values: Dict):
         relate_type = values.get('related_type', None)
@@ -41,5 +46,5 @@ class CommentView(UserMixin, PeeweeView):
         values['user_id'] = self.current_user.id
         values['time'] = int(time.time())
 
-
-CommentView.add_soft_foreign_key('user_id', 'user')
+    def after_insert(self, values: Dict):
+        statistic_add_comment(values['related_type'], values['related_id'], values['id'])

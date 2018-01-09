@@ -7,7 +7,7 @@
         <mu-paper class="content" :zDepth="1">
             <div class="head">
                 <span>#{{(curPage - 1) * page.info.page_size + _ + 1}}</span>
-                <b>{{i.user_id.name}}</b>
+                <b><router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link></b>
                 <span><ic-time :timestamp="i.time" /></span>
             </div>
             <div class="post">{{i.content}}</div>
@@ -24,6 +24,7 @@
 }
 
 .ic-comment .content > .head {
+    font-size: .8em;
     padding-bottom: .6em;
 }
 

@@ -2,6 +2,7 @@ import re
 import config
 from typing import Dict, Type
 
+from model.post import POST_TYPES
 from model.statistic import statistic_new
 from slim.base.user import BaseUserMixin, BaseUser
 from slim.base.view import ParamsQueryInfo
@@ -162,4 +163,4 @@ class UserView(UserMixin, PeeweeView):
         values['reg_time'] = uid.time
 
         # 添加统计记录
-        statistic_new(values['id'])
+        statistic_new(POST_TYPES.USER, values['id'])

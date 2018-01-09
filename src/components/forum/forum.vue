@@ -11,7 +11,7 @@
             <div class="detail ic-xs-hidden">
                 <div class="count">
                     <span class="tip">24h</span>
-                    <p class="num">{{i.s.click_count}}</p>
+                    <p class="num">{{i.s.topic_count}}</p>
                     <p class="txt">主题</p>
                 </div>
                 <div class="count">
