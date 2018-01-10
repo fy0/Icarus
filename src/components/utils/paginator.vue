@@ -1,6 +1,6 @@
 <template>
 <div>
-<ul class="ic-pages" v-if="pageInfo && pageInfo.page_count > 1">
+<ul class="ic-pages" v-if="pageInfo && pageInfo.info.page_count > 1">
    <li v-if="pageInfo.first_page">
         <router-link :to="toInfo(pageInfo.first_page)" class="slim">«</router-link>
     </li>

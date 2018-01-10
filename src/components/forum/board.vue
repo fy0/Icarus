@@ -10,7 +10,9 @@
         <div class="topic-list" v-if="topics.items.length">
             <div class="board-item" :key="i.id" v-for="i in topics.items">
                 <div class="title">
-                    <h2><router-link :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link></h2>
+                    <h2>
+                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link>
+                    </h2>
                     <p>
                         <router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link>
                         <span> 发布于 <ic-time :timestamp="i.time" /></span>

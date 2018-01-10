@@ -2,7 +2,8 @@
 <template>
 <div class="ic-comment-list">
     <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
-    <div v-for="i, _ in page.items" :key="i.id" class="ic-comment">
+    <loading v-if='loading' />
+    <div v-else v-for="i, _ in page.items" :key="i.id" class="ic-comment">
         <avatar :user="i.user_id" class="avatar"></avatar>
         <mu-paper class="content" :zDepth="1">
             <div class="head">
@@ -84,6 +85,7 @@ export default {
     },
     data () {
         return {
+            loading: true,
             page: { info: {}, items: [] }
         }
     },
@@ -108,6 +110,8 @@ export default {
             ;
         },
         fetchData: async function () {
+            this.loading = true
+            this.page.cur_page = this.curPage
             let ret = await api.comment.list({related_id: this.item.id, loadfk: {user_id: null}}, this.curPage)
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data
@@ -116,6 +120,7 @@ export default {
             } else {
                 ;
             }
+            this.loading = false
         }
     },
     watch: {

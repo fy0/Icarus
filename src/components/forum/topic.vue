@@ -78,7 +78,6 @@ export default {
             this.$router.go(0)
         },
         fetchData: async function () {
-            this.loading = true
             let params = this.$route.params
             let ret = await api.topic.get({
                 id: params.id,
@@ -92,8 +91,6 @@ export default {
             } else {
                 $.message_by_code(ret.code)
             }
-
-            this.loading = false
         }
     },
     watch: {
@@ -101,10 +98,16 @@ export default {
             this.commentPage = val
         }
     },
-    created () {
-        this.fetchData()
+    created: async function () {
+        // 注意：从这里观察出一个现象：
+        // created 会比 mounted 早触发，但并不一定更早完成
+        // await 占用时间的时候，挂载流程仍将继续
+        this.state.loading++
+        await this.fetchData()
+        this.state.loading--
     },
     mounted: function () {
+        ;
     },
     components: {
         CommentList,

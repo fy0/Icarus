@@ -70,6 +70,7 @@ export default {
                 email: '',
                 password: ''
             },
+            goLastPage: false,
             formErrors: {}
         }
     },
@@ -87,6 +88,11 @@ export default {
             return true
         }
     },
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            vm.goLastPage = from.fullPath !== '/'
+        })
+    },
     methods: {
         login: async function () {
             if (this.checkEmail && this.checkPassword) {
@@ -96,8 +102,13 @@ export default {
                     if (ret.code !== api.retcode.SUCCESS) return
                     state.user = ret.data
 
-                    $.message_success('登录成功，正在回到首页……')
-                    this.$router.replace('/')
+                    if (this.goLastPage) {
+                        $.message_success('登录成功，正在回到前页……')
+                        this.$router.go(-1)
+                    } else {
+                        $.message_success('登录成功，正在回到主页……')
+                        this.$router.replace('/')
+                    }
                 } else {
                     this.formErrors = ret.data
                     $.message_by_code(ret.code)

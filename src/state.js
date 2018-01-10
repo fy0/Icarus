@@ -20,7 +20,8 @@ export default {
     test: {
         items: []
     },
-    user_id: null,
+    user: null,
+    loading: 1,
     init: () => {
         ;
     }

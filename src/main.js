@@ -106,6 +106,7 @@ Vue.config.productionTip = false
 nprogress.configure({showSpinner: false})
 
 router.beforeEach(async function (to, from, next) {
+    state.loading = 1
     nprogress.start()
     $.tpClear()
 
@@ -126,6 +127,7 @@ router.beforeEach(async function (to, from, next) {
 
             ret = await api.user.get({id: ret.data.id}, 'user')
             if (ret.code !== api.retcode.SUCCESS) {
+                // 执行未成功
                 return next('/')
             }
             Vue.set(state, 'user', ret.data)
@@ -136,6 +138,7 @@ router.beforeEach(async function (to, from, next) {
 })
 
 router.afterEach(async function (to, from, next) {
+    state.loading--
     nprogress.done()
     // ga('set', 'page', location.pathname + location.hash)
     // ga('send', 'pageview')
