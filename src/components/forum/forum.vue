@@ -20,10 +20,14 @@
                     <p class="txt">回复</p>
                 </div>
                 <div class="recent ic-xs-hidden ic-sm-hidden">
-                    <span class="line"></span>
-                    <strong><a href="#">root</a></strong>
-                    <div class="post-content">前三十个文本</div>
-                    <a href="#">...</a>
+                    <span class="line" :style="lineStyle(i)"></span>
+                    <div class="post" v-if="i.s.last_comment_id">
+                        <strong><user-link :user="i.s.last_comment_id.user_id" :nickname="true" /></strong>
+                        <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{i.s.last_comment_id.content}}</router-link>
+                    </div>
+                    <div class="post" v-else>○ ○ ○ ○ ○</div>
+                    <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
+                    <div v-else class="time">从未</div>
                 </div>
             </div>
         </div>
@@ -61,10 +65,22 @@ export default {
     components: {
         TopBtns
     },
+    methods: {
+        lineStyle: function (board) {
+            return $.lineStyle(board)
+        }
+    },
     beforeRouteEnter: async (to, from, next) => {
         let ret = await api.board.list({
             loadfk: {'id': [
-                {'as': 's'},
+                {
+                    'as': 's',
+                    'loadfk': {
+                        'last_comment_id': {
+                            'loadfk': {'user_id': null}
+                        }
+                    }
+                },
                 {'as': 's24h', 'table': 's24'}
             ]}
         })

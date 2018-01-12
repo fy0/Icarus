@@ -2,6 +2,7 @@
 <div class="test-panel" :style="panelStyle" @mouseout="mouseOut"
     @mousedown="dragStart" @mousemove="dragMove" @mouseup="dragEnd"
     @touchstart="dragStart" @touchmove="dragMove" @touchend="dragEnd"
+    v-show="false"
 >
     <mu-raised-button @click="hello" label="测试面板" primary/>
     <mu-raised-button @click="chat_test" label="chat.test" primary/>

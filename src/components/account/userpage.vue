@@ -2,7 +2,7 @@
 <div class="ic-container">
     <div class="userpage">
         <div class="left">
-            <avatar :user="user" :size="164" class="avatar"></avatar>            
+            <avatar :user="user" :size="164" class="avatar"></avatar>
             <p>{{user.nickname}}</p>
             <div>
                 <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>

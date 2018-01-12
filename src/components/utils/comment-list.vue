@@ -2,7 +2,7 @@
 <template>
 <div class="ic-comment-list">
     <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
-    <loading v-if='loading' />
+    <loading v-if="loading"/>
     <div v-else v-for="i, _ in page.items" :key="i.id" class="ic-comment">
         <avatar :user="i.user_id" class="avatar"></avatar>
         <mu-paper class="content" :zDepth="1">
@@ -11,7 +11,7 @@
                 <b><router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link></b>
                 <span><ic-time :timestamp="i.time" /></span>
             </div>
-            <div class="post">{{i.content}}</div>
+            <div class="post" v-html="marked(i.content || '')"></div>
         </mu-paper>
     </div>
 </div>
@@ -66,6 +66,7 @@
 </style>
 
 <script>
+import marked from 'marked'
 import api from '@/netapi.js'
 
 export default {
@@ -85,12 +86,16 @@ export default {
     },
     data () {
         return {
+            marked,
             loading: true,
             page: { info: {}, items: [] }
         }
     },
     created: async function () {
-        // this.addTest()
+        // 如果控件加载时即有数据，那么加载数据
+        if (this.item.id) {
+            this.fetchData()
+        }
     },
     mounted: async function () {
     },
@@ -125,7 +130,7 @@ export default {
     },
     watch: {
         'item': async function (val) {
-            // 似乎 mounted 和 created 中都读不到 item.id
+            // 如果控件加载时无数据，后续出现数据，那么刷新
             this.fetchData()
         },
         'curPage': async function (val) {

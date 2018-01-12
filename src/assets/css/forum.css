@@ -76,17 +76,33 @@
 }
 
 .board-item > .detail > .recent > .line {
-    position: absolute;
-    left: 0;
     border-left: 4px solid #ccc;
     height: 85%;
     padding-left: 0;
 }
 
-.board-item > .detail > .recent > * {
-    padding-left: 1.25em;
+.board-item > .detail > .recent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
+.board-item > .detail > .recent > .post {
+    flex: 1 0 0;
+    max-height: 100%;
+    overflow: hidden;
+    padding-left: 1.25em;
+    text-overflow: ellipse;
+}
+
+.board-item > .detail > .recent > .post > .post-content {
+    cursor: pointer;
+}
+
+.board-item > .detail > .recent > .time {
+    padding: 0 1em;
+}
 
 /* 板块条目 - 计数 */
 .board-item > .detail > .count > .num {

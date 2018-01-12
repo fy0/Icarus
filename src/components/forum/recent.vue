@@ -21,18 +21,22 @@
                     <p class="txt">版块</p>
                 </div>
                 <div class="count">
-                    <p class="num">{{i.statistic.click_count}}</p>
+                    <p class="num">{{i.s.click_count}}</p>
                     <p class="txt">点击</p>
                 </div>
                 <div class="count">
-                    <p class="num">{{i.statistic.comment_count}}</p>
+                    <p class="num">{{i.s.comment_count}}</p>
                     <p class="txt">回复</p>
                 </div>
                 <div class="recent ic-xs-hidden ic-sm-hidden">
-                    <span class="line"></span>
-                    <strong><a href="#">root</a></strong>
-                    <div class="post-content">前三十个文本</div>
-                    <a href="#">...</a>
+                    <span class="line" :style="lineStyle(i.board_id)"></span>
+                    <div class="post" v-if="i.s.last_comment_id">
+                        <strong><user-link :user="i.s.last_comment_id.user_id" :nickname="true" /></strong>
+                        <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{i.s.last_comment_id.content}}</router-link>
+                    </div>
+                    <div class="post" v-else>○ ○ ○ ○ ○</div>
+                    <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
+                    <div v-else class="time">从未</div>
                 </div>
             </div>
         </div>
@@ -58,11 +62,14 @@ export default {
         }
     },
     methods: {
+        lineStyle: function (board) {
+            return $.lineStyle(board)
+        },
         fetchData: async function () {
             this.loading = true
             let retList = await api.topic.list({
                 order: 'sticky_weight.desc,weight.desc,time.desc',
-                loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 'statistic'}}
+                loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             })
             if (retList.code === api.retcode.SUCCESS) {
                 this.topics = retList.data

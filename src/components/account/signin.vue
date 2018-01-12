@@ -96,6 +96,7 @@ export default {
     methods: {
         login: async function () {
             if (this.checkEmail && this.checkPassword) {
+                state.loading++
                 let ret = await api.user.signin(this.info)
                 if (ret.code === api.retcode.SUCCESS) {
                     ret = await api.user.get({id: ret.data.id}, 'user')
@@ -103,11 +104,14 @@ export default {
                     state.user = ret.data
 
                     if (this.goLastPage) {
+                        state.loading--
                         $.message_success('登录成功，正在回到前页……')
                         this.$router.go(-1)
                     } else {
+                        state.loading--
                         $.message_success('登录成功，正在回到主页……')
                         this.$router.replace('/')
+                        return
                     }
                 } else {
                     this.formErrors = ret.data
@@ -115,6 +119,7 @@ export default {
                 }
                 // ret = await api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
+                state.loading--
             } else {
                 $.message_error('请正确填写所有项目')
             }

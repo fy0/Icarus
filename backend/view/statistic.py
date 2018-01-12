@@ -10,6 +10,10 @@ from view.user import UserMixin
 class StatisticView(UserMixin, PeeweeView):
     model = Statistic
 
+    @classmethod
+    def ready(cls):
+        cls.add_soft_foreign_key('last_comment_id', 'comment')
+
 
 @route('statistic24h', None)
 class Statistic24hView(UserMixin, PeeweeView):

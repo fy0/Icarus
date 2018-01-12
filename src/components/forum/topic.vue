@@ -1,5 +1,5 @@
 <template>
-<div class="ic-container">
+<div class="ic-container" v-if="topic.user_id">
 
 <mu-breadcrumb class="nav">
     <mu-breadcrumb-item href="#">
@@ -12,14 +12,23 @@
 </mu-breadcrumb>
 
 <div class="topic-box">
-    <div class="article typo">
-        <!--<h1>{{topic.title}}</h1>-->
-        <div class="content" v-html="marked(topic.content || '')"></div>
-        <p class="ic-hr"></p>
-        <comment-list :item="topic" :cur-page="commentPage" />
-        <comment-post :item="topic" :on-success="commentSuccess" :post-type="POST_TYPES.TOPIC"></comment-post>
+    <div class="main">
+        <div class="article typo">
+            <!--<h1>{{topic.title}}</h1>-->
+            <div class="content" v-html="marked(topic.content || '')"></div>
+            <p class="ic-hr"></p>
+            <comment-list :item="topic" :cur-page="commentPage" />
+            <comment-post :item="topic" :on-success="commentSuccess" :post-type="POST_TYPES.TOPIC"></comment-post>
+        </div>
     </div>
     <div class="info">
+        <div class="author">
+            <router-link :to="{ name: 'account_userpage', params: {id: topic.user_id.id} }" style="display: flex; align-items: center;">
+                <avatar :user="topic.user_id" :size="20" class="avatar"></avatar>
+                <span style="margin-left: 6px;">{{topic.user_id.nickname}}</span>
+            </router-link>
+            <p><ic-time :timestamp="topic.time" /></p>
+        </div>
     </div>
 </div>
 
@@ -38,11 +47,18 @@
     display: flex;
 }
 
-.topic-box > .article {
+.topic-box > .main {
     flex: 18 0 0%;
 }
 
-.topic-box > .article > h1 {
+.info > .author {
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.main > .article > h1 {
     font-size: 28px;
     line-height: 48px;
     text-align: center;    

@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import state from '@/state.js'
+import murmurhash from 'murmurhash'
 
 let messageId = 1
 
@@ -9,6 +10,13 @@ $.media = {
     md: {minWidth: '48em'},
     lg: {minWidth: '64em'},
     xl: {minWidth: '80em'}
+}
+
+$.lineStyle = function (board, key = 'border-left-color') {
+    let bgColor = murmurhash.v3(board.name).toString(16).slice(0, 6)
+    return {
+        [key]: '#' + bgColor
+    }
 }
 
 $.message = function (type, text, timeout = 3000) {

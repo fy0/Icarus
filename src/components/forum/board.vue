@@ -1,7 +1,7 @@
 <template>
 <loading v-if="loading"/>
 <div v-else-if="board" class="ic-container">
-    <mu-paper class="board-title" :zDepth="1" style="background-color: #777777">
+    <mu-paper class="board-title" :zDepth="1" :style="lineStyle(board)">
         <h3 class="name">{{ board.name }}</h3>
         <div class="brief">{{ board.brief }}</div>
     </mu-paper>
@@ -13,18 +13,25 @@
                     <h2>
                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link>
                     </h2>
-                    <p>
-                        <router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link>
-                        <span> 发布于 <ic-time :timestamp="i.time" /></span>
+                    <p class="info">
+                        <user-link :user="i.user_id" :nickname="true"></user-link>  •  
+                        <span> 发布于<ic-time :timestamp="i.time" /></span>  •  
+                        <span>最后回复
+                            <span v-if="i.s.last_comment_id">
+                                <user-link :user="i.s.last_comment_id.user_id" :nickname="true" />
+                                <ic-time :timestamp="i.s.last_comment_id.time" />
+                            </span>
+                            <span v-else>从未</span>
+                        </span>
                     </p>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
                     <div class="count">
-                        <p class="num">{{i.statistic.click_count}}</p>
+                        <p class="num">{{i.s.click_count}}</p>
                         <p class="txt">点击</p>
                     </div>
                     <div class="count">
-                        <p class="num">{{i.statistic.comment_count}}</p>
+                        <p class="num">{{i.s.comment_count}}</p>
                         <p class="txt">回复</p>
                     </div>
                 </div>
@@ -77,7 +84,7 @@ aside > .brief {
 }
 
 .board-page-box > .topic-list {
-    flex: 3 0 auto;
+    flex: 7 0 0;
 }
 
 .board-page-box > .board-info {
@@ -122,6 +129,9 @@ export default {
         }
     },
     methods: {
+        lineStyle: function (board) {
+            return $.lineStyle(board, 'background-color')
+        },
         test: function (id) {
             ;
         },
@@ -139,7 +149,7 @@ export default {
             let retList = await api.topic.list({
                 board_id: params.id,
                 order: 'sticky_weight.desc,weight.desc,time.desc',
-                loadfk: {'user_id': null, 'id': {'as': 'statistic'}}
+                loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             }, params.page)
 
             if (retList.code === api.retcode.SUCCESS) {

@@ -60,7 +60,7 @@ export default {
             if (this.anonymous) bgColor = '334455'
             else {
                 if ((!this.user) || (!this.user.nickname)) return ''
-                bgColor = murmurhash.v3(this.user.nickname).toString(16).slice(0, 6)
+                bgColor = murmurhash.v3(this.user.nickname).toString(16).slice(1, 7)
             }
             if (typeof this.size === 'string') {
                 // 用于百分比模式
