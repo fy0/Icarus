@@ -61,11 +61,11 @@ class TopicView(UserMixin, PeeweeView):
         normal_user = Ability('user', {
             'topic': {
                 'id': [A.QUERY, A.READ, A.CREATE],
-                'title': [A.READ, A.CREATE],
+                'title': [A.READ, A.CREATE, A.WRITE],
                 'user_id': [A.QUERY, A.READ, A.CREATE],
-                'board_id': [A.QUERY, A.READ, A.CREATE],
+                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
                 'time': [A.READ, A.CREATE],
-                'content': [A.READ, A.CREATE],
+                'content': [A.READ, A.CREATE, A.WRITE],
             }
         }, based_on=visitor)
 
@@ -111,12 +111,20 @@ class TopicView(UserMixin, PeeweeView):
     def handle_query(self, info: ParamsQueryInfo):
         pass
 
+    def handle_update(self, values: Dict):
+        form = TopicForm(**values)
+        if not form.validate():
+            return RETCODE.FAILED, form.errors
+        dict_filter_inplace(values, ('title', 'board_id', 'content'))
+
+        values['board_id'] = to_bin(values['board_id'])
+        #values['user_id'] = self.current_user.id
+
     def handle_insert(self, values: Dict):
         form = TopicForm(**values)
         if not form.validate():
             return RETCODE.FAILED, form.errors
         dict_filter_inplace(values, ('title', 'board_id', 'content'))
-        print(values)
 
         values['board_id'] = to_bin(values['board_id'])
         values['user_id'] = self.current_user.id

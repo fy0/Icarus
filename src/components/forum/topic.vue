@@ -28,6 +28,7 @@
                 <span style="margin-left: 6px;">{{topic.user_id.nickname}}</span>
             </router-link>
             <p><ic-time :timestamp="topic.time" /></p>
+            <p><router-link v-if="topic.user_id.id == state.user.id" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
         </div>
     </div>
 </div>
@@ -49,6 +50,10 @@
 
 .topic-box > .main {
     flex: 18 0 0%;
+}
+
+.info {
+    padding: 0 20px;
 }
 
 .info > .author {

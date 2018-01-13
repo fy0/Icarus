@@ -131,7 +131,7 @@ export default {
     },
     computed: {
         is_edit () {
-            return this.$route.name === 'topic_edit'
+            return this.$route.name === 'forum_topic_edit'
         },
         postButtonText: function () {
             return this.loading ? '请等待'
@@ -150,7 +150,7 @@ export default {
             this.loading = true
             this.topicInfo.board_id = this.topicInfo.board.id
             if (this.is_edit) {
-                ret = await api.topic.update(this.$route.params.id, this.topicInfo)
+                ret = await api.topic.set({id: this.topicInfo.id}, this.topicInfo, 'user')
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'
             } else {
@@ -161,7 +161,7 @@ export default {
 
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
-                this.$router.push({name: 'forum_topic', params: { id: ret.data.id }})
+                this.$router.push({name: 'forum_topic', params: { id: this.topicInfo.id }})
                 $.message_success(successText)
             } else {
                 $.message_error(failedText)
@@ -185,7 +185,7 @@ export default {
             }
             let boardList = ret.data.items
 
-            if (this.$route.name === 'forum_topic_edit') {
+            if (this.is_edit) {
                 let ret = await api.topic.get({
                     id: params.id,
                     loadfk: {user_id: null, board_id: null}
