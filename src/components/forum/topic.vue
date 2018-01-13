@@ -23,12 +23,12 @@
     </div>
     <div class="info">
         <div class="author">
-            <router-link :to="{ name: 'account_userpage', params: {id: topic.user_id.id} }" style="display: flex; align-items: center;">
+            <user-link :user="topic.user_id" style="display: flex; align-items: center;">
                 <avatar :user="topic.user_id" :size="20" class="avatar"></avatar>
                 <span style="margin-left: 6px;">{{topic.user_id.nickname}}</span>
-            </router-link>
+            </user-link>
             <p><ic-time :timestamp="topic.time" /></p>
-            <p><router-link v-if="topic.user_id.id == state.user.id" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
+            <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
         </div>
     </div>
 </div>

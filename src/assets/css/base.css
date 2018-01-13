@@ -3,6 +3,10 @@ html {
     overflow-y: scroll;
 }
 
+body {
+    overflow: hidden;
+}
+
 body, button, input, select, textarea {
     font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans, FontAwesome, sans-serif;
 }

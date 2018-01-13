@@ -66,7 +66,7 @@
 }
 
 .userpage > .right {
-    flex: 8 0 auto;
+    flex: 8 0 0;
     padding: 0 40px;
 }
 

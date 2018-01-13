@@ -15,7 +15,7 @@
             <multiselect v-model="topicInfo.board" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" label="name" style="z-index: 2" open-direction="bottom" track-by="name"></multiselect>
         </check-row>
         <check-row :multi="true">
-            <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" placeholder="这里填写内容 ..." rows="15" autofocus></markdown-editor>
+            <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
         </check-row>
         <div class="ic-form-row">
             <button class="ic-btn click blue" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
@@ -109,6 +109,7 @@ export default {
             mdeConfig: {
                 spellChecker: false,
                 autoDownloadFontAwesome: false,
+                placeholder: '这里填写内容，支持 Markdown 格式 ...',
                 autosave: {
                     enabled: false,
                     uniqueId: 'topic-post-content'
@@ -161,7 +162,7 @@ export default {
 
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
-                this.$router.push({name: 'forum_topic', params: { id: this.topicInfo.id }})
+                this.$router.push({name: 'forum_topic', params: { id: ret.data.id }})
                 $.message_success(successText)
             } else {
                 $.message_error(failedText)
@@ -198,7 +199,17 @@ export default {
             }
 
             this.boardList = boardList
-            if (boardList.length) this.topicInfo.board = boardList[0]
+            if (boardList.length) {
+                this.topicInfo.board = boardList[0]
+                if (params.board_id) {
+                    for (let i of boardList) {
+                        if (i.id === params.board_id) {
+                            this.topicInfo.board = i
+                            break
+                        }
+                    }
+                }
+            }
 
             this.pageLoading = false
         }

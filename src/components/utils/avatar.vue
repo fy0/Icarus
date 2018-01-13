@@ -18,7 +18,7 @@
 .sa-avatar .paper {
     color: #fff;
     border-radius: 4px;
-    background-color: #00000000;
+    background-color: rgba(0, 0, 0, 0);
     font-size: calc(80%);
 }
 </style>

@@ -41,7 +41,7 @@
         <div class="topic-list" v-else>还未有人发言 ...</div>
 
         <div class="board-info">
-            <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
+            <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
             <div class="board-note fade-transition" style="margin-top:5px">
                 <p><strong>版块公告</strong></p>
                 <div>版主很懒，什么也没有写</div>
@@ -84,11 +84,11 @@ aside > .brief {
 }
 
 .board-page-box > .topic-list {
-    flex: 7 0 0;
+    flex: 18 0 0;
 }
 
 .board-page-box > .board-info {
-    flex: 1 0 auto;
+    flex: 7 0 0;
 }
 
 .topic-new-btn {

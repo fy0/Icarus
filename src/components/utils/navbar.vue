@@ -35,8 +35,12 @@
                 </ul>
 
                 <ul class="menu-list" v-else>
-                    <li class="menu-item" style="padding: 0px 5px"><avatar :user="state.user" :size="28" class="avatar" /></li>
-                    <li class="menu-item"><router-link :to="{ name: 'account_userpage', params: {id: state.user.id} }">{{state.user.nickname}}</router-link></li>
+                    <li class="menu-item">
+                        <user-link class="user-link" :user="state.user">
+                            <avatar style="margin-right: 6px;" :user="state.user" :size="28" class="avatar"></avatar>
+                            <span>{{state.user.nickname}}</span>
+                        </user-link>
+                    </li>
                     <li class="menu-item"><a href="#" @click="signout">注销</a></li>
                 </ul>
             </div>
@@ -102,6 +106,7 @@
     margin: 0;
     padding: 0;
     flex-shrink: 0;
+    align-items: center;
 }
 
 .menu-list.center {
@@ -127,12 +132,18 @@
     color: #000;
 }
 
+.menu-item > .user-link {
+    padding: 4px 16px;
+    display: flex;
+    align-items: center;
+}
+
 /* 小屏 */
 
 @media screen and (max-width: 35.5em) {
     #navmenu-toggle-icon {
         position: absolute;
-        top: 3px;
+        top: 8px;
         right: 0;
         width: 34px;
         height: 34px;
@@ -167,7 +178,7 @@
         align-self: flex-start;
         flex: 0 0 auto;
         margin-right: -10px;
-        margin-top: 56px;
+        margin-top: 49px;
 
         border: 1px solid #ddd;
         background-color: #fff;
@@ -185,9 +196,17 @@
         width: 100%;
     }
 
+    .menu-item > .user-link > .avatar {
+        display: none !important;
+    }
+
     .menu-list > li > a {
         display: block;
-        padding: 1em 2em;
+        padding: 0.4em 1.6em;
+    }
+    
+    .menu-item > a.user-link {
+        padding: 0.4em 1.6em;
     }
 
     .fade-enter-active, .fade-leave-active {
