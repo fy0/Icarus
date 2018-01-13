@@ -126,8 +126,7 @@ export default {
                 }
             },
 
-            topicState: state.misc.TOPIC_STATE.NORMAL,
-            editing_data: null
+            topicState: state.misc.TOPIC_STATE.NORMAL
         }
     },
     computed: {
@@ -155,7 +154,7 @@ export default {
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'
             } else {
-                ret = await api.topic.new(this.topicInfo)
+                ret = await api.topic.new(this.topicInfo, 'user')
                 successText = '发表成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '新建失败！'
             }
@@ -186,13 +185,16 @@ export default {
             }
             let boardList = ret.data.items
 
-            if (this.$route.name === 'topic_edit') {
-                let ret = await api.topicGet(params.id)
+            if (this.$route.name === 'forum_topic_edit') {
+                let ret = await api.topic.get({
+                    id: params.id,
+                    loadfk: {user_id: null, board_id: null}
+                })
                 if (ret.code) {
                     $.message_error('抱歉，发生了错误')
                     return
                 }
-                this.editing_data = ret.data
+                this.topicInfo = ret.data
             }
 
             this.boardList = boardList

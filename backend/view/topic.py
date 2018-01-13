@@ -4,10 +4,11 @@ import config
 from model.post import POST_TYPES
 from model.statistic import Statistic, statistic_new, statistic_add_topic, statistic_add_topic_click
 from model.topic import Topic
+from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn, A
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from slim.utils import to_bin
+from slim.utils import to_bin, dict_filter, dict_filter_inplace
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField
 from view.user import UserMixin
@@ -36,6 +37,68 @@ class TopicView(UserMixin, PeeweeView):
         cls.add_soft_foreign_key('board_id', 'board')
         cls.add_soft_foreign_key('last_edit_user_id', 'user')
 
+    @classmethod
+    def permission_init(cls):
+        permission: Permissions = cls.permission
+        visitor = Ability(None, {
+            'topic': {
+                'id': ['query', 'read'],
+                'title': ['read'],
+                'user_id': ['query', 'read'],
+                'board_id': ['query', 'read'],
+                'time': ['read'],
+                'state': ['read'],
+
+                'edit_time': ['read'],
+                'last_edit_user_id': ['read'],
+                'content': ['read'],
+
+                'sticky_weight': ['read'],
+                'weight': ['read'],
+            }
+        })
+
+        normal_user = Ability('user', {
+            'topic': {
+                'id': [A.QUERY, A.READ, A.CREATE],
+                'title': [A.READ, A.CREATE],
+                'user_id': [A.QUERY, A.READ, A.CREATE],
+                'board_id': [A.QUERY, A.READ, A.CREATE],
+                'time': [A.READ, A.CREATE],
+                'content': [A.READ, A.CREATE],
+            }
+        }, based_on=visitor)
+
+        def is_users_post(ability, user, cur_action, record: AbilityRecord) -> bool:
+            if user:
+                return record.get('id') == user.id
+
+        normal_user.add_record_rule(
+            ['read', 'write', A.CREATE],
+            AbilityColumn('topic', 'title'),
+            func=is_users_post
+        )
+
+        normal_user.add_record_rule(
+            ['read', 'write', A.CREATE],
+            AbilityColumn('topic', 'content'),
+            func=is_users_post
+        )
+
+        normal_user.add_record_rule(
+            ['query', 'read', 'write'],
+            AbilityColumn('topic', 'state'),
+            func=is_users_post
+        )
+
+        admin = Ability('admin', {
+            'topic': '*'
+        })
+
+        permission.add(visitor)
+        permission.add(normal_user)
+        permission.add(admin)
+
     async def get(self):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
@@ -52,6 +115,8 @@ class TopicView(UserMixin, PeeweeView):
         form = TopicForm(**values)
         if not form.validate():
             return RETCODE.FAILED, form.errors
+        dict_filter_inplace(values, ('title', 'board_id', 'content'))
+        print(values)
 
         values['board_id'] = to_bin(values['board_id'])
         values['user_id'] = self.current_user.id
