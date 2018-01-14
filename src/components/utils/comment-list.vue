@@ -26,10 +26,11 @@
 
 .ic-comment .content > .head {
     font-size: .8em;
-    padding-bottom: .6em;
+    /* padding-bottom: .6em; */
 }
 
 .ic-comment .content > .post {
+    padding: 0px 6px;
 }
 
 .ic-comment .content {

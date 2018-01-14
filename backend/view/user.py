@@ -4,7 +4,7 @@ from typing import Dict, Type
 
 from model.post import POST_TYPES
 from model.statistic import statistic_new
-from slim.base.user import BaseUserMixin, BaseUser
+from slim.base.user import BaseUser, BaseAccessTokenUserMixin
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -15,10 +15,18 @@ from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn
 
 
-class UserMixin(BaseUserMixin):
-    @property
-    def user_cls(self) -> Type[BaseUser]:
-        return User
+class UserMixin(BaseAccessTokenUserMixin):
+    def teardown_user_key(self):
+        u: User = self.current_user
+        u.key = b''
+        u.save()
+
+    def get_user_by_key(self, key):
+        if not key: return
+        try:
+            return User.get_by_key(to_bin(key))
+        except:
+            pass
 
 
 class SigninForm(ValidateForm):
@@ -116,7 +124,7 @@ class UserView(UserMixin, PeeweeView):
 
     @route.interface('POST')
     async def signout(self):
-        self.del_cookie('u')
+        self.teardown_user_key()
         self.finish(RETCODE.SUCCESS)
 
     @route.interface('POST')
@@ -129,8 +137,9 @@ class UserView(UserMixin, PeeweeView):
         u = User.auth(data['email'], data['password'])
         if u:
             expires = 30 if 'remember' in data else None
-            self.set_secure_cookie('u', u.key.tobytes(), max_age=expires)
-            self.finish(RETCODE.SUCCESS, {'id': u.id})
+            u.refresh_key()
+            self.setup_user_key(u.key, expires)
+            self.finish(RETCODE.SUCCESS, {'id': u.id, 'access_token': u.key})
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 

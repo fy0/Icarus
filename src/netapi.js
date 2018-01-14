@@ -4,6 +4,14 @@ import config from './config.js'
 
 let remote = config.remote
 
+function getAccessToken () {
+    return localStorage.getItem('t')
+}
+
+function saveAccessToken (token) {
+    localStorage.setItem('t', token)
+}
+
 function paramSerialize (obj) {
     let str = []
     for (let i of Object.keys(obj)) {
@@ -21,8 +29,8 @@ function buildFormData (obj) {
     return formData
 }
 
-async function doFetch (url, method, params, data = null, role = null) {
-    let fetchParams = {
+async function doRequest (url, method, params, data = null, role = null) {
+    let reqParams = {
         method: method,
         mode: 'cors',
         credentials: 'include',
@@ -31,18 +39,29 @@ async function doFetch (url, method, params, data = null, role = null) {
             // 'Content-Type': 'application/json;'
         }
     }
+    // 设置 access token
+    let authMode = config.remote.authMode
+    if ((authMode === 'access_token') || (authMode === 'access_token_in_params')) {
+        let token = getAccessToken()
+        if (authMode === 'access_token') {
+            reqParams.headers['AccessToken'] = token
+        } else {
+            if (params === null) params = {AccessToken: token}
+            else params['AccessToken'] = token
+        }
+    }
     if (role) {
         // 不然的话服务器回收到一个 'null' 的 str
-        fetchParams.headers['Role'] = role
+        reqParams.headers['Role'] = role
     }
     if (params) url += `?${paramSerialize(params)}`
-    // if (method === 'POST') fetchParams.body = JSON.stringify(data)
-    if (method === 'POST') fetchParams.body = buildFormData(data)
-    return fetch(url, fetchParams)
+    // if (method === 'POST') reqParams.body = JSON.stringify(data)
+    if (method === 'POST') reqParams.body = buildFormData(data)
+    return fetch(url, reqParams)
 }
 
-async function nget (url, params, role = null) { return (await doFetch(url, 'GET', params, null, role)).json() }
-async function npost (url, params, data, role = null) { return (await doFetch(url, 'POST', params, data, role)).json() }
+async function nget (url, params, role = null) { return (await doRequest(url, 'GET', params, null, role)).json() }
+async function npost (url, params, data, role = null) { return (await doRequest(url, 'POST', params, data, role)).json() }
 
 class SlimViewRequest {
     constructor (path) {
@@ -81,7 +100,11 @@ class SlimViewRequest {
 
 class UserViewRequest extends SlimViewRequest {
     async signin (data) {
-        return await npost(`${this.urlPrefix}/signin`, null, data)
+        let ret = await npost(`${this.urlPrefix}/signin`, null, data)
+        if (ret.code === retcode.SUCCESS) {
+            saveAccessToken(ret.data.access_token)
+        }
+        return ret
     }
 
     async getUserId () {

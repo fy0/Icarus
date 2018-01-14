@@ -141,7 +141,7 @@ class TopicView(UserMixin, PeeweeView):
 
 
 '''
-from slim.utils.debug import Debug
+from slim.utils.debug import Debug 
 
 debug = Debug()
 debug.add_view(TopicView, TopicForm)

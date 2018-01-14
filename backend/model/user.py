@@ -36,7 +36,7 @@ class User(BaseModel, BaseUser):
     group = IntegerField(index=True)  # 用户组
     state = IntegerField(index=True)
 
-    key = BlobField(index=True)
+    key = BlobField(index=True, null=True)
     key_time = MyTimestampField()
     reg_time = MyTimestampField()
 
@@ -70,6 +70,12 @@ class User(BaseModel, BaseUser):
         key = os.urandom(16)
         key_time = int(time.time())
         return {'key': key, 'key_time': key_time}
+
+    def refresh_key(self):
+        k = self.gen_key()
+        self.key = k['key']
+        self.key_time = k['key_time']
+        self.save()
 
     @classmethod
     def get_by_key(cls, key):

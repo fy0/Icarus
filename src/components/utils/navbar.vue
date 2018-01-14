@@ -1,7 +1,7 @@
 <template>
 <header class="ic-nav">
     <div class="ic-container ic-navbtns">
-        <a class="ic-brand-heading" href="/">Icarus</a>
+        <router-link :to="{path: '/'}" class="ic-brand-heading">Icarus</router-link>
 
         <a href="#" @click="navmenuToggle" :class="showNavmenuBtn ? 'x' : ''" class="ic-xs ic-hidden" id="navmenu-toggle-icon">
             <s class="bar"></s>

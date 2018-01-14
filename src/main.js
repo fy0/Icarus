@@ -69,6 +69,8 @@ renderer.code = function (code, lang, escaped) {
 
 marked.setOptions({
     renderer: renderer,
+    gfm: true,
+    breaks: true,
     sanitize: true,
     langPrefix: 'language-',
     highlight: function (code, lang) {
