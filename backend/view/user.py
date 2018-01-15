@@ -170,6 +170,10 @@ class UserView(UserMixin, PeeweeView):
 
         values.update(User.gen_key())
         values['reg_time'] = uid.time
+        self._key = values['key']
 
         # 添加统计记录
         statistic_new(POST_TYPES.USER, values['id'])
+
+    def after_insert(self, values: Dict):
+        values['access_token'] = self._key

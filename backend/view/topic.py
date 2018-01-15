@@ -2,13 +2,13 @@ from typing import Dict
 import time
 import config
 from model.post import POST_TYPES
-from model.statistic import Statistic, statistic_new, statistic_add_topic, statistic_add_topic_click
+from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click
 from model.topic import Topic
 from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn, A
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from slim.utils import to_bin, dict_filter, dict_filter_inplace
+from slim.utils import to_bin, dict_filter_inplace
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField
 from view.user import UserMixin

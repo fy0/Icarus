@@ -127,6 +127,7 @@ let retinfo = {
 export default {
     retcode,
     retinfo,
+    saveAccessToken,
 
     /** 获取综合信息 */
     misc: async function () {

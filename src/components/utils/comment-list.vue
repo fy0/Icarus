@@ -3,6 +3,7 @@
 <div class="ic-comment-list">
     <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
     <loading v-if="loading"/>
+    <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
     <div v-else v-for="i, _ in page.items" :key="i.id" class="ic-comment">
         <avatar :user="i.user_id" class="avatar"></avatar>
         <mu-paper class="content" :zDepth="1">
@@ -19,6 +20,11 @@
 
 <style>
 /* 注意：评论样式不在 scope 之内，故意为之 */
+.ic-comment-list > .no-comment {
+    padding: 20px 0;
+    text-align: center;
+}
+
 .ic-comment {
     display: flex;
     margin-bottom: 1em;

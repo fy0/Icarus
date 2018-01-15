@@ -148,21 +148,24 @@ export default {
             let successText
             let failedText
 
+            let topicId
             this.loading = true
             this.topicInfo.board_id = this.topicInfo.board.id
             if (this.is_edit) {
                 ret = await api.topic.set({id: this.topicInfo.id}, this.topicInfo, 'user')
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'
+                topicId = this.topicInfo.id
             } else {
                 ret = await api.topic.new(this.topicInfo, 'user')
                 successText = '发表成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '新建失败！'
+                topicId = ret.data.id
             }
 
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
-                this.$router.push({name: 'forum_topic', params: { id: ret.data.id }})
+                this.$router.push({name: 'forum_topic', params: { id: topicId }})
                 $.message_success(successText)
             } else {
                 $.message_error(failedText)

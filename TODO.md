@@ -7,8 +7,7 @@
     + 提醒
     + 签到
     + 统一表单验证
-
-* [WIP] 全局使用 access_token（重要）
+    * [√] 全局使用 access_token（重要）
 
 * 为后台增设管理密码和管理 token
 

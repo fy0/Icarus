@@ -71,6 +71,7 @@
 </style>
 
 <script>
+import Vue from 'vue'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import CheckRow from '../utils/checkrow.vue'
@@ -128,8 +129,14 @@ export default {
                     $.message_by_code(ret.code)
                 } else {
                     let userinfo = ret.data
-                    console.log(userinfo)
-                    $.message_by_code(ret.code)
+                    if (ret.code === 0) {
+                        api.saveAccessToken(userinfo['access_token'])
+                        ret = await api.user.get({id: ret.data.id}, 'user')
+                        Vue.set(state, 'user', ret.data)
+                        $.message_by_code(ret.code)
+                    } else {
+                        $.message_error('注册失败！可能账号或昵称已经被注册')
+                    }
                     this.$router.push({name: 'forum', params: {}})
                 }
             } else {

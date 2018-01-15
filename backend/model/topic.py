@@ -4,6 +4,13 @@ from model import db, BaseModel, MyTimestampField
 from model.user import User
 from model.board import Board
 
+"""
+顶贴机制：
+1. 置顶权重，默认为0，如有置顶则设置其值，越高排在越上面
+2. 一般权重，默认值为发帖时当前帖子个数，回帖、上升、下沉几个操作使其增加或减少，越高排在越上面
+3. 时间，当以上两个权重相等的时候，越新的帖子排在越上面
+"""
+
 
 class TOPIC_STATE(StateObject):
     DEL = 0
