@@ -12,7 +12,7 @@ from model.user import User, USER_GROUP, USER_STATE
 from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, ValidationError
-from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn
+from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn, A
 
 
 class UserMixin(BaseAccessTokenUserMixin):
@@ -91,21 +91,13 @@ class UserView(UserMixin, PeeweeView):
             }
         }, based_on=visitor)
 
-        def user_info_get_check(ability, user, cur_action, record: AbilityRecord) -> bool:
-            if user:
-                return record.get('id') == user.id
+        def user_info_get_check(ability, user, cur_action, record: AbilityRecord):
+            if user and record.get('id') == user.id:
+                return ['email']
+            return True
 
-        normal_user.add_record_rule(
-            ['read'],
-            AbilityColumn('user', 'email'),
-            func=user_info_get_check
-        )
-
-        normal_user.add_record_rule(
-            ['query', 'read', 'write'],
-            AbilityColumn('user', 'key'),
-            func=user_info_get_check
-        )
+        normal_user.add_record_check([A.READ], 'user', func=user_info_get_check)
+        # normal_user.add_record_check([A.READ, A.WRITE], 'user', func=user_info_get_check)
 
         admin = Ability('admin', {
             'user': '*'

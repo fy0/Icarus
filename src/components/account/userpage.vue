@@ -144,7 +144,9 @@ export default {
         }
     },
     beforeRouteEnter: async (to, from, next) => {
-        let ret = await api.user.get(to.params)
+        let role = null
+        if (state.user && (to.params.id === state.user.id)) role = 'user'
+        let ret = await api.user.get(to.params, role)
 
         if (ret.code === api.retcode.SUCCESS) {
             return next(async vm => {

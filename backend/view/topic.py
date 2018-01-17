@@ -42,54 +42,36 @@ class TopicView(UserMixin, PeeweeView):
         permission: Permissions = cls.permission
         visitor = Ability(None, {
             'topic': {
-                'id': ['query', 'read'],
-                'title': ['read'],
-                'user_id': ['query', 'read'],
-                'board_id': ['query', 'read'],
-                'time': ['read'],
-                'state': ['read'],
+                'id': [A.QUERY, A.READ],
+                'title': [A.READ],
+                'user_id': [A.QUERY, A.READ],
+                'board_id': [A.QUERY, A.READ],
+                'time': [A.READ],
+                'state': [A.READ],
 
-                'edit_time': ['read'],
-                'last_edit_user_id': ['read'],
-                'content': ['read'],
+                'edit_time': [A.READ],
+                'last_edit_user_id': [A.READ],
+                'content': [A.READ],
 
-                'sticky_weight': ['read'],
-                'weight': ['read'],
+                'sticky_weight': [A.READ],
+                'weight': [A.READ],
             }
         })
 
         normal_user = Ability('user', {
             'topic': {
-                'id': [A.QUERY, A.READ, A.CREATE],
-                'title': [A.READ, A.CREATE, A.WRITE],
-                'user_id': [A.QUERY, A.READ, A.CREATE],
-                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
-                'time': [A.READ, A.CREATE],
-                'content': [A.READ, A.CREATE, A.WRITE],
+                'title': [A.READ],
+                'board_id': [A.QUERY, A.READ, A.CREATE],
+                'time': [A.READ],
+                'content': [A.READ, A.CREATE],
             }
         }, based_on=visitor)
 
         def is_users_post(ability, user, cur_action, record: AbilityRecord) -> bool:
             if user:
-                return record.get('id') == user.id
+                return record.get('user_id') == user.id
 
-        normal_user.add_record_rule(
-            ['read', 'write', A.CREATE],
-            AbilityColumn('topic', 'title'),
-            func=is_users_post
-        )
-
-        normal_user.add_record_rule(
-            ['read', 'write', A.CREATE],
-            AbilityColumn('topic', 'content'),
-            func=is_users_post
-        )
-
-        normal_user.add_record_rule(
-            ['query', 'read', 'write'],
-            AbilityColumn('topic', 'state'),
-            func=is_users_post
-        )
+        normal_user.add_record_check((A.WRITE,), 'topic', func=is_users_post)
 
         admin = Ability('admin', {
             'topic': '*'
