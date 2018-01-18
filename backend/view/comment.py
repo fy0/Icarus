@@ -3,6 +3,7 @@ import config
 from typing import Dict
 
 from model.statistic import statistic_add_comment
+from model.topic import Topic
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model.post import POST_TYPES
@@ -23,12 +24,13 @@ class CommentView(UserMixin, PeeweeView):
     def ready(cls):
         cls.add_soft_foreign_key('user_id', 'user')
 
-    def before_insert(self, values: Dict):
+    def before_insert(self, raw_post: Dict, values: Dict):
         relate_type = values.get('related_type', None)
         if not (relate_type and relate_type.isdigit() and int(relate_type) in POST_TYPES.values()):
             return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
         try:
+            relate_type = int(relate_type)
             cid = config.ID_GENERATOR(values['related_id'])
             post = POST_TYPES.get_post(relate_type, cid)
 
@@ -45,6 +47,10 @@ class CommentView(UserMixin, PeeweeView):
         values['related_type'] = int(values['related_type'])
         values['user_id'] = self.current_user.id
         values['time'] = int(time.time())
+
+        if relate_type == POST_TYPES.TOPIC:
+            post: Topic
+            post.weight_inc()
 
     def after_insert(self, values: Dict):
         statistic_add_comment(values['related_type'], values['related_id'], values['id'])

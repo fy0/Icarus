@@ -36,7 +36,7 @@ class BoardView(PeeweeView):
         pass
 
     @classmethod
-    def before_insert(cls, values: Dict):
+    def before_insert(cls, raw_post: Dict, values: Dict):
         form = BoardForm(**values)
         if not form.validate():
             return RETCODE.FAILED, form.errors

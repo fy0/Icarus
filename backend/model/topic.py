@@ -40,3 +40,28 @@ class Topic(BaseModel):
 
     class Meta:
         db_table = 'topic'
+
+    @classmethod
+    def weight_gen(cls):
+        cur = db.execute_sql('select max(weight)+1 from "topic"')
+        return cur.fetchone()[0]
+
+    def weight_inc(self):
+        """ 提升一点排序权重 """
+        try:
+            db.execute_sql("""
+                WITH
+                  t1 as (SELECT "id", "weight" FROM "topic" WHERE "id" = %s),
+                  t2 as (SELECT "t2"."id", "t2"."weight" FROM t1, "topic" AS t2
+                    WHERE "t2"."weight" > "t1".weight ORDER BY "weight" ASC LIMIT 1)
+                UPDATE "topic"
+                  set "weight" = (
+                    CASE WHEN "topic"."id" = "t1"."id"
+                      THEN "t2"."weight"
+                    ELSE "t1"."weight" END
+                  )
+                FROM t1, t2
+                WHERE "topic"."id" in ("t1"."id", "t2"."id");
+            """, (self.id,))
+        except DatabaseError:
+            pass
