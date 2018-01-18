@@ -28,10 +28,11 @@ class TestBaseView(BaseView):
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,
 
-            'USERNAME_MIN': config.USERNAME_MIN,
-            'USERNAME_MAX': config.USERNAME_MAX,
-            'USERNAME_FOR_REG_MIN': config.USERNAME_FOR_REG_MIN,
-            'USERNAME_FOR_REG_MAX': config.USERNAME_FOR_REG_MAX,
+            'NICKNAME_MIN': config.NICKNAME_MIN,
+            'NICKNAME_MAX': config.NICKNAME_MAX,
+            'NICKNAME_CN_FOR_REG_MIN': config.NICKNAME_CN_FOR_REG_MIN,
+            'NICKNAME_FOR_REG_MIN': config.NICKNAME_FOR_REG_MIN,
+            'NICKNAME_FOR_REG_MAX': config.NICKNAME_FOR_REG_MAX,
             'PASSWORD_MIN': config.PASSWORD_MIN,
             'PASSWORD_MAX': config.PASSWORD_MAX,
 

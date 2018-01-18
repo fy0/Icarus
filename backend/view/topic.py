@@ -67,9 +67,11 @@ class TopicView(UserMixin, PeeweeView):
             }
         }, based_on=visitor)
 
-        def is_users_post(ability, user, cur_action, record: AbilityRecord) -> bool:
+        def is_users_post(ability, user, action, record: AbilityRecord, available_columns: list):
             if user:
-                return record.get('user_id') == user.id
+                if record.get('user_id') != user.id:
+                    available_columns.clear()
+            return True
 
         normal_user.add_record_check((A.WRITE,), 'topic', func=is_users_post)
 
@@ -87,26 +89,24 @@ class TopicView(UserMixin, PeeweeView):
             vals = getattr(self, '_val_bak', None)
             if vals: statistic_add_topic_click(*vals)
 
-    def handle_read(self, values: Dict):
+    def after_read(self, values: Dict):
         self._val_bak = [values['id'], values['board_id']]
 
     def handle_query(self, info: ParamsQueryInfo):
         pass
 
-    def handle_update(self, values: Dict):
-        form = TopicForm(**values)
+    def before_update(self, raw_post: Dict, values: Dict):
+        form = TopicForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
-        dict_filter_inplace(values, ('title', 'board_id', 'content'))
 
         values['board_id'] = to_bin(values['board_id'])
         #values['user_id'] = self.current_user.id
 
-    def handle_insert(self, values: Dict):
-        form = TopicForm(**values)
+    def before_insert(self, raw_post: Dict, values: Dict):
+        form = TopicForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
-        dict_filter_inplace(values, ('title', 'board_id', 'content'))
 
         values['board_id'] = to_bin(values['board_id'])
         values['user_id'] = self.current_user.id

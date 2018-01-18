@@ -18,8 +18,7 @@ from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityCol
 class UserMixin(BaseAccessTokenUserMixin):
     def teardown_user_key(self):
         u: User = self.current_user
-        u.key = b''
-        u.save()
+        u.update(key=None).execute()
 
     def get_user_by_key(self, key):
         if not key: return
@@ -30,7 +29,7 @@ class UserMixin(BaseAccessTokenUserMixin):
 
 
 class SigninForm(ValidateForm):
-    email = StringField('邮箱', validators=[va.required(), va.Email()])
+    email = StringField('邮箱', validators=[va.required(), va.Length(3, config.EMAIL_MAX), va.Email()])
 
     password = StringField('密码', validators=[
         va.required(),
@@ -40,23 +39,29 @@ class SigninForm(ValidateForm):
 
 def nickname_check(form, field):
     # 至少两个汉字，或以汉字/英文字符开头至少4个字符
-    text = '至少两个汉字，或以汉字/英文字符开头至少4个字符'
+    text = '至少%d个汉字，或以汉字/英文字符开头至少%d个字符' % (config.NICKNAME_CN_FOR_REG_MIN, config.NICKNAME_FOR_REG_MIN)
     name = field.data
     # 检查首字符，检查有无非法字符
     if not re.match(r'^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$', name):
         raise ValidationError(text)
-    # 若长度大于4，直接许可
-    if len(name) >= 4:
+    # 若长度大于等于4，直接许可
+    if len(name) >= max(config.NICKNAME_FOR_REG_MIN, config.NICKNAME_CN_FOR_REG_MIN):
         return True
-    # 长度小于4，检查其中汉字数量
-    if not (len(re.findall(r'[\u4e00-\u9fa5]', name)) >= 2):
-        raise ValidationError(text)
+
+    # 当最少汉字要求少于最少英文要求
+    if config.NICKNAME_CN_FOR_REG_MIN < config.NICKNAME_FOR_REG_MIN:
+        # 长度小于4，检查其中汉字数量
+        if not (len(re.findall(r'[\u4e00-\u9fa5]', name)) >= config.NICKNAME_CN_FOR_REG_MIN):
+            raise ValidationError(text)
+    elif config.NICKNAME_CN_FOR_REG_MIN > config.NICKNAME_FOR_REG_MIN:
+        if not (len(re.findall(r'[a-zA-Z0-9]', name)) >= config.NICKNAME_FOR_REG_MIN):
+            raise ValidationError(text)
 
 
 class SignupForm(SigninForm):
     nickname = StringField('昵称', validators=[
         va.required(),
-        va.Length(2, 32),
+        va.Length(min(config.NICKNAME_CN_FOR_REG_MIN, config.NICKNAME_FOR_REG_MIN), config.NICKNAME_FOR_REG_MAX),
         nickname_check
     ])
 
@@ -75,29 +80,29 @@ class UserView(UserMixin, PeeweeView):
         permission: Permissions = cls.permission
         visitor = Ability(None, {
             'user': {
-                'id': ['query', 'read'],
-                'nickname': ['read'],
-                'group': ['read'],
+                'id': [A.QUERY, A.READ],
+                'nickname': [A.READ, A.CREATE],
+                'group': [A.READ],
 
-                'email': ['create'],
-                'password': ['create'],
+                'email': [A.CREATE],
+                'password': [A.CREATE],
             }
         })
 
         normal_user = Ability('user', {
             'user': {
-                'nickname': ['query', 'read', 'write'],
+                'nickname': [A.QUERY, A.READ, A.WRITE],
+
                 # 'key': ['query', 'read']
             }
         }, based_on=visitor)
 
-        def user_info_get_check(ability, user, cur_action, record: AbilityRecord):
+        def user_check(ability, user, action, record: AbilityRecord, available_columns: list):
             if user and record.get('id') == user.id:
-                return ['email']
+                available_columns.append('email')
             return True
 
-        normal_user.add_record_check([A.READ], 'user', func=user_info_get_check)
-        # normal_user.add_record_check([A.READ, A.WRITE], 'user', func=user_info_get_check)
+        normal_user.add_record_check([A.READ], 'user', func=user_check)
 
         admin = Ability('admin', {
             'user': '*'
@@ -135,7 +140,7 @@ class UserView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 
-    def handle_insert(self, values: Dict):
+    def before_insert(self, raw_post: Dict, values: Dict):
         # 必须存在以下值：
         # email password nickname
         # 自动填充或改写以下值：
@@ -143,12 +148,13 @@ class UserView(UserMixin, PeeweeView):
         if not config.USER_ALLOW_SIGNUP:
             return RETCODE.FAILED, '注册未开放'
 
-        form = SignupForm(**values)
+        form = SignupForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
         uid = User.gen_id()
         values['id'] = uid.digest()
+        values['email'] = values['email'].lower()
 
         ret = User.gen_password_and_salt(values['password'])
         values.update(ret)

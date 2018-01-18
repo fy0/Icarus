@@ -23,22 +23,22 @@ class CommentView(UserMixin, PeeweeView):
     def ready(cls):
         cls.add_soft_foreign_key('user_id', 'user')
 
-    def handle_insert(self, values: Dict):
+    def before_insert(self, values: Dict):
         relate_type = values.get('related_type', None)
         if not (relate_type and relate_type.isdigit() and int(relate_type) in POST_TYPES.values()):
-            return self.finish(RETCODE.INVALID_HTTP_POSTDATA, "被评论的内容不存在")
+            return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
         try:
             cid = config.ID_GENERATOR(values['related_id'])
             post = POST_TYPES.get_post(relate_type, cid)
 
             if not post:
-                return self.finish(RETCODE.INVALID_HTTP_POSTDATA, "被评论的内容不存在")
+                return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
         except TypeError:
-            return self.finish(RETCODE.INVALID_HTTP_POSTDATA, "被评论的内容不存在")
+            return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
         if 'content' not in values or not values['content']:
-            return self.finish(RETCODE.INVALID_HTTP_POSTDATA, "评论内容不能为空")
+            return self.finish(RETCODE.INVALID_POSTDATA, "评论内容不能为空")
 
         values['id'] = config.ID_GENERATOR().to_bin()
         values['related_id'] = cid.to_bin()

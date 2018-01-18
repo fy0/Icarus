@@ -32,11 +32,11 @@ class BoardView(PeeweeView):
         cls.add_soft_foreign_key('id', 'statistic24h', 's24')
 
     @classmethod
-    def handle_read(self, values: Dict):
+    def after_read(self, values: Dict):
         pass
 
     @classmethod
-    def handle_insert(cls, values: Dict):
+    def before_insert(cls, values: Dict):
         form = BoardForm(**values)
         if not form.validate():
             return RETCODE.FAILED, form.errors

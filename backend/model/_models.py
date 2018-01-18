@@ -9,6 +9,12 @@ from model.user import User
 from model.wiki import WikiItem, WikiArticle, WikiHistory
 
 db.connect()
+
+db.execute_sql("""
+CREATE EXTENSION IF NOT EXISTS hstore;
+CREATE EXTENSION IF NOT EXISTS citext;
+""")
+
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
                   Statistic, Statistic24h], safe=True)

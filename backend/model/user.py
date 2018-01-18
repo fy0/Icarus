@@ -2,12 +2,14 @@
 import os
 
 import time
+
+import peewee
 from peewee import *
 
 import config
 from slim.base.user import BaseUser
 from slim.utils import StateObject
-from model import BaseModel, MyTimestampField
+from model import BaseModel, MyTimestampField, CITextField, db
 
 
 class USER_GROUP(StateObject):
@@ -28,8 +30,8 @@ class USER_STATE(StateObject):
 
 class User(BaseModel, BaseUser):
     id = BlobField(primary_key=True)
-    email = CharField(index=True, unique=True, max_length=128)
-    nickname = CharField(index=True, unique=True, max_length=32)
+    email = TextField(index=True, unique=True)
+    nickname = CITextField(index=True, unique=True)
     password = BlobField()
     salt = BlobField()  # auto
 
@@ -72,10 +74,19 @@ class User(BaseModel, BaseUser):
         return {'key': key, 'key_time': key_time}
 
     def refresh_key(self):
-        k = self.gen_key()
-        self.key = k['key']
-        self.key_time = k['key_time']
-        self.save()
+        count = 0
+        while count < 10:
+            with db.atomic():
+                try:
+                    k = self.gen_key()
+                    self.key = k['key']
+                    self.key_time = k['key_time']
+                    self.save()
+                    return
+                except peewee.DatabaseError:
+                    count += 1
+                    db.rollback()
+        raise ValueError("generate key failed")
 
     @classmethod
     def get_by_key(cls, key):
