@@ -18,7 +18,8 @@ from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityCol
 class UserMixin(BaseAccessTokenUserMixin):
     def teardown_user_key(self):
         u: User = self.current_user
-        u.update(key=None).execute()
+        u.key = None
+        u.save()
 
     def get_user_by_key(self, key):
         if not key: return

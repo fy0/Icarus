@@ -34,6 +34,10 @@ class CITextField(peewee._StringField):
     db_field = 'citext'
 
 
+class SerialField(peewee.IntegerField):
+    db_field = 'serial'
+
+
 class MyTimestampField(peewee.BigIntegerField):
     pass
 

@@ -2,14 +2,12 @@
 import os
 
 import time
-
-import peewee
 from peewee import *
 
 import config
 from slim.base.user import BaseUser
 from slim.utils import StateObject
-from model import BaseModel, MyTimestampField, CITextField, db
+from model import BaseModel, MyTimestampField, CITextField, db, SerialField
 
 
 class USER_GROUP(StateObject):
@@ -43,7 +41,7 @@ class User(BaseModel, BaseUser):
     reg_time = MyTimestampField()
 
     phone = TextField(null=True, default=None)  # 大陆地区
-    number = IntegerField(default=0)  # 序号，第N个用户，暂时不启用
+    number = SerialField(default=1)  # 序号，第N个用户，暂时不启用
     credit = IntegerField(default=0)  # 积分，会消费
     reputation = IntegerField(default=0)  # 声望，不会消失
 
@@ -83,7 +81,7 @@ class User(BaseModel, BaseUser):
                     self.key_time = k['key_time']
                     self.save()
                     return
-                except peewee.DatabaseError:
+                except DatabaseError:
                     count += 1
                     db.rollback()
         raise ValueError("generate key failed")

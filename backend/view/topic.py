@@ -60,10 +60,9 @@ class TopicView(UserMixin, PeeweeView):
 
         normal_user = Ability('user', {
             'topic': {
-                'title': [A.READ],
-                'board_id': [A.QUERY, A.READ, A.CREATE],
-                'time': [A.READ],
-                'content': [A.READ, A.CREATE],
+                'title': [A.READ, A.CREATE, A.WRITE],
+                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
+                'content': [A.READ, A.CREATE, A.WRITE],
             }
         }, based_on=visitor)
 
@@ -114,6 +113,7 @@ class TopicView(UserMixin, PeeweeView):
         # 以下通用
         values['id'] = config.ID_GENERATOR().digest()
         values['time'] = int(time.time())
+        values['weight'] = Topic.weight_gen()
 
         # 添加统计记录
         statistic_new(POST_TYPES.TOPIC, values['id'])

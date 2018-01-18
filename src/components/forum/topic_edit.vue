@@ -150,14 +150,19 @@ export default {
 
             let topicId
             this.loading = true
-            this.topicInfo.board_id = this.topicInfo.board.id
+            let topicInfo = {
+                'title': this.topicInfo.title,
+                'board_id': this.topicInfo.board.id,
+                'content': this.topicInfo.content
+            }
+
             if (this.is_edit) {
-                ret = await api.topic.set({id: this.topicInfo.id}, this.topicInfo, 'user')
+                ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'user')
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'
                 topicId = this.topicInfo.id
             } else {
-                ret = await api.topic.new(this.topicInfo, 'user')
+                ret = await api.topic.new(topicInfo, 'user')
                 successText = '发表成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '新建失败！'
                 topicId = ret.data.id
