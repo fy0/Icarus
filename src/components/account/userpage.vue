@@ -141,22 +141,30 @@ export default {
         handleActive () {
             console.log(111)
             // window.alert('tab active')
+        },
+        fetchData: async function () {
+            let role = null
+            let params = this.$route.params
+
+            if (state.user && (params.id === state.user.id)) role = 'user'
+            let ret = await api.user.get(params, role)
+
+            if (ret.code === api.retcode.SUCCESS) {
+                this.user = ret.data
+                await this.tabTopicLoad()
+            } else {
+                $.message_by_code(ret.code)
+            }
         }
     },
-    beforeRouteEnter: async (to, from, next) => {
-        let role = null
-        if (state.user && (to.params.id === state.user.id)) role = 'user'
-        let ret = await api.user.get(to.params, role)
-
-        if (ret.code === api.retcode.SUCCESS) {
-            return next(async vm => {
-                vm.user = ret.data
-                await vm.tabTopicLoad()
-            })
-        }
-
-        $.message_by_code(ret.code)
-        return next('/')
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        '$route': 'fetchData'
+    },
+    created: async function () {
+        this.state.loading++
+        await this.fetchData()
+        this.state.loading--
     },
     components: {
         Avatar

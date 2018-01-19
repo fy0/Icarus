@@ -59,6 +59,7 @@
 </style>
 
 <script>
+import Vue from 'vue'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import CheckRow from '../utils/checkrow.vue'
@@ -101,7 +102,7 @@ export default {
                 if (ret.code === api.retcode.SUCCESS) {
                     ret = await api.user.get({id: ret.data.id}, 'user')
                     if (ret.code !== api.retcode.SUCCESS) return
-                    state.user = ret.data
+                    Vue.set(state, 'user', ret.data) // 这样顶栏可以接到事件
 
                     if (this.goLastPage) {
                         state.loading--

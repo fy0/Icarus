@@ -126,15 +126,18 @@ router.beforeEach(async function (to, from, next) {
             let ret = await api.user.getUserId()
             if (ret.code !== api.retcode.SUCCESS) {
                 // 未登录，后续不必进行
+                Vue.set(state, 'initLoadDone', true)
                 return next()
             }
 
             ret = await api.user.get({id: ret.data.id}, 'user')
             if (ret.code !== api.retcode.SUCCESS) {
                 // 执行未成功
+                Vue.set(state, 'initLoadDone', true)
                 return next('/')
             }
             Vue.set(state, 'user', ret.data)
+            Vue.set(state, 'initLoadDone', true)
         }
     }
 

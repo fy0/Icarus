@@ -22,6 +22,7 @@ export default {
     },
     user: null,
     loading: 1,
+    initLoadDone: false,
     init: () => {
         ;
     }

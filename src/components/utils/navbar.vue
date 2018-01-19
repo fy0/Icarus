@@ -19,13 +19,12 @@
                     <router-link tag="li" v-if="isAdmin" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
                         <a>管理</a>
                     </router-link>
-                    <li class="menu-item" v-if="isAdmin"><a href="#">设置</a></li>
                     <router-link tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
                         <a>关于</a>
                     </router-link>
                 </ul>
 
-                <ul class="menu-list" v-if="!state.user">
+                <ul class="menu-list" v-if="state.initLoadDone && (!state.user)">
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_signup' }" :class="navActive('account_signup')">
                         <a>注册</a>
                     </router-link>
@@ -34,7 +33,10 @@
                     </router-link>
                 </ul>
 
-                <ul class="menu-list" v-else>
+                <ul class="menu-list" v-if="state.user">
+                    <router-link tag="li" class="menu-item" :to="{ name: 'notif' }" :class="navActive('account_signin')">
+                        <a>提醒</a>
+                    </router-link>
                     <li class="menu-item">
                         <user-link class="user-link" :user="state.user">
                             <avatar style="margin-right: 6px;" :user="state.user" :size="28" class="avatar"></avatar>
