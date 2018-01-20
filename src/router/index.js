@@ -43,8 +43,8 @@ export default new Router({
 
         // 个人提醒
         {
-            path: '/notif',
-            name: 'notif',
+            path: '/notifications',
+            name: 'account_notif',
             component: AccountNotif
         },
 

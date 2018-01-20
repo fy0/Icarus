@@ -9,7 +9,10 @@ from model.notif import UserNotifRecord
 
 
 def work():
-    db.execute_sql('ALTER TABLE public.comment ADD reply_to_cmt_id BYTEA NULL;')
+    try:
+        db.execute_sql('ALTER TABLE public.comment ADD reply_to_cmt_id BYTEA NULL;')
+    except:
+        db.rollback()
 
     for i in User.select().execute():
         try:

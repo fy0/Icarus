@@ -1,6 +1,7 @@
 import config
 from aiohttp import web
 from model.board import BOARD_STATE
+from model.notif import NOTIF_TYPE
 from model.post import POST_TYPES
 from model.topic import TOPIC_STATE
 from model.user import USER_GROUP
@@ -27,6 +28,8 @@ class TestBaseView(BaseView):
 
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,
+
+            'NOTIF_TYPE': NOTIF_TYPE.to_dict(),
 
             'NICKNAME_MIN': config.NICKNAME_MIN,
             'NICKNAME_MAX': config.NICKNAME_MAX,

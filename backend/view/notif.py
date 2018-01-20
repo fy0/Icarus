@@ -22,6 +22,7 @@ class NotificationView(UserMixin, PeeweeView):
 
     @classmethod
     def interface(cls):
+        super().interface()
         cls.discard('new')
         cls.discard('set')
         cls.discard('delete')

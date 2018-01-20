@@ -1,13 +1,14 @@
 import time
 from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
-
 import config
 from model import BaseModel, MyTimestampField, db
 from model.comment import COMMENT_STATE
 from model.topic import TOPIC_STATE
 from model.user import User
-from slim.utils import StateObject
+from slim.utils import StateObject, json_patch
+
+json_patch.apply()
 
 
 class NOTIF_TYPE(StateObject):
@@ -99,10 +100,28 @@ class Notification(BaseModel):
     def refresh(cls, user_id):
         new = []
         r: UserNotifRecord = UserNotifRecord.get_by_pk(user_id)
-        for i in r.get_notifications():
+        for i in r.get_notifications(True):
             if i[0] == NOTIF_TYPE.BE_COMMENTED:
-                new.append((config.ID_GENERATOR(), (), user_id, NOTIF_TYPE.BE_COMMENTED, i[1], i, False))
-        cls.insert_many(new)
+                new.append({
+                    'id': config.ID_GENERATOR().to_bin(),
+                    'sender_ids': (i[5],),
+                    'receiver_id': user_id,
+                    'type': NOTIF_TYPE.BE_COMMENTED,
+                    'time': i[1],
+                    'data': i,
+                })
+            elif i[0] == NOTIF_TYPE.BE_REPLIED:
+                new.append({
+                    'id': config.ID_GENERATOR().to_bin(),
+                    'sender_ids': (i[5],),
+                    'receiver_id': user_id,
+                    'type': NOTIF_TYPE.BE_REPLIED,
+                    'time': i[1],
+                    'data': i,
+                })
+
+        if new:
+            cls.insert_many(new).execute()
 
     class Meta:
         db_table = 'notif'
@@ -113,4 +132,5 @@ if __name__ == '__main__':
     r: UserNotifRecord = UserNotifRecord.get_by_pk(u.id)
     for i in r.get_notifications():
         print(i)
+    print('------')
     Notification.refresh(u.id)

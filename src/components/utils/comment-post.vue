@@ -101,7 +101,6 @@ export default {
         commentPost: async function () {
             this.commentInfo.related_id = this.item.id
             this.commentInfo.related_type = this.postType
-            console.log(this.replyTo)
             if (this.replyTo) this.commentInfo.reply_to_cmt_id = this.replyTo.id
             let ret = await api.comment.new(this.commentInfo)
             $.message_by_code(ret.code)

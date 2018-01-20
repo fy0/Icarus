@@ -34,8 +34,11 @@
                 </ul>
 
                 <ul class="menu-list" v-if="state.user">
-                    <router-link tag="li" class="menu-item" :to="{ name: 'notif' }" :class="navActive('account_signin')">
-                        <a>提醒</a>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
+                        <a style="display: flex; align-items: center;">
+                            <mu-badge content="10" primary style="margin-right: 6px" />
+                            <span>提醒</span>
+                        </a>
                     </router-link>
                     <li class="menu-item">
                         <user-link class="user-link" :user="state.user">
