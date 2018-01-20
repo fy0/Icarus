@@ -15,7 +15,7 @@ from model.board import Board
 class TOPIC_STATE(StateObject):
     DEL = 0
     HIDE = 10
-    CLOSE = 30 # 禁止回复
+    CLOSE = 30  # 禁止回复
     NORMAL = 50
 
     txt = {DEL: "删除", HIDE: "隐藏", CLOSE:"关闭", NORMAL:"正常"}

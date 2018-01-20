@@ -11,6 +11,7 @@
                 <span>#{{(curPage - 1) * page.info.page_size + _ + 1}}</span>
                 <b><router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link></b>
                 <span><ic-time :timestamp="i.time" /></span>
+                <a style="float: right" @click="" href="javascript:void(0)">回复</a>
             </div>
             <div class="post" v-html="marked(i.content || '')"></div>
         </mu-paper>

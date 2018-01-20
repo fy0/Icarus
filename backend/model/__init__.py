@@ -12,7 +12,7 @@ asyncpg_conn = None
 def asyncpg_init(db_uri):
     async def create_conn():
         global asyncpg_conn
-        asyncpg_conn = await asyncpg.connect(db_uri)
+        asyncpg_conn: asyncpg.connection.Connection = await asyncpg.connect(db_uri)
 
     async_run(create_conn)
 
