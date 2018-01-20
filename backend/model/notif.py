@@ -60,7 +60,7 @@ class UserNotifRecord(BaseModel):
     last_like_id = BlobField(default=b'\x00')
     last_pm_id = BlobField(default=b'\x00')
     last_sysmsg_id = BlobField(default=b'\x00')
-    update_time = MyTimestampField()
+    update_time = MyTimestampField(index=True)
 
     def get_notifications(self):
         lst = []

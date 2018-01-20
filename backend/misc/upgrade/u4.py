@@ -1,0 +1,23 @@
+import time
+
+import peewee
+
+from model import db
+from model import _models
+from model.user import User
+from model.notif import UserNotifRecord
+
+
+def work():
+    db.execute_sql('ALTER TABLE public.comment ADD reply_to_cmt_id BYTEA NULL;')
+
+    for i in User.select().execute():
+        try:
+            UserNotifRecord.create(id=i.id, update_time=int(time.time()))
+        except peewee.IntegrityError:
+            db.rollback()
+
+
+if __name__ == '__main__':
+    work()
+    print('done')

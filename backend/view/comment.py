@@ -23,6 +23,7 @@ class CommentView(UserMixin, PeeweeView):
     @classmethod
     def ready(cls):
         cls.add_soft_foreign_key('user_id', 'user')
+        cls.add_soft_foreign_key('reply_to_cmt_id', 'comment')
 
     def before_insert(self, raw_post: Dict, values: Dict):
         relate_type = values.get('related_type', None)
@@ -41,6 +42,19 @@ class CommentView(UserMixin, PeeweeView):
 
         if 'content' not in values or not values['content']:
             return self.finish(RETCODE.INVALID_POSTDATA, "评论内容不能为空")
+
+        if 'reply_to_cmt_id' in values:
+            try:
+                rtid = config.ID_GENERATOR(values['reply_to_cmt_id'])
+            except TypeError:
+                return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
+            c: Comment = Comment.get_by_pk(rtid.to_bin())
+            if not c:
+                return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
+            if c.related_id != post.id:
+                return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
+
+            values['reply_to_cmt_id'] = rtid.to_bin()
 
         values['id'] = config.ID_GENERATOR().to_bin()
         values['related_id'] = cid.to_bin()

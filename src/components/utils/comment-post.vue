@@ -7,9 +7,16 @@
             <mu-paper :zDepth="editing ? 2 : 1" class="content">
                 <textarea @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
             </mu-paper>
-            <mu-paper :zDepth="editing ? 2 : 1" class="postBtnBox">
-                <mu-raised-button label="发表" class="postBtn" @click="commentPost" primary />
-            </mu-paper>
+            <div style="display: flex; justify-content: space-between;" class="postBtnBox">
+                <div v-if="!replyTo"></div>
+                <div style="align-items: center; display: flex;" v-else>
+                    <a href="javascript:void(0)" @click="setReplyTo(null)">×</a>
+                    <div style="margin-left: 10px">正在回复：{{replyTo.user_id.nickname}}</div>
+                </div>
+                <mu-paper :zDepth="editing ? 2 : 1">
+                    <mu-raised-button label="发表" class="postBtn" @click="commentPost" primary />
+                </mu-paper>
+            </div>
         </div>
     </div>
 
@@ -48,7 +55,7 @@
 
 .postBtnBox {
     margin-top: 15px;
-    float: right;
+    margin-left: 15px;
 }
 
 .postBtn {
@@ -62,12 +69,12 @@ import state from '@/state.js'
 export default {
     props: {
         item: Object,
-        postType: {},
-        onSuccess: Function
+        postType: {}
     },
     data () {
         return {
             state,
+            replyTo: null,
             editing: false,
             commentInfo: {
                 related_id: null,
@@ -82,6 +89,9 @@ export default {
         ;
     },
     methods: {
+        setReplyTo: function (val) {
+            this.replyTo = val
+        },
         onEditorFocus: async function () {
             this.editing = true
         },
@@ -91,13 +101,15 @@ export default {
         commentPost: async function () {
             this.commentInfo.related_id = this.item.id
             this.commentInfo.related_type = this.postType
+            console.log(this.replyTo)
+            if (this.replyTo) this.commentInfo.reply_to_cmt_id = this.replyTo.id
             let ret = await api.comment.new(this.commentInfo)
             $.message_by_code(ret.code)
             if (ret.code === 0) {
                 this.editing = false
                 this.commentInfo.content = ''
             }
-            if (this.onSuccess) this.onSuccess()
+            this.$emit('on-commented')
         }
     },
     components: {

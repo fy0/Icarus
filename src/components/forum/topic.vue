@@ -17,8 +17,7 @@
             <!--<h1>{{topic.title}}</h1>-->
             <div class="content" v-html="marked(topic.content || '')"></div>
             <p class="ic-hr"></p>
-            <comment-list :item="topic" :cur-page="commentPage" />
-            <comment-post :item="topic" :on-success="commentSuccess" :post-type="POST_TYPES.TOPIC"></comment-post>
+            <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
         </div>
     </div>
     <div class="info">
@@ -80,7 +79,6 @@ import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/forum.css'
 import CommentList from '../utils/comment-list.vue'
-import CommentPost from '../utils/comment-post.vue'
 
 export default {
     data () {
@@ -94,10 +92,6 @@ export default {
     },
     methods: {
         marked,
-        commentSuccess: function () {
-            // this.$router.replace({name: 'forum_topic', params: {id: this.topic.id}})
-            this.$router.go(0)
-        },
         fetchData: async function () {
             let params = this.$route.params
             let ret = await api.topic.get({
@@ -131,8 +125,7 @@ export default {
         ;
     },
     components: {
-        CommentList,
-        CommentPost
+        CommentList
     }
 }
 </script>

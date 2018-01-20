@@ -1,21 +1,28 @@
 <!-- 评论 -->
 <template>
-<div class="ic-comment-list">
-    <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
-    <loading v-if="loading"/>
-    <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
-    <div v-else v-for="i, _ in page.items" :key="i.id" class="ic-comment">
-        <avatar :user="i.user_id" class="avatar"></avatar>
-        <mu-paper class="content" :zDepth="1">
-            <div class="head">
-                <span>#{{(curPage - 1) * page.info.page_size + _ + 1}}</span>
-                <b><router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link></b>
-                <span><ic-time :timestamp="i.time" /></span>
-                <a style="float: right" @click="" href="javascript:void(0)">回复</a>
-            </div>
-            <div class="post" v-html="marked(i.content || '')"></div>
-        </mu-paper>
+<div>
+    <div class="ic-comment-list">
+        <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
+        <loading v-if="loading"/>
+        <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
+        <div v-else v-for="i, _ in page.items" :key="i.id" class="ic-comment">
+            <avatar :user="i.user_id" class="avatar"></avatar>
+            <mu-paper class="content" :zDepth="1">
+                <div class="head">
+                    <span>#{{(curPage - 1) * page.info.page_size + _ + 1}}</span>
+                    <b><user-link :nickname="true" :user="i.user_id" /></b>
+                    <span v-if="i.reply_to_cmt_id">
+                        <span>回复</span>
+                        <b><user-link :nickname="true" :user="i.reply_to_cmt_id.user_id" /></b>
+                    </span>
+                    <span><ic-time :timestamp="i.time" /></span>
+                    <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>
+                </div>
+                <div class="post" v-html="marked(i.content || '')"></div>
+            </mu-paper>
+        </div>
     </div>
+    <comment-post @on-commented="commented" :item="item" :post-type="postType" ref="post"></comment-post>
 </div>
 </template>
 
@@ -76,6 +83,7 @@
 <script>
 import marked from 'marked'
 import api from '@/netapi.js'
+import CommentPost from '../utils/comment-post.vue'
 
 export default {
     props: {
@@ -89,8 +97,7 @@ export default {
         withPost: {
             default: false
         },
-        postType: {},
-        onSuccess: Function
+        postType: {}
     },
     data () {
         return {
@@ -122,10 +129,19 @@ export default {
         removeTest: function () {
             ;
         },
+        commented: function () {
+            this.fetchData()
+        },
+        replyTo: function (item) {
+            this.$refs.post.setReplyTo(item)
+        },
         fetchData: async function () {
             this.loading = true
             this.page.cur_page = this.curPage
-            let ret = await api.comment.list({related_id: this.item.id, loadfk: {user_id: null}}, this.curPage)
+            let ret = await api.comment.list({
+                related_id: this.item.id,
+                loadfk: {user_id: null, reply_to_cmt_id: {loadfk: {'user_id': null}}}
+            }, this.curPage)
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data
             } else if (ret.code === api.retcode.NOT_FOUND) {
@@ -146,6 +162,7 @@ export default {
         }
     },
     components: {
+        CommentPost
     }
 }
 </script>
