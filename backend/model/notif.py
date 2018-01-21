@@ -29,30 +29,69 @@ def fetch_notif_of_comment(user_id, last_comment_id=b'\x00'):
     # 某某 评论了你的文章 某某某： XXXXXX
     # 这个暂时不折叠了，全部显示在提醒中
     cur = db.execute_sql('''
-        SELECT %s, "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id, 
-          "t"."title", left("c".content, 50)
-        FROM topic AS t, comment AS c
-        WHERE t.user_id = %s AND t.state >= %s AND
-          t.id = c.related_id AND c.id > %s AND c.state >= %s
+        SELECT "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id, 
+          "t"."title", left("c".content, 50), "u"."nickname"
+        FROM topic AS t, comment AS c, "user" as u
+        WHERE t.user_id = %s AND t.state >= %s AND t.id = c.related_id
+          AND c.id > %s AND c.state >= %s AND u.id = c.user_id
         ORDER BY "c"."id" DESC
-        ''', (NOTIF_TYPE.BE_COMMENTED, user_id, TOPIC_STATE.CLOSE, last_comment_id, COMMENT_STATE.NORMAL))
-    # 类型，时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字
-    return cur.fetchall()
+        ''', (user_id, TOPIC_STATE.CLOSE, last_comment_id, COMMENT_STATE.NORMAL))
+    # 时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字，用户昵称
+
+    def wrap(i):
+        return {
+            'type': NOTIF_TYPE.BE_COMMENTED,
+            'time': i[0],
+            'post': {
+                'id': i[2],
+                'type': i[3],
+                'title': i[5]
+            },
+            'comment': {
+                'id': i[1],
+                'brief': i[6],
+                'user': {
+                    'id': i[4],
+                    'nickname': i[7]
+                }
+            }
+        }
+    return map(wrap, cur.fetchall())
 
 
 def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
     # 某某 在文章 某某某 中回复了你的评论： XXXXXX
     # c2 是 user_id 的原评论，c 是回复评论的评论
     cur = db.execute_sql('''
-        SELECT %s, "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id, 
-          "t"."title", left("c".content, 50)
-        FROM topic AS t, comment AS c, comment AS c2
+        SELECT "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id, 
+          "t"."title", left("c".content, 50), "u"."nickname"
+        FROM topic AS t, comment AS c, comment AS c2, "user" as u
         WHERE c2.user_id = %s AND c2.state >= %s AND
           c2.id = c.reply_to_cmt_id AND c.id > %s AND c.state >= %s AND t.id = c.related_id
+          AND u.id = c.user_id
         ORDER BY "c"."id" DESC
-        ''', (NOTIF_TYPE.BE_REPLIED, user_id, COMMENT_STATE.NORMAL, last_reply_id, COMMENT_STATE.NORMAL))
-    # 序号，时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字
-    return cur.fetchall()
+        ''', (user_id, COMMENT_STATE.NORMAL, last_reply_id, COMMENT_STATE.NORMAL))
+    # 时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字，用户昵称
+
+    def wrap(i):
+        return {
+            'type': NOTIF_TYPE.BE_REPLIED,
+            'time': i[0],
+            'post': {
+                'id': i[2],
+                'type': i[3],
+                'title': i[5]
+            },
+            'comment': {
+                'id': i[1],
+                'brief': i[6],
+                'user': {
+                    'id': i[4],
+                    'nickname': i[7]
+                }
+            }
+        }
+    return map(wrap, cur.fetchall())
 
 
 class UserNotifRecord(BaseModel):
@@ -69,15 +108,15 @@ class UserNotifRecord(BaseModel):
 
     def get_notifications(self, update_last=False):
         lst = []
-        l1 = fetch_notif_of_comment(self.id, self.last_comment_id)
-        l2 = fetch_notif_of_reply(self.id, self.last_reply_id)
+        l1 = tuple(fetch_notif_of_comment(self.id, self.last_comment_id))
+        l2 = tuple(fetch_notif_of_reply(self.id, self.last_reply_id))
         lst.extend(l1)
         lst.extend(l2)
-        lst.sort(key = lambda x: x[1], reverse=True)
+        # lst.sort(key = lambda x: x['time'], reverse=True)
 
         if update_last:
-            if l1: self.last_comment_id = l1[0][2]
-            if l2: self.last_reply_id = l2[0][2]
+            if l1: self.last_comment_id = l1[0]['comment']['id']
+            if l2: self.last_reply_id = l2[0]['comment']['id']
             self.update_time = int(time.time())
             self.save()
 
@@ -97,26 +136,40 @@ class Notification(BaseModel):
     is_read = BooleanField(default=False)
 
     @classmethod
+    def count(cls, user_id):
+        return cls.select().where(cls.receiver_id == user_id, cls.is_read == False).count()
+
+    @classmethod
+    def set_read(cls, user_id):
+        cur = db.execute_sql('''
+        WITH updated_rows as (
+          UPDATE notif SET is_read = TRUE WHERE "receiver_id" = %s AND "is_read" = FALSE
+          RETURNING is_read
+        ) SELECT count(is_read) FROM updated_rows;
+        ''', (user_id,))
+        return cur.fetchone()[0]
+
+    @classmethod
     def refresh(cls, user_id):
         new = []
         r: UserNotifRecord = UserNotifRecord.get_by_pk(user_id)
         for i in r.get_notifications(True):
-            if i[0] == NOTIF_TYPE.BE_COMMENTED:
+            if i['type'] == NOTIF_TYPE.BE_COMMENTED:
                 new.append({
                     'id': config.ID_GENERATOR().to_bin(),
-                    'sender_ids': (i[5],),
+                    'sender_ids': (i['comment']['user']['id'],),
                     'receiver_id': user_id,
                     'type': NOTIF_TYPE.BE_COMMENTED,
-                    'time': i[1],
+                    'time': i['time'],
                     'data': i,
                 })
-            elif i[0] == NOTIF_TYPE.BE_REPLIED:
+            elif i['type'] == NOTIF_TYPE.BE_REPLIED:
                 new.append({
                     'id': config.ID_GENERATOR().to_bin(),
-                    'sender_ids': (i[5],),
+                    'sender_ids': (i['comment']['user']['id'],),
                     'receiver_id': user_id,
                     'type': NOTIF_TYPE.BE_REPLIED,
-                    'time': i[1],
+                    'time': i['time'],
                     'data': i,
                 })
 
@@ -133,4 +186,4 @@ if __name__ == '__main__':
     for i in r.get_notifications():
         print(i)
     print('------')
-    Notification.refresh(u.id)
+    # Notification.refresh(u.id)

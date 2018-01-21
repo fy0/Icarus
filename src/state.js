@@ -20,6 +20,7 @@ export default {
     test: {
         items: []
     },
+    unread: 0,
     user: null,
     loading: 1,
     initLoadDone: false,

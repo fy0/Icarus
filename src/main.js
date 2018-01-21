@@ -136,6 +136,12 @@ router.beforeEach(async function (to, from, next) {
                 Vue.set(state, 'initLoadDone', true)
                 return next('/')
             }
+
+            let unread = await api.notif.count()
+            if (unread.code === api.retcode.SUCCESS) {
+                Vue.set(state, 'unread', unread.data)
+            }
+
             Vue.set(state, 'user', ret.data)
             Vue.set(state, 'initLoadDone', true)
         }

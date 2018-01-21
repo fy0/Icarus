@@ -12,7 +12,7 @@ export default {
     props: {
         user: {},
         nickname: {
-            default: false
+            default: true
         }
     },
     methods: {

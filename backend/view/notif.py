@@ -33,5 +33,17 @@ class NotificationView(UserMixin, PeeweeView):
         # cls.add_soft_foreign_key('reply_to_cmt_id', 'comment')
         pass
 
-    def refresh(self):
-        pass
+    @route.interface('GET')
+    async def set_read(self):
+        self.finish(RETCODE.SUCCESS)
+
+    @route.interface('GET')
+    async def count(self):
+        if self.current_user:
+            c = self.model.count(self.current_user.id)
+            return self.finish(RETCODE.SUCCESS, c)
+        self.finish(RETCODE.FAILED)
+
+    @route.interface('GET')
+    async def refresh(self):
+        self.finish(RETCODE.SUCCESS)

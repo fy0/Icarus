@@ -10,10 +10,10 @@
             <mu-paper class="content" :zDepth="1">
                 <div class="head">
                     <span>#{{(curPage - 1) * page.info.page_size + _ + 1}}</span>
-                    <b><user-link :nickname="true" :user="i.user_id" /></b>
+                    <b><user-link :user="i.user_id" /></b>
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>
-                        <b><user-link :nickname="true" :user="i.reply_to_cmt_id.user_id" /></b>
+                        <b><user-link :user="i.reply_to_cmt_id.user_id" /></b>
                     </span>
                     <span><ic-time :timestamp="i.time" /></span>
                     <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>

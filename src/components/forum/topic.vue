@@ -22,7 +22,7 @@
     </div>
     <div class="info">
         <div class="author">
-            <user-link :user="topic.user_id" style="display: flex; align-items: center;">
+            <user-link :user="topic.user_id" :nickname="false" style="display: flex; align-items: center;">
                 <avatar :user="topic.user_id" :size="20" class="avatar"></avatar>
                 <span style="margin-left: 6px;">{{topic.user_id.nickname}}</span>
             </user-link>

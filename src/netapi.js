@@ -116,6 +116,12 @@ class UserViewRequest extends SlimViewRequest {
     }
 }
 
+class NotifViewRequest extends SlimViewRequest {
+    async count () {
+        return await nget(`${this.urlPrefix}/count`, null)
+    }
+}
+
 let retcode = {
     SUCCESS: 0
 }
@@ -138,5 +144,5 @@ export default {
     board: new SlimViewRequest('board'),
     topic: new SlimViewRequest('topic'),
     comment: new SlimViewRequest('comment'),
-    notif: new SlimViewRequest('notif')
+    notif: new NotifViewRequest('notif')
 }

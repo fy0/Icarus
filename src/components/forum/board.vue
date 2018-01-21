@@ -14,11 +14,11 @@
                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link>
                     </h2>
                     <p class="info">
-                        <user-link :user="i.user_id" :nickname="true"></user-link>  •  
+                        <user-link :user="i.user_id" />  •  
                         <span> 发布于<ic-time :timestamp="i.time" /></span>  •  
                         <span>最后回复
                             <span v-if="i.s.last_comment_id">
-                                <user-link :user="i.s.last_comment_id.user_id" :nickname="true" />
+                                <user-link :user="i.s.last_comment_id.user_id" />
                                 <ic-time :timestamp="i.s.last_comment_id.time" />
                             </span>
                             <span v-else>从未</span>
