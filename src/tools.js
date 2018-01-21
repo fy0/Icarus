@@ -1,8 +1,24 @@
 import _ from 'lodash'
 import state from '@/state.js'
 import murmurhash from 'murmurhash'
+import Tweezer from 'tweezer.js'
 
 let messageId = 1
+let scroller = null
+
+$.scrollTo = function (el) {
+    if (scroller) scroller.stop()
+    scroller = new Tweezer({
+        start: window.pageYOffset,
+        end: el.getBoundingClientRect().top + window.pageYOffset,
+        duration: 500
+    })
+    .on('tick', v => window.scrollTo(0, v))
+    .on('done', () => {
+        scroller = null
+    })
+    .begin()
+}
 
 $.media = {
     xs: {maxWidth: '35.5em'},

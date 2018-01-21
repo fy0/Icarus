@@ -2,6 +2,7 @@ import re
 import config
 from typing import Dict, Type
 
+from model.notif import UserNotifRecord
 from model.post import POST_TYPES
 from model.statistic import statistic_new
 from slim.base.user import BaseUser, BaseAccessTokenUserMixin
@@ -171,8 +172,10 @@ class UserView(UserMixin, PeeweeView):
         values['reg_time'] = uid.time
         self._key = values['key']
 
-        # 添加统计记录
-        statistic_new(POST_TYPES.USER, values['id'])
-
     def after_insert(self, values: Dict):
         values['access_token'] = self._key
+
+        # 添加统计记录
+        print(values['id'])
+        statistic_new(POST_TYPES.USER, values['id'])
+        UserNotifRecord.new(values['id'])

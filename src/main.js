@@ -141,7 +141,7 @@ router.beforeEach(async function (to, from, next) {
                 let ret = await api.notif.refresh()
                 if (ret.code === api.retcode.SUCCESS) {
                     if (ret.data) {
-                        Vue.set(state, 'unread', state.unread + ret.data)
+                        Vue.set(state, 'unread', ret.data)
                     }
                 }
             }

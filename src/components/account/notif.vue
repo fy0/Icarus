@@ -57,6 +57,7 @@ export default {
             let params = this.$route.query
             this.page.curPage = params.page
             let ret = await api.notif.list({
+                receiver_id: state.user.id,
                 order: 'time.desc'
                 // loadfk: {user_id: null, board_id: null}
             }, params.page)

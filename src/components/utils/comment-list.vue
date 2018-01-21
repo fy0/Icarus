@@ -9,14 +9,14 @@
             <avatar :user="i.user_id" class="avatar"></avatar>
             <mu-paper class="content" :zDepth="1">
                 <div class="head">
-                    <span>#{{(curPage - 1) * page.info.page_size + _ + 1}}</span>
+                    <span>#{{(page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
                     <b><user-link :user="i.user_id" /></b>
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>
                         <b><user-link :user="i.reply_to_cmt_id.user_id" /></b>
                     </span>
                     <span><ic-time :timestamp="i.time" /></span>
-                    <a style="float: right" @click="replyTo(i)" href="#ic-comment-post">回复</a>
+                    <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>
                 </div>
                 <div class="post" v-html="marked(i.content || '')"></div>
             </mu-paper>
@@ -130,18 +130,23 @@ export default {
             ;
         },
         commented: function () {
-            this.fetchData()
+            let info = this.page.info
+            let newPage = Math.ceil((info.items_count + 1) / info.page_size)
+            this.fetchData(newPage)
         },
         replyTo: function (item) {
+            $.scrollTo(document.getElementById('ic-comment-post'))
+            document.getElementById('ic-comment-editor').focus()
             this.$refs.post.setReplyTo(item)
         },
-        fetchData: async function () {
+        fetchData: async function (thePage) {
             this.loading = true
-            this.page.cur_page = this.curPage
+            thePage = thePage || this.curPage
+            this.page.cur_page = thePage
             let ret = await api.comment.list({
                 related_id: this.item.id,
                 loadfk: {user_id: null, reply_to_cmt_id: {loadfk: {'user_id': null}}}
-            }, this.curPage)
+            }, thePage)
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data
             } else if (ret.code === api.retcode.NOT_FOUND) {

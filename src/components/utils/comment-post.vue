@@ -5,7 +5,7 @@
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box">
             <mu-paper :zDepth="editing ? 2 : 1" class="content">
-                <textarea @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
+                <textarea id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
             </mu-paper>
             <div style="display: flex; justify-content: space-between;" class="postBtnBox">
                 <div v-if="!replyTo"></div>
@@ -74,6 +74,7 @@ export default {
     data () {
         return {
             state,
+            loading: false,
             replyTo: null,
             editing: false,
             commentInfo: {
@@ -99,6 +100,8 @@ export default {
             this.editing = false
         },
         commentPost: async function () {
+            if (this.loading) return
+            this.loading = true
             this.commentInfo.related_id = this.item.id
             this.commentInfo.related_type = this.postType
             if (this.replyTo) this.commentInfo.reply_to_cmt_id = this.replyTo.id
@@ -106,9 +109,11 @@ export default {
             $.message_by_code(ret.code)
             if (ret.code === 0) {
                 this.editing = false
+                this.replyTo = null
                 this.commentInfo.content = ''
             }
             this.$emit('on-commented')
+            this.loading = false
         }
     },
     components: {

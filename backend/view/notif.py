@@ -50,7 +50,7 @@ class NotificationView(UserMixin, PeeweeView):
     @route.interface('POST')
     async def refresh(self):
         if self.current_user:
-            c = self.model.refresh(self.current_user.id)
-            if c is not None:
-                return self.finish(RETCODE.SUCCESS, c)
+            r = self.model.refresh(self.current_user.id)
+            c = self.model.count(self.current_user.id)
+            return self.finish(RETCODE.SUCCESS, c)
         self.finish(RETCODE.FAILED)

@@ -106,6 +106,13 @@ class UserNotifRecord(BaseModel):
     last_sysmsg_id = BlobField(default=b'\x00')
     update_time = MyTimestampField(index=True)
 
+    @classmethod
+    def new(cls, user_id):
+        try:
+            return cls.create(id=user_id, update_time=int(time.time()))
+        except IntegrityError:
+            db.rollback()
+
     def get_notifications(self, update_last=False):
         lst = []
         l1 = tuple(fetch_notif_of_comment(self.id, self.last_comment_id))
