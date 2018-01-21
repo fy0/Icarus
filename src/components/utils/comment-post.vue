@@ -1,6 +1,6 @@
 <!-- 评论 -->
 <template>
-<div class="ic-comment-post">
+<div class="ic-comment-post" id="ic-comment-post">
     <div class="ic-comment" v-if="state.user">
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box">

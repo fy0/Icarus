@@ -33,9 +33,12 @@ class NotificationView(UserMixin, PeeweeView):
         # cls.add_soft_foreign_key('reply_to_cmt_id', 'comment')
         pass
 
-    @route.interface('GET')
+    @route.interface('POST')
     async def set_read(self):
-        self.finish(RETCODE.SUCCESS)
+        if self.current_user:
+            c = self.model.set_read(self.current_user.id)
+            return self.finish(RETCODE.SUCCESS, c)
+        self.finish(RETCODE.FAILED)
 
     @route.interface('GET')
     async def count(self):
@@ -44,6 +47,10 @@ class NotificationView(UserMixin, PeeweeView):
             return self.finish(RETCODE.SUCCESS, c)
         self.finish(RETCODE.FAILED)
 
-    @route.interface('GET')
+    @route.interface('POST')
     async def refresh(self):
-        self.finish(RETCODE.SUCCESS)
+        if self.current_user:
+            c = self.model.refresh(self.current_user.id)
+            if c is not None:
+                return self.finish(RETCODE.SUCCESS, c)
+        self.finish(RETCODE.FAILED)

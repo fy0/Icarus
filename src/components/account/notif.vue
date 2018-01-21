@@ -52,9 +52,6 @@ export default {
         await this.fetchData()
     },
     methods: {
-        isType: function () {
-            console.log(state.misc.NOTIF_TYPE)
-        },
         fetchData: async function () {
             this.state.loading++
             let params = this.$route.query
@@ -68,6 +65,11 @@ export default {
                 this.page = ret.data
                 // let pageNumber = this.$route.query.page
                 // if (pageNumber) this.commentPage = parseInt(pageNumber)
+
+                let ret2 = await api.notif.setRead()
+                if (ret2.code === api.retcode.SUCCESS) {
+                    state.unread -= ret2.data
+                }
             } else {
                 $.message_by_code(ret.code)
             }

@@ -16,7 +16,7 @@
                         <b><user-link :user="i.reply_to_cmt_id.user_id" /></b>
                     </span>
                     <span><ic-time :timestamp="i.time" /></span>
-                    <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>
+                    <a style="float: right" @click="replyTo(i)" href="#ic-comment-post">回复</a>
                 </div>
                 <div class="post" v-html="marked(i.content || '')"></div>
             </mu-paper>

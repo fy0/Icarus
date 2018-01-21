@@ -137,6 +137,16 @@ router.beforeEach(async function (to, from, next) {
                 return next('/')
             }
 
+            let fetchNotif = async () => {
+                let ret = await api.notif.refresh()
+                if (ret.code === api.retcode.SUCCESS) {
+                    if (ret.data) {
+                        Vue.set(state, 'unread', state.unread + ret.data)
+                    }
+                }
+            }
+            setInterval(fetchNotif, 15000)
+
             let unread = await api.notif.count()
             if (unread.code === api.retcode.SUCCESS) {
                 Vue.set(state, 'unread', unread.data)

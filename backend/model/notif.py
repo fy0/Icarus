@@ -33,7 +33,7 @@ def fetch_notif_of_comment(user_id, last_comment_id=b'\x00'):
           "t"."title", left("c".content, 50), "u"."nickname"
         FROM topic AS t, comment AS c, "user" as u
         WHERE t.user_id = %s AND t.state >= %s AND t.id = c.related_id
-          AND c.id > %s AND c.state >= %s AND u.id = c.user_id
+          AND c.id > %s AND c.state >= %s AND u.id = c.user_id AND "c"."user_id" != "t"."user_id"
         ORDER BY "c"."id" DESC
         ''', (user_id, TOPIC_STATE.CLOSE, last_comment_id, COMMENT_STATE.NORMAL))
     # 时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字，用户昵称
@@ -68,7 +68,7 @@ def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
         FROM topic AS t, comment AS c, comment AS c2, "user" as u
         WHERE c2.user_id = %s AND c2.state >= %s AND
           c2.id = c.reply_to_cmt_id AND c.id > %s AND c.state >= %s AND t.id = c.related_id
-          AND u.id = c.user_id
+          AND u.id = c.user_id AND "c"."user_id" != "c2"."user_id" -- 不查自己
         ORDER BY "c"."id" DESC
         ''', (user_id, COMMENT_STATE.NORMAL, last_reply_id, COMMENT_STATE.NORMAL))
     # 时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字，用户昵称
@@ -150,9 +150,12 @@ class Notification(BaseModel):
         return cur.fetchone()[0]
 
     @classmethod
-    def refresh(cls, user_id):
+    def refresh(cls, user_id, cooldown = config.NOTIF_FETCH_COOLDOWN):
         new = []
         r: UserNotifRecord = UserNotifRecord.get_by_pk(user_id)
+        if not r: return
+        if cooldown and (time.time() - r.update_time < cooldown):
+            return
         for i in r.get_notifications(True):
             if i['type'] == NOTIF_TYPE.BE_COMMENTED:
                 new.append({
@@ -175,6 +178,7 @@ class Notification(BaseModel):
 
         if new:
             cls.insert_many(new).execute()
+        return len(new)
 
     class Meta:
         db_table = 'notif'

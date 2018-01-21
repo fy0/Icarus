@@ -36,7 +36,7 @@
                 <ul class="menu-list" v-if="state.user">
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
                         <a style="display: flex; align-items: center;">
-                            <mu-badge :content="state.unread.toString()" primary style="margin-right: 6px" />
+                            <mu-badge v-if="state.unread" :content="state.unread.toString()" primary style="margin-right: 6px" />
                             <span>提醒</span>
                         </a>
                     </router-link>

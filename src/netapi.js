@@ -120,6 +120,14 @@ class NotifViewRequest extends SlimViewRequest {
     async count () {
         return await nget(`${this.urlPrefix}/count`, null)
     }
+
+    async refresh () {
+        return await npost(`${this.urlPrefix}/refresh`, null)
+    }
+
+    async setRead () {
+        return await npost(`${this.urlPrefix}/set_read`, null)
+    }
 }
 
 let retcode = {
