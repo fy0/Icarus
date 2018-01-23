@@ -2,6 +2,8 @@ import _ from 'lodash'
 import state from '@/state.js'
 import murmurhash from 'murmurhash'
 import Tweezer from 'tweezer.js'
+import Vue from 'vue'
+import api from './netapi.js'
 
 let messageId = 1
 let scroller = null
@@ -18,6 +20,28 @@ $.scrollTo = function (el) {
         scroller = null
     })
     .begin()
+}
+
+let notifSign = false
+
+$.notifLoopOn = async () => {
+    let fetchNotif = async () => {
+        if (state.user) {
+            let ret = await api.notif.refresh()
+            if (ret.code === api.retcode.SUCCESS) {
+                if (ret.data) {
+                    Vue.set(state, 'unread', ret.data)
+                }
+            }
+        }
+    }
+
+    if (!notifSign) {
+        setInterval(fetchNotif, 15000)
+        notifSign = true
+    }
+
+    await fetchNotif()
 }
 
 $.media = {

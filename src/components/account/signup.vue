@@ -133,6 +133,7 @@ export default {
                         api.saveAccessToken(userinfo['access_token'])
                         ret = await api.user.get({id: ret.data.id}, 'user')
                         Vue.set(state, 'user', ret.data)
+                        $.notifLoopOn()
                         $.message_by_code(ret.code)
                     } else {
                         $.message_error('注册失败！可能账号或昵称已经被注册')
