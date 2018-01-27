@@ -28,6 +28,9 @@
             </user-link>
             <p><ic-time :timestamp="topic.time" /></p>
             <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
+            <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
+                <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
+            </div>
         </div>
     </div>
 </div>
@@ -96,7 +99,7 @@ export default {
             let params = this.$route.params
             let ret = await api.topic.get({
                 id: params.id,
-                loadfk: {user_id: null, board_id: null}
+                loadfk: {user_id: null, board_id: null, last_edit_user_id: null}
             })
 
             if (ret.code === api.retcode.SUCCESS) {

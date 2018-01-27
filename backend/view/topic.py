@@ -100,7 +100,9 @@ class TopicView(UserMixin, PeeweeView):
             return RETCODE.FAILED, form.errors
 
         values['board_id'] = to_bin(values['board_id'])
-        #values['user_id'] = self.current_user.id
+        values['edit_time'] = int(time.time())
+        values['last_edit_user_id'] = self.current_user.id
+        # TODO: edit_count
 
     def before_insert(self, raw_post: Dict, values: Dict):
         form = TopicForm(**raw_post)

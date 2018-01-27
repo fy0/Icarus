@@ -52,6 +52,8 @@ class User(BaseModel, BaseUser):
 
     @property
     def roles(self):
+        if self.group == USER_GROUP.ADMIN:
+            return [None, 'user', 'admin']
         return [None, 'user']
 
     @classmethod
