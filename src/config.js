@@ -10,7 +10,9 @@ let config = {
 
 try {
     let pri = require('../private.js')
-    config.remote.API_SERVER = pri.default.remote.API_SERVER || config.remote.API_SERVER
+    for (let k of Object.keys(config.remote)) {
+        config.remote[k] = pri.default.remote[k] || config.remote[k]
+    }
     config.title = pri.default.title || config.title
 } catch (e) {}
 

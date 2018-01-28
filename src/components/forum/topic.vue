@@ -43,6 +43,17 @@
 .topic-box .article > .content * {
     max-width: 100%;
 }
+
+/* 列表靠左对齐 */
+.topic-box .article > .content ul {
+    padding-left: 0;
+    list-style-position: inside;
+}
+
+.topic-box .article > .content ol {
+    padding-left: 0;
+    list-style-position: inside;
+}
 </style>
 
 <style scoped>
