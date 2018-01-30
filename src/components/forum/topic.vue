@@ -31,6 +31,19 @@
             <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
                 <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
             </div>
+            <div class="topic-manage" v-if="isAdmin">
+                <div>管理员选项</div>
+                <div class="group">
+                    <a>置顶</a>
+                    <a>提升</a>
+                    <a>下沉</a>
+                </div>
+                <div class="group">
+                    <a>评分</a>
+                    <a>编辑</a>
+                    <a @click="topicDelete(topic)">删除</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -57,6 +70,14 @@
 </style>
 
 <style scoped>
+.topic-manage > .group {
+    display: flex;
+}
+
+.topic-manage > .group > a {
+    padding: 5px 10px;
+}
+
 .topic-box {
     display: flex;
 }
@@ -104,8 +125,14 @@ export default {
             topic: { board_id: {id: 1} }
         }
     },
+    computed: {
+        isAdmin: $.isAdmin
+    },
     methods: {
         marked,
+        topicDelete: async function (topic) {
+            ;
+        },
         fetchData: async function () {
             let params = this.$route.params
             let ret = await api.topic.get({

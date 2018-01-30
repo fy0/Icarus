@@ -24,6 +24,10 @@ $.scrollTo = function (el) {
 
 let notifSign = false
 
+$.isAdmin = function () {
+    return (this.state.user) && (this.state.user.group >= state.misc.USER_GROUP.ADMIN)
+}
+
 $.notifLoopOn = async () => {
     let fetchNotif = async () => {
         if (state.user) {
