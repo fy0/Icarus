@@ -14,9 +14,10 @@ class USER_GROUP(StateObject):
     BAN = 10
     INACTIVE = 40
     NORMAL = 50
+    SUPERUSER = 90
     ADMIN = 100
 
-    txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', ADMIN: '管理'}
+    txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', SUPERUSER: '超级用户', ADMIN: '管理'}
 
 
 class USER_STATE(StateObject):

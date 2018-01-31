@@ -27,7 +27,7 @@ class Board(BaseModel):
     creator_id = BlobField(index=True, null=True)  # 创建者ID
     brief = TextField(null=True)  # max 256
     desc = TextField(null=True)  # max 1024
-    time = MyTimestampField(index=True)  # 发布时间
+    time = MyTimestampField(index=True)  # 创建时间
     weight = IntegerField(index=True, default=0)
     color = BlobField(null=True, default=None)
     state = IntegerField(default=BOARD_STATE.NORMAL)

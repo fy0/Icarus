@@ -74,12 +74,44 @@ class TopicView(UserMixin, PeeweeView):
 
         normal_user.add_record_check((A.WRITE,), 'topic', func=is_users_post)
 
+        super_user = Ability('superuser', {
+            'topic': {
+                'title': A.ALL,
+                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
+                'content': [A.READ, A.CREATE, A.WRITE],
+            },
+            'board': {
+                'name': A.ALL,
+                'brief': A.ALL,
+                'desc': A.ALL,
+                'time': (A.READ, A.QUERY, A.CREATE,),
+                'weight': A.ALL,
+                'color': (A.READ, A.WRITE, A.CREATE),
+                'state': A.ALL,
+                'category': A.ALL
+            }
+        }, based_on=normal_user)
+
         admin = Ability('admin', {
-            'topic': '*'
-        })
+            'topic': {
+                'title': A.ALL,
+                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
+                'content': [A.READ, A.CREATE, A.WRITE],
+                'state': A.ALL,
+            },
+            'user': {
+                'email': A.ALL,
+                'nickname': A.ALL,
+                'group': A.ALL,
+                'state': A.ALL,
+                'credit': A.ALL,
+                'reputation': A.ALL
+            }
+        }, based_on=super_user)
 
         permission.add(visitor)
         permission.add(normal_user)
+        permission.add(super_user)
         permission.add(admin)
 
     async def get(self):
