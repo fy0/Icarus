@@ -12,6 +12,7 @@ import 'nprogress/nprogress.css'
 // muse-ui 包含 normalize.css
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
+import 'material-design-icons/iconfont/material-icons.css'
 import './ws.js'
 Vue.use(MuseUI)
 

@@ -8,10 +8,13 @@
 
     <div class="board-page-box">
         <div class="topic-list" v-if="topics.items.length">
-            <div class="board-item" :key="i.id" v-for="i in topics.items">
+            <div class="board-item" :class="{'top-post': i.sticky_weight}" :key="i.id" v-for="i in topics.items">
                 <div class="title">
                     <h2>
-                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">{{i.title}}</router-link>
+                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                            <i class="material-icons" v-if="i.sticky_weight">face</i>
+                            <span>{{i.title}}</span>
+                        </router-link>
                     </h2>
                     <p class="info">
                         <user-link :user="i.user_id" />  •  
