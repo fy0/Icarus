@@ -102,11 +102,14 @@ import ICTime from './components/utils/ic-time.vue'
 import UserLink from './components/utils/user-link.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
+import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
+
 Vue.component('paginator', Paginator)
 Vue.component('loading', Loading)
 Vue.component('avatar', Avatar)
 Vue.component('ic-time', ICTime)
 Vue.component('user-link', UserLink)
+Vue.component('dialog-topic-manage', DialogTopicManage)
 
 Vue.config.productionTip = false
 nprogress.configure({showSpinner: false})

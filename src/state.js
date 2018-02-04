@@ -20,6 +20,10 @@ export default {
     test: {
         items: []
     },
+    dialog: {
+        topicManage: null,
+        topicManageData: null
+    },
     unread: 0,
     user: null,
     loading: 1,

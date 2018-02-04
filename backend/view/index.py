@@ -24,7 +24,7 @@ class TestBaseView(BaseView):
             'BOARD_STATE_TXT': BOARD_STATE.txt,
 
             'TOPIC_STATE': TOPIC_STATE.to_dict(),
-            'TOPIC_STATE_TXT': BOARD_STATE.txt,
+            'TOPIC_STATE_TXT': TOPIC_STATE.txt,
 
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,

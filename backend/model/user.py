@@ -34,7 +34,8 @@ class User(BaseModel, BaseUser):
     password = BlobField()
     salt = BlobField()  # auto
 
-    group = IntegerField(index=True)  # 用户组
+    # level = IntegerField(index=True)  # 用户级别
+    group = IntegerField(index=True)  # 用户权限组
     state = IntegerField(index=True)
 
     key = BlobField(index=True, null=True)
