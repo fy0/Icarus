@@ -20,11 +20,6 @@ body, button, input, select, textarea {
     border-bottom: 1px solid rgb(239, 239, 239);
 }
 
-i.mdi-icarus {
-    font-size: 1.5em;
-    line-height: 1.2em;
-}
-
 .ic-container {
     max-width: 1020px !important;
     margin-left: auto;

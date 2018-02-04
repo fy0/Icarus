@@ -22,6 +22,7 @@
     flex-basis: 0%;
     overflow: hidden;
     padding-top: 0.1em;
+    position: relative;
 }
 
 .board-item > .title > h2 {
@@ -49,6 +50,16 @@
     display: flex;
     flex: 9 0 auto;
     flex-basis: 0%;
+}
+
+.board-item > .title > .icons {
+    position: absolute;
+    right: 0px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: rgb(102, 102, 102);
+    padding-bottom: 10px;
 }
 
 .board-item > .detail > .count {

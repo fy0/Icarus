@@ -15,6 +15,11 @@
                             <i class="material-icons" v-if="i.sticky_weight">face</i>
                             <span>{{i.title}}</span>
                         </router-link>
+                        <span class="icons">
+                            <i class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
+                            <i class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                            <i class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef"></i>
+                        </span>
                     </h2>
                     <p class="info">
                         <user-link :user="i.user_id" />  •  
@@ -27,6 +32,9 @@
                             <span v-else>从未</span>
                         </span>
                     </p>
+                    <div class="icons">
+                        <i class="mdi-icarus icon-pin" title="置顶" />
+                    </div>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
                     <div class="count">

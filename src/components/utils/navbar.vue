@@ -42,9 +42,9 @@
                     </li>
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
                         <a class="nav-icon" title="提醒">
-                            <mu-badge v-if="state.unread" :content="state.unread.toString()" primary style="margin-right: 6px" />
-                            <i class="mdi-icarus bell-ring" style="color: red" v-if="state.unread">notifications active</i>
-                            <i class="mdi-icarus icon-bell"></i>
+                            <i class="mdi-icarus icon-bell-ring" v-if="state.unread"></i>
+                            <mu-badge v-if="state.unread" :content="state.unread.toString()" primary style="margin-left: 6px" />
+                            <i v-else class="mdi-icarus icon-bell"></i>
                         </a>
                     </router-link>
                     <li class="menu-item"><a title="注销" href="#" class="nav-icon" @click="signout"><i class="mdi-icarus icon-logout"></i></a></li>
@@ -136,6 +136,11 @@
     align-items: center;
     padding: 0.5em 0.7em;
     height: 36.67px;
+}
+
+.menu-item > a.nav-icon > i {
+    font-size: 1.5em;
+    line-height: 1.2em;
 }
 
 .menu-item > a:hover {
