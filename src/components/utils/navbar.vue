@@ -34,20 +34,21 @@
                 </ul>
 
                 <ul class="menu-list" v-if="state.user">
-                    <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
-                        <a style="display: flex; align-items: center;">
-                            <mu-badge v-if="state.unread" :content="state.unread.toString()" primary style="margin-right: 6px" />
-                            <i class="material-icons" style="color: red" v-if="state.unread">notifications active</i>
-                            <i class="material-icons">notifications</i>
-                        </a>
-                    </router-link>
                     <li class="menu-item">
                         <user-link class="user-link" :nickname="false" :user="state.user">
                             <avatar style="margin-right: 6px;" :user="state.user" :size="28" class="avatar"></avatar>
                             <span>{{state.user.nickname}}</span>
                         </user-link>
                     </li>
-                    <li class="menu-item"><a href="#" @click="signout">注销</a></li>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
+                        <a class="nav-icon" title="提醒">
+                            <mu-badge v-if="state.unread" :content="state.unread.toString()" primary style="margin-right: 6px" />
+                            <i class="mdi-icarus bell-ring" style="color: red" v-if="state.unread">notifications active</i>
+                            <i class="mdi-icarus icon-bell"></i>
+                        </a>
+                    </router-link>
+                    <li class="menu-item"><a title="注销" href="#" class="nav-icon" @click="signout"><i class="mdi-icarus icon-logout"></i></a></li>
+                    <!-- <li class="menu-item"><a href="#" @click="signout">注销</a></li> -->
                 </ul>
             </div>
         </transition>
@@ -130,6 +131,13 @@
     font-size: 1em;
 }
 
+.menu-item > a.nav-icon {
+    display: flex;
+    align-items: center;
+    padding: 0.5em 0.7em;
+    height: 36.67px;
+}
+
 .menu-item > a:hover {
     background-color: #eee;
 }
@@ -209,6 +217,7 @@
     .menu-list > li > a {
         display: block;
         padding: 0.4em 1.6em;
+        height: 36px;
     }
     
     .menu-item > a.user-link {
