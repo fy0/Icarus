@@ -167,7 +167,7 @@ export default {
             let retList = await api.topic.list({
                 board_id: params.id,
                 order: 'sticky_weight.desc,weight.desc,time.desc',
-                select: 'id, time, user_id, board_id, title',
+                select: 'id, time, user_id, board_id, title, sticky_weight, state',
                 loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             }, params.page)
 
