@@ -4,13 +4,15 @@ import config
 from model.post import POST_TYPES
 from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click
 from model.topic import Topic
-from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn, A
+from slim.base.permission import Permissions
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, dict_filter_inplace
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField
+
+from view.permissions import visitor, normal_user, super_user, admin
 from view.user import UserMixin
 
 
@@ -40,75 +42,6 @@ class TopicView(UserMixin, PeeweeView):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        visitor = Ability(None, {
-            'topic': {
-                'id': [A.QUERY, A.READ],
-                'title': [A.READ],
-                'user_id': [A.QUERY, A.READ],
-                'board_id': [A.QUERY, A.READ],
-                'time': [A.READ],
-                'state': [A.READ],
-
-                'edit_time': [A.READ],
-                'last_edit_user_id': [A.READ],
-                'content': [A.READ],
-
-                'sticky_weight': [A.READ],
-                'weight': [A.READ],
-            }
-        })
-
-        normal_user = Ability('user', {
-            'topic': {
-                'title': [A.READ, A.CREATE, A.WRITE],
-                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
-                'content': [A.READ, A.CREATE, A.WRITE],
-            }
-        }, based_on=visitor)
-
-        def is_users_post(ability, user, action, record: AbilityRecord, available_columns: list):
-            if user:
-                if record.get('user_id') != user.id:
-                    available_columns.clear()
-            return True
-
-        normal_user.add_record_check((A.WRITE,), 'topic', func=is_users_post)
-
-        super_user = Ability('superuser', {
-            'topic': {
-                'title': A.ALL,
-                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
-                'content': [A.READ, A.CREATE, A.WRITE],
-            },
-            'board': {
-                'name': A.ALL,
-                'brief': A.ALL,
-                'desc': A.ALL,
-                'time': (A.READ, A.QUERY, A.CREATE,),
-                'weight': A.ALL,
-                'color': (A.READ, A.WRITE, A.CREATE),
-                'state': A.ALL,
-                'category': A.ALL
-            }
-        }, based_on=normal_user)
-
-        admin = Ability('admin', {
-            'topic': {
-                'title': A.ALL,
-                'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
-                'content': [A.READ, A.CREATE, A.WRITE],
-                'state': A.ALL,
-            },
-            'user': {
-                'email': A.ALL,
-                'nickname': A.ALL,
-                'group': A.ALL,
-                'state': A.ALL,
-                'credit': A.ALL,
-                'reputation': A.ALL
-            }
-        }, based_on=super_user)
-
         permission.add(visitor)
         permission.add(normal_user)
         permission.add(super_user)

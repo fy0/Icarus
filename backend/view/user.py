@@ -13,7 +13,9 @@ from model.user import User, USER_GROUP, USER_STATE
 from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, ValidationError
-from slim.base.permission import Permissions, Ability, AbilityRecord, AbilityColumn, A
+from slim.base.permission import Permissions
+
+from view.permissions import visitor, normal_user, admin
 
 
 class UserMixin(BaseAccessTokenUserMixin):
@@ -80,36 +82,6 @@ class UserView(UserMixin, PeeweeView):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        visitor = Ability(None, {
-            'user': {
-                'id': [A.QUERY, A.READ],
-                'nickname': [A.READ, A.CREATE],
-                'group': [A.READ],
-
-                'email': [A.CREATE],
-                'password': [A.CREATE],
-            }
-        })
-
-        normal_user = Ability('user', {
-            'user': {
-                'nickname': [A.QUERY, A.READ, A.WRITE],
-
-                # 'key': ['query', 'read']
-            }
-        }, based_on=visitor)
-
-        def user_check(ability, user, action, record: AbilityRecord, available_columns: list):
-            if user and record.get('id') == user.id:
-                available_columns.append('email')
-            return True
-
-        normal_user.add_record_check([A.READ], 'user', func=user_check)
-
-        admin = Ability('admin', {
-            'user': '*'
-        })
-
         permission.add(visitor)
         permission.add(normal_user)
         permission.add(admin)
