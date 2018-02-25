@@ -1,5 +1,5 @@
 <template>
-    <mu-dialog :open="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="close">
+    <mu-dialog :open="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
         <div v-if="stage == 1">
             <div class="topic-manage-item">
                 <span class="label">文章置顶</span>
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="stage == 2">
+        <div v-else>
             <span v-if="Object.keys(changed) == 0">无任何改动</span>
             <div v-else>
                 <div class="topic-manage-item" v-if="changed.vSticky">
@@ -74,11 +74,17 @@
                     <span class="label">精华文章</span>
                     <div class="right"><span class="hl">{{changed.vAwesome[0]}}</span> -> <span class="hl">{{changed.vAwesome[1]}}</span></div>
                 </div>
+
+                <div style="margin-top: 10px" v-if="stage == 3">
+                    <b>正在应用改动 - <span>{{currentApply}}</span></b>
+                    <mu-linear-progress mode="determinate" :value="applyValue"/>
+                </div>
             </div>
         </div>
 
-        <mu-flat-button slot="actions" @click="close" primary label="取消"/>
-        <mu-flat-button slot="actions" primary @click="next" label="确定"/>
+        <mu-flat-button v-if="stage <= 2" slot="actions" @click="close" primary label="取消"/>
+        <mu-flat-button v-if="stage <= 2" slot="actions" primary @click="next" label="确定"/>
+        <mu-flat-button v-if="stage === 4" slot="actions" @click="close" primary label="完成"/>
     </mu-dialog>
 </template>
 
@@ -122,7 +128,9 @@ export default {
             vState: '0',
             vReputation: 0,
             vAwesome: false,
-            stage: 1
+            stage: 1,
+            currentApply: 0,
+            applyValue: 0
         }
     },
     computed: {
@@ -162,8 +170,22 @@ export default {
         }
     },
     methods: {
-        next () {
-            this.stage = 2
+        next: async function () {
+            this.stage ++
+            if (this.stage === 3) {
+                let change = this.changed
+                this.currentApply = 0
+
+                for (let i in Object.keys(change)) {
+                    this.currentApply++
+                    this.applyValue = this.currentApply * 100.0 / Object.keys(change).length
+                    console.log(i, this.currentApply / (Object.keys(change).length * 1.0))
+                }
+            }
+            // state.dialog.topicManage = null
+        },
+        closeOutside () {
+            if (this.stage === 1) this.close()
         },
         close () {
             if (this.stage === 2) this.stage = 1

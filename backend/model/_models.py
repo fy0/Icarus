@@ -16,7 +16,7 @@ CREATE EXTENSION IF NOT EXISTS hstore;
 CREATE EXTENSION IF NOT EXISTS citext;
 """)
 
-db.create_tables([Test, Board, Follow, Comment, Topic, User,
+db.create_tables([Test, Board, Follow, Comment, Topic,
                   WikiItem, WikiArticle, WikiHistory,
                   Notification, UserNotifRecord,
                   Statistic, Statistic24h], safe=True)
