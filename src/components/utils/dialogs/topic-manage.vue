@@ -76,7 +76,8 @@
                 </div>
 
                 <div style="margin-top: 10px" v-if="stage == 3">
-                    <b>正在应用改动 - <span>{{currentApply}}</span></b>
+                    <b v-if="currentApply == -1">完成</b>
+                    <b v-else>正在应用改动 - <span>{{currentApply+1}}</span></b>
                     <mu-linear-progress mode="determinate" :value="applyValue"/>
                 </div>
             </div>
@@ -174,13 +175,25 @@ export default {
             this.stage ++
             if (this.stage === 3) {
                 let change = this.changed
-                this.currentApply = 0
+
+                let sleep = function (second) {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            resolve(' enough sleep~')
+                        }, second)
+                    })
+                }
 
                 for (let i in Object.keys(change)) {
-                    this.currentApply++
+                    this.currentApply = parseInt(i)
                     this.applyValue = this.currentApply * 100.0 / Object.keys(change).length
-                    console.log(i, this.currentApply / (Object.keys(change).length * 1.0))
+                    await sleep(2000)
                 }
+
+                // done
+                this.currentApply = -1
+                this.applyValue = 100
+                this.stage = 4
             }
             // state.dialog.topicManage = null
         },
