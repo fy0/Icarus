@@ -118,6 +118,7 @@
 
 <script>
 import state from '@/state.js'
+import api from '@/netapi.js'
 
 export default {
     data () {
@@ -190,6 +191,11 @@ export default {
                     await sleep(2000)
                 }
 
+                if (change.vSticky) {
+                    let ret = await api.topic.set({id: this.topic.id}, {sticky_weight: change.vSticky[1]}, 'admin')
+                    console.log(ret)
+                }
+
                 // done
                 this.currentApply = -1
                 this.applyValue = 100
@@ -212,6 +218,7 @@ export default {
                 this.vSticky = topic.sticky_weight.toString()
                 this.vState = topic.state.toString()
                 // this.vAwesome = topic.awesome
+                this.stage = 1
             }
         }
     }

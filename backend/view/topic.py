@@ -17,10 +17,10 @@ from view.user import UserMixin
 
 
 class TopicForm(ValidateForm):
-    title = StringField('标题', validators=[va.required(), va.Length(1, config.TOPIC_TITLE_LENGTH_MAX)])
+    title = StringField('标题', validators=[va.optional(), va.Length(1, config.TOPIC_TITLE_LENGTH_MAX)])
 
     content = StringField('正文', validators=[
-        va.required(),
+        va.optional(),
         va.Length(1, config.TOPIC_CONTENT_LENGTH_MAX)
     ])
 
@@ -64,10 +64,13 @@ class TopicView(UserMixin, PeeweeView):
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
-        values['board_id'] = to_bin(values['board_id'])
-        values['edit_time'] = int(time.time())
-        values['last_edit_user_id'] = self.current_user.id
-        # TODO: edit_count
+        if 'board_id' in values:
+            values['board_id'] = to_bin(values['board_id'])
+
+        if 'topic' in values or 'content' in values:
+            values['edit_time'] = int(time.time())
+            values['last_edit_user_id'] = self.current_user.id
+            # TODO: edit_count
 
     def before_insert(self, raw_post: Dict, values: Dict):
         form = TopicForm(**raw_post)

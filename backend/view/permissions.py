@@ -44,6 +44,7 @@ super_user = Ability('superuser', {
         'title': A.ALL,
         'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
         'content': [A.READ, A.CREATE, A.WRITE],
+        'sticky_weight': [A.READ, A.WRITE],
     },
     'board': {
         'name': A.ALL,
