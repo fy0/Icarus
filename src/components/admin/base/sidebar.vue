@@ -5,7 +5,7 @@
         <ul>
             <!-- 字典上只见“板块”，这里取为标准写法 -->
             <router-link tag="li" :to="{ name: 'admin_forum_board' }" exact><a>板块管理</a></router-link>
-            <li><a href="#">主题管理</a></li>
+            <router-link tag="li" :to="{ name: 'admin_forum_topic' }" exact><a>主题管理</a></router-link>
         </ul>
     </div>
 
