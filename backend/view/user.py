@@ -14,7 +14,6 @@ from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions
-
 from view.permissions import visitor, normal_user, admin
 
 
@@ -148,6 +147,5 @@ class UserView(UserMixin, PeeweeView):
         values['access_token'] = self._key
 
         # 添加统计记录
-        print(values['id'])
         statistic_new(POST_TYPES.USER, values['id'])
         UserNotifRecord.new(values['id'])

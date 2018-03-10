@@ -3,7 +3,7 @@ import config
 from typing import Dict
 
 from model.statistic import statistic_add_comment
-from model.topic import Topic
+from model.topic import Topic, TOPIC_STATE
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model.post import POST_TYPES
@@ -37,6 +37,13 @@ class CommentView(UserMixin, PeeweeView):
 
             if not post:
                 return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
+
+            if relate_type == POST_TYPES.TOPIC:
+                if post.state == TOPIC_STATE.CLOSE:
+                    return self.finish(RETCODE.INVALID_POSTDATA, "无法评论指定内容")
+                elif post.state in (TOPIC_STATE.HIDE, TOPIC_STATE.CLOSE):
+                    return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
+
         except TypeError:
             return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 

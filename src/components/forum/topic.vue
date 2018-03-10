@@ -1,53 +1,47 @@
 <template>
 <div class="ic-container" v-if="topic.user_id">
 
-<mu-breadcrumb class="nav">
-    <mu-breadcrumb-item href="#">
-        <router-link :to="{ name: 'forum' }">社区</router-link>
-    </mu-breadcrumb-item>
-    <mu-breadcrumb-item href="#">
-        <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
-    </mu-breadcrumb-item>
-    <mu-breadcrumb-item>{{topic.title}}</mu-breadcrumb-item>
-</mu-breadcrumb>
+    <mu-breadcrumb class="nav">
+        <mu-breadcrumb-item href="#">
+            <router-link :to="{ name: 'forum' }">社区</router-link>
+        </mu-breadcrumb-item>
+        <mu-breadcrumb-item href="#">
+            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
+        </mu-breadcrumb-item>
+        <mu-breadcrumb-item>
+            <span>{{topic.title}}</span>
+            <span v-if="topic.state === state.misc.TOPIC_STATE.CLOSE">[关闭]</span>
+        </mu-breadcrumb-item>
+    </mu-breadcrumb>
 
-<div class="topic-box">
-    <div class="main">
-        <div class="article typo">
-            <!--<h1>{{topic.title}}</h1>-->
-            <div class="content" v-html="marked(topic.content || '')"></div>
-            <p class="ic-hr"></p>
-            <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
-        </div>
-    </div>
-    <div class="info">
-        <div class="author">
-            <user-link :user="topic.user_id" :nickname="false" style="display: flex; align-items: center;">
-                <avatar :user="topic.user_id" :size="20" class="avatar"></avatar>
-                <span style="margin-left: 6px;">{{topic.user_id.nickname}}</span>
-            </user-link>
-            <p><ic-time :timestamp="topic.time" /></p>
-            <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
-            <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
-                <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
+    <div class="topic-box">
+        <div class="main">
+            <div class="article typo">
+                <!--<h1>{{topic.title}}</h1>-->
+                <div class="content" v-html="marked(topic.content || '')"></div>
+                <p class="ic-hr"></p>
+                <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
-            <div class="topic-manage" v-if="isAdmin">
-                <div>管理员选项</div>
-                <div class="group">
-                    <a>置顶</a>
-                    <a>提升</a>
-                    <a>下沉</a>
+        </div>
+        <div class="info">
+            <div class="author">
+                <user-link :user="topic.user_id" :nickname="false" style="display: flex; align-items: center;">
+                    <avatar :user="topic.user_id" :size="20" class="avatar"></avatar>
+                    <span style="margin-left: 6px;">{{topic.user_id.nickname}}</span>
+                </user-link>
+                <p><ic-time :timestamp="topic.time" /></p>
+                <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
+                <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
+                    <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
                 </div>
-                <div class="group">
-                    <a>评分</a>
-                    <a>编辑</a>
-                    <a @click="topicDelete(topic)">删除</a>
+                <div class="topic-manage" v-if="isAdmin">
+                    <i class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
+    <dialog-topic-manage />
 </div>
 </template>
 
@@ -130,8 +124,9 @@ export default {
     },
     methods: {
         marked,
-        topicDelete: async function (topic) {
-            ;
+        setTopicManage: function (topic) {
+            state.dialog.topicManageData = topic
+            state.dialog.topicManage = true
         },
         fetchData: async function () {
             let params = this.$route.params

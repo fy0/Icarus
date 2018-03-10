@@ -3,7 +3,10 @@
 <div class="ic-comment-post" id="ic-comment-post">
     <div class="ic-comment" v-if="state.user">
         <avatar :user="state.user" class="avatar"></avatar>
-        <div class="right-box">
+        <div class="right-box" v-if="isClosed()">
+            <mu-paper :zDepth="1" class="content">评论已关闭</mu-paper>
+        </div>
+        <div class="right-box" v-else>
             <mu-paper :zDepth="editing ? 2 : 1" class="content">
                 <textarea id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
             </mu-paper>
@@ -90,6 +93,12 @@ export default {
         ;
     },
     methods: {
+        isClosed () {
+            if (this.postType === state.misc.POST_TYPES.TOPIC) {
+                return this.item.state <= state.misc.TOPIC_STATE.CLOSE
+            }
+            return false
+        },
         setReplyTo: function (val) {
             this.replyTo = val
         },

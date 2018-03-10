@@ -246,6 +246,9 @@ export default {
         close () {
             if (this.stage === 2) this.stage = 1
             else state.dialog.topicManage = null
+            if (this.stage === 4) {
+                this.$router.go(0)
+            }
         }
     },
     watch: {
@@ -254,7 +257,7 @@ export default {
                 let topic = this.topic
                 this.vSticky = topic.sticky_weight.toString()
                 this.vState = topic.state.toString()
-                this.vAwesome = topic.awesome
+                this.vAwesome = Boolean(topic.awesome)
                 this.stage = 1
             }
         }
