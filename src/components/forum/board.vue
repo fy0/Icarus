@@ -13,11 +13,12 @@
                     <h2>
                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                             <span>{{i.title}}</span>
+                            <span v-if="i.state === state.misc.TOPIC_STATE.CLOSE">[关闭]</span>
                         </router-link>
                         <span class="icons">
-                            <i class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
-                            <i class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                            <i class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(i)" v-if="isAdmin()"></i>
+                            <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
+                            <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                            <i v-if="isAdmin()" class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(i)"></i>
                         </span>
                     </h2>
                     <p class="info">
@@ -167,7 +168,7 @@ export default {
             let retList = await api.topic.list({
                 board_id: params.id,
                 order: 'sticky_weight.desc,weight.desc,time.desc',
-                select: 'id, time, user_id, board_id, title, sticky_weight, state',
+                select: 'id, time, user_id, board_id, title, sticky_weight, state, awesome',
                 loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             }, params.page)
 

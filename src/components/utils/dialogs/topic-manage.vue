@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="topic-manage-item">
-                <span class="label">精华</span>
+                <span class="label">优秀</span>
                 <div class="right">
                     <mu-switch v-model="vAwesome" class="demo-switch" />
                 </div>
@@ -177,23 +177,60 @@ export default {
             if (this.stage === 3) {
                 let change = this.changed
 
-                let sleep = function (second) {
-                    return new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            resolve(' enough sleep~')
-                        }, second)
-                    })
+                let i = 0
+                let len = Object.keys(change).length
+
+                let updateOne = () => {
+                    this.currentApply = i++
+                    this.applyValue = this.currentApply * 100.0 / len
                 }
 
-                for (let i in Object.keys(change)) {
-                    this.currentApply = parseInt(i)
-                    this.applyValue = this.currentApply * 100.0 / Object.keys(change).length
-                    await sleep(2000)
-                }
-
+                // 置顶
                 if (change.vSticky) {
-                    let ret = await api.topic.set({id: this.topic.id}, {sticky_weight: change.vSticky[1]}, 'admin')
-                    console.log(ret)
+                    updateOne()
+                    let ret = await api.topic.set({id: this.topic.id}, {'sticky_weight': change.vSticky[1]}, 'admin')
+                    if (ret.code === 0) $.message_success('文章置顶设置成功')
+                    else $.message_by_code(ret.code)
+                }
+
+                // 真正的提升下沉实现起来比较难，直接改变权重值吧
+                if (change.vWeight) {
+                    updateOne()
+                    let ret = await api.topic.set({id: this.topic.id}, {'weight.incr': change.vWeight[1]}, 'admin')
+                    if (ret.code === 0) $.message_success('提升/下沉设置成功')
+                    else $.message_by_code(ret.code)
+                }
+
+                // 积分奖励
+                if (change.vCredit) {
+                    updateOne()
+                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'admin')
+                    // if (ret.code === 0) $.message_success('文章状态修改成功')
+                    // else $.message_by_code(ret.code)
+                }
+
+                // 文章状态
+                if (change.vState) {
+                    updateOne()
+                    let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'admin')
+                    if (ret.code === 0) $.message_success('文章状态修改成功')
+                    else $.message_by_code(ret.code)
+                }
+
+                // 声望奖励
+                if (change.vReputation) {
+                    updateOne()
+                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'admin')
+                    // if (ret.code === 0) $.message_success('文章状态修改成功')
+                    // else $.message_by_code(ret.code)
+                }
+
+                // 优秀文章
+                if (change.vAwesome) {
+                    updateOne()
+                    let ret = await api.topic.set({id: this.topic.id}, {awesome: change.vAwesome[1] ? 1 : 0}, 'admin')
+                    if (ret.code === 0) $.message_success('优秀文章设置成功')
+                    else $.message_by_code(ret.code)
                 }
 
                 // done
@@ -217,7 +254,7 @@ export default {
                 let topic = this.topic
                 this.vSticky = topic.sticky_weight.toString()
                 this.vState = topic.state.toString()
-                // this.vAwesome = topic.awesome
+                this.vAwesome = topic.awesome
                 this.stage = 1
             }
         }

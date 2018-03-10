@@ -1,7 +1,5 @@
 import time
-
 import peewee
-
 from model import db
 from model import _models
 from model.user import User

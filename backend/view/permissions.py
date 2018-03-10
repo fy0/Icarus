@@ -13,6 +13,7 @@ visitor = Ability(None, {
         'last_edit_user_id': [A.READ],
         'content': [A.READ],
 
+        'awesome': [A.READ],
         'sticky_weight': [A.READ],
         'weight': [A.READ],
     },
