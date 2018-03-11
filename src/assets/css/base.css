@@ -1,6 +1,6 @@
 html {
     background-color: #fff;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
 }
 
 body {

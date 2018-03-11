@@ -1,3 +1,4 @@
+from model.topic import TOPIC_STATE
 from slim.base.permission import Ability, A, AbilityRecord
 
 visitor = Ability(None, {
@@ -79,7 +80,6 @@ admin = Ability('admin', {
 
 # user
 
-
 def user_check(ability, user, action, record: AbilityRecord, available_columns: list):
     if user and record.get('id') == user.id:
         available_columns.append('email')
@@ -89,6 +89,13 @@ def user_check(ability, user, action, record: AbilityRecord, available_columns: 
 normal_user.add_record_check([A.READ], 'user', func=user_check)
 
 # topic
+
+cond_hide_and_delete = [
+    ('state', '>=', TOPIC_STATE.HIDE),
+]
+
+visitor.add_query_condition(A.ALL, 'topic', cond_hide_and_delete)
+normal_user.add_query_condition(A.ALL, 'topic', cond_hide_and_delete)
 
 
 def is_users_post(ability, user, action, record: AbilityRecord, available_columns: list):

@@ -1,6 +1,7 @@
 <template>
     <mu-dialog :open="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
         <div v-if="stage == 1">
+            <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id, asAdmin: true} }">编辑文章</router-link>
             <div class="topic-manage-item">
                 <span class="label">文章置顶</span>
                 <div class="right">

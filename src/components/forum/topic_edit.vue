@@ -3,7 +3,7 @@
 <div v-else class="ic-container">
     <div class="edit-page-title">
         <h3 class="" v-if="!is_edit">新建主题</h3>
-        <h3 class="" v-else>编辑主题</h3>
+        <h3 class="" v-else>编辑主题<span v-if="asAdmin"> - 管理员模式</span></h3>
         <button class="ic-btn click blue right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
     </div>
 
@@ -92,6 +92,7 @@ export default {
     data () {
         return {
             state,
+            asAdmin: false,
             pageLoading: true,
             loading: false,
             boardList: [],
@@ -157,7 +158,11 @@ export default {
             }
 
             if (this.is_edit) {
-                ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'user')
+                if (this.asAdmin) {
+                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'admin')
+                } else {
+                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'user')
+                }
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'
                 topicId = this.topicInfo.id
@@ -182,6 +187,7 @@ export default {
             this.pageLoading = true
             let params = this.$route.params
 
+            this.asAdmin = params.asAdmin
             if (!state.user) {
                 $.message_error('抱歉，无权访问此页面，请返回')
                 return

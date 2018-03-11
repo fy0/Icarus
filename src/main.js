@@ -119,6 +119,9 @@ router.beforeEach(async function (to, from, next) {
     nprogress.start()
     $.tpClear()
 
+    // 重置对话框
+    state.dialog.topicManage = null
+
     if (state.misc === undefined) {
         let ret = await api.misc()
         if (ret.code === 0) {
