@@ -97,6 +97,26 @@ body, button, input, select, textarea {
 .pure-table-horizontal tbody>tr:last-child>td {
     border-bottom-width: 0
 }
+
+/* 列表 */
+.ic-collection {
+    margin: 0.5rem 0 1rem 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+    list-style-type: none;
+}
+
+.ic-collection-item {
+    background-color: #fff;
+    line-height: 1.5rem;
+    padding: 20px;
+    margin: 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
 /* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
 .ic-topbtns {
     display: flex;
@@ -115,6 +135,11 @@ a {
 
 a:hover {
     color: #286090;
+}
+
+.ic-topic-manage-icon {
+    color: #71c1ef;
+    cursor: pointer;
 }
 
 /* 1em = 16px */

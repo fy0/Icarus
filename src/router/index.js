@@ -100,7 +100,7 @@ export default new Router({
         },
         // 管理 - 文章
         {
-            path: '/admin/forum/topic',
+            path: '/admin/forum/topic/:page(\\d+)?/:name(.+)?',
             name: 'admin_forum_topic',
             component: AdminForumTopic
         },

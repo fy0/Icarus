@@ -31,6 +31,10 @@ export default {
         await this.fetchData()
         this.state.loading--
     },
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        '$route': 'fetchData'
+    },
     components: {
         AdminBase
     }

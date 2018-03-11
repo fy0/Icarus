@@ -165,7 +165,7 @@ export default {
                 change.vReputation = [0, this.vReputation]
             }
             // 精华文章
-            if (this.vAwesome !== false) {
+            if (this.vAwesome !== Boolean(topic.awesome)) {
                 change.vAwesome = [false, this.vAwesome]
             }
             return change
