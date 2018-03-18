@@ -1,5 +1,6 @@
 <template>
 <div id="app">
+    <div v-title>{{state.config.title}}</div>
     <navbar class="header"></navbar>
     <loading v-if="state.loading" />
     <router-view v-show="!state.loading" class="main"></router-view>

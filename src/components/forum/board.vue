@@ -5,6 +5,8 @@
         <h3 class="name">{{ board.name }}</h3>
         <div class="brief">{{ board.brief }}</div>
     </mu-paper>
+    <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
+    <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
 
     <div class="board-page-box">
         <div class="topic-list" v-if="topics.items.length">
@@ -170,7 +172,7 @@ export default {
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 select: 'id, time, user_id, board_id, title, sticky_weight, state, awesome',
                 loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
-            }, params.page)
+            }, params.page, null, state.user ? 'user' : null)
 
             if (retList.code === api.retcode.SUCCESS) {
                 this.board = ret.data

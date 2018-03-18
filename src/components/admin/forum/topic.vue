@@ -1,5 +1,6 @@
 <template>
 <admin-base>
+    <div v-title>主题管理 - 管理界面 - {{state.config.title}}</div>
     <div class="search-box" v-if="false">
         <input v-model="searchTxt" />
         <mu-raised-button @click="doSearch()" label="搜索" class="search-btn" primary/>
@@ -7,7 +8,7 @@
     <div>
         <ul class="ic-collection">
             <li class="item ic-collection-item" v-for="i in topics.items" :key="i.id">
-                <router-link tag="b" class="title" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                <router-link class="title" :class="i.state === state.misc.TOPIC_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                     <span>{{i.title}}</span>
                     <span class="icons">
                         <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
@@ -34,6 +35,7 @@
     margin-bottom: 15px;
     font-weight: bold;
     display: inline-block;
+    color: #000;
 }
 
 .item > .info > .board {
@@ -92,7 +94,7 @@ export default {
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 // select: 'id, time, user_id, board_id, title, state',
                 loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
-            }, params.page)
+            }, params.page, null, 'admin')
             if (retList.code === api.retcode.SUCCESS) {
                 this.topics = retList.data
             }

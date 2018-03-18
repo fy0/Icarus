@@ -1,5 +1,6 @@
 <template>
 <div class="ic-container">
+    <div v-title>管理界面 - {{state.config.title}}</div>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>
@@ -26,10 +27,12 @@
 <script>
 import TopBtns from './topbtns.vue'
 import Sidebar from './sidebar.vue'
+import state from '@/state.js'
 
 export default {
     data () {
         return {
+            state
         }
     },
     components: {

@@ -15,6 +15,10 @@ body, button, input, select, textarea {
     box-sizing: border-box;
 }
 
+.del-line {
+    text-decoration-line: line-through;
+}
+
 .ic-hr {
     margin-bottom: 30px !important;
     border-bottom: 1px solid rgb(239, 239, 239);

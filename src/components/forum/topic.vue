@@ -1,5 +1,6 @@
 <template>
 <div class="ic-container" v-if="topic.user_id">
+    <div v-title>{{ topic.title }} - {{topic.board_id.name}} - {{state.config.title}}</div>
 
     <mu-breadcrumb class="nav">
         <mu-breadcrumb-item href="#">
@@ -18,7 +19,10 @@
         <div class="main">
             <div class="article typo">
                 <!--<h1>{{topic.title}}</h1>-->
-                <div class="content" v-html="marked(topic.content || '')"></div>
+                <div class="content" v-if="topic.state === state.misc.TOPIC_STATE.CONTENT_IF_LOGIN">
+                    <p>登陆后可见正文</p>
+                </div>
+                <div class="content" v-else v-html="marked(topic.content || '')"></div>
                 <p class="ic-hr"></p>
                 <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
@@ -133,7 +137,7 @@ export default {
             let ret = await api.topic.get({
                 id: params.id,
                 loadfk: {user_id: null, board_id: null, last_edit_user_id: null}
-            })
+            }, state.user ? 'user' : null)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.topic = ret.data

@@ -1,5 +1,6 @@
 <template>
 <div class="ic-container forum-box">
+    <div v-title>最近话题 - {{state.config.title}}</div>
     <top-btns></top-btns>
     <loading v-if="loading"/>
     <div v-else-if="topics.items && topics.items.length" id="board-list">
@@ -50,13 +51,14 @@
 
 <script>
 import api from '@/netapi.js'
-// import state from '@/state.js'
+import state from '@/state.js'
 import '@/assets/css/forum.css'
 import TopBtns from './topbtns.vue'
 
 export default {
     data () {
         return {
+            state,
             loading: true,
             topics: []
         }

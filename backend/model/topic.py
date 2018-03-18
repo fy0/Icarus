@@ -17,8 +17,11 @@ class TOPIC_STATE(StateObject):
     HIDE = 10
     CLOSE = 30  # 禁止回复
     NORMAL = 50
+    CONTENT_IF_LOGIN = 60
+    USER_ONLY = 70
+    ADMIN_ONLY = 80
 
-    txt = {DEL: "删除", HIDE: "隐藏", CLOSE:"关闭", NORMAL:"正常"}
+    txt = {DEL: "删除", HIDE: "隐藏", CLOSE:"关闭", NORMAL:"正常", CONTENT_IF_LOGIN: '登陆后可见正文', USER_ONLY: '仅会员可见', ADMIN_ONLY: '仅管理员可见'}
 
 
 class Topic(BaseModel):

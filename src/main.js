@@ -111,6 +111,13 @@ Vue.component('ic-time', ICTime)
 Vue.component('user-link', UserLink)
 Vue.component('dialog-topic-manage', DialogTopicManage)
 
+Vue.directive('title', {
+    inserted: function (el, binding) {
+        document.title = el.innerText
+        el.remove()
+    }
+})
+
 Vue.config.productionTip = false
 nprogress.configure({showSpinner: false})
 

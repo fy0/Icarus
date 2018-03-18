@@ -1,5 +1,6 @@
 from model.topic import TOPIC_STATE
 from slim.base.permission import Ability, A, AbilityRecord
+from slim.base.query import ParamsQueryInfo
 
 visitor = Ability(None, {
     'topic': {
@@ -90,19 +91,32 @@ normal_user.add_record_check([A.READ], 'user', func=user_check)
 
 # topic
 
-cond_hide_and_delete = [
-    ('state', '>=', TOPIC_STATE.HIDE),
-]
-
-visitor.add_query_condition(A.ALL, 'topic', cond_hide_and_delete)
-normal_user.add_query_condition(A.ALL, 'topic', cond_hide_and_delete)
+visitor.add_query_condition('topic', [
+    ('state', '>', TOPIC_STATE.HIDE),
+    ('state', '<', TOPIC_STATE.USER_ONLY),
+])
 
 
-def is_users_post(ability, user, action, record: AbilityRecord, available_columns: list):
+def check_remove_content_for_select(ability, user, action, record: AbilityRecord, available_columns: list):
+    if user:
+        if record.get('state') == TOPIC_STATE.CONTENT_IF_LOGIN:
+            available_columns.remove('content')
+    return True
+
+
+visitor.add_record_check((A.READ,), 'topic', func=check_remove_content_for_select)
+
+normal_user.add_query_condition('topic', [
+    ('state', '>', TOPIC_STATE.HIDE),
+    ('state', '<', TOPIC_STATE.ADMIN_ONLY),
+])
+
+
+def check_is_users_post(ability, user, action, record: AbilityRecord, available_columns: list):
     if user:
         if record.get('user_id') != user.id:
             available_columns.clear()
     return True
 
 
-normal_user.add_record_check((A.WRITE,), 'topic', func=is_users_post)
+normal_user.add_record_check((A.WRITE,), 'topic', func=check_is_users_post)

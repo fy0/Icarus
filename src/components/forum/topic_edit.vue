@@ -2,6 +2,7 @@
 <loading v-if="pageLoading"/>
 <div v-else class="ic-container">
     <div class="edit-page-title">
+        <div v-title>{{ is_edit ? '编辑主题' : '新建主题' }} - {{state.config.title}}</div>
         <h3 class="" v-if="!is_edit">新建主题</h3>
         <h3 class="" v-else>编辑主题<span v-if="asAdmin"> - 管理员模式</span></h3>
         <button class="ic-btn click blue right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>

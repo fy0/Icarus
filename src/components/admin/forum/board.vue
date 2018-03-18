@@ -1,5 +1,6 @@
 <template>
 <admin-base>
+    <div v-title>版块管理 - 管理界面 - {{state.config.title}}</div>
     <table class="pure-table pure-table-horizontal" style="width: 100%">
         <thead>
             <tr>

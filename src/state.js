@@ -1,4 +1,4 @@
-
+import config from '@/config.js'
 // import tools from "./tools.js"
 
 export default {
@@ -16,6 +16,7 @@ export default {
         TOPIC_STATE_TXT: { ... }
     },
     */
+    config,
     msgs: [],
     test: {
         items: []
