@@ -8,6 +8,12 @@
     color: #222;
 }
 
+.ic-btn.disabled {
+    color: rgba(0,0,0,.3);
+    cursor: not-allowed;
+    background-color: #e6e6e6 !important;
+}
+
 .ic-btn.blue.click {
     color: #fff;
     background-color: #5599F9;
@@ -28,7 +34,7 @@
     background-color: #55AA55;
 }
 
-.ic-btn.green.click:hover {
+.ic-btn.green.click:not(.disabled):hover {
     color: #fff;
     background-color: #449944;
 }

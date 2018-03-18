@@ -23,11 +23,23 @@
                 <label for="verify">验证码</label>
                 <input type="text" name="verify" id="verify" v-model="info.verify">
             </check-row>
+            <check-row style="display: flex;align-items: center;" :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
+                <mu-checkbox v-model="info.agreeLicense"/>
+                <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click="dialogLicense = true">用户许可协议</a></span>
+            </check-row>
             <div class="ic-form-row">
-                <input class="ic-btn green click" type="submit" @click.prevent="register" value="注 册" style="width: 100%">
+                <input class="ic-btn green click" :class="{ disabled : !info.agreeLicense }" type="submit" @click.prevent="register" value="注 册" style="width: 100%">
             </div>
         </form>
     </div>
+
+    <mu-dialog :open="dialogLicense" title="用户许可协议">
+        <div>
+            <span>协议正文</span>
+        </div>
+        <mu-flat-button label="确定" slot="actions" primary @click="dialogLicense = false"/>
+    </mu-dialog>
+
 </div>
 </template>
 
@@ -84,8 +96,10 @@ export default {
                 nickname: '',
                 password: '',
                 password2: '',
-                verify: ''
+                verify: '',
+                agreeLicense: false
             },
+            dialogLicense: false,
             formErrors: {}
         }
     },
@@ -122,6 +136,9 @@ export default {
     },
     methods: {
         register: async function () {
+            if (!this.info.agreeLicense) {
+                return
+            }
             if (this.checkPassword && this.checkPassword2 && this.checkEmail) {
                 let ret = await api.user.new(this.info)
                 if (ret.code !== api.retcode.SUCCESS) {
