@@ -21,10 +21,7 @@
                 <td>{{i.weight}}</td>
                 <td>{{state.misc.BOARD_STATE_TXT[i.state]}}</td>
                 <td>
-                    <div class="pure-g">
-                        <a item-id="${i.id}" class="btn-edit pure-u-12-24 pure-button button-secondary">编辑</a>
-                        <a item-id="${i.id}" class="btn-del pure-u-12-24 pure-button button-error">删除</a>
-                    </div>
+                    <a item-id="${i.id}" class="btn-edit pure-u-12-24 pure-button button-secondary">编辑</a>
                 </td>
             </tr>
         </tbody>
@@ -90,14 +87,6 @@ export default {
     },
     methods: {
         reloadInfo: async function () {
-            let ret = await api.board.list()
-
-            if (ret.code === api.retcode.SUCCESS) {
-                this.boardInfo = ret.data
-                return ret
-            } else {
-                $.message_by_code(ret.code)
-            }
         },
         boardNew: async function () {
             let ret = await api.board.new(this.boardNewInfo)
@@ -105,23 +94,24 @@ export default {
             if (ret.code === api.retcode.SUCCESS) {
                 this.reloadInfo()
             }
+        },
+        fetchData: async function () {
+            let ret = await api.board.list({
+                order: 'weight.desc,time.desc'
+                // select: 'id, time, user_id, board_id, title, state',
+            }, 1, null, 'admin')
+
+            if (ret.code === api.retcode.SUCCESS) {
+                this.boardInfo = ret.data
+            } else {
+                $.message_by_code(ret.code)
+            }
         }
     },
-    beforeRouteEnter: async (to, from, next) => {
-        let ret = await api.board.list()
-
-        if (ret.code === api.retcode.SUCCESS) {
-            return next(vm => {
-                vm.boardInfo = ret.data
-            })
-        }
-
-        $.message_by_code(ret.code)
-        return next('/')
-    },
-    beforeRouteUpdate: async function (to, from, next) {
-        let ret = await this.reloadInfo()
-        return (ret) ? next() : next('/')
+    created: async function () {
+        this.state.loading++
+        await this.fetchData()
+        this.state.loading--
     },
     components: {
         AdminBase

@@ -26,6 +26,17 @@ visitor = Ability(None, {
 
         'email': [A.CREATE],
         'password': [A.CREATE],
+    },
+    'board': {
+        'id': (A.QUERY, A.READ),
+        'name': (A.READ,),
+        'brief': (A.READ,),
+        'desc': (A.READ,),
+        'time': (A.READ, A.QUERY,),
+        'weight': (A.READ, A.QUERY),
+        'color': (A.READ,),
+        'state': (A.READ,),
+        'category': (A.READ,)
     }
 })
 

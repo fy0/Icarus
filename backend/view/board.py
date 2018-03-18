@@ -3,11 +3,15 @@ from typing import Mapping, Dict
 import config
 from model.post import POST_TYPES
 from model.statistic import statistic_new
+from slim.base.permission import Permissions
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.board import Board
 from view import route, ValidateForm
 from wtforms import StringField, validators as va
+
+from view.permissions import visitor, normal_user, super_user, admin
+from view.user import UserMixin
 
 
 class BoardForm(ValidateForm):
@@ -22,7 +26,7 @@ class BoardForm(ValidateForm):
 
 
 @route('board')
-class BoardView(PeeweeView):
+class BoardView(PeeweeView, UserMixin):
     model = Board
     LIST_PAGE_SIZE = -1
 
@@ -30,6 +34,14 @@ class BoardView(PeeweeView):
     def ready(cls):
         cls.add_soft_foreign_key('id', 'statistic', 's')
         cls.add_soft_foreign_key('id', 'statistic24h', 's24')
+
+    @classmethod
+    def permission_init(cls):
+        permission: Permissions = cls.permission
+        permission.add(visitor)
+        permission.add(normal_user)
+        permission.add(super_user)
+        permission.add(admin)
 
     @classmethod
     def after_read(self, values: Dict):
