@@ -14,29 +14,30 @@
         </thead>
 
         <tbody>
-            <tr v-for="i, _ in boardInfo.items">
+            <tr v-for="i, _ in boardInfo.items" :key="_">
                 <td>{{_+1}}</td>
                 <td>{{i.name}}</td>
                 <td>{{i.brief}}</td>
                 <td>{{i.weight}}</td>
                 <td>{{state.misc.BOARD_STATE_TXT[i.state]}}</td>
                 <td>
-                    <a item-id="${i.id}" class="btn-edit pure-u-12-24 pure-button button-secondary">编辑</a>
+                    <a href="javascript:void(0)" @click="setBoardManage(i)">编辑</a>
                 </td>
             </tr>
         </tbody>
     </table>
     <div class="board-add">
         <div class="board_name">
-            <input type="text" v-model="boardNewInfo.name" placeholder="版块名">
+            <input type="text" v-model="boardNewInfo.name" placeholder="板块名">
         </div>
         <div class="board_brief">
             <input name="board_brief" v-model="boardNewInfo.brief" type="text" placeholder="简介">
         </div>
         <div class="btn">
-            <button class="ic-btn click blue" @click="boardNew">新建版块</button>
+            <button class="ic-btn click blue" @click="boardNew">新建板块</button>
         </div>
     </div>
+    <dialog-board-manage />
 </admin-base>
 </template>
 
@@ -73,6 +74,7 @@
 import api from '@/netapi.js'
 import state from '@/state.js'
 import AdminBase from '../base/base.vue'
+import DialogBoardManage from '../../utils/dialogs/board-manage.vue'
 
 export default {
     data () {
@@ -86,18 +88,21 @@ export default {
         }
     },
     methods: {
-        reloadInfo: async function () {
+        setBoardManage: function (board) {
+            state.dialog.boardManageData = board
+            state.dialog.boardManage = true
         },
         boardNew: async function () {
-            let ret = await api.board.new(this.boardNewInfo)
+            let ret = await api.board.new(this.boardNewInfo, 'admin')
             $.message_by_code(ret.code)
             if (ret.code === api.retcode.SUCCESS) {
-                this.reloadInfo()
+                this.fetchData()
             }
         },
         fetchData: async function () {
             let ret = await api.board.list({
-                order: 'weight.desc,time.desc'
+                order: 'weight.desc,time.asc',
+                loadfk: {'creator_id': null}
                 // select: 'id, time, user_id, board_id, title, state',
             }, 1, null, 'admin')
 
@@ -114,7 +119,8 @@ export default {
         this.state.loading--
     },
     components: {
-        AdminBase
+        AdminBase,
+        DialogBoardManage
     }
 }
 </script>

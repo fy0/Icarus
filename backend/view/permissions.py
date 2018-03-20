@@ -1,3 +1,4 @@
+from model.board import BOARD_STATE
 from model.topic import TOPIC_STATE
 from slim.base.permission import Ability, A, AbilityRecord
 from slim.base.query import ParamsQueryInfo
@@ -68,7 +69,8 @@ super_user = Ability('superuser', {
         'weight': A.ALL,
         'color': (A.READ, A.WRITE, A.CREATE),
         'state': A.ALL,
-        'category': A.ALL
+        'category': A.ALL,
+        'creator_id': (A.READ, A.CREATE)
     }
 }, based_on=normal_user)
 
@@ -107,6 +109,10 @@ visitor.add_query_condition('topic', [
     ('state', '<', TOPIC_STATE.USER_ONLY),
 ])
 
+visitor.add_query_condition('board', [
+    ('state', '>', BOARD_STATE.HIDE),
+])
+
 
 def check_remove_content_for_select(ability, user, action, record: AbilityRecord, available_columns: list):
     if user:
@@ -120,6 +126,10 @@ visitor.add_record_check((A.READ,), 'topic', func=check_remove_content_for_selec
 normal_user.add_query_condition('topic', [
     ('state', '>', TOPIC_STATE.HIDE),
     ('state', '<', TOPIC_STATE.ADMIN_ONLY),
+])
+
+normal_user.add_query_condition('board', [
+    ('state', '>', BOARD_STATE.HIDE),
 ])
 
 

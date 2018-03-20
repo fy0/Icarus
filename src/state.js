@@ -23,7 +23,9 @@ export default {
     },
     dialog: {
         topicManage: null,
-        topicManageData: null
+        topicManageData: null,
+        boardManage: null,
+        boardManageData: null
     },
     unread: 0,
     user: null,

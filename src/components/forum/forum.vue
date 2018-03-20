@@ -67,44 +67,34 @@ export default {
     methods: {
         lineStyle: function (board) {
             return $.lineStyle(board)
-        }
-    },
-    beforeRouteEnter: async (to, from, next) => {
-        let ret = await api.board.list({
-            loadfk: {'id': [
-                {
-                    'as': 's',
-                    'loadfk': {
-                        'last_comment_id': {
-                            'loadfk': {'user_id': null}
+        },
+        fetchData: async function () {
+            let ret = await api.board.list({
+                order: 'weight.desc,time.asc', // 权重从高到低，时间从先到后
+                loadfk: {'id': [
+                    {
+                        'as': 's',
+                        'loadfk': {
+                            'last_comment_id': {
+                                'loadfk': {'user_id': null}
+                            }
                         }
-                    }
-                },
-                {'as': 's24h', 'table': 's24'}
-            ]}
-        })
-
-        if (ret.code === api.retcode.SUCCESS) {
-            return next(vm => {
-                vm.boardInfo = ret.data
+                    },
+                    {'as': 's24h', 'table': 's24'}
+                ]}
             })
-        }
 
-        $.message_by_code(ret.code)
-        return next('/')
+            if (ret.code === api.retcode.SUCCESS) {
+                this.boardInfo = ret.data
+            } else {
+                $.message_by_code(ret.code)
+            }
+        }
     },
-    beforeRouteUpdate: async function (to, from, next) {
-        let ret = await api.board.list({
-            loadfk: {'id': {'as': 'statistic'}}
-        })
-
-        if (ret.code === api.retcode.SUCCESS) {
-            this.boardInfo = ret.data
-            return next()
-        }
-
-        $.message_by_code(ret.code)
-        return next('/')
+    created: async function () {
+        this.state.loading++
+        await this.fetchData()
+        this.state.loading--
     }
 }
 </script>
