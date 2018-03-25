@@ -71,6 +71,10 @@ super_user = Ability('superuser', {
         'state': A.ALL,
         'category': A.ALL,
         'creator_id': (A.READ, A.CREATE)
+    },
+    'user': {
+        'reg_time': (A.READ,),
+        'state': (A.READ,),
     }
 }, based_on=normal_user)
 

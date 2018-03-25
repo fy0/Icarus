@@ -9,7 +9,10 @@
 <script>
 export default {
     props: {
-        timestamp: {}
+        timestamp: {},
+        ago: {
+            default: true
+        }
     },
     methods: {
         DateFormat: function (d, format) {
@@ -71,7 +74,7 @@ export default {
             return val
         },
         getTime: function () {
-            return this.timestampToXXAgo(this.timestamp)
+            return this.timestampToXXAgo(this.timestamp, this.ago)
         },
         getRealTime: function () {
             return this.timestampToXXAgo(this.timestamp, false)

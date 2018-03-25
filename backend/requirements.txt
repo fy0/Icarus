@@ -1,7 +1,7 @@
 slim
-aiohttp<=3
+aiohttp>=3
 peewee
 asyncpg
 wtforms
 msgpack
-psycopg2
+psycopg2-binary

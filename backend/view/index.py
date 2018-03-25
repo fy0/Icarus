@@ -4,7 +4,7 @@ from model.board import BOARD_STATE
 from model.notif import NOTIF_TYPE
 from model.post import POST_TYPES
 from model.topic import TOPIC_STATE
-from model.user import USER_GROUP
+from model.user import USER_GROUP, USER_STATE
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from view import route
@@ -25,6 +25,9 @@ class TestBaseView(BaseView):
 
             'TOPIC_STATE': TOPIC_STATE.to_dict(),
             'TOPIC_STATE_TXT': TOPIC_STATE.txt,
+
+            'USER_STATE': USER_STATE.to_dict(),
+            'USER_STATE_TXT': USER_STATE.txt,
 
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,

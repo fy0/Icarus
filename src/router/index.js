@@ -15,6 +15,7 @@ import ForumTopic from '@/components/forum/topic.vue'
 import Admin from '@/components/admin/admin.vue'
 import AdminForumBoard from '@/components/admin/forum/board.vue'
 import AdminForumTopic from '@/components/admin/forum/topic.vue'
+import AdminCommonUser from '@/components/admin/common/user.vue'
 
 import About from '@/components/about.vue'
 
@@ -103,6 +104,12 @@ export default new Router({
             path: '/admin/forum/topic/:page(\\d+)?/:name(.+)?',
             name: 'admin_forum_topic',
             component: AdminForumTopic
+        },
+        // 管理 - 用户
+        {
+            path: '/admin/common/user/:page(\\d+)?/:name(.+)?',
+            name: 'admin_common_user',
+            component: AdminCommonUser
         },
 
         // 关于

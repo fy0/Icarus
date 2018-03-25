@@ -88,7 +88,7 @@ class TopicView(UserMixin, PeeweeView):
         # 添加统计记录
         statistic_new(POST_TYPES.TOPIC, values['id'])
 
-    def after_insert(self, values: Dict):
+    def after_insert(self, raw_post: Dict, values: Dict):
         statistic_add_topic(values['board_id'], values['id'])
 
 

@@ -131,7 +131,11 @@ export default {
             let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight'])
             for (let i of Object.keys(this.board)) {
                 if (keys.has(i)) {
-                    data[i] = this.board[i]
+                    // 注意 post 上去的时候 null 会变成 'null'
+                    // 所以直接移除了
+                    if (this.board[i] !== null) {
+                        data[i] = this.board[i]
+                    }
                 }
             }
 

@@ -1,5 +1,5 @@
 from slim.retcode import RETCODE
-from slim.utils.request import do_request, SlimViewRequest
+from slim.tools.request import do_request, SlimViewRequest
 
 __all__ = ['user', 'board', 'topic', 'comment', 'misc']
 
