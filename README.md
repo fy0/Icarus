@@ -2,6 +2,9 @@
 
 > A opensource forum project write with python3 and vue.js
 
+# ![](misc/screenshot.png)
+
+
 ## 如何部署
 
 首先 clone 项目。
@@ -206,6 +209,10 @@ sudo cp misc/icarus-1port.conf /etc/nginx/conf.d/
 ```bash
 sudo service nginx restart
 ```
+
+访问服务器IP的9001端口，就可以看到最上面截图中的画面了。
+
+第一个注册的用户将自动成为管理员。
 
 
 ## Build Setup
