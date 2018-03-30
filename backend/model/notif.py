@@ -6,9 +6,7 @@ from model import BaseModel, MyTimestampField, db
 from model.comment import COMMENT_STATE
 from model.topic import TOPIC_STATE
 from model.user import User
-from slim.utils import StateObject, json_patch
-
-json_patch.apply()
+from slim.utils import StateObject
 
 
 class NOTIF_TYPE(StateObject):
