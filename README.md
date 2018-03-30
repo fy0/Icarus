@@ -15,9 +15,9 @@ git clone https://github.com/fy0/Icarus.git
 迫于前端安装node_modules等待时间长，在环境安装完成后，前端篇和后端篇可以一起做，以节省时间。
 
 
-### 环境依赖篇
+## 环境依赖篇
 
-1. Python 3.6+
+### 1. Python 3.6+
 
 Windows上直接使用Anaconda3或者官方版本。
 
@@ -37,7 +37,7 @@ sudo su -c "curl https://bootstrap.pypa.io/get-pip.py | python3.6"
 ```
 
 
-2. NodeJS
+### 2. NodeJS
 
 建议使用LTS版本的 nodejs，通过包管理器安装：
 
@@ -49,7 +49,7 @@ sudo apt-get install -y nodejs
 ```
 
 
-3. PostgreSQL
+### 3. PostgreSQL
 
 官方提供了一系列操作系统的安装解决方案：https://www.postgresql.org/download/
 
@@ -68,14 +68,34 @@ sudo apt-get update
 sudo apt-get install -y postgresql-10
 ```
 
+装好之后做一些配置
+```bash
+sudo su postgres
+createdb icarus
+createuser icarus
+psql icarus
+# 进入 PQ Shell
+CREATE EXTENSION IF NOT EXISTS hstore;
+CREATE EXTENSION IF NOT EXISTS citext;
 
-### 后端篇
+GRANT ALL ON DATABASE icarus TO icarus;
+ALTER USER icarus WITH PASSWORD 'IcaruStest123';
+```
+
+
+## 后端篇
+
+首先配置数据库连接：
+```bash
+cd Icarus/backend
+# 这里的 private.py 用于覆盖 config.py 的默认配置
+echo -e "DATABASE_URI = 'postgres://icarus:IcaruStest123@localhost/icarus'\n" > private.py
+```
 
 建议使用 pipenv 进行部署。
 
 ```bash
 sudo pip3.6 install pipenv
-cd Icarus/backend
 pipenv install
 ```
 
@@ -97,8 +117,13 @@ python3.6 main.py
 
 这样也能启动服务。
 
+另外与 nodejs 相似的，如果你觉得安装太慢，一样可以使用国内源：
+```bash
+mkdir -p ~/.config/pip
+echo -e '[global]\nindex-url = https://mirrors.ustc.edu.cn/pypi/web/simple\nformat = columns' > ~/.config/pip/pip.conf
+```
 
-### 前端篇
+## 前端篇
 
 ```bash
 # 安装项目依赖
@@ -119,11 +144,68 @@ npm run dev
 然后在浏览器中查看即可。
 
 
-如果配置域名外部访问，那么：
+如果需要配置外部访问，那么注意：
+
+在 Icarus 目录下新建一个 private.js，并按照以下几例进行填写
+
+```js
+// 单端口方案，记得改IP地址
+export default {
+    remote: {
+        API_SERVER: '//IP:9001',
+        WS_SERVER: 'ws://IP:9001/ws',
+    },
+    qiniu: {
+        server: 'http://upload.qiniu.com',
+        // host: '//test-bucket.myrpg.cn',
+        suffix: 'normal'
+    }
+}
+```
+
+```js
+// 双端口方案，记得改IP地址
+export default {
+    remote: {
+        API_SERVER: '//IP:9002',
+        WS_SERVER: 'ws://IP:9002/ws',
+    },
+    qiniu: {
+        server: 'http://upload.qiniu.com',
+        // host: '//test-bucket.myrpg.cn',
+        suffix: 'normal'
+    }
+}
+```
+
 ```bash
 npm run build
 ```
 生成dist目录备用。
+
+
+## 扩展篇：Nginx部署
+
+首先安装nginx，复制配置文件模板。
+
+这里使用的是单端口模板，即使用 9001 向外网提供服务。
+
+```bash
+sudo apt install nginx
+cd Icarus
+sudo cp misc/icarus-1port.conf /etc/nginx/conf.d/
+```
+
+随后编辑 /etc/nginx/conf.d/icarus-1port.conf，将
+```
+# root /home/{user}/Icarus/dist;
+```
+修改为正确的路径。
+
+重启服务
+```bash
+sudo service nginx restart
+```
 
 
 ## Build Setup
