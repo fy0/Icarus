@@ -23,7 +23,7 @@
                 <label for="verify">验证码</label>
                 <input type="text" name="verify" id="verify" v-model="info.verify">
             </check-row>
-            <check-row style="display: flex;align-items: center;" :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
+            <check-row style="display: flex;align-items: center;" :check="info.agreeLicense">
                 <mu-checkbox v-model="info.agreeLicense"/>
                 <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click="dialogLicense = true">用户许可协议</a></span>
             </check-row>

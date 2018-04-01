@@ -1,5 +1,7 @@
 import hashlib
 
+import binascii
+
 from slim.utils import ObjectID
 from slim.utils import CustomID
 
@@ -37,6 +39,8 @@ TOPIC_CONTENT_LENGTH_MAX = 60000
 
 class AutoGenerator:
     def __init__(self, val=b''):
+        if isinstance(val, str):
+            val = binascii.unhexlify(val)
         self.val = val
 
     def to_bin(self):

@@ -151,6 +151,11 @@ export default {
             let successText
             let failedText
 
+            if (!this.topicInfo.board) {
+                $.message_error('没有选择发布的板块，如果没有板块，请先在管理界面创建。')
+                return
+            }
+
             let topicId
             this.loading = true
             let topicInfo = {

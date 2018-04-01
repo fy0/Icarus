@@ -1,10 +1,8 @@
 ﻿import datetime
 import time
 from peewee import *
-
 from model.post import POST_VISIBLE, POST_STATE
 from slim.utils.state_obj import StateObject
-
 from model import BaseModel, MyTimestampField
 from model.user import User
 

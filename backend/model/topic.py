@@ -14,7 +14,7 @@ from model.board import Board
 
 
 class Topic(BaseModel):
-    id = BlobField(primary_key=True)
+    id = BlobField(primary_key=True, constraints=[SQL("DEFAULT int2bytea(nextval('id_gen_seq'))")])
     title = TextField(index=True)
     user_id = BlobField(index=True)
     board_id = BlobField(index=True)
