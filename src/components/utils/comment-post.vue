@@ -95,7 +95,7 @@ export default {
     methods: {
         isClosed () {
             if (this.postType === state.misc.POST_TYPES.TOPIC) {
-                return this.item.state <= state.misc.TOPIC_STATE.CLOSE
+                return this.item.state <= state.misc.POST_STATE.CLOSE
             }
             return false
         },

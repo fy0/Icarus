@@ -6,10 +6,29 @@
 
 from peewee import *
 
-from config import ID_GENERATOR
+from config import POST_ID_GENERATOR
 from slim.utils.customid import CustomID
 from slim.utils.state_obj import StateObject
 from model import BaseModel
+
+
+class POST_STATE(StateObject):
+    DEL = 0
+    APPLY = 20  # 等待发布审核
+    CLOSE = 30  # 禁止回复
+    NORMAL = 50
+
+    txt = {DEL: "删除", APPLY: '待审核', CLOSE:"关闭", NORMAL:"标准"}
+
+
+class POST_VISIBLE(StateObject):
+    HIDE = 10
+    NORMAL = 50
+    CONTENT_IF_LOGIN = 60
+    USER_ONLY = 70
+    ADMIN_ONLY = 80
+
+    txt = {HIDE: "隐藏", NORMAL:"标准", CONTENT_IF_LOGIN: '登陆后可见正文', USER_ONLY: '仅会员可见', ADMIN_ONLY: '仅管理员可见'}
 
 
 class POST_TYPES(StateObject):
@@ -26,7 +45,7 @@ class POST_TYPES(StateObject):
         from model.topic import Topic
         from model.wiki import WikiItem
 
-        if type(related_id) == ID_GENERATOR:
+        if type(related_id) == POST_ID_GENERATOR:
             related_id = related_id.to_bin()
 
         if type(related_type) == str:

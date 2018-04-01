@@ -4,7 +4,7 @@ import config
 from model.post import POST_TYPES
 from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click
 from model.topic import Topic
-from slim.base.permission import Permissions
+from slim.base.permission import Permissions, AbilityRecord
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -53,11 +53,8 @@ class TopicView(UserMixin, PeeweeView):
             vals = getattr(self, '_val_bak', None)
             if vals: statistic_add_topic_click(*vals)
 
-    def after_read(self, values: Dict):
+    def after_read(self, dbdata: Dict, values: Dict):
         self._val_bak = [values['id'], values['board_id']]
-
-    def handle_query(self, info: ParamsQueryInfo):
-        pass
 
     def before_update(self, raw_post: Dict, values: Dict):
         form = TopicForm(**raw_post)
@@ -81,15 +78,16 @@ class TopicView(UserMixin, PeeweeView):
         values['user_id'] = self.current_user.id
 
         # 以下通用
-        values['id'] = config.ID_GENERATOR().digest()
+        if not config.POST_ID_GENERATOR == config.AutoGenerator:
+            values['id'] = config.POST_ID_GENERATOR().digest()
         values['time'] = int(time.time())
         values['weight'] = Topic.weight_gen()
 
+    def after_insert(self, raw_post: Dict, dbdata: AbilityRecord, values: Dict):
+        statistic_add_topic(values['board_id'], values['id'])
+
         # 添加统计记录
         statistic_new(POST_TYPES.TOPIC, values['id'])
-
-    def after_insert(self, raw_post: Dict, values: Dict):
-        statistic_add_topic(values['board_id'], values['id'])
 
 
 '''

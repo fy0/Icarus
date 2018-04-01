@@ -1,4 +1,5 @@
-﻿from slim.utils import StateObject
+﻿from model.post import POST_VISIBLE, POST_STATE
+from slim.utils import StateObject
 from peewee import *
 from model import db, BaseModel, MyTimestampField
 from model.user import User
@@ -12,26 +13,16 @@ from model.board import Board
 """
 
 
-class TOPIC_STATE(StateObject):
-    DEL = 0
-    HIDE = 10
-    CLOSE = 30  # 禁止回复
-    NORMAL = 50
-    CONTENT_IF_LOGIN = 60
-    USER_ONLY = 70
-    ADMIN_ONLY = 80
-
-    txt = {DEL: "删除", HIDE: "隐藏", CLOSE:"关闭", NORMAL:"正常", CONTENT_IF_LOGIN: '登陆后可见正文', USER_ONLY: '仅会员可见', ADMIN_ONLY: '仅管理员可见'}
-
-
 class Topic(BaseModel):
     id = BlobField(primary_key=True)
     title = TextField(index=True)
     user_id = BlobField(index=True)
     board_id = BlobField(index=True)
     time = MyTimestampField(index=True)
-    state = IntegerField(default=TOPIC_STATE.NORMAL, index=True)
+    state = IntegerField(default=POST_STATE.NORMAL, index=True)
+    visible = IntegerField(default=POST_VISIBLE.NORMAL, index=True)
 
+    edit_count = IntegerField(default=0)
     edit_time = MyTimestampField(index=True, null=True)
     last_edit_user_id = BlobField(index=True, null=True)
     content = TextField()
@@ -48,7 +39,7 @@ class Topic(BaseModel):
     @classmethod
     def weight_gen(cls):
         cur = db.execute_sql('select max(weight)+1 from "topic"')
-        return cur.fetchone()[0]
+        return cur.fetchone()[0] or 0
 
     def weight_inc(self):
         """ 提升一点排序权重 """

@@ -1,9 +1,7 @@
 ﻿import hmac
 import os
-
 import time
 from peewee import *
-
 import config
 from slim.base.user import BaseUser
 from slim.utils import StateObject
@@ -20,19 +18,17 @@ class USER_GROUP(StateObject):
     txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', SUPERUSER: '超级用户', ADMIN: '管理'}
 
 
-class USER_STATE(StateObject):
-    DEL = 0
-    NORMAL = 50
-
-    txt = {DEL: '删除', NORMAL: '正常'}
+def get_user_count_seq():
+    return db.execute_sql("select nextval('user_count_seq')").fetchone()[0]
 
 
 class User(BaseModel, BaseUser):
-    id = BlobField(primary_key=True)
+    id = BlobField(primary_key=True, constraints=[SQL("DEFAULT int2bytea(nextval('id_gen_seq'))")])
     email = TextField(index=True, unique=True)
-    nickname = CITextField(index=True, unique=True)
+    nickname = CITextField(index=True, unique=True)  # CITextField
     password = BlobField()
     salt = BlobField()  # auto
+    biology = TextField(null=True)  # 简介
 
     # level = IntegerField(index=True)  # 用户级别
     group = IntegerField(index=True)  # 用户权限组
@@ -43,7 +39,7 @@ class User(BaseModel, BaseUser):
     reg_time = MyTimestampField()
 
     phone = TextField(null=True, default=None)  # 大陆地区
-    number = SerialField(default=1)  # 序号，第N个用户，暂时不启用
+    number = IntegerField(default=get_user_count_seq)  # 序号，第N个用户 sequence='user_count_seq'
     credit = IntegerField(default=0)  # 积分，会消费
     reputation = IntegerField(default=0)  # 声望，不会消失
 
@@ -60,7 +56,7 @@ class User(BaseModel, BaseUser):
 
     @classmethod
     def gen_id(cls):
-        return config.ID_GENERATOR()
+        return config.POST_ID_GENERATOR()
 
     @classmethod
     def gen_password_and_salt(cls, password_text):

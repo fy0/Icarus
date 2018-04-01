@@ -32,7 +32,7 @@
             <div class="topic-manage-item">
                 <span class="label">状态</span>
                 <div class="right">
-                    <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="vState" v-for="i, j in state.misc.TOPIC_STATE_TXT" :key="j" class="demo-radio"/>
+                    <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="vState" v-for="i, j in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
                 </div>
             </div>
             <div class="topic-manage-item">
@@ -62,9 +62,9 @@
                 <div class="topic-manage-item" v-if="changed.vState">
                     <span class="label">文章状态</span>
                     <div class="right">
-                        <span class="hl">{{state.misc.TOPIC_STATE_TXT[changed.vState[0]]}}</span>
+                        <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[0]]}}</span>
                         <span> -> </span>
-                        <span class="hl">{{state.misc.TOPIC_STATE_TXT[changed.vState[1]]}}</span>
+                        <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[1]]}}</span>
                     </div>
                 </div>
                 <div class="topic-manage-item" v-if="changed.vReputation">

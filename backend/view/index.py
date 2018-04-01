@@ -1,10 +1,8 @@
 import config
 from aiohttp import web
-from model.board import BOARD_STATE
 from model.notif import NOTIF_TYPE
-from model.post import POST_TYPES
-from model.topic import TOPIC_STATE
-from model.user import USER_GROUP, USER_STATE
+from model.post import POST_TYPES, POST_STATE, POST_VISIBLE
+from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from view import route
@@ -19,15 +17,8 @@ class TestBaseView(BaseView):
     async def info(self):
         self.finish(RETCODE.SUCCESS, {
             'POST_TYPES': POST_TYPES.to_dict(),
-
-            'BOARD_STATE': BOARD_STATE.to_dict(),
-            'BOARD_STATE_TXT': BOARD_STATE.txt,
-
-            'TOPIC_STATE': TOPIC_STATE.to_dict(),
-            'TOPIC_STATE_TXT': TOPIC_STATE.txt,
-
-            'USER_STATE': USER_STATE.to_dict(),
-            'USER_STATE_TXT': USER_STATE.txt,
+            'POST_STATE': POST_STATE.to_dict(),
+            'POST_STATE_TXT': POST_STATE.txt,
 
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,

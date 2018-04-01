@@ -1,32 +1,31 @@
-from model.board import BOARD_STATE
-from model.topic import TOPIC_STATE
+from model.post import POST_STATE, POST_VISIBLE
 from slim.base.permission import Ability, A, AbilityRecord
 from slim.base.query import ParamsQueryInfo
 
 visitor = Ability(None, {
     'topic': {
-        'id': [A.QUERY, A.READ],
-        'title': [A.READ],
-        'user_id': [A.QUERY, A.READ],
-        'board_id': [A.QUERY, A.READ],
-        'time': [A.READ],
-        'state': [A.READ],
+        'id': (A.QUERY, A.READ),
+        'title': (A.READ,),
+        'user_id': (A.QUERY, A.READ),
+        'board_id': (A.QUERY, A.READ),
+        'time': (A.READ,),
+        'state': (A.READ,),
 
-        'edit_time': [A.READ],
-        'last_edit_user_id': [A.READ],
-        'content': [A.READ],
+        'edit_time': (A.READ,),
+        'last_edit_user_id': (A.READ,),
+        'content': (A.READ,),
 
-        'awesome': [A.READ],
-        'sticky_weight': [A.READ],
-        'weight': [A.READ],
+        'awesome': (A.READ,),
+        'sticky_weight': (A.READ,),
+        'weight': (A.READ,),
     },
     'user': {
-        'id': [A.QUERY, A.READ],
-        'nickname': [A.READ, A.CREATE],
-        'group': [A.READ],
+        'id': (A.QUERY, A.READ),
+        'nickname': (A.READ, A.CREATE),
+        'group': (A.READ,),
 
-        'email': [A.CREATE],
-        'password': [A.CREATE],
+        'email': (A.CREATE,),
+        'password': (A.CREATE,),
     },
     'board': {
         'id': (A.QUERY, A.READ),
@@ -43,23 +42,23 @@ visitor = Ability(None, {
 
 normal_user = Ability('user', {
     'user': {
-        'nickname': [A.QUERY, A.READ, A.WRITE],
-
+        'nickname': (A.QUERY, A.READ, A.WRITE),
+        'group': (A.READ,),
         # 'key': ['query', 'read']
     },
     'topic': {
-        'title': [A.READ, A.CREATE, A.WRITE],
-        'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
-        'content': [A.READ, A.CREATE, A.WRITE],
+        'title': (A.READ, A.CREATE, A.WRITE),
+        'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
+        'content': (A.READ, A.CREATE, A.WRITE),
     }
 }, based_on=visitor)
 
 super_user = Ability('superuser', {
     'topic': {
         'title': A.ALL,
-        'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
-        'content': [A.READ, A.CREATE, A.WRITE],
-        'sticky_weight': [A.READ, A.WRITE],
+        'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
+        'content': (A.READ, A.CREATE, A.WRITE),
+        'sticky_weight': (A.READ, A.WRITE),
     },
     'board': {
         'name': A.ALL,
@@ -81,8 +80,8 @@ super_user = Ability('superuser', {
 admin = Ability('admin', {
     'topic': {
         'title': A.ALL,
-        'board_id': [A.QUERY, A.READ, A.CREATE, A.WRITE],
-        'content': [A.READ, A.CREATE, A.WRITE],
+        'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
+        'content': (A.READ, A.CREATE, A.WRITE),
         'state': A.ALL,
     },
     'user': {
@@ -109,18 +108,18 @@ normal_user.add_record_check([A.READ], 'user', func=user_check)
 # topic
 
 visitor.add_query_condition('topic', [
-    ('state', '>', TOPIC_STATE.HIDE),
-    ('state', '<', TOPIC_STATE.USER_ONLY),
+    ('state', '>', POST_VISIBLE.HIDE),
+    ('state', '<', POST_VISIBLE.USER_ONLY),
 ])
 
 visitor.add_query_condition('board', [
-    ('state', '>', BOARD_STATE.HIDE),
+    ('state', '>', POST_VISIBLE.HIDE),
 ])
 
 
 def check_remove_content_for_select(ability, user, action, record: AbilityRecord, available_columns: list):
     if user:
-        if record.get('state') == TOPIC_STATE.CONTENT_IF_LOGIN:
+        if record.get('state') == POST_VISIBLE.CONTENT_IF_LOGIN:
             available_columns.remove('content')
     return True
 
@@ -128,12 +127,12 @@ def check_remove_content_for_select(ability, user, action, record: AbilityRecord
 visitor.add_record_check((A.READ,), 'topic', func=check_remove_content_for_select)
 
 normal_user.add_query_condition('topic', [
-    ('state', '>', TOPIC_STATE.HIDE),
-    ('state', '<', TOPIC_STATE.ADMIN_ONLY),
+    ('state', '>', POST_VISIBLE.HIDE),
+    ('state', '<', POST_VISIBLE.ADMIN_ONLY),
 ])
 
 normal_user.add_query_condition('board', [
-    ('state', '>', BOARD_STATE.HIDE),
+    ('state', '>', POST_VISIBLE.HIDE),
 ])
 
 

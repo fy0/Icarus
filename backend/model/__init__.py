@@ -31,7 +31,7 @@ from playhouse.shortcuts import model_to_dict
 db = connect(config.DATABASE_URI)
 
 
-class CITextField(peewee._StringField):
+class CITextField(peewee.TextField):
     db_field = 'citext'
 
 

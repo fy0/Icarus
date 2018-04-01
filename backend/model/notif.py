@@ -3,8 +3,7 @@ from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 import config
 from model import BaseModel, MyTimestampField, db
-from model.comment import COMMENT_STATE
-from model.topic import TOPIC_STATE
+from model.post import POST_STATE
 from model.user import User
 from slim.utils import StateObject
 
@@ -33,7 +32,7 @@ def fetch_notif_of_comment(user_id, last_comment_id=b'\x00'):
         WHERE t.user_id = %s AND t.state >= %s AND t.id = c.related_id
           AND c.id > %s AND c.state >= %s AND u.id = c.user_id AND "c"."user_id" != "t"."user_id"
         ORDER BY "c"."id" DESC
-        ''', (user_id, TOPIC_STATE.CLOSE, last_comment_id, COMMENT_STATE.NORMAL))
+        ''', (user_id, POST_STATE.CLOSE, last_comment_id, POST_STATE.NORMAL))
     # 时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字，用户昵称
 
     def wrap(i):
@@ -68,7 +67,7 @@ def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
           c2.id = c.reply_to_cmt_id AND c.id > %s AND c.state >= %s AND t.id = c.related_id
           AND u.id = c.user_id AND "c"."user_id" != "c2"."user_id" -- 不查自己
         ORDER BY "c"."id" DESC
-        ''', (user_id, COMMENT_STATE.NORMAL, last_reply_id, COMMENT_STATE.NORMAL))
+        ''', (user_id, POST_STATE.NORMAL, last_reply_id, POST_STATE.NORMAL))
     # 时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字，用户昵称
 
     def wrap(i):
@@ -164,7 +163,7 @@ class Notification(BaseModel):
         for i in r.get_notifications(True):
             if i['type'] == NOTIF_TYPE.BE_COMMENTED:
                 new.append({
-                    'id': config.ID_GENERATOR().to_bin(),
+                    'id': config.HIDE_ID_GENERATOR().to_bin(),
                     'sender_ids': (i['comment']['user']['id'],),
                     'receiver_id': user_id,
                     'type': NOTIF_TYPE.BE_COMMENTED,
@@ -173,7 +172,7 @@ class Notification(BaseModel):
                 })
             elif i['type'] == NOTIF_TYPE.BE_REPLIED:
                 new.append({
-                    'id': config.ID_GENERATOR().to_bin(),
+                    'id': config.HIDE_ID_GENERATOR().to_bin(),
                     'sender_ids': (i['comment']['user']['id'],),
                     'receiver_id': user_id,
                     'type': NOTIF_TYPE.BE_REPLIED,

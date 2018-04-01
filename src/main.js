@@ -148,13 +148,25 @@ router.beforeEach(async function (to, from, next) {
             ret = await api.user.get({id: ret.data.id}, 'user')
             if (ret.code !== api.retcode.SUCCESS) {
                 // 执行未成功
+                state.loading = 0
+                nprogress.done()
                 Vue.set(state, 'initLoadDone', true)
+                $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
                 return next('/')
             }
 
             Vue.set(state, 'user', ret.data)
             Vue.set(state, 'initLoadDone', true)
             $.notifLoopOn()
+        }
+    }
+
+    if (to.name.startsWith('admin_')) {
+        if (!(state.user && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
+            state.loading = 0
+            nprogress.done()
+            $.message_error('当前账户没有权限访问此页面')
+            return next('/')
         }
     }
 

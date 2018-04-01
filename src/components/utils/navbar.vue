@@ -258,7 +258,7 @@ export default {
     },
     computed: {
         isAdmin: function () {
-            return (this.state.user) && (this.state.user.group >= state.misc.USER_GROUP.NORMAL)
+            return (this.state.user) && (this.state.user.group >= state.misc.USER_GROUP.SUPERUSER)
         }
     },
     mounted: function () {

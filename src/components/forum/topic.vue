@@ -11,7 +11,7 @@
         </mu-breadcrumb-item>
         <mu-breadcrumb-item>
             <span>{{topic.title}}</span>
-            <span v-if="topic.state === state.misc.TOPIC_STATE.CLOSE">[关闭]</span>
+            <span v-if="topic.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
         </mu-breadcrumb-item>
     </mu-breadcrumb>
 
@@ -19,7 +19,7 @@
         <div class="main">
             <div class="article typo">
                 <!--<h1>{{topic.title}}</h1>-->
-                <div class="content" v-if="topic.state === state.misc.TOPIC_STATE.CONTENT_IF_LOGIN">
+                <div class="content" v-if="topic.state === state.misc.POST_STATE.CONTENT_IF_LOGIN">
                     <p>登陆后可见正文</p>
                 </div>
                 <div class="content" v-else v-html="marked(topic.content || '')"></div>

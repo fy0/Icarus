@@ -35,9 +35,18 @@ TOPIC_TITLE_LENGTH_MAX = 50
 TOPIC_CONTENT_LENGTH_MAX = 60000
 
 
+class AutoGenerator:
+    def __init__(self, val=b''):
+        self.val = val
+
+    def to_bin(self):
+        return self.val
+
+
 PASSWORD_HASH_FUNC = hashlib.sha256
 SESSION_ID_GENERATOR = CustomID
-ID_GENERATOR = CustomID
+HIDE_ID_GENERATOR = CustomID
+POST_ID_GENERATOR = AutoGenerator  # 代表SQL自动生成
 
 try:
     from private import *

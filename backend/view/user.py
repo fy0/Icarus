@@ -1,19 +1,19 @@
 import re
+import time
 import config
 from typing import Dict, Type
-
 from model.notif import UserNotifRecord
-from model.post import POST_TYPES
+from model.post import POST_TYPES, POST_STATE
 from model.statistic import statistic_new
 from slim.base.user import BaseUser, BaseAccessTokenUserMixin
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from model.user import User, USER_GROUP, USER_STATE
+from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, ValidationError
-from slim.base.permission import Permissions
+from slim.base.permission import Permissions, AbilityRecord
 from view.permissions import visitor, normal_user, admin
 
 
@@ -125,8 +125,10 @@ class UserView(UserMixin, PeeweeView):
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
-        uid = User.gen_id()
-        values['id'] = uid.digest()
+        if not config.POST_ID_GENERATOR == config.AutoGenerator:
+            uid = User.gen_id().to_bin()
+            values['id'] = uid
+
         values['email'] = values['email'].lower()
 
         ret = User.gen_password_and_salt(values['password'])
@@ -137,14 +139,18 @@ class UserView(UserMixin, PeeweeView):
             values['group'] = USER_GROUP.NORMAL
 
         if 'state' not in values:
-            values['state'] = USER_STATE.NORMAL
+            values['state'] = POST_STATE.NORMAL
 
         values.update(User.gen_key())
-        values['reg_time'] = uid.time
+        values['reg_time'] = int(time.time())
         self._key = values['key']
 
-    def after_insert(self, raw_post: Dict, values: Dict):
+    def after_insert(self, raw_post: AbilityRecord, dbdata: Dict, values: Dict):
         values['access_token'] = self._key
+        if dbdata.get('number') == 1:
+            u = User.get(User.id == values['id'])
+            u.group = USER_GROUP.ADMIN
+            u.save()
 
         # 添加统计记录
         statistic_new(POST_TYPES.USER, values['id'])

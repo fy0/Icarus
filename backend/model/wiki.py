@@ -2,19 +2,12 @@
 import random
 import time
 from peewee import *
+
+from model.post import POST_STATE, POST_VISIBLE
 from slim.utils import StateObject
 from model import BaseModel, MyTimestampField
 from model.user import User
 # from model.board import Board
-
-
-class WIKI_STATE(StateObject):
-    DEL = 0
-    HIDE = 20
-    APPLY = 30  # 等待发布审核
-    NORMAL = 50
-
-    txt = {DEL: '删除', HIDE: '隐藏', APPLY: '待审核', NORMAL: '正常'}
 
 
 '''
@@ -35,7 +28,8 @@ class WikiArticle(BaseModel):
     id = BlobField(primary_key=True)
     user_id = BlobField(index=True)
     time = MyTimestampField(index=True)
-    state = IntegerField(default=WIKI_STATE.APPLY, index=True)
+    state = IntegerField(default=POST_STATE.APPLY, index=True)
+    visible = IntegerField(default=POST_VISIBLE.NORMAL, index=True)
 
     major_ver = IntegerField()
     minor_ver = IntegerField()

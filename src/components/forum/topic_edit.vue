@@ -88,6 +88,7 @@ import 'simplemde/dist/simplemde.min.css'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import CheckRow from '../utils/checkrow.vue'
+import nprogress from 'nprogress/nprogress.js'
 
 export default {
     data () {
@@ -129,7 +130,7 @@ export default {
                 }
             },
 
-            topicState: state.misc.TOPIC_STATE.NORMAL
+            topicState: state.misc.POST_STATE.NORMAL
         }
     },
     computed: {
@@ -228,6 +229,15 @@ export default {
 
             this.pageLoading = false
         }
+    },
+    beforeRouteEnter (to, from, next) {
+        if (!state.user) {
+            state.loading = 0
+            nprogress.done()
+            $.message_error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
+            return next('/')
+        }
+        next()
     },
     mounted: async function () {
         // if (localStorage.getItem('topic-post-cache-clear')) {

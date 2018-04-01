@@ -15,7 +15,7 @@
                     <h2>
                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                             <span>{{i.title}}</span>
-                            <span v-if="i.state === state.misc.TOPIC_STATE.CLOSE">[关闭]</span>
+                            <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
                         </router-link>
                         <span class="icons">
                             <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>

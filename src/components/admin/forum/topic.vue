@@ -5,10 +5,10 @@
         <input v-model="searchTxt" />
         <mu-raised-button @click="doSearch()" label="搜索" class="search-btn" primary/>
     </div>
-    <div>
+    <div v-if="topics && topics.items && topics.items.length">
         <ul class="ic-collection">
             <li class="item ic-collection-item" v-for="i in topics.items" :key="i.id">
-                <router-link class="title" :class="i.state === state.misc.TOPIC_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                <router-link class="title" :class="i.state === state.misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                     <span>{{i.title}}</span>
                     <span class="icons">
                         <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
@@ -19,13 +19,14 @@
                     <router-link class="board" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link> ·
                     <user-link :user="i.user_id" /> ·
                     <ic-time :timestamp="i.time" /> ·
-                    <span>{{state.misc.TOPIC_STATE_TXT[i.state]}}</span> ·
+                    <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
                     <i class="mdi-icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setTopicManage(i)"></i>
                 </div>
             </li>
         </ul>
+        <paginator :page-info='topics' :route-name='"admin_forum_topic"' />
     </div>
-    <paginator :page-info='topics' :route-name='"admin_forum_topic"' />
+    <div v-else>当前没有主题</div>
 </admin-base>
 </template>
 

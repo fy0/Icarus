@@ -14,7 +14,7 @@
                     <div class="info">
                         <span>注册于 <ic-time :ago="false" :timestamp="i.reg_time" /></span> ·
                         <span>{{state.misc.USER_GROUP_TXT[i.group]}}</span> ·
-                        <span>{{state.misc.TOPIC_STATE_TXT[i.state]}}</span> ·
+                        <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
                         <i class="mdi-icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setTopicManage(i)"></i>
                     </div>
                     <div>

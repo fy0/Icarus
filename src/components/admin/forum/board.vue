@@ -19,7 +19,7 @@
                 <td>{{i.name}}</td>
                 <td>{{i.brief}}</td>
                 <td>{{i.weight}}</td>
-                <td>{{state.misc.BOARD_STATE_TXT[i.state]}}</td>
+                <td>{{state.misc.POST_STATE_TXT[i.state]}}</td>
                 <td>
                     <a href="javascript:void(0)" @click="setBoardManage(i)">编辑</a>
                 </td>

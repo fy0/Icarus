@@ -12,8 +12,8 @@ export default {
             0: '删除',
             50: '正常'
         },
-        TOPIC_STATE: { ... },
-        TOPIC_STATE_TXT: { ... }
+        POST_STATE: { ... },
+        POST_STATE_TXT: { ... }
     },
     */
     config,

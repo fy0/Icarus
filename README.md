@@ -120,7 +120,7 @@ python3.6 main.py
 
 这样也能启动服务。
 
-另外与 nodejs 相似的，如果你觉得安装太慢，一样可以使用国内源：
+另外与前端相似的，如果你觉得安装太慢，一样可以使用国内源：
 ```bash
 mkdir -p ~/.config/pip
 echo -e '[global]\nindex-url = https://mirrors.ustc.edu.cn/pypi/web/simple\nformat = columns' > ~/.config/pip/pip.conf
@@ -152,11 +152,13 @@ npm run dev
 在 Icarus 目录下新建一个 private.js，并按照以下几例进行填写
 
 ```js
-// 单端口方案，记得改IP地址
+// 单端口方案
+var host = window.location.host;
+
 export default {
     remote: {
-        API_SERVER: '//IP:9001',
-        WS_SERVER: 'ws://IP:9001/ws',
+        API_SERVER: '//' + host,
+        WS_SERVER: 'ws://' + host + '/ws',
     },
     qiniu: {
         server: 'http://upload.qiniu.com',
@@ -167,11 +169,13 @@ export default {
 ```
 
 ```js
-// 双端口方案，记得改IP地址
+// 双端口方案
+var host = window.location.hostname;
+
 export default {
     remote: {
-        API_SERVER: '//IP:9002',
-        WS_SERVER: 'ws://IP:9002/ws',
+        API_SERVER: '//' + host + ':9002',
+        WS_SERVER: 'ws://' + host + ':9002/ws',
     },
     qiniu: {
         server: 'http://upload.qiniu.com',
@@ -189,7 +193,7 @@ npm run build
 
 ## 扩展篇：Nginx部署
 
-首先安装nginx，复制配置文件模板。
+首先安装nginx，再复制配置文件模板并做简单修改。
 
 这里使用的是单端口模板，即使用 9001 向外网提供服务。
 
@@ -203,9 +207,8 @@ sudo cp misc/icarus-1port.conf /etc/nginx/conf.d/
 ```
 # root /home/{user}/Icarus/dist;
 ```
-修改为正确的路径。
+修改为正确的路径，重启服务：
 
-重启服务
 ```bash
 sudo service nginx restart
 ```
