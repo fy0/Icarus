@@ -37,6 +37,7 @@ class WebsocketConnection {
 
             socket.addEventListener('close', (ev) => {
                 // 重连
+                console.log('websocket 自动重连')
                 this.connect(wsurl)
             })
         })

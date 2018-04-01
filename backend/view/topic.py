@@ -16,7 +16,19 @@ from view.permissions import visitor, normal_user, super_user, admin
 from view.user import UserMixin
 
 
-class TopicForm(ValidateForm):
+class TopicNewForm(ValidateForm):
+    title = StringField('标题', validators=[va.required(), va.Length(1, config.TOPIC_TITLE_LENGTH_MAX)])
+
+    content = StringField('正文', validators=[
+        va.required(),
+        va.Length(1, config.TOPIC_CONTENT_LENGTH_MAX)
+    ])
+
+    sticky_weight = IntegerField('置顶权重', validators=[])
+    weight = IntegerField('排序权重', validators=[])
+
+
+class TopicEditForm(ValidateForm):
     title = StringField('标题', validators=[va.optional(), va.Length(1, config.TOPIC_TITLE_LENGTH_MAX)])
 
     content = StringField('正文', validators=[
@@ -56,10 +68,20 @@ class TopicView(UserMixin, PeeweeView):
     def after_read(self, dbdata: Dict, values: Dict):
         self._val_bak = [values['id'], values['board_id']]
 
+    def after_update(self, values: Dict):
+        Topic.update()
+        values['id']
+
     def before_update(self, raw_post: Dict, values: Dict):
-        form = TopicForm(**raw_post)
+        form = TopicEditForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
+
+        # 防止置空提交，因为这里这两项的校验是 optional
+        if 'title' in values and not values['title']:
+            del values['title']
+        if 'content' in values and not values['content']:
+            del values['content']
 
         if 'board_id' in values:
             values['board_id'] = to_bin(values['board_id'])
@@ -70,7 +92,7 @@ class TopicView(UserMixin, PeeweeView):
             # TODO: edit_count
 
     def before_insert(self, raw_post: Dict, values: Dict):
-        form = TopicForm(**raw_post)
+        form = TopicNewForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
