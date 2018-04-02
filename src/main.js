@@ -16,6 +16,10 @@ import 'muse-ui/dist/muse-ui.css'
 import './ws.js'
 Vue.use(MuseUI)
 
+import 'vue-loaders/dist/vue-loaders.css'
+import * as VueLoaders from 'vue-loaders'
+Vue.use(VueLoaders)
+
 import marked from 'marked'
 import Prism from 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'

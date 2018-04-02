@@ -15,12 +15,12 @@
             <mu-tabs :value="activeTab" @change="handleTabChange" class="api-view-tabs">
                 <mu-tab value="tabTopic" title="主题" @active="handleActive"/>
                 <mu-tab value="tab2" title="评论"/>
-                <mu-tab value="tab3" title="收藏" @active="handleActive"/>
-                <mu-tab value="tab4" title="关注"/>
+                <mu-tab value="tab3" v-if="false" title="收藏" @active="handleActive"/>
+                <mu-tab value="tab4" v-if="false" title="关注"/>
             </mu-tabs>
             <div class="tab" v-if="activeTab === 'tabTopic'">
-                <div v-if="tabs.topic.topics">
-                    <mu-timeline>
+                <div v-if="tabs.topic.topics" style="width: 100%">
+                    <mu-timeline v-if="tabs.topic.topics.items && tabs.topic.topics.items.length">
                         <mu-timeline-item :key="i.id" v-for="i in tabs.topic.topics.items">
                             <span slot="time"><ic-time :timestamp="i.time"/></span>
                             <span slot="des">发表了一篇主题
@@ -28,12 +28,13 @@
                             </span>
                         </mu-timeline-item>
                     </mu-timeline>
+                    <div v-else>暂无数据</div>
                 </div>
-                <mu-circular-progress v-else :strokeWidth="5" :size="90" color="red"/>
+                <ball-beat-loader v-else style="margin-top:66px" size="90" color="#df2525"/>
             </div>
             <div class="tab" v-if="activeTab === 'tab2'">
-                <div v-if="tabs.comment.data">
-                    <mu-timeline>
+                <div v-if="tabs.comment.data" style="width: 100%">
+                    <mu-timeline v-if="tabs.comment.data.items && tabs.comment.data.items.length">
                         <mu-timeline-item :key="i.id" v-for="i in tabs.comment.data.items">
                             <span slot="time"><ic-time :timestamp="i.time"></ic-time></span>
                             <span slot="des">发表了一条评论
@@ -43,14 +44,13 @@
                             </span>
                         </mu-timeline-item>
                     </mu-timeline>
+                    <div v-else>暂无数据</div>
                 </div>
-                <mu-circular-progress v-else :strokeWidth="5" :size="90" color="red"/>
+                <ball-beat-loader v-else style="margin-top:66px" size="90" color="#df2525"/>
             </div>
-            <div class="tab" v-if="activeTab === 'tab3'">
+            <div class="tab" v-if="activeTab === 'tab3'" style="width: 100%">
                 <h2>Tab Three</h2>
-                <p>
-                这是第三个 tab
-                </p>
+                <p>这是第三个 tab</p>
             </div>
         </div>
     </div>
@@ -87,6 +87,9 @@
 
 .tab {
     padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }
 </style>
 
@@ -140,7 +143,6 @@ export default {
             }
         },
         handleActive () {
-            console.log(111)
             // window.alert('tab active')
         },
         fetchData: async function () {
