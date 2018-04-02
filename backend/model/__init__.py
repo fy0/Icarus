@@ -32,11 +32,11 @@ db = connect(config.DATABASE_URI)
 
 
 class CITextField(peewee.TextField):
-    db_field = 'citext'
+    db_field = 'CITEXT'
 
 
 class SerialField(peewee.IntegerField):
-    db_field = 'serial'
+    db_field = 'SERIAL'
 
 
 class MyTimestampField(peewee.BigIntegerField):

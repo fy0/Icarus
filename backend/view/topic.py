@@ -69,8 +69,7 @@ class TopicView(UserMixin, PeeweeView):
         self._val_bak = [values['id'], values['board_id']]
 
     def after_update(self, values: Dict):
-        Topic.update()
-        values['id']
+        Topic.update(edit_count = Topic.edit_count + 1).execute()
 
     def before_update(self, raw_post: Dict, values: Dict):
         form = TopicEditForm(**raw_post)

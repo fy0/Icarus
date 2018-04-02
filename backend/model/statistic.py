@@ -4,6 +4,7 @@ from model import BaseModel, MyTimestampField
 from model.board import Board
 from model.post import POST_TYPES
 from model.topic import Topic
+from slim import json_ex_dumps
 
 
 class Statistic(BaseModel):
@@ -59,7 +60,7 @@ class Statistic24h(BaseModel):
 class Statistic24hLog(BaseModel):
     id = BlobField(primary_key=True)
     time = MyTimestampField(index=True)
-    data = BinaryJSONField()
+    data = BinaryJSONField(dumps=json_ex_dumps)
 
     class Meta:
         db_table = 'statistic24h_log'

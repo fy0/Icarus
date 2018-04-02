@@ -5,6 +5,7 @@ import config
 from model import BaseModel, MyTimestampField, db
 from model.post import POST_STATE
 from model.user import User
+from slim import json_ex_dumps
 from slim.utils import StateObject
 
 
@@ -136,7 +137,7 @@ class Notification(BaseModel):
     receiver_id = BlobField(index=True)
     type = IntegerField(index=True)
     time = MyTimestampField(index=True)  # 发布时间
-    data = BinaryJSONField()
+    data = BinaryJSONField(dumps=json_ex_dumps)
     is_read = BooleanField(default=False)
 
     @classmethod

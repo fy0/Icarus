@@ -6,8 +6,8 @@
             <p>{{user.nickname}}</p>
             <div>
                 <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>
-                <div>加入时间</div>
-                <div>第N名用户</div>
+                <div>第 {{user.number}} 名会员</div>
+                <div title="加入时间"><ic-time :ago="false" :timestamp="user.reg_time"/></div>
             </div>
         </div>
         <div class="right">
@@ -21,7 +21,7 @@
                 <div v-if="tabs.topic.topics">
                     <mu-timeline>
                         <mu-timeline-item :key="i.id" v-for="i in tabs.topic.topics.items">
-                            <span slot="time"><ic-time :timestamp="i.time"></ic-time></span>
+                            <span slot="time"><ic-time :timestamp="i.time"/></span>
                             <span slot="des">发表了一篇主题
                                 <router-link :to="{ name: 'forum_topic', params: {id: i.id} }">《{{i.title}}》</router-link>
                             </span>

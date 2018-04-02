@@ -6,6 +6,7 @@ let remote = config.remote
 
 class WebsocketConnection {
     constructor () {
+        this.times = 0
         this.socket = null
         this.callback = {}
     }
@@ -37,6 +38,8 @@ class WebsocketConnection {
 
             socket.addEventListener('close', (ev) => {
                 // 重连
+                if (this.times > 100) return
+                this.times++
                 console.log('websocket 自动重连')
                 this.connect(wsurl)
             })

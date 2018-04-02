@@ -12,6 +12,7 @@ visitor = Ability(None, {
         'state': (A.READ,),
 
         'edit_time': (A.READ,),
+        'edit_count': (A.READ,),
         'last_edit_user_id': (A.READ,),
         'content': (A.READ,),
 
@@ -23,6 +24,9 @@ visitor = Ability(None, {
         'id': (A.QUERY, A.READ),
         'nickname': (A.READ, A.CREATE),
         'group': (A.READ,),
+        'number': (A.READ,),
+        'biology': (A.READ,),
+        'reg_time': (A.READ,),
 
         'email': (A.CREATE,),
         'password': (A.CREATE,),
@@ -59,6 +63,7 @@ super_user = Ability('superuser', {
         'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
         'content': (A.READ, A.CREATE, A.WRITE),
         'sticky_weight': (A.READ, A.WRITE),
+        'state': A.ALL,
     },
     'board': {
         'name': A.ALL,
@@ -74,23 +79,17 @@ super_user = Ability('superuser', {
     'user': {
         'reg_time': (A.READ,),
         'state': (A.READ,),
+        'email': A.ALL,
+        'nickname': A.ALL,
+        'credit': A.ALL,
+        'group': A.ALL,
+        'reputation': A.ALL
     }
 }, based_on=normal_user)
 
 admin = Ability('admin', {
-    'topic': {
-        'title': A.ALL,
-        'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
-        'content': (A.READ, A.CREATE, A.WRITE),
-        'state': A.ALL,
-    },
     'user': {
-        'email': A.ALL,
-        'nickname': A.ALL,
         'group': A.ALL,
-        'state': A.ALL,
-        'credit': A.ALL,
-        'reputation': A.ALL
     }
 }, based_on=super_user)
 
