@@ -44,8 +44,8 @@ try:
         return decode(concat(repeat('0', length(v_str) %% 2), v_str), 'hex');
     END;
     $$ LANGUAGE plpgsql;
-    CREATE SEQUENCE IF NOT EXISTS id_gen_seq NO MINVALUE NO MAXVALUE START 4096 CACHE 1000 NO CYCLE; /* 0x1000 */
-    CREATE SEQUENCE IF NOT EXISTS user_count_seq NO MINVALUE NO MAXVALUE START 1 CACHE 1000 NO CYCLE;
+    CREATE SEQUENCE IF NOT EXISTS id_gen_seq NO MINVALUE NO MAXVALUE START 4096 NO CYCLE; /* 0x1000 */
+    CREATE SEQUENCE IF NOT EXISTS user_count_seq NO MINVALUE NO MAXVALUE START 1 NO CYCLE;
         """)
 
     db.execute_sql("""

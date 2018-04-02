@@ -1,5 +1,6 @@
 <template>
 <div class="ic-container">
+    <div v-if="user.nickname" v-title>{{user.nickname}} - {{state.config.title}}</div>
     <div class="userpage">
         <div class="left">
             <avatar :user="user" :size="164" class="avatar"></avatar>

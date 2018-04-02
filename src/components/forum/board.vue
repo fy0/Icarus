@@ -10,7 +10,7 @@
 
     <div class="board-page-box">
         <div class="topic-list" v-if="topics.items.length">
-            <div class="board-item" :class="{'top-post': i.sticky_weight}" :key="i.id" v-for="i in topics.items">
+            <div class="board-item" :class="{'top-post': i.sticky_weight}" :key="i.id" v-for="i in topics.items" @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                 <div class="title">
                     <h2>
                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
@@ -20,7 +20,7 @@
                         <span class="icons">
                             <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
                             <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                            <i v-if="isAdmin()" class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(i)"></i>
+                            <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(i)"></i>
                         </span>
                     </h2>
                     <p class="info">
@@ -138,6 +138,7 @@ export default {
     data () {
         return {
             state,
+            hoverId: null,
             loading: true,
             board: null,
             topics: []
@@ -153,6 +154,9 @@ export default {
         },
         lineStyle: function (board) {
             return $.lineStyle(board, 'background-color')
+        },
+        itemHover: function (id) {
+            this.hoverId = id
         },
         test: function (id) {
             ;
