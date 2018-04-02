@@ -4,10 +4,15 @@ import config from './config.js'
 let remote = config.remote
 // let timeouts = [5000, 7000, 10000, 15000]
 
+function getAccessToken () {
+    return localStorage.getItem('t')
+}
+
 class WebsocketConnection {
     constructor () {
         this.times = 0
         this.socket = null
+        this.registered = false
         this.callback = {}
     }
 
@@ -21,6 +26,7 @@ class WebsocketConnection {
             // Connection opened
             socket.addEventListener('open', (ev) => {
                 // 连接已建立
+
                 resolve(true)
             })
 
@@ -40,10 +46,22 @@ class WebsocketConnection {
                 // 重连
                 if (this.times > 100) return
                 this.times++
+                this.registered = false
                 console.log('websocket 自动重连')
                 this.connect(wsurl)
             })
         })
+    }
+
+    async userRegister () {
+        // 设置 access token
+        let authMode = config.remote.authMode
+        if ((authMode === 'access_token') || (authMode === 'access_token_in_params')) {
+            let token = getAccessToken()
+            await this.execute('register', {token}, () => {
+                console.log('register done')
+            })
+        }
     }
 
     async execute (command, data, onProgress) {
