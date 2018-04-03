@@ -25,10 +25,8 @@ class UserMixin(BaseAccessTokenUserMixin):
 
     def get_user_by_key(self, key):
         if not key: return
-        try:
-            return User.get_by_key(to_bin(key))
-        except:
-            pass
+        try: return User.get_by_key(to_bin(key))
+        except: pass
 
 
 class SigninForm(ValidateForm):

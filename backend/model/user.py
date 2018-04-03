@@ -105,3 +105,6 @@ class User(BaseModel, BaseUser):
 
         if u.password.tobytes() == m.digest():
             return u
+
+    def __repr__(self):
+        return '<User id:%x nickname:%r>' % (int.from_bytes(self.id.tobytes(), 'big'), self.nickname)

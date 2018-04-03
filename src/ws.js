@@ -14,6 +14,7 @@ class WebsocketConnection {
         this.socket = null
         this.registered = false
         this.callback = {}
+        this.heartbeatTimer = null
     }
 
     async connect (wsurl) {
@@ -26,15 +27,20 @@ class WebsocketConnection {
             // Connection opened
             socket.addEventListener('open', (ev) => {
                 // 连接已建立
-
+                this.heartbeatTimer = setInterval(async () => {
+                    await this.socket.send('ws.ping')
+                }, 25000)
+                this.signin()
                 resolve(true)
             })
 
             // Listen for messages
             socket.addEventListener('message', (ev) => {
+                if (ev.data === 'ws.pong') return
                 let [rid, data] = JSON.parse(ev.data)
                 if (this.callback[rid]) {
-                    if (data.code === 1) {
+                    // 虽然 data 可能是任意类型，但不用担心取 .code 会报错
+                    if (data.code === 1) { // WS_DONE
                         this.callback[rid].done(data.data)
                     } else if (this.callback[rid].func) {
                         this.callback[rid].func(data)
@@ -44,6 +50,7 @@ class WebsocketConnection {
 
             socket.addEventListener('close', (ev) => {
                 // 重连
+                clearInterval(this.heartbeatTimer)
                 if (this.times > 100) return
                 this.times++
                 this.registered = false
@@ -53,15 +60,20 @@ class WebsocketConnection {
         })
     }
 
-    async userRegister () {
+    async signin () {
         // 设置 access token
         let authMode = config.remote.authMode
         if ((authMode === 'access_token') || (authMode === 'access_token_in_params')) {
             let token = getAccessToken()
-            await this.execute('register', {token}, () => {
-                console.log('register done')
-            })
+            let ret = await this.execute('signin', {'access_token': token})
+            if (ret === 0) {
+                // 登录成功
+            }
         }
+    }
+
+    async signout () {
+        await this.execute('signout')
     }
 
     async execute (command, data, onProgress) {
