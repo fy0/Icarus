@@ -157,6 +157,7 @@ export default {
             }
 
             let topicId
+            if (this.loading) return
             this.loading = true
             let topicInfo = {
                 'title': this.topicInfo.title,

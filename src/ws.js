@@ -25,11 +25,19 @@ class WebsocketConnection {
             this.socket = socket
 
             // Connection opened
-            socket.addEventListener('open', (ev) => {
+            socket.addEventListener('open', async (ev) => {
                 // 连接已建立
                 this.heartbeatTimer = setInterval(async () => {
                     await this.socket.send('ws.ping')
                 }, 25000)
+
+                let count = localStorage.getItem('c')
+                if (!count) {
+                    count = (new ObjectId()).toString()
+                    localStorage.setItem('c', count)
+                }
+                await this.execute('count', count)
+
                 this.signin()
                 resolve(true)
             })
