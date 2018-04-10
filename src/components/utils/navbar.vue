@@ -14,7 +14,7 @@
                     <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum')">
                         <a>社区</a>
                     </router-link>
-                    <li class="menu-item" v-if="isAdmin"><a href="#">文档</a></li>
+                    <li class="menu-item" v-if="false && isAdmin"><a href="#">文档</a></li>
                     <li class="menu-item" v-if="false"><a href="#">聊天室</a></li>
                     <router-link tag="li" v-if="isAdmin" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
                         <a>管理</a>

@@ -9,7 +9,7 @@
         </ul>
     </div>
 
-    <div class="category">
+    <div class="category" v-if="0">
         <span>文档</span>
         <ul>
             <li><a href="#">投稿审批</a></li>
