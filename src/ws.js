@@ -2,7 +2,7 @@ import ObjectId from 'objectid-js'
 import config from './config.js'
 
 let remote = config.remote
-// let timeouts = [5000, 7000, 10000, 15000]
+let reconnectTimeout = 3000
 
 function getAccessToken () {
     return localStorage.getItem('t')
@@ -14,6 +14,7 @@ class WebsocketConnection {
         this.socket = null
         this.registered = false
         this.callback = {}
+        this.rid_callback = {}
         this.heartbeatTimer = null
     }
 
@@ -46,24 +47,31 @@ class WebsocketConnection {
             socket.addEventListener('message', (ev) => {
                 if (ev.data === 'ws.pong') return
                 let [rid, data] = JSON.parse(ev.data)
-                if (this.callback[rid]) {
+                if (this.rid_callback[rid]) {
                     // 虽然 data 可能是任意类型，但不用担心取 .code 会报错
                     if (data.code === 1) { // WS_DONE
-                        this.callback[rid].done(data.data)
-                    } else if (this.callback[rid].func) {
-                        this.callback[rid].func(data)
+                        this.rid_callback[rid].done(data.data)
+                    } else if (this.rid_callback[rid].func) {
+                        this.rid_callback[rid].func(data)
                     }
+                } else if (this.callback[rid]) {
+                    this.callback[rid](data)
                 }
             })
 
             socket.addEventListener('close', (ev) => {
                 // 重连
                 clearInterval(this.heartbeatTimer)
-                if (this.times > 100) return
-                this.times++
                 this.registered = false
-                console.log('websocket 自动重连')
-                this.connect(wsurl)
+
+                setTimeout(() => {
+                    console.log(`websocket 自动重连，间隔 ${reconnectTimeout}ms`)
+                    this.connect(wsurl)
+                }, reconnectTimeout)
+
+                if (this.times > 30) reconnectTimeout = 30000
+                else reconnectTimeout += 1000
+                this.times++
             })
         })
     }
@@ -87,7 +95,7 @@ class WebsocketConnection {
     async execute (command, data, onProgress) {
         return new Promise((resolve, reject) => {
             let rid = (new ObjectId()).toString()
-            this.callback[rid] = {func: onProgress, done: (data) => { resolve(data) }}
+            this.rid_callback[rid] = {func: onProgress, done: (data) => { resolve(data) }}
             this.socket.send(JSON.stringify([rid, command, data]))
         })
     }

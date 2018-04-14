@@ -25,7 +25,9 @@ export default {
         topicManage: null,
         topicManageData: null,
         boardManage: null,
-        boardManageData: null
+        boardManageData: null,
+        userManage: null,
+        userManageData: null
     },
     unread: 0,
     user: null,

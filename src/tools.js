@@ -4,6 +4,7 @@ import murmurhash from 'murmurhash'
 import Tweezer from 'tweezer.js'
 import Vue from 'vue'
 import api from './netapi.js'
+import ws from './ws.js'
 
 let messageId = 1
 let scroller = null
@@ -30,6 +31,7 @@ $.isAdmin = function () {
 
 $.notifLoopOn = async () => {
     let fetchNotif = async () => {
+        if (ws.conn) return
         if (state.user) {
             let ret = await api.notif.refresh()
             if (ret.code === api.retcode.SUCCESS) {

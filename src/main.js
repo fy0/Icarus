@@ -13,7 +13,6 @@ import 'nprogress/nprogress.css'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 
-import './ws.js'
 Vue.use(MuseUI)
 
 import 'vue-loaders/dist/vue-loaders.css'
@@ -97,6 +96,7 @@ import './tools.js'
 
 import state from './state.js'
 import api from './netapi.js'
+import ws from './ws.js'
 // import config from './config.js'
 
 import Paginator from './components/utils/paginator.vue'
@@ -107,6 +107,7 @@ import UserLink from './components/utils/user-link.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
+import DialogUserManage from './components/utils/dialogs/user-manage.vue'
 
 Vue.component('paginator', Paginator)
 Vue.component('loading', Loading)
@@ -114,6 +115,7 @@ Vue.component('avatar', Avatar)
 Vue.component('ic-time', ICTime)
 Vue.component('user-link', UserLink)
 Vue.component('dialog-topic-manage', DialogTopicManage)
+Vue.component('dialog-user-manage', DialogUserManage)
 
 Vue.directive('title', {
     inserted: function (el, binding) {
@@ -139,6 +141,10 @@ router.beforeEach(async function (to, from, next) {
             Vue.set(state, 'misc', ret.data)
             api.retcode = ret.data.retcode
             api.retinfo = ret.data.retinfo_cn
+        }
+
+        ws.conn.callback['notif.refresh'] = (data) => {
+            if (data) Vue.set(state, 'unread', data)
         }
 
         if (!state.user) {

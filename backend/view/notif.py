@@ -1,19 +1,25 @@
 import time
+
+import asyncio
+
+from app import app
 import config
 from typing import Dict
 from model.notif import Notification
 from model.statistic import statistic_add_comment
 from model.topic import Topic
+from slim.base.ws import WSRouter
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model.post import POST_TYPES
 from slim.base.view import ParamsQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from slim.utils import to_bin
+from slim.utils import to_bin, sync_call
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from view.user import UserMixin
+from view.ws import WSR
 
 
 @route('notif')
@@ -54,3 +60,13 @@ class NotificationView(UserMixin, PeeweeView):
             c = self.model.count(self.current_user.id)
             return self.finish(RETCODE.SUCCESS, c)
         self.finish(RETCODE.FAILED)
+
+
+@app.timer(config.NOTIF_FETCH_COOLDOWN + 1, exit_when=None)
+async def notif_refresh():
+    for user, conns in WSR.users.items():
+        r = Notification.refresh(user.id)
+        c = Notification.count(user.id)
+
+        for ws in conns:
+            await ws.send_json(['notif.refresh', c])

@@ -6,6 +6,7 @@
         <div class="admin-main"><slot></slot></div>
     </div>
     <dialog-topic-manage />
+    <dialog-user-manage />
 </div>
 </template>
 
