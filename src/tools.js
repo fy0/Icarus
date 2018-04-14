@@ -82,23 +82,23 @@ $.message = function (type, text, timeout = 3000) {
 }
 
 $.message_text = function (text, timeout = 3000) {
-    $.message('default', text, timeout)
+    $.message('default', text, timeout) // 蓝色
 }
 
 $.message_secondary = function (text, timeout = 3000) {
-    $.message('secondary', text, timeout)
+    $.message('secondary', text, timeout) // 灰色白字，很不明显
 }
 
 $.message_success = function (text, timeout = 3000) {
-    $.message('success', text, timeout)
+    $.message('success', text, timeout) // 绿色
 }
 
 $.message_warning = function (text, timeout = 3000) {
-    $.message('warning', text, timeout)
+    $.message('warning', text, timeout) // 黄色
 }
 
 $.message_error = function (text, timeout = 3000) {
-    $.message('error', text, timeout)
+    $.message('error', text, timeout) // 红色
 }
 
 $.message_by_code = function (code, text = null, timeout = 3000) {

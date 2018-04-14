@@ -67,7 +67,7 @@
 
 <script>
 import api from '@/netapi.js'
-import swal from 'sweetalert'
+import swal from 'sweetalert2'
 import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 

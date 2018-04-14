@@ -144,7 +144,10 @@ router.beforeEach(async function (to, from, next) {
         }
 
         ws.conn.callback['notif.refresh'] = (data) => {
-            if (data) Vue.set(state, 'unread', data)
+            if (data) {
+                $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
+                Vue.set(state, 'unread', data)
+            }
         }
 
         if (!state.user) {

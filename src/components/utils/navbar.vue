@@ -47,7 +47,7 @@
                             <i v-else class="mdi-icarus icon-bell"></i>
                         </a>
                     </router-link>
-                    <li class="menu-item"><a title="注销" href="#" class="nav-icon" @click="signout"><i class="mdi-icarus icon-logout"></i></a></li>
+                    <li class="menu-item"><a title="注销" href="javascript:void(0)" class="nav-icon" @click="signout"><i class="mdi-icarus icon-logout"></i></a></li>
                     <!-- <li class="menu-item"><a href="#" @click="signout">注销</a></li> -->
                 </ul>
             </div>
@@ -245,6 +245,7 @@ import Vue from 'vue'
 import Media from 'vue-media'
 import state from '@/state.js'
 import api from '@/netapi.js'
+import swal from 'sweetalert2'
 
 export default {
     name: 'hello',
@@ -284,11 +285,25 @@ export default {
             return 'flag'
         },
         signout: async function () {
-            let ret = await api.user.signout()
-            if (ret.code === api.retcode.SUCCESS) {
-                $.message_success('登出成功')
-                Vue.delete(state, 'user')
-            }
+            swal({
+                title: '你确定要退出登录吗？',
+                text: '',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '是的，退出登录!',
+                cancelButtonText: '我不是我没有'
+            }).then(async (result) => {
+                if (result.value) {
+                    let ret = await api.user.signout()
+                    if (ret.code === api.retcode.SUCCESS) {
+                        $.message_success('登出成功')
+                        Vue.delete(state, 'user')
+                        this.$router.replace('/')
+                    }
+                }
+            })
         }
     },
     components: {
