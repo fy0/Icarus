@@ -76,6 +76,9 @@ $.media = {
 }
 
 $.lineStyle = function (board, key = 'border-left-color') {
+    if (board.color) {
+        return '#' + board.color
+    }
     let bgColor = murmurhash.v3(board.name).toString(16).slice(0, 6)
     return {
         [key]: '#' + bgColor

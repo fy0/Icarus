@@ -35,7 +35,7 @@
             <mu-text-field hintText="需为十六进制颜色" v-model="board.color" :maxLength="8"/>
         </div>
     </div>
-    <div class="topic-manage-item" style="align-items: center">
+    <div v-if="false" class="topic-manage-item" style="align-items: center">
         <span class="label">上级板块</span>
         <div class="right">
             <mu-dropDown-menu :labelClass="'no-left-padding'" :underlineClass="'no-left-padding'" :value="value" @change="handleChange">
@@ -52,7 +52,13 @@
     <div class="topic-manage-item" style="align-items: center">
         <span class="label">状态</span>
         <div class="right" style="display: flex">
-            <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="board.state" v-for="i, j in state.misc.BOARD_STATE_TXT" :key="j" class="demo-radio"/>
+            <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="board.state" v-for="i, j in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
+        </div>
+    </div>
+    <div class="topic-manage-item" style="align-items: center">
+        <span class="label">可见性</span>
+        <div class="right" style="display: flex">
+            <mu-radio name="visible" :label="i" :nativeValue="j.toString()" v-model="board.visible" v-for="i, j in state.misc.POST_VISIBLE_TXT" :key="j" class="demo-radio"/>
         </div>
     </div>
     <div class="topic-manage-item" style="align-items: center">
@@ -111,68 +117,50 @@ export default {
     data () {
         return {
             state,
+            value: 1,
             save: {},
-            value: '1'
+            board: {name: ''}
         }
     },
     computed: {
-        board: function () {
-            let ret = state.dialog.boardManageData
-            if (!ret) return {name: ''}
-            return ret
-        }
     },
     methods: {
         handleChange (value) {
             this.value = value
         },
         ok: async function () {
-            let data = {}
-            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight'])
-            for (let i of Object.keys(this.board)) {
-                if (keys.has(i)) {
-                    // 注意 post 上去的时候 null 会变成 'null'
-                    // 所以直接移除了
-                    if (this.board[i] !== null) {
-                        data[i] = this.board[i]
-                    }
-                }
-            }
-
+            let data = $.objDiff(this.board, this.save)
             if (data.state) data.state = Number(data.state)
             if (data.weight) data.weight = Number(data.weight)
+            if (data.visible) data.visible = Number(data.visible)
 
-            let ret = await api.board.set({id: this.board.id}, data, 'admin')
-            if (ret.code === 0) $.message_success('板块信息设置成功')
-            else $.message_by_code(ret.code)
+            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color'])
+            let ret = await api.board.set({id: this.board.id}, data, 'admin', keys)
+
+            if (ret.code === 0) {
+                if (state.dialog.boardManageData) {
+                    _.assign(state.dialog.boardManageData, data)
+                }
+                $.message_success('板块信息设置成功')
+            } else $.message_by_code(ret.code)
 
             state.dialog.boardManage = null
         },
         close () {
-            for (let k of Object.keys(this.save)) {
-                this.board[k] = this.save[k]
-            }
             state.dialog.boardManage = null
         }
     },
     watch: {
         'state.dialog.boardManage': async function (val) {
             if (val) {
-                this.save = _.clone(this.board)
-                this.board.state = this.board.state.toString()
-
-                // let ret = await api.board.list()
-                // if (ret.code) {
-                //     $.message_by_code(ret.code)
-                //     return
-                // }
-                // let boardList = ret.data.items
-
-                // let board = this.board
-                // this.vSticky = topic.sticky_weight.toString()
-                // this.vState = topic.state.toString()
-                // this.vAwesome = Boolean(topic.awesome)
-                // this.stage = 1
+                let info = await api.board.get({id: state.dialog.boardManageData.id}, 'admin')
+                if (info.code === api.retcode.SUCCESS) {
+                    this.board = info.data
+                    this.board.state = this.board.state.toString()
+                    this.save = _.clone(this.board)
+                } else {
+                    $.message_by_code(info.code)
+                }
             }
         }
     }

@@ -28,6 +28,8 @@ class TestBaseView(BaseView):
             'POST_TYPES': POST_TYPES.to_dict(),
             'POST_STATE': POST_STATE.to_dict(),
             'POST_STATE_TXT': POST_STATE.txt,
+            'POST_VISIBLE': POST_VISIBLE.to_dict(),
+            'POST_VISIBLE_TXT': POST_VISIBLE.txt,
 
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,

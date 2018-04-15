@@ -97,26 +97,23 @@ export default {
         return {
             state,
             user: {name: ''},
-            save: {},
-            value: '1'
+            save: {}
         }
     },
     methods: {
-        handleChange (value) {
-            this.value = value
-        },
         ok: async function () {
             let data = $.objDiff(this.user, this.save)
             if (data.state) data.state = Number(data.state)
-            if (data.group) data.state = Number(data.group)
+            if (data.group) data.group = Number(data.group)
 
             let ret = await api.user.set({id: this.user.id}, data, 'admin')
             if (ret.code === 0) {
                 if (state.dialog.userManageData) {
                     _.assign(state.dialog.userManageData, data)
                 }
-                $.message_success('板块信息设置成功')
+                $.message_success('用户信息设置成功')
             } else $.message_by_code(ret.code)
+
             state.dialog.userManage = null
         },
         close () {
