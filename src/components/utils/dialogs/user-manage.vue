@@ -35,20 +35,6 @@
         </div>
     </div>
     <div class="topic-manage-item" style="align-items: center">
-        <span class="label">上级板块</span>
-        <div class="right">
-            <mu-dropDown-menu :labelClass="'no-left-padding'" :underlineClass="'no-left-padding'" :value="value" @change="handleChange">
-                <mu-menu-item value="1" title="星期一"/>
-                <mu-menu-item value="2" title="星期二"/>
-                <mu-menu-item value="3" title="星期三"/>
-                <mu-menu-item value="4" title="星期四"/>
-                <mu-menu-item value="5" title="星期五"/>
-                <mu-menu-item value="6" title="星期六"/>
-                <mu-menu-item value="7" title="星期日"/>
-            </mu-dropDown-menu>
-        </div>
-    </div>
-    <div class="topic-manage-item" style="align-items: center">
         <span class="label">状态</span>
         <div class="right" style="display: flex">
             <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="user.state" v-for="i, j in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
@@ -120,13 +106,17 @@ export default {
             this.value = value
         },
         ok: async function () {
-            // let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight'])
-            // //  _.difference save
+            let data = $.objDiff(this.user, this.save)
+            if (data.state) data.state = Number(data.state)
+            if (data.group) data.state = Number(data.group)
 
-            // let ret = await api.user.set({id: this.board.id}, data, 'admin')
-            // if (ret.code === 0) $.message_success('板块信息设置成功')
-            // else $.message_by_code(ret.code)
-
+            let ret = await api.user.set({id: this.user.id}, data, 'admin')
+            if (ret.code === 0) {
+                if (state.dialog.userManageData) {
+                    _.assign(state.dialog.userManageData, data)
+                }
+                $.message_success('板块信息设置成功')
+            } else $.message_by_code(ret.code)
             state.dialog.userManage = null
         },
         close () {
@@ -140,6 +130,7 @@ export default {
                 if (info.code === api.retcode.SUCCESS) {
                     this.user = info.data
                     this.user.state = this.user.state.toString()
+                    this.user.group = this.user.group.toString()
                     this.save = _.clone(this.user)
                 } else {
                     $.message_by_code(info.code)

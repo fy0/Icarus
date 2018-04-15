@@ -111,6 +111,15 @@ class UserView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 
+    async def before_update(self, raw_post: Dict, values: Dict):
+        if 'password' in values:
+            ret = User.gen_password_and_salt(values['password'])
+            values.update(ret)
+
+        if 'key' in values:
+            values.update(User.gen_key())
+            values['reg_time'] = int(time.time())
+
     def before_insert(self, raw_post: Dict, values: Dict):
         # 必须存在以下值：
         # email password nickname

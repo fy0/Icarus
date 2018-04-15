@@ -139,6 +139,7 @@ ws.conn.callback['user.online'] = (data) => {
 }
 
 router.beforeEach(async function (to, from, next) {
+    let toUrl = null
     state.loading = 1
     nprogress.start()
     $.tpClear()
@@ -159,35 +160,34 @@ router.beforeEach(async function (to, from, next) {
             if (ret.code !== api.retcode.SUCCESS) {
                 // 未登录，后续不必进行
                 Vue.set(state, 'initLoadDone', true)
-                return next()
+            } else {
+                ret = await api.user.get({id: ret.data.id}, 'user')
+                if (ret.code !== api.retcode.SUCCESS) {
+                    // 执行未成功
+                    state.loading = 0
+                    nprogress.done()
+                    Vue.set(state, 'initLoadDone', true)
+                    $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
+                    toUrl = '/'
+                } else {
+                    Vue.set(state, 'user', ret.data)
+                    Vue.set(state, 'initLoadDone', true)
+                    $.notifLoopOn()
+                }
             }
-
-            ret = await api.user.get({id: ret.data.id}, 'user')
-            if (ret.code !== api.retcode.SUCCESS) {
-                // 执行未成功
-                state.loading = 0
-                nprogress.done()
-                Vue.set(state, 'initLoadDone', true)
-                $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
-                return next('/')
-            }
-
-            Vue.set(state, 'user', ret.data)
-            Vue.set(state, 'initLoadDone', true)
-            $.notifLoopOn()
         }
     }
 
     if (to.name.startsWith('admin_')) {
-        if (!(state.user && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
+        if (!(state.user && state.misc && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
             state.loading = 0
             nprogress.done()
             $.message_error('当前账户没有权限访问此页面')
-            return next('/')
+            toUrl = '/'
         }
     }
 
-    next()
+    return (toUrl) ? next(toUrl) : next()
 })
 
 router.afterEach(async function (to, from, next) {
