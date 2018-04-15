@@ -63,6 +63,23 @@ async function doRequest (url, method, params, data = null, role = null) {
 async function nget (url, params, role = null) { return (await doRequest(url, 'GET', params, null, role)).json() }
 async function npost (url, params, data, role = null) { return (await doRequest(url, 'POST', params, data, role)).json() }
 
+function filterValues (filter, data) {
+    let keys = null
+    if (_.isArray(filter)) keys = new Set(filter)
+    else if (_.isSet(filter)) keys = filter
+    else if (_.isFunction(filter)) return filter(data)
+
+    let ret = {}
+    for (let i of Object.keys(data)) {
+        if (keys.has(i)) {
+            if (data[i] !== null) {
+                ret[i] = data[i]
+            }
+        }
+    }
+    return ret
+}
+
 class SlimViewRequest {
     constructor (path) {
         this.path = path
@@ -85,11 +102,13 @@ class SlimViewRequest {
         return await nget(url, params, role)
     }
 
-    async set (params, data, role = null) {
+    async set (params, data, role = null, filter = null) {
+        if (filter) data = filterValues(filter, data)
         return await npost(`${this.urlPrefix}/set`, params, data, role)
     }
 
-    async new (data, role = null) {
+    async new (data, role = null, filter = null) {
+        if (filter) data = filterValues(filter, data)
         return await npost(`${this.urlPrefix}/new`, null, data, role)
     }
 

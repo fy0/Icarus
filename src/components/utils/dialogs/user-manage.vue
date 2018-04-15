@@ -23,6 +23,12 @@
         </div>
     </div>
     <div class="topic-manage-item">
+        <span class="label">最后登录时间</span>
+        <div class="right">
+            <ic-time :ago="false" :timestamp="user.key_time" />
+        </div>
+    </div>
+    <div class="topic-manage-item">
         <span class="label">简介</span>
         <div class="right">
             <mu-text-field v-model="user.biology" :maxLength="255"/>
@@ -114,24 +120,12 @@ export default {
             this.value = value
         },
         ok: async function () {
-            let data = {}
-            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight'])
-            for (let i of Object.keys(this.board)) {
-                if (keys.has(i)) {
-                    // 注意 post 上去的时候 null 会变成 'null'
-                    // 所以直接移除了
-                    if (this.board[i] !== null) {
-                        data[i] = this.board[i]
-                    }
-                }
-            }
+            // let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight'])
+            // //  _.difference save
 
-            if (data.state) data.state = Number(data.state)
-            if (data.weight) data.weight = Number(data.weight)
-
-            let ret = await api.board.set({id: this.board.id}, data, 'admin')
-            if (ret.code === 0) $.message_success('板块信息设置成功')
-            else $.message_by_code(ret.code)
+            // let ret = await api.user.set({id: this.board.id}, data, 'admin')
+            // if (ret.code === 0) $.message_success('板块信息设置成功')
+            // else $.message_by_code(ret.code)
 
             state.dialog.userManage = null
         },
@@ -146,6 +140,7 @@ export default {
                 if (info.code === api.retcode.SUCCESS) {
                     this.user = info.data
                     this.user.state = this.user.state.toString()
+                    this.save = _.clone(this.user)
                 } else {
                     $.message_by_code(info.code)
                 }

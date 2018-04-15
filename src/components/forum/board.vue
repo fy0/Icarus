@@ -57,7 +57,7 @@
             <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
             <div class="board-note fade-transition" style="margin-top:5px">
                 <p><strong>版块公告</strong></p>
-                <pre v-if="board.desc">{{board.desc}}</pre>
+                <div v-if="board.desc" v-html="marked(board.desc || '')"></div>
                 <div v-else>版主很懒，什么也没有写</div>
             </div>
         </div>
@@ -132,6 +132,7 @@ aside > .brief {
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
+import marked from 'marked'
 import '@/assets/css/forum.css'
 
 export default {
@@ -145,6 +146,7 @@ export default {
         }
     },
     methods: {
+        marked,
         isAdmin: function () {
             return $.isAdmin()
         },

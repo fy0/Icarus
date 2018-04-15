@@ -1,11 +1,20 @@
 import config
 from aiohttp import web
+
+from app import app
 from model.notif import NOTIF_TYPE
 from model.post import POST_TYPES, POST_STATE, POST_VISIBLE
 from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from view import route
+from view.ws import WSR
+
+
+@app.timer(10, exit_when=None)
+async def user_online():
+    for ws in WSR.connections:
+        await ws.send_json(['user.online', len(WSR.count)])
 
 
 @route('misc')

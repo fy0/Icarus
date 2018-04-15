@@ -127,6 +127,17 @@ Vue.directive('title', {
 Vue.config.productionTip = false
 nprogress.configure({showSpinner: false})
 
+ws.conn.callback['notif.refresh'] = (data) => {
+    if (data) {
+        $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
+        Vue.set(state, 'unread', data)
+    }
+}
+
+ws.conn.callback['user.online'] = (data) => {
+    Vue.set(state, 'userOnline', data)
+}
+
 router.beforeEach(async function (to, from, next) {
     state.loading = 1
     nprogress.start()
@@ -141,13 +152,6 @@ router.beforeEach(async function (to, from, next) {
             Vue.set(state, 'misc', ret.data)
             api.retcode = ret.data.retcode
             api.retinfo = ret.data.retinfo_cn
-        }
-
-        ws.conn.callback['notif.refresh'] = (data) => {
-            if (data) {
-                $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
-                Vue.set(state, 'unread', data)
-            }
         }
 
         if (!state.user) {

@@ -32,6 +32,7 @@ export default {
     unread: 0,
     user: null,
     loading: 1,
+    userOnline: '?',
     initLoadDone: false,
     init: () => {
         ;

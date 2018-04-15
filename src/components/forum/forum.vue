@@ -1,5 +1,6 @@
 <template>
 <div class="ic-container forum-box">
+    <div v-title>{{state.config.title}}</div>
     <top-btns></top-btns>
     <div id="board-list" v-if="boardInfo.items && boardInfo.items.length">
         <div class="board-item" :key= "i.id" v-for="i, _ in boardInfo.items">
