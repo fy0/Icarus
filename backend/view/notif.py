@@ -69,4 +69,5 @@ async def notif_refresh():
         c = Notification.count(user.id)
 
         for ws in conns:
-            await ws.send_json(['notif.refresh', c])
+            if not ws.closed:
+                await ws.send_json(['notif.refresh', c])

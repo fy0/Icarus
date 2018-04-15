@@ -14,7 +14,8 @@ from view.ws import WSR
 @app.timer(10, exit_when=None)
 async def user_online():
     for ws in WSR.connections:
-        await ws.send_json(['user.online', len(WSR.count)])
+        if not ws.closed:
+            await ws.send_json(['user.online', len(WSR.count)])
 
 
 @route('misc')
