@@ -27,11 +27,10 @@ class CommentView(UserMixin, PeeweeView):
 
     def before_insert(self, raw_post: Dict, values: Dict):
         relate_type = values.get('related_type', None)
-        if not (relate_type and relate_type.isdigit() and int(relate_type) in POST_TYPES.values()):
+        if not (relate_type and relate_type in POST_TYPES.values()):
             return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
         try:
-            relate_type = int(relate_type)
             cid = config.POST_ID_GENERATOR(values['related_id'])
             post = POST_TYPES.get_post(relate_type, cid)
 

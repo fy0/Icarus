@@ -77,12 +77,10 @@ $.media = {
 
 $.lineStyle = function (board, key = 'border-left-color') {
     if (board.color) {
-        return '#' + board.color
+        return { [key]: '#' + board.color }
     }
     let bgColor = murmurhash.v3(board.name).toString(16).slice(0, 6)
-    return {
-        [key]: '#' + bgColor
-    }
+    return { [key]: '#' + bgColor }
 }
 
 $.message = function (type, text, timeout = 3000) {

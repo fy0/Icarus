@@ -72,9 +72,7 @@ function filterValues (filter, data) {
     let ret = {}
     for (let i of Object.keys(data)) {
         if (keys.has(i)) {
-            if (data[i] !== null) {
-                ret[i] = data[i]
-            }
+            ret[i] = data[i]
         }
     }
     return ret
@@ -104,11 +102,17 @@ class SlimViewRequest {
 
     async set (params, data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
+        for (let [k, v] of Object.entries(data)) {
+            data[k] = JSON.stringify(v)
+        }
         return await npost(`${this.urlPrefix}/set`, params, data, role)
     }
 
     async new (data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
+        for (let [k, v] of Object.entries(data)) {
+            data[k] = JSON.stringify(v)
+        }
         return await npost(`${this.urlPrefix}/new`, null, data, role)
     }
 
