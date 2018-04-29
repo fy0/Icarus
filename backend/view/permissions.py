@@ -1,6 +1,6 @@
 from model.post import POST_STATE, POST_VISIBLE
-from slim.base.permission import Ability, A, AbilityRecord
-from slim.base.query import ParamsQueryInfo
+from slim.base.permission import Ability, A, DataRecord
+from slim.base.sqlquery import SQLQueryInfo
 
 visitor = Ability(None, {
     'topic': {
@@ -97,7 +97,7 @@ admin = Ability('admin', {
 
 # user
 
-def user_check(ability, user, action, record: AbilityRecord, available_columns: list):
+def user_check(ability, user, action, record: DataRecord, available_columns: list):
     if user and record.get('id') == user.id:
         available_columns.append('email')
     return True
@@ -117,7 +117,7 @@ visitor.add_query_condition('board', [
 ])
 
 
-def check_remove_content_for_select(ability, user, action, record: AbilityRecord, available_columns: list):
+def check_remove_content_for_select(ability, user, action, record: DataRecord, available_columns: list):
     if user:
         if record.get('state') == POST_VISIBLE.CONTENT_IF_LOGIN:
             available_columns.remove('content')
@@ -136,7 +136,7 @@ normal_user.add_query_condition('board', [
 ])
 
 
-def check_is_users_post(ability, user, action, record: AbilityRecord, available_columns: list):
+def check_is_users_post(ability, user, action, record: DataRecord, available_columns: list):
     if user:
         if record.get('user_id') != user.id:
             available_columns.clear()

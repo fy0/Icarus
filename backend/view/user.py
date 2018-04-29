@@ -6,14 +6,14 @@ from model.notif import UserNotifRecord
 from model.post import POST_TYPES, POST_STATE
 from model.statistic import statistic_new
 from slim.base.user import BaseUser, BaseAccessTokenUserMixin
-from slim.base.view import ParamsQueryInfo
+from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, ValidationError
-from slim.base.permission import Permissions, AbilityRecord
+from slim.base.permission import Permissions, DataRecord
 from view.permissions import visitor, normal_user, admin
 
 
@@ -152,7 +152,7 @@ class UserView(UserMixin, PeeweeView):
         values['reg_time'] = int(time.time())
         self._key = values['key']
 
-    def after_insert(self, raw_post: AbilityRecord, dbdata: Dict, values: Dict):
+    def after_insert(self, raw_post: DataRecord, dbdata: Dict, values: Dict):
         values['access_token'] = self._key
         if dbdata.get('number') == 1:
             u = User.get(User.id == values['id'])

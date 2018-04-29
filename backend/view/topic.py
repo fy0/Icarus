@@ -4,8 +4,8 @@ import config
 from model.post import POST_TYPES
 from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click
 from model.topic import Topic
-from slim.base.permission import Permissions, AbilityRecord
-from slim.base.view import ParamsQueryInfo
+from slim.base.permission import Permissions, DataRecord
+from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, dict_filter_inplace
@@ -69,7 +69,8 @@ class TopicView(UserMixin, PeeweeView):
         self._val_bak = [values['id'], values['board_id']]
 
     def after_update(self, values: Dict):
-        Topic.update(edit_count = Topic.edit_count + 1).execute()
+        # Topic.update(edit_count = Topic.edit_count + 1).execute()
+        pass
 
     def before_update(self, raw_post: Dict, values: Dict):
         form = TopicEditForm(**raw_post)
@@ -104,7 +105,7 @@ class TopicView(UserMixin, PeeweeView):
         values['time'] = int(time.time())
         values['weight'] = Topic.weight_gen()
 
-    def after_insert(self, raw_post: Dict, dbdata: AbilityRecord, values: Dict):
+    def after_insert(self, raw_post: Dict, dbdata: DataRecord, values: Dict):
         statistic_add_topic(values['board_id'], values['id'])
 
         # 添加统计记录

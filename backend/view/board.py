@@ -3,7 +3,7 @@ from typing import Mapping, Dict
 import config
 from model.post import POST_TYPES
 from model.statistic import statistic_new
-from slim.base.permission import Permissions, AbilityRecord
+from slim.base.permission import Permissions, DataRecord
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.board import Board
@@ -54,6 +54,6 @@ class BoardView(PeeweeView, UserMixin):
             values['id'] = config.POST_ID_GENERATOR().digest()
         values['time'] = int(time.time())
 
-    def after_insert(self, raw_post: Dict, dbdata: AbilityRecord, values: Dict):
+    def after_insert(self, raw_post: Dict, dbdata: DataRecord, values: Dict):
         # 添加统计记录
         statistic_new(POST_TYPES.BOARD, values['id'])

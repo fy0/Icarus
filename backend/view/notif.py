@@ -12,7 +12,7 @@ from slim.base.ws import WSRouter
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model.post import POST_TYPES
-from slim.base.view import ParamsQueryInfo
+from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, sync_call

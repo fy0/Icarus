@@ -118,6 +118,22 @@ def statistic_add_topic(board_id, topic_id):
         .execute()
 
 
+def statistic_move_topic(from_board_id, to_board_id, topic_id):
+    if from_board_id:
+        Statistic.update(topic_count=Statistic.topic_count - 1)\
+            .where(Statistic.id == from_board_id)\
+            .execute()
+        Statistic24h.update(topic_count=Statistic24h.topic_count - 1)\
+            .where(Statistic24h.id == from_board_id)\
+            .execute()
+    Statistic.update(topic_count=Statistic.topic_count + 1)\
+        .where(Statistic.id == to_board_id)\
+        .execute()
+    Statistic24h.update(topic_count=Statistic24h.topic_count + 1)\
+        .where(Statistic24h.id == to_board_id)\
+        .execute()
+
+
 def statistic_new(post_type, id):
     Statistic.create(id=id, post_type=post_type)
     Statistic24h.create(id=id, post_type=post_type)
