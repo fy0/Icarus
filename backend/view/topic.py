@@ -72,8 +72,8 @@ class TopicView(UserMixin, PeeweeView):
             self._val_bak = [i['id'], i['board_id']]
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
-        # Topic.update(edit_count = Topic.edit_count + 1).execute()
-        pass
+        for record in records:
+            Topic.update(edit_count = Topic.edit_count + 1).where(Topic.id == record['id']).execute()
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         form = TopicEditForm(**raw_post)
@@ -86,13 +86,9 @@ class TopicView(UserMixin, PeeweeView):
         if 'content' in values and not values['content']:
             del values['content']
 
-        if 'board_id' in values:
-            values['board_id'] = to_bin(values['board_id'])
-
         if 'topic' in values or 'content' in values:
             values['edit_time'] = int(time.time())
             values['last_edit_user_id'] = self.current_user.id
-            # TODO: edit_count
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]

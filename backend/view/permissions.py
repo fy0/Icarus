@@ -40,7 +40,8 @@ visitor = Ability(None, {
         'weight': (A.READ, A.QUERY),
         'color': (A.READ,),
         'state': (A.READ,),
-        'category': (A.READ,)
+        'category': (A.READ,),
+        'parent_id': (A.QUERY, A.READ,)
     },
     'comment': {
         'id': (A.QUERY, A.READ),
@@ -116,7 +117,8 @@ super_user = Ability('superuser', {
         'color': (A.READ, A.WRITE, A.CREATE),
         'state': A.ALL,
         'category': A.ALL,
-        'creator_id': (A.READ, A.CREATE)
+        'creator_id': (A.READ, A.CREATE),
+        'parent_id': A.ALL
     },
     'user': {
         'key': (A.WRITE,),

@@ -21,12 +21,20 @@ NOTIF_FETCH_COOLDOWN = 14
 
 EMAIL_MAX = 128
 
+
+def _nickname_checker(username):
+    # 被禁止的用户名
+    if username not in {'_icarus', }:
+        return True
+
+
 NICKNAME_MIN = 2
 NICKNAME_MAX = 32
 
 NICKNAME_CN_FOR_REG_MIN = 2
 NICKNAME_FOR_REG_MIN = 4
 NICKNAME_FOR_REG_MAX = 32
+NICKNAME_CHECK_FUNC = _nickname_checker
 
 PASSWORD_MIN = 6
 PASSWORD_MAX = 128

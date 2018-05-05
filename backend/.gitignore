@@ -61,3 +61,4 @@ _tests.py
 templates/
 static/
 bak/
+.pytest_cache

@@ -16,6 +16,7 @@ class Board(BaseModel):
     id = BlobField(primary_key=True, constraints=[SQL("DEFAULT int2bytea(nextval('id_gen_seq'))")])
     name = TextField(unique=True)  # max 128
     creator_id = BlobField(index=True, null=True)  # 创建者ID
+    parent_id = BlobField(index=True, null=True, default=None)  # 上级板块ID
     brief = TextField(null=True)  # max 256
     desc = TextField(null=True)  # max 1024
     time = MyTimestampField(index=True)  # 创建时间

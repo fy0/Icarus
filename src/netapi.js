@@ -102,7 +102,12 @@ class SlimViewRequest {
 
     async set (params, data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
-        return await npost(`${this.urlPrefix}/set`, params, data, role)
+        return await npost(`${this.urlPrefix}/update`, params, data, role)
+    }
+
+    async update (params, data, role = null, filter = null) {
+        if (filter) data = filterValues(filter, data)
+        return await npost(`${this.urlPrefix}/update`, params, data, role)
     }
 
     async new (data, role = null, filter = null) {

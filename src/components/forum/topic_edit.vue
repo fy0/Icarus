@@ -168,9 +168,9 @@ export default {
 
             if (this.is_edit) {
                 if (this.asAdmin) {
-                    ret = await api.topic.set({id: this.topicInfo.id, returning: true}, topicInfo, 'admin')
+                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'admin')
                 } else {
-                    ret = await api.topic.set({id: this.topicInfo.id, returning: true}, topicInfo, 'user')
+                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'user')
                 }
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'

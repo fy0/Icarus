@@ -59,6 +59,9 @@ def nickname_check(form, field):
         if not (len(re.findall(r'[a-zA-Z0-9]', name)) >= config.NICKNAME_FOR_REG_MIN):
             raise ValidationError(text)
 
+    if config.NICKNAME_CHECK_FUNC and not config.NICKNAME_CHECK_FUNC(name):
+        raise ValidationError('昵称被占用')
+
 
 class SignupForm(SigninForm):
     nickname = StringField('昵称', validators=[
