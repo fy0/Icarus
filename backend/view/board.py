@@ -1,9 +1,10 @@
 import time
-from typing import Mapping, Dict
+from typing import Mapping, Dict, List
 import config
 from model.post import POST_TYPES
 from model.statistic import statistic_new
 from slim.base.permission import Permissions, DataRecord
+from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.board import Board
@@ -44,16 +45,17 @@ class BoardView(PeeweeView, UserMixin):
         permission.add(super_user)
         permission.add(admin)
 
-    @classmethod
-    def before_insert(cls, raw_post: Dict, values: Dict):
-        form = BoardForm(**values)
-        if not form.validate():
-            return RETCODE.FAILED, form.errors
+    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
+        for values in values_lst:
+            form = BoardForm(**values)
+            if not form.validate():
+                return RETCODE.FAILED, form.errors
 
-        if not config.POST_ID_GENERATOR == config.AutoGenerator:
-            values['id'] = config.POST_ID_GENERATOR().digest()
-        values['time'] = int(time.time())
+            if not config.POST_ID_GENERATOR == config.AutoGenerator:
+                values['id'] = config.POST_ID_GENERATOR().digest()
+            values['time'] = int(time.time())
 
-    def after_insert(self, raw_post: Dict, dbdata: DataRecord, values: Dict):
-        # 添加统计记录
-        statistic_new(POST_TYPES.BOARD, values['id'])
+    async def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+        for record in records:
+            # 添加统计记录
+            statistic_new(POST_TYPES.BOARD, record['id'])

@@ -102,17 +102,11 @@ class SlimViewRequest {
 
     async set (params, data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
-        for (let [k, v] of Object.entries(data)) {
-            data[k] = JSON.stringify(v)
-        }
         return await npost(`${this.urlPrefix}/set`, params, data, role)
     }
 
     async new (data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
-        for (let [k, v] of Object.entries(data)) {
-            data[k] = JSON.stringify(v)
-        }
         return await npost(`${this.urlPrefix}/new`, null, data, role)
     }
 

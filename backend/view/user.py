@@ -1,10 +1,11 @@
 import re
 import time
 import config
-from typing import Dict, Type
+from typing import Dict, Type, List
 from model.notif import UserNotifRecord
 from model.post import POST_TYPES, POST_STATE
 from model.statistic import statistic_new
+from slim.base.sqlquery import SQLValuesToWrite
 from slim.base.user import BaseUser, BaseAccessTokenUserMixin
 from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
@@ -111,16 +112,17 @@ class UserView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 
-    async def before_update(self, raw_post: Dict, values: Dict):
-        if 'password' in values:
-            ret = User.gen_password_and_salt(values['password'])
+    async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+        if 'password' in raw_post:
+            ret = User.gen_password_and_salt(raw_post['password'])
             values.update(ret)
 
-        if 'key' in values:
+        if 'key' in raw_post:
             values.update(User.gen_key())
             values['reg_time'] = int(time.time())
 
-    def before_insert(self, raw_post: Dict, values: Dict):
+    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
+        values = values_lst[0]
         # 必须存在以下值：
         # email password nickname
         # 自动填充或改写以下值：
@@ -138,7 +140,7 @@ class UserView(UserMixin, PeeweeView):
 
         values['email'] = values['email'].lower()
 
-        ret = User.gen_password_and_salt(values['password'])
+        ret = User.gen_password_and_salt(raw_post['password'])
         values.update(ret)
 
         if 'group' not in values:
@@ -152,13 +154,15 @@ class UserView(UserMixin, PeeweeView):
         values['reg_time'] = int(time.time())
         self._key = values['key']
 
-    def after_insert(self, raw_post: DataRecord, dbdata: Dict, values: Dict):
-        values['access_token'] = self._key
-        if dbdata.get('number') == 1:
-            u = User.get(User.id == values['id'])
+    def after_insert(self, raw_post: Dict, values_lst: SQLValuesToWrite, records: List[DataRecord]):
+        record = records[0]
+        if record['number'] == 1:
+            u = User.get(User.id == record['id'])
             u.group = USER_GROUP.ADMIN
             u.save()
 
         # 添加统计记录
-        statistic_new(POST_TYPES.USER, values['id'])
-        UserNotifRecord.new(values['id'])
+        statistic_new(POST_TYPES.USER, record['id'])
+        UserNotifRecord.new(record['id'])
+
+        record['access_token'] = self._key

@@ -184,6 +184,9 @@ export default {
             if (retList.code === api.retcode.SUCCESS) {
                 this.board = ret.data
                 this.topics = retList.data
+            } else if (retList.code === api.retcode.NOT_FOUND) {
+                this.board = ret.data
+                this.topics = {'items': []}
             }
             this.loading = false
         }

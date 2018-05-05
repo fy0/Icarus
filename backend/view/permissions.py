@@ -30,7 +30,6 @@ visitor = Ability(None, {
         'key_time': (A.READ,),
 
         'email': (A.CREATE,),
-        'password': (A.CREATE,),
     },
     'board': {
         'id': (A.QUERY, A.READ),
@@ -42,7 +41,40 @@ visitor = Ability(None, {
         'color': (A.READ,),
         'state': (A.READ,),
         'category': (A.READ,)
-    }
+    },
+    'comment': {
+        'id': (A.QUERY, A.READ),
+        'related_id': (A.QUERY, A.READ),
+        'related_type': (A.QUERY, A.READ),
+        'user_id': (A.QUERY, A.READ),
+        'reply_to_cmt_id': (A.QUERY, A.READ),
+        'time': (A.READ,),
+        'state': (A.READ,),
+        'visible': (A.READ,),
+        'content': (A.READ,),
+    },
+    'statistic': {
+        'id': (A.READ, A.QUERY),
+        'post_type': (A.READ,),
+
+        'click_count': (A.READ,),
+        'comment_count': (A.READ,),
+        'topic_count': (A.READ,),
+        'last_comment_id': (A.READ,),
+
+        'follow_count': (A.READ,),
+    },
+    'statistic24h': {
+        'id': (A.READ, A.QUERY),
+        'post_type': (A.READ,),
+
+        'click_count': (A.READ,),
+        'comment_count': (A.READ,),
+        'topic_count': (A.READ,),
+        'last_comment_id': (A.READ,),
+
+        'follow_count': (A.READ,),
+    },
 })
 
 normal_user = Ability('user', {
@@ -55,7 +87,14 @@ normal_user = Ability('user', {
         'title': (A.READ, A.CREATE, A.WRITE),
         'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
         'content': (A.READ, A.CREATE, A.WRITE),
-    }
+    },
+    'comment': {
+        'related_id': (A.READ, A.CREATE,),
+        'related_type': (A.READ, A.CREATE,),
+        'reply_to_cmt_id': (A.READ, A.CREATE,),
+        'state': (A.READ, A.WRITE,),
+        'content': (A.READ, A.CREATE,),
+    },
 }, based_on=visitor)
 
 super_user = Ability('superuser', {
@@ -63,6 +102,8 @@ super_user = Ability('superuser', {
         'title': A.ALL,
         'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
         'content': (A.READ, A.CREATE, A.WRITE),
+        'awesome': (A.READ, A.WRITE, A.QUERY),
+        'weight': (A.QUERY, A.READ, A.WRITE),
         'sticky_weight': (A.READ, A.WRITE),
         'state': A.ALL,
     },
@@ -78,6 +119,7 @@ super_user = Ability('superuser', {
         'creator_id': (A.READ, A.CREATE)
     },
     'user': {
+        'key': (A.WRITE,),
         'reg_time': (A.READ,),
         'state': (A.READ,),
         'email': A.ALL,

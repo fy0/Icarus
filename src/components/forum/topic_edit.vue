@@ -162,14 +162,15 @@ export default {
             let topicInfo = {
                 'title': this.topicInfo.title,
                 'board_id': this.topicInfo.board.id,
-                'content': this.topicInfo.content
+                'content': this.topicInfo.content,
+                'returning': true
             }
 
             if (this.is_edit) {
                 if (this.asAdmin) {
-                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'admin')
+                    ret = await api.topic.set({id: this.topicInfo.id, returning: true}, topicInfo, 'admin')
                 } else {
-                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'user')
+                    ret = await api.topic.set({id: this.topicInfo.id, returning: true}, topicInfo, 'user')
                 }
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'

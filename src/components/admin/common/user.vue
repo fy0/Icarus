@@ -126,7 +126,7 @@ export default {
                 confirmButtonText: '确定，我要重置',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
-                    return await api.user.set({id: user.id}, {'key': 'refresh'}, 'admin')
+                    return await api.user.set({id: user.id}, {'key': '1'}, 'admin')
                 }
             }).then((result) => {
                 if (result.value == null) return

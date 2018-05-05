@@ -25,7 +25,7 @@
             </check-row>
             <check-row style="display: flex;align-items: center;" :check="info.agreeLicense">
                 <mu-checkbox v-model="info.agreeLicense"/>
-                <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click="dialogLicense = true">用户许可协议</a></span>
+                <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click.stop="dialogLicense = true">用户许可协议</a></span>
             </check-row>
             <div class="ic-form-row">
                 <input class="ic-btn green click" :class="{ disabled : !info.agreeLicense }" type="submit" @click.prevent="register" value="注 册" style="width: 100%">
@@ -97,7 +97,8 @@ export default {
                 password: '',
                 password2: '',
                 verify: '',
-                agreeLicense: false
+                agreeLicense: false,
+                returning: true // new 之后返回记录
             },
             dialogLicense: false,
             formErrors: {}

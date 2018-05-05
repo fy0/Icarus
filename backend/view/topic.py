@@ -1,10 +1,11 @@
-from typing import Dict
+from typing import Dict, List
 import time
 import config
 from model.post import POST_TYPES
 from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
+from slim.base.sqlquery import SQLValuesToWrite
 from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -65,14 +66,16 @@ class TopicView(UserMixin, PeeweeView):
             vals = getattr(self, '_val_bak', None)
             if vals: statistic_add_topic_click(*vals)
 
-    def after_read(self, dbdata: Dict, values: Dict):
-        self._val_bak = [values['id'], values['board_id']]
+    def after_read(self, records: List[DataRecord]):
+        for i in records:
+            # TODO: FIX
+            self._val_bak = [i['id'], i['board_id']]
 
-    def after_update(self, values: Dict):
+    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         # Topic.update(edit_count = Topic.edit_count + 1).execute()
         pass
 
-    def before_update(self, raw_post: Dict, values: Dict):
+    def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         form = TopicEditForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
@@ -91,12 +94,11 @@ class TopicView(UserMixin, PeeweeView):
             values['last_edit_user_id'] = self.current_user.id
             # TODO: edit_count
 
-    def before_insert(self, raw_post: Dict, values: Dict):
+    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
+        values = values_lst[0]
         form = TopicNewForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
-
-        values['board_id'] = to_bin(values['board_id'])
         values['user_id'] = self.current_user.id
 
         # 以下通用
@@ -105,11 +107,12 @@ class TopicView(UserMixin, PeeweeView):
         values['time'] = int(time.time())
         values['weight'] = Topic.weight_gen()
 
-    def after_insert(self, raw_post: Dict, dbdata: DataRecord, values: Dict):
-        statistic_add_topic(values['board_id'], values['id'])
+    def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+        record = records[0]
+        statistic_add_topic(record['board_id'], record['id'])
 
         # 添加统计记录
-        statistic_new(POST_TYPES.TOPIC, values['id'])
+        statistic_new(POST_TYPES.TOPIC, record['id'])
 
 
 '''
