@@ -223,10 +223,22 @@ export default {
 
             this.boardList = boardList
             if (boardList.length) {
-                this.topicInfo.board = boardList[0]
-                if (params.board_id) {
+                if (!this.is_edit) {
+                    // 若是新建，给一个默认板块
+                    this.topicInfo.board = boardList[0]
+                    // 若指定了板块id，那么按设置来
+                    if (params.board_id) {
+                        for (let i of boardList) {
+                            if (i.id === params.board_id) {
+                                this.topicInfo.board = i
+                                break
+                            }
+                        }
+                    }
+                } else {
+                    // 若不是新建，那么按文章的板块来
                     for (let i of boardList) {
-                        if (i.id === params.board_id) {
+                        if (i.id === this.topicInfo.board_id.id) {
                             this.topicInfo.board = i
                             break
                         }

@@ -28,7 +28,7 @@
     "vue": "^2.4.2",
     "vue-loaders": "^2.0.0",
     "vue-media": "^1.1.1",
-    "vue-multiselect": "^2.0.3",
+    "vue-multiselect": "^2.1.0",
     "vue-router": "^2.7.0",
     "vue-simplemde": "^0.4.4",
     "vuelidate": "^0.6.0",

@@ -2,7 +2,7 @@ from typing import Dict, List
 import time
 import config
 from model.post import POST_TYPES
-from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click
+from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click, statistic_move_topic
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -71,9 +71,12 @@ class TopicView(UserMixin, PeeweeView):
             # TODO: FIX
             self._val_bak = [i['id'], i['board_id']]
 
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
-        for record in records:
-            Topic.update(edit_count = Topic.edit_count + 1).where(Topic.id == record['id']).execute()
+    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
+        for old_record, record in zip(old_records, records):
+            if old_record['board_id'] != record['board_id']:
+                statistic_move_topic(old_record['board_id'], record['board_id'], record['id'])
+
+            Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         form = TopicEditForm(**raw_post)

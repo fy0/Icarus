@@ -119,18 +119,14 @@ def statistic_add_topic(board_id, topic_id):
 
 
 def statistic_move_topic(from_board_id, to_board_id, topic_id):
+    # 24h 那张表就不做数值修正了，没太大意义。
+    ts = Statistic.get(Statistic.id == topic_id)
     if from_board_id:
-        Statistic.update(topic_count=Statistic.topic_count - 1)\
+        Statistic.update(topic_count=Statistic.topic_count - 1, comment_count=Statistic.comment_count - ts.comment_count)\
             .where(Statistic.id == from_board_id)\
             .execute()
-        Statistic24h.update(topic_count=Statistic24h.topic_count - 1)\
-            .where(Statistic24h.id == from_board_id)\
-            .execute()
-    Statistic.update(topic_count=Statistic.topic_count + 1)\
+    Statistic.update(topic_count=Statistic.topic_count + 1, comment_count=Statistic.comment_count + ts.comment_count)\
         .where(Statistic.id == to_board_id)\
-        .execute()
-    Statistic24h.update(topic_count=Statistic24h.topic_count + 1)\
-        .where(Statistic24h.id == to_board_id)\
         .execute()
 
 
