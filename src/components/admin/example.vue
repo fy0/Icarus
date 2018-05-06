@@ -27,9 +27,10 @@ export default {
         }
     },
     created: async function () {
-        this.state.loading++
+        let key = state.loadingGetKey(this.$route)
+        this.state.loadingInc(this.$route, key)
         await this.fetchData()
-        this.state.loading--
+        this.state.loadingDec(this.$route, key)
     },
     watch: {
         // 如果路由有变化，会再次执行该方法

@@ -149,3 +149,9 @@ $.tpRemove = function () {
 $.tpClear = function () {
     state.test.items = []
 }
+
+$.regex = {
+    id: /[a-fA-F0-9]+/,
+    email: /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,
+    nickname: /^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$/
+}

@@ -2,11 +2,11 @@
 <admin-base>
     <div v-title>用户管理 - 管理界面 - {{state.config.title}}</div>
     <div class="search-box">
-        <input v-model="searchTxt" placeholder="搜索 用户名/uid/邮箱" />
+        <input v-model.trim="searchTxt" @keyup.enter="doSearch()" placeholder="搜索 用户名/uid/邮箱" />
         <mu-raised-button @click="doSearch()" label="搜索" class="search-btn" primary/>
     </div>
     <div>
-        <ul class="ic-collection">
+        <ul class="ic-collection" v-if="page.items">
             <li class="item ic-collection-item" v-for="i in page.items" :key="i.id">
                 <avatar :user="i" class="avatar" />
                 <div class="right">
@@ -24,6 +24,7 @@
                 </div>
             </li>
         </ul>
+        <div v-else>未找到结果</div>
     </div>
     <paginator :page-info='page' :route-name='"admin_common_user"' />
 </admin-base>
@@ -80,6 +81,38 @@ export default {
         }
     },
     methods: {
+        doSearch: async function () {
+            let found = false
+            if ($.regex.email.test(this.searchTxt)) {
+                let retList = await api.user.list({email: this.searchTxt}, 1, null, 'admin')
+                if (retList.code === api.retcode.SUCCESS) {
+                    this.page = retList.data
+                    found = true
+                }
+            } else {
+                if ($.regex.nickname.test(this.searchTxt)) {
+                    let retList = await api.user.list({nickname: this.searchTxt}, 1, null, 'admin')
+                    if (retList.code === api.retcode.SUCCESS) {
+                        this.page = retList.data
+                        found = true
+                    }
+                }
+                if ($.regex.id.test(this.searchTxt)) {
+                    let retList = await api.user.list({id: this.searchTxt}, 1, null, 'admin')
+                    if (retList.code === api.retcode.SUCCESS) {
+                        if (found) {
+                            this.page.items.push(retList.data.items[0])
+                        } else {
+                            this.page = retList.data
+                        }
+                        found = true
+                    }
+                }
+            }
+            if (!found) {
+                this.page = {}
+            }
+        },
         setUserManage: function (user) {
             state.dialog.userManageData = user
             state.dialog.userManage = true
@@ -158,9 +191,10 @@ export default {
         }
     },
     created: async function () {
-        this.state.loading++
+        let key = state.loadingGetKey(this.$route)
+        this.state.loadingInc(this.$route, key)
         await this.fetchData()
-        this.state.loading--
+        this.state.loadingDec(this.$route, key)
     },
     watch: {
         // 如果路由有变化，会再次执行该方法

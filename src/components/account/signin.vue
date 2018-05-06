@@ -96,8 +96,9 @@ export default {
     },
     methods: {
         login: async function () {
+            let key = state.loadingGetKey(this.$route)
             if (this.checkEmail && this.checkPassword) {
-                state.loading++
+                this.state.loadingInc(this.$route, key)
                 let ret = await api.user.signin(this.info)
                 if (ret.code === api.retcode.SUCCESS) {
                     ret = await api.user.get({id: ret.data.id}, 'user')
@@ -106,11 +107,11 @@ export default {
                     $.notifLoopOn()
 
                     if (this.goLastPage) {
-                        state.loading--
+                        this.state.loadingDec(this.$route, key)
                         $.message_success('登录成功，正在回到前页……')
                         this.$router.go(-1)
                     } else {
-                        state.loading--
+                        this.state.loadingDec(this.$route, key)
                         $.message_success('登录成功，正在回到主页……')
                         this.$router.replace('/')
                         return
@@ -121,7 +122,7 @@ export default {
                 }
                 // ret = await api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
-                state.loading--
+                this.state.loadingDec(this.$route, key)
             } else {
                 $.message_error('请正确填写所有项目')
             }

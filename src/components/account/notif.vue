@@ -53,7 +53,8 @@ export default {
     },
     methods: {
         fetchData: async function () {
-            this.state.loading++
+            let key = state.loadingGetKey(this.$route)
+            this.state.loadingInc(this.$route, key)
             let params = this.$route.query
             this.page.curPage = params.page
             let ret = await api.notif.list({
@@ -74,7 +75,7 @@ export default {
             } else {
                 $.message_by_code(ret.code)
             }
-            this.state.loading--
+            this.state.loadingDec(this.$route, key)
         }
     },
     watch: {

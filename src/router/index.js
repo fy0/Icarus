@@ -65,7 +65,7 @@ export default new Router({
         },
         // 论坛 - 板块页面
         {
-            path: '/board/:id([a-z0-9]+)/:page(\\d+)?/:name(.+)?',
+            path: '/board/:id([a-fA-F0-9]+)/:page(\\d+)?/:name(.+)?',
             name: 'forum_board',
             component: ForumBoard
         },
@@ -83,7 +83,7 @@ export default new Router({
         },
         // 论坛 - 文章页面
         {
-            path: '/topic/:id([a-zA-Z0-9]+)',
+            path: '/topic/:id([a-fA-F0-9]+)',
             name: 'forum_topic',
             component: ForumTopic
         },

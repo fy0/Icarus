@@ -165,9 +165,10 @@ export default {
         '$route': 'fetchData'
     },
     created: async function () {
-        this.state.loading++
+        let key = state.loadingGetKey(this.$route)
+        this.state.loadingInc(this.$route, key)
         await this.fetchData()
-        this.state.loading--
+        this.state.loadingDec(this.$route, key)
     },
     components: {
         Avatar

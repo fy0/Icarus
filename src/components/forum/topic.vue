@@ -158,9 +158,10 @@ export default {
         // 注意：从这里观察出一个现象：
         // created 会比 mounted 早触发，但并不一定更早完成
         // await 占用时间的时候，挂载流程仍将继续
-        this.state.loading++
+        let key = state.loadingGetKey(this.$route)
+        this.state.loadingInc(this.$route, key)
         await this.fetchData()
-        this.state.loading--
+        this.state.loadingDec(this.$route, key)
     },
     mounted: function () {
         ;

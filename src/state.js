@@ -1,7 +1,14 @@
 import config from '@/config.js'
 // import tools from "./tools.js"
 
-export default {
+let loadingGetKey = (route) => {
+    // 直接这样做会有bug，不知道为什么，所以使用替代方案
+    // import router from './router'
+    // return router.currentRoute.fullPath
+    return route.fullPath
+}
+
+let state = {
     /* 实际内容动态获取
     misc: {
         USER_LEVEL: {
@@ -32,9 +39,18 @@ export default {
     unread: 0,
     user: null,
     loading: 1,
+    loadingGetKey,
+    loadingInc: (route, key) => {
+        if (key === loadingGetKey(route)) state.loading++
+    },
+    loadingDec: (route, key) => {
+        if (key === loadingGetKey(route)) state.loading--
+    },
     userOnline: '?',
     initLoadDone: false,
     init: () => {
         ;
     }
 }
+
+export default state
