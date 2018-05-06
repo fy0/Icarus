@@ -86,7 +86,7 @@ normal_user = Ability('user', {
     },
     'topic': {
         'title': (A.READ, A.CREATE, A.WRITE),
-        'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
+        'board_id': (A.QUERY, A.READ, A.CREATE),
         'content': (A.READ, A.CREATE, A.WRITE),
     },
     'comment': {

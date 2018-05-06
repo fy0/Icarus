@@ -13,7 +13,7 @@
             <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${state.misc.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
         <check-row :results="formErrors.board" :multi="true">
-            <multiselect v-model="topicInfo.board" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom" track-by="id"></multiselect>
+            <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" v-if="asAdmin" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
         <check-row :multi="true">
             <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
@@ -77,6 +77,9 @@
     border-bottom-color: #FF6060 !important;
 }
 
+.multiselect__tags {
+    border: 1px solid #ddd !important;
+}
 </style>
 
 <script>
@@ -98,6 +101,7 @@ export default {
             pageLoading: true,
             loading: false,
             boardList: [],
+            boardInfo: {},
 
             topicInfo: {
                 title: '',
@@ -143,7 +147,8 @@ export default {
         }
     },
     methods: {
-        getSelectOptionName ({ name, brief }) {
+        getSelectOptionName (id) {
+            let { name, brief } = this.boardInfo[id]
             return `${name} — [${brief}]`
         },
         send: async function (e) {
@@ -151,7 +156,7 @@ export default {
             let successText
             let failedText
 
-            if (!this.topicInfo.board) {
+            if (!this.topicInfo.board_id) {
                 $.message_error('没有选择发布的板块，如果没有板块，请先在管理界面创建。')
                 return
             }
@@ -161,7 +166,7 @@ export default {
             this.loading = true
             let topicInfo = {
                 'title': this.topicInfo.title,
-                'board_id': this.topicInfo.board.id,
+                'board_id': this.topicInfo.board_id,
                 'content': this.topicInfo.content,
                 'returning': true
             }
@@ -221,16 +226,21 @@ export default {
                 this.topicInfo = ret.data
             }
 
-            this.boardList = boardList
+            this.boardList = []
+            for (let board of boardList) {
+                this.boardInfo[board.id] = board
+                this.boardList.push(board.id)
+            }
+
             if (boardList.length) {
                 if (!this.is_edit) {
                     // 若是新建，给一个默认板块
-                    this.topicInfo.board = boardList[0]
+                    this.topicInfo.board_id = boardList[0].id
                     // 若指定了板块id，那么按设置来
                     if (params.board_id) {
                         for (let i of boardList) {
                             if (i.id === params.board_id) {
-                                this.topicInfo.board = i
+                                this.topicInfo.board_id = i.id
                                 break
                             }
                         }
@@ -239,7 +249,7 @@ export default {
                     // 若不是新建，那么按文章的板块来
                     for (let i of boardList) {
                         if (i.id === this.topicInfo.board_id.id) {
-                            this.topicInfo.board = i
+                            this.topicInfo.board_id = i.id
                             break
                         }
                     }
