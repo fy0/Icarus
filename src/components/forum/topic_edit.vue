@@ -12,8 +12,8 @@
         <check-row :results="formErrors.title" :multi="true">
             <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${state.misc.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
-        <check-row :results="formErrors.board" :multi="true">
-            <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" v-if="asAdmin" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
+        <check-row :results="formErrors.board" :multi="true" v-if="(!is_edit) || asAdmin">
+            <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
         <check-row :multi="true">
             <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>

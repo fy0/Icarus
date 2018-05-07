@@ -21,7 +21,7 @@
         <span>综合</span>
         <ul>
             <router-link tag="li" :to="{ name: 'admin_common_user' }" ><a>用户管理</a></router-link>
-            <li><a href="#">评论管理</a></li>
+            <router-link tag="li" :to="{ name: 'admin_common_comment' }" ><a>评论管理</a></router-link>
         </ul>
     </div>
 

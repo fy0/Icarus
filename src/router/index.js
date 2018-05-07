@@ -16,6 +16,7 @@ import Admin from '@/components/admin/admin.vue'
 import AdminForumBoard from '@/components/admin/forum/board.vue'
 import AdminForumTopic from '@/components/admin/forum/topic.vue'
 import AdminCommonUser from '@/components/admin/common/user.vue'
+import AdminCommonComment from '@/components/admin/common/comment.vue'
 
 import About from '@/components/about.vue'
 
@@ -94,23 +95,30 @@ export default new Router({
             name: 'admin',
             component: Admin
         },
-        // 管理 - 板块
+        // 管理 - 社区 - 板块
         {
             path: '/admin/forum/board',
             name: 'admin_forum_board',
             component: AdminForumBoard
         },
-        // 管理 - 文章
+        // 管理 - 社区 - 文章
         {
             path: '/admin/forum/topic/:page(\\d+)?/:name(.+)?',
             name: 'admin_forum_topic',
             component: AdminForumTopic
         },
-        // 管理 - 用户
+
+        // 管理 - 综合 - 用户
         {
             path: '/admin/common/user/:page(\\d+)?/:name(.+)?',
             name: 'admin_common_user',
             component: AdminCommonUser
+        },
+        // 管理 - 综合 - 评论
+        {
+            path: '/admin/common/comment/:page(\\d+)?/:name(.+)?',
+            name: 'admin_common_comment',
+            component: AdminCommonComment
         },
 
         // 关于

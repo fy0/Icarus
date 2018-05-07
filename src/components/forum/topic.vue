@@ -15,6 +15,14 @@
         </mu-breadcrumb-item>
     </mu-breadcrumb>
 
+    <div class="ic-hidden ic-xs" style="display: flex;align-items: center;">
+        <user-link style="display: flex;padding: 10px 0;" class="user-link" :nickname="false" :user="topic.user_id">
+            <avatar style="margin-right: 6px;" :user="topic.user_id" :size="28" class="avatar"></avatar>
+            <span>{{topic.user_id.nickname}}</span>
+        </user-link>
+        <div style="margin-left: 10px">发布于 <ic-time :timestamp="topic.time" /></div>
+    </div>
+
     <div class="topic-box">
         <div class="main">
             <div class="article typo">
@@ -27,13 +35,30 @@
                 <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
         </div>
-        <div class="info">
+        <div class="info ic-xs-hidden">
             <div class="author">
-                <user-link :user="topic.user_id" :nickname="false" style="display: flex; align-items: center;">
-                    <avatar :user="topic.user_id" :size="20" class="avatar"></avatar>
-                    <span style="margin-left: 6px;">{{topic.user_id.nickname}}</span>
-                </user-link>
-                <p><ic-time :timestamp="topic.time" /></p>
+                <div style="display: flex; align-items: center;">
+                    <avatar :user="topic.user_id" :size="60" class="avatar"></avatar>
+                    <div style="margin-left: 6px; line-height: 1.3em;">
+                        <user-link :user="topic.user_id" />
+                        <div>{{state.misc.USER_GROUP_TXT[topic.user_id.group]}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="other">
+                <div class="txt3">
+                    <div>发布时间：<ic-time :timestamp="topic.time" /></div>
+                    <div>最后修改：<ic-time :timestamp="topic.edit_time" /></div>
+                    <div>阅读次数：<span>{{topic.s.click_count}}</span></div>
+                </div>
+
+                <div v-if="false">
+                    <a  class="furbtn furbtn-s furbtn-blue"><i class="fa fa-star-o"></i> 关注作者</a>
+                    <a class="furbtn furbtn-s furbtn-green"><i class="fa fa-heart-o"></i> 收藏主题</a>
+                    <a class="furbtn furbtn-s furbtn-green" fav="1"><i class="fa fa-heart"></i> 取消收藏</a>
+                    <a class="furbtn furbtn-s furbtn-blue" follow="1"><i class="fa fa-star"></i> 取消关注</a>
+                </div>
+
                 <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
                 <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
                     <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
@@ -54,6 +79,7 @@
 /* scope中加不上这个 我很奇怪，这是为了让图片等不将父元素撑开 */
 .topic-box .article > .content * {
     max-width: 100%;
+    min-height: 30vh;
 }
 
 /* 列表靠左对齐 */
@@ -89,11 +115,18 @@
     padding: 0 20px;
 }
 
+.info > .other {
+    padding-top: 30px;
+}
+
+.other > .txt3 {
+    font-size: 14px;
+}
+
 .info > .author {
     display: flex;
     flex-direction: column;
     font-size: 16px;
-    line-height: 16px;
 }
 
 .main > .article > h1 {
@@ -137,7 +170,7 @@ export default {
             let params = this.$route.params
             let ret = await api.topic.get({
                 id: params.id,
-                loadfk: {user_id: null, board_id: null, last_edit_user_id: null}
+                loadfk: {user_id: null, board_id: null, last_edit_user_id: null, 'id': {'as': 's'}}
             }, state.user ? 'user' : null)
 
             if (ret.code === api.retcode.SUCCESS) {

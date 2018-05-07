@@ -47,7 +47,9 @@
                             <i v-else class="mdi-icarus icon-bell"></i>
                         </a>
                     </router-link>
-                    <li class="menu-item"><a title="注销" href="javascript:void(0)" class="nav-icon" @click="signout"><i class="mdi-icarus icon-logout"></i></a></li>
+                    <li class="menu-item">
+                        <a title="注销" href="javascript:void(0)" class="nav-icon" @click="signout"><i class="mdi-icarus icon-logout"></i></a>
+                    </li>
                     <!-- <li class="menu-item"><a href="#" @click="signout">注销</a></li> -->
                 </ul>
             </div>
@@ -134,6 +136,7 @@
 .menu-item > a.nav-icon {
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 0.5em 0.7em;
     height: 36.67px;
 }

@@ -8,6 +8,10 @@
     <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
     <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
 
+    <div class="ic-xs ic-hidden xs-box">
+        <router-link class="ic-btn keep blue" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
+    </div>
+
     <div class="board-page-box">
         <div class="topic-list" v-if="topics.items.length">
             <div class="board-item" :class="{'top-post': i.sticky_weight}" :key="i.id" v-for="i in topics.items" @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
@@ -53,7 +57,7 @@
         </div>
         <div class="topic-list" v-else>还未有人发言 ...</div>
 
-        <div class="board-info">
+        <div class="board-info ic-xs-hidden">
             <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
             <div class="board-note fade-transition" style="margin-top:5px">
                 <p><strong>版块公告</strong></p>
@@ -74,6 +78,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.xs-box {
+    padding-top: 15px;
 }
 
 aside > .name {
