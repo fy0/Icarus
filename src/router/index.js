@@ -5,6 +5,7 @@ import AccountSignin from '@/components/account/signin.vue'
 import AccountSignup from '@/components/account/signup.vue'
 import AccountUserPage from '@/components/account/userpage.vue'
 import AccountNotif from '@/components/account/notif.vue'
+import AccountSetting from '@/components/account/setting.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
@@ -25,27 +26,34 @@ Vue.use(Router)
 export default new Router({
     mode: 'history',
     routes: [
-        // 登录
+        // 用户 - 登录
         {
             path: '/account/signin',
             name: 'account_signin',
             component: AccountSignin
         },
-        // 注册
+        // 用户 - 注册
         {
             path: '/account/signup',
             name: 'account_signup',
             component: AccountSignup
         },
 
-        // 用户页面
+        // 用户 - 个人主页
         {
             path: '/user/:id(\\S+)',
             name: 'account_userpage',
             component: AccountUserPage
         },
 
-        // 个人提醒
+        // 用户 - 设置
+        {
+            path: '/account/setting',
+            name: 'account_setting',
+            component: AccountSetting
+        },
+
+        // 用户 - 个人提醒
         {
             path: '/notifications',
             name: 'account_notif',

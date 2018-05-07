@@ -5,7 +5,7 @@
         <ul class="multi-errors" v-if="multi">
             <li class="tip" v-for="i in results">{{i}}</li>
         </ul>
-        <span v-else class="tip" :class="{absolute}" >{{errtext}}</span>
+        <span v-else class="tip" :class="{absolute, flex}" >{{errtext}}</span>
     </div>
 </div>
 </template>
@@ -15,6 +15,11 @@
     color: red;
     font-size: .75em;
     margin-top: 3px;
+}
+
+.flex {
+    margin-top: -10px;
+    margin-left: 3px;
 }
 
 .absolute {
@@ -44,6 +49,10 @@ export default {
         absolute: {  // 注：multi 会覆盖此属性
             type: Boolean,
             default: true
+        },
+        flex: { // 用于处理 absolute 状态下 + flex 居中布局的移位
+            type: Boolean,
+            default: false
         },
         multi: {
             type: Boolean,

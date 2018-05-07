@@ -133,6 +133,10 @@ class UserViewRequest extends SlimViewRequest {
         return await nget(`${this.urlPrefix}/get_userid`, null)
     }
 
+    async changePassword ({old_password, password}) {
+        return await npost(`${this.urlPrefix}/change_password`, null, {old_password, password})
+    }
+
     async signout () {
         return await npost(`${this.urlPrefix}/signout`)
     }

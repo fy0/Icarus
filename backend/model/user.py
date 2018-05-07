@@ -80,7 +80,7 @@ class User(BaseModel, BaseUser):
                     self.key = k['key']
                     self.key_time = k['key_time']
                     self.save()
-                    return
+                    return k
                 except DatabaseError:
                     count += 1
                     db.rollback()
@@ -92,6 +92,12 @@ class User(BaseModel, BaseUser):
             return cls.get(cls.key == key)
         except DoesNotExist:
             return None
+
+    def set_password(self, new_password):
+        info = self.gen_password_and_salt(new_password)
+        self.salt = info['salt']
+        self.password = info['password']
+        self.save()
 
     @classmethod
     def auth(cls, email, password_text):

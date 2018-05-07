@@ -178,6 +178,20 @@ router.beforeEach(async function (to, from, next) {
         }
     }
 
+    if (!state.user) {
+        if (to.name === 'account_setting') {
+            state.loading = 0
+            nprogress.done()
+            toUrl = '/'
+        }
+    } else {
+        if (to.name === 'account_signin' || to.name === 'account_signup') {
+            state.loading = 0
+            nprogress.done()
+            toUrl = '/'
+        }
+    }
+
     if (to.name.startsWith('admin_')) {
         if (!(state.user && state.misc && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
             state.loading = 0

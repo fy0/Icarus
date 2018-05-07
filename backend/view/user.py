@@ -30,6 +30,18 @@ class UserMixin(BaseAccessTokenUserMixin):
         except: pass
 
 
+class ChangePasswordForm(ValidateForm):
+    old_password = StringField('密码', validators=[
+        va.required(),
+        va.Length(config.PASSWORD_MIN, config.PASSWORD_MAX)
+    ])
+
+    password = StringField('密码', validators=[
+        va.required(),
+        va.Length(config.PASSWORD_MIN, config.PASSWORD_MAX)
+    ])
+
+
 class SigninForm(ValidateForm):
     email = StringField('邮箱', validators=[va.required(), va.Length(3, config.EMAIL_MAX), va.Email()])
 
@@ -91,6 +103,24 @@ class UserView(UserMixin, PeeweeView):
     async def get_userid(self):
         if self.current_user:
             self.finish(RETCODE.SUCCESS, {'id': to_hex(self.current_user.id)})
+        else:
+            self.finish(RETCODE.PERMISSION_DENIED)
+
+    @route.interface('POST')
+    async def change_password(self):
+        if self.current_user:
+            post = await self.post_data()
+            form = ChangePasswordForm(**post)
+            if not form.validate():
+                return self.finish(RETCODE.FAILED, form.errors)
+            u: User = self.current_user
+            print(u.email, post['old_password'])
+            if User.auth(u.email, post['old_password']):
+                u.set_password(post['password'])
+                k = u.refresh_key()
+                self.finish(RETCODE.SUCCESS, k['key'])
+            else:
+                self.finish(RETCODE.FAILED, {'old_password': ['旧密码不正确']})
         else:
             self.finish(RETCODE.PERMISSION_DENIED)
 

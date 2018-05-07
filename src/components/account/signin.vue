@@ -67,6 +67,7 @@ import CheckRow from '../utils/checkrow.vue'
 export default {
     data () {
         return {
+            state,
             info: {
                 email: '',
                 password: ''
