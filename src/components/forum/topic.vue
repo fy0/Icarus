@@ -79,7 +79,6 @@
 /* scope中加不上这个 我很奇怪，这是为了让图片等不将父元素撑开 */
 .topic-box .article > .content * {
     max-width: 100%;
-    min-height: 30vh;
 }
 
 /* 列表靠左对齐 */
@@ -91,6 +90,10 @@
 .topic-box .article > .content ol {
     padding-left: 0;
     list-style-position: inside;
+}
+
+.topic-box .article > .content {
+    min-height: 30vh;
 }
 </style>
 

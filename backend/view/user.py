@@ -114,7 +114,6 @@ class UserView(UserMixin, PeeweeView):
             if not form.validate():
                 return self.finish(RETCODE.FAILED, form.errors)
             u: User = self.current_user
-            print(u.email, post['old_password'])
             if User.auth(u.email, post['old_password']):
                 u.set_password(post['password'])
                 k = u.refresh_key()
