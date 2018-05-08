@@ -9,15 +9,17 @@
                 <p>{{i.brief}}</p>
             </div>
             <div class="detail ic-xs-hidden">
-                <div class="count">
-                    <span v-if="false" class="tip">24h</span>
-                    <p class="num">{{i.s.topic_count}}</p>
-                    <p class="txt">主题</p>
-                </div>
-                <div class="count">
-                    <span v-if="false" class="tip">24h</span>
-                    <p class="num">{{i.s.comment_count}}</p>
-                    <p class="txt">回复</p>
+                <div class="count-block">
+                    <div class="count">
+                        <span v-if="false" class="tip">24h</span>
+                        <p class="num">{{i.s.topic_count}}</p>
+                        <p class="txt">主题</p>
+                    </div>
+                    <div class="count">
+                        <span v-if="false" class="tip">24h</span>
+                        <p class="num">{{i.s.comment_count}}</p>
+                        <p class="txt">回复</p>
+                    </div>
                 </div>
                 <div class="recent ic-xs-hidden ic-sm-hidden">
                     <span class="line" :style="lineStyle(i)"></span>

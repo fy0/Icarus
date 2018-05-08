@@ -23,19 +23,21 @@
                 </p>
             </div>
             <div class="detail ic-xs-hidden" style="flex: 11 0 0%">
-                <div class="count">
-                    <p class="board">
-                        <router-link :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
-                    </p>
-                    <p class="txt">版块</p>
-                </div>
-                <div class="count">
-                    <p class="num">{{i.s.click_count}}</p>
-                    <p class="txt">点击</p>
-                </div>
-                <div class="count">
-                    <p class="num">{{i.s.comment_count}}</p>
-                    <p class="txt">回复</p>
+                <div class="count-block" style="flex: 6 0 0;">
+                    <div class="count">
+                        <p class="board">
+                            <router-link :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
+                        </p>
+                        <p class="txt">版块</p>
+                    </div>
+                    <div class="count">
+                        <p class="num">{{i.s.click_count}}</p>
+                        <p class="txt">点击</p>
+                    </div>
+                    <div class="count">
+                        <p class="num">{{i.s.comment_count}}</p>
+                        <p class="txt">回复</p>
+                    </div>
                 </div>
                 <div class="recent ic-xs-hidden ic-sm-hidden">
                     <span class="line" :style="lineStyle(i.board_id)"></span>

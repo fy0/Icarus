@@ -11,8 +11,8 @@
 
 .board-item {
     display: flex;
-    height: 4em;
-    margin-bottom: 10px;
+    /* height: 4em; */
+    margin: 10px 0;
 }
 
 .board-item > .title {
@@ -21,29 +21,31 @@
     flex-direction: column;    
     flex-basis: 0%;
     overflow: hidden;
-    padding-top: 0.1em;
     position: relative;
 }
 
-.board-item > .title > h2 {
+.board-item > .title > * {
     margin: 0px;
     flex: 1 0 0%;
-    font-size: 1em;
     font-weight: normal;
     white-space: nowrap;
+    word-break: keep-all;
     text-overflow: ellipsis;    
     overflow: hidden;
-    line-height: 2.1em;
+}
+
+.board-item > .title > h2 {
+    font-size: 1em;
 }
 
 .board-item > .title > p {
-    margin: 0px;
-    flex: 1 0 0%;
     font-size: 0.8em;
-    color: #666;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    color: #777;
+}
+
+.board-item > .title > .sub-boards {
+    font-size: 0.8em;
+    display: block;
 }
 
 .board-item .detail {
@@ -60,16 +62,6 @@
     align-items: center;
     color: rgb(102, 102, 102);
     padding: 0 10px 10px 10px;
-}
-
-.board-item > .detail > .count {
-    display: flex;
-    position: relative;
-    align-items: center;
-    flex-direction: column;
-    flex: 2 0 auto;
-    flex-basis: 0%;
-    overflow: hidden;
 }
 
 /* 板块条目 - 最近发言 */
@@ -115,38 +107,54 @@
     padding: 0 1em;
 }
 
-/* 板块条目 - 计数 */
-.board-item > .detail > .count > .num {
-    font-size: 1.25em;
-    line-height: 22.67px;
+/* 板块条目 - 右侧横框计数部分 */
+.board-item > .detail > .count-block {
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-direction: row;
+    flex: 4 0 0;
+    flex-basis: 0%;
+    overflow: hidden;
+}
+
+.board-item > .detail > .count-block > div {
+    flex: 1 0 auto;
     text-align: center;
-    margin-top: 10px; /* em 与当前字号关联，因此不妥 */
-    margin-bottom: 0px;
+    width: 1%; /* 如果不加这个，flex 布局会超框，overflow无效 */
+}
+
+.board-item > .detail > .count-block > * > p {
+    margin: 0;
+}
+
+.count-block > .count > .num {
+    line-height: 32px; /* 与num保持一致 */
+    flex-basis: 0%;
+    color: #777;
+    font-weight: normal;
+}
+
+.count-block > .count > .board {
+    line-height: 32px; /* 与num保持一致 */
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow: ellipsis;    
     flex-basis: 0%;
 }
 
-.board-item > .detail > .count > .board {
-    font-size: .85em;
-    line-height: 22.67px;
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 0px;
+.count-block > .count > .txt {
+    color: #777;
+    font-weight: 300;
+    font-size: .8em;
     flex-basis: 0%;
 }
 
-.board-item > .detail > .count > .tip {
+.count-block > .count > .tip {
     position: absolute;
     font-size: .625em;
     right: 15%;
     top: .2em;
     flex-basis: 0%;
     font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-
-.board-item > .detail > .count > .txt {
-    color: #777;
-    font-weight: 300;
-    font-size: .75em;
-    margin-top: 0px;
-    flex-basis: 0%;
 }

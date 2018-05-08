@@ -43,13 +43,15 @@
                     </div>
                 </div>
                 <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
-                    <div class="count">
-                        <p class="num">{{i.s.click_count}}</p>
-                        <p class="txt">点击</p>
-                    </div>
-                    <div class="count">
-                        <p class="num">{{i.s.comment_count}}</p>
-                        <p class="txt">回复</p>
+                    <div class="count-block">
+                        <div class="count">
+                            <p class="num">{{i.s.click_count}}</p>
+                            <p class="txt">点击</p>
+                        </div>
+                        <div class="count">
+                            <p class="num">{{i.s.comment_count}}</p>
+                            <p class="txt">回复</p>
+                        </div>
                     </div>
                 </div>
             </div>
