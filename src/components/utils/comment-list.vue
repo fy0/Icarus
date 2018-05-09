@@ -5,7 +5,7 @@
         <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
         <loading v-if="loading"/>
         <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
-        <div v-else v-for="i, _ in page.items" :key="i.id" :id="i.id" class="ic-comment">
+        <div v-else v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="ic-comment">
             <avatar :user="i.user_id" class="avatar"></avatar>
             <mu-paper class="content" :zDepth="1">
                 <div class="head">
