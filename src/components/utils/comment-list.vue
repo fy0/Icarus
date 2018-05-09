@@ -5,7 +5,7 @@
         <paginator :page-info='page' :route-name='"forum_topic"' :link-method="'query'" />
         <loading v-if="loading"/>
         <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
-        <div v-else v-for="i, _ in page.items" :key="i.id" class="ic-comment">
+        <div v-else v-for="i, _ in page.items" :key="i.id" :id="i.id" class="ic-comment">
             <avatar :user="i.user_id" class="avatar"></avatar>
             <mu-paper class="content" :zDepth="1">
                 <div class="head">
@@ -13,7 +13,7 @@
                     <b><user-link :user="i.user_id" /></b>
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>
-                        <b><user-link :user="i.reply_to_cmt_id.user_id" /></b>
+                        <b><a :href="'#' + i.reply_to_cmt_id.id">{{i.reply_to_cmt_id.user_id.nickname}}</a></b>
                     </span>
                     <span><ic-time :timestamp="i.time" /></span>
                     <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>
@@ -36,6 +36,14 @@
 .ic-comment {
     display: flex;
     margin-bottom: 1em;
+}
+
+.ic-comment:target > .content {
+   background-color: #ffa;
+}
+
+.ic-comment:target > .content::after {
+   border-color: #ffa;
 }
 
 .ic-comment .content > .head {

@@ -36,6 +36,7 @@ class BoardView(PeeweeView, UserMixin):
         cls.add_soft_foreign_key('id', 'statistic', 's')
         cls.add_soft_foreign_key('id', 'statistic24h', 's24')
         cls.add_soft_foreign_key('creator_id', 'user')
+        cls.add_soft_foreign_key('parent_id', 'board')
 
     @classmethod
     def permission_init(cls):

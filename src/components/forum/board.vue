@@ -3,6 +3,14 @@
 <div v-else-if="board" class="ic-container">
     <mu-paper class="board-title" :zDepth="1" :style="lineStyle(board)">
         <h3 class="name">{{ board.name }}</h3>
+        <div v-if="board.parent_id">
+            <span>父板块:</span>
+            <router-link :key="board.parent_id.id" :to="{ name: 'forum_board', params: {id: board.parent_id.id} }" class="parent-link">{{board.parent_id.name}}</router-link>
+        </div>
+        <div v-if="subBoards">
+            <span>子板块:</span>
+            <router-link class="sub-board-item" v-for="j in subBoards" :key="j.id" :to="{ name: 'forum_board', params: {id: j.id} }">{{j.name}}</router-link>
+        </div>
         <div class="brief">{{ board.brief }}</div>
     </mu-paper>
     <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
@@ -76,6 +84,20 @@
 </template>
 
 <style scoped>
+.sub-board-item {
+    color: #fff;
+    margin-right: 16px;
+}
+
+.sub-board-item:not(:last-child)::after {
+    content: ',';
+}
+
+.parent-link {
+    font-weight: bolder;
+    color: #fff;
+}
+
 .loading {
     display: flex;
     align-items: center;
@@ -152,6 +174,7 @@ export default {
             hoverId: null,
             loading: true,
             board: null,
+            subBoards: [],
             topics: []
         }
     },
@@ -176,7 +199,7 @@ export default {
         fetchData: async function () {
             this.loading = true
             let params = this.$route.params
-            let ret = await api.board.get({id: params.id})
+            let ret = await api.board.get({id: params.id, 'loadfk': {'parent_id': null}})
 
             if (ret.code) {
                 $.message_by_code(ret.code)
@@ -184,11 +207,16 @@ export default {
                 return
             }
 
+            let subBoards = await api.board.list({
+                parent_id: params.id
+            }, 1, null, state.user ? 'user' : null)
+            this.subBoards = subBoards.data.items
+
             let retList = await api.topic.list({
                 board_id: params.id,
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 select: 'id, time, user_id, board_id, title, sticky_weight, state, awesome',
-                loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                loadfk: {'parent_id': null, 'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             }, params.page, null, state.user ? 'user' : null)
 
             if (retList.code === api.retcode.SUCCESS) {

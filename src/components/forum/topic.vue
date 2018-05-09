@@ -81,8 +81,8 @@
     max-width: 100%;
 }
 
-/* 列表靠左对齐 */
-.topic-box .article > .content ul {
+/* 列表靠左对齐：不行，这会毁灭多级列表，子级会失去相对父级的缩进 */
+/* .topic-box .article > .content ul {
     padding-left: 0;
     list-style-position: inside;
 }
@@ -90,7 +90,7 @@
 .topic-box .article > .content ol {
     padding-left: 0;
     list-style-position: inside;
-}
+} */
 
 .topic-box .article > .content {
     min-height: 30vh;

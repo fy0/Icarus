@@ -35,18 +35,10 @@
             <mu-text-field hintText="需为十六进制颜色" v-model="board.color" :maxLength="8"/>
         </div>
     </div>
-    <div v-if="false" class="topic-manage-item" style="align-items: center">
+    <div class="topic-manage-item" style="align-items: center">
         <span class="label">上级板块</span>
         <div class="right">
-            <mu-dropDown-menu :labelClass="'no-left-padding'" :underlineClass="'no-left-padding'" :value="value" @change="handleChange">
-                <mu-menu-item value="1" title="星期一"/>
-                <mu-menu-item value="2" title="星期二"/>
-                <mu-menu-item value="3" title="星期三"/>
-                <mu-menu-item value="4" title="星期四"/>
-                <mu-menu-item value="5" title="星期五"/>
-                <mu-menu-item value="6" title="星期六"/>
-                <mu-menu-item value="7" title="星期日"/>
-            </mu-dropDown-menu>
+            <multiselect v-model="board.parent_id" :allow-empty="true" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2; width: 85%;" open-direction="bottom"></multiselect>
         </div>
     </div>
     <div class="topic-manage-item" style="align-items: center">
@@ -112,6 +104,8 @@
 <script>
 import state from '@/state.js'
 import api from '@/netapi.js'
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 export default {
     data () {
@@ -119,12 +113,19 @@ export default {
             state,
             value: 1,
             save: {},
-            board: {name: ''}
+            board: {name: ''},
+            boardList: [],
+            boardsInfoDict: {}
         }
     },
     computed: {
     },
     methods: {
+        getSelectOptionName (id) {
+            if (!this.boardsInfoDict[id]) return '无'
+            let { name, brief } = this.boardsInfoDict[id]
+            return `${name} — [${brief}]`
+        },
         handleChange (value) {
             this.value = value
         },
@@ -134,7 +135,7 @@ export default {
             if (data.weight) data.weight = Number(data.weight)
             if (data.visible) data.visible = Number(data.visible)
 
-            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color'])
+            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id'])
             let ret = await api.board.set({id: this.board.id}, data, 'admin', keys)
 
             if (ret.code === 0) {
@@ -158,11 +159,29 @@ export default {
                     this.board = info.data
                     this.board.state = this.board.state.toString()
                     this.save = _.clone(this.board)
+
+                    let ret = await api.board.list({
+                        order: 'weight.desc,time.asc'
+                    }, 1, null, 'admin')
+                    if (ret.code === api.retcode.SUCCESS) {
+                        // vue-select 目前不允许写 null，要再等一等
+                        this.boardList = []
+                        this.boardsInfoDict = {}
+                        for (let i of ret.data.items) {
+                            if (i.id !== this.board.id) {
+                                this.boardList.push(i.id)
+                                this.boardsInfoDict[i.id] = i
+                            }
+                        }
+                    }
                 } else {
                     $.message_by_code(info.code)
                 }
             }
         }
+    },
+    components: {
+        Multiselect
     }
 }
 </script>

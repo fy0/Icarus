@@ -7,6 +7,7 @@
                 <th>#</th>
                 <th style="min-width:4.1em">名称</th>
                 <th>介绍</th>
+                <th>父级</th>
                 <th style="min-width:2.1em">权重</th>
                 <th style="min-width:2.1em">状态</th>
                 <th style="min-width:141px">操作</th>
@@ -14,10 +15,11 @@
         </thead>
 
         <tbody>
-            <tr v-for="i, _ in boardInfo.items" :key="_">
+            <tr class="board-tr" v-for="i, _ in boardInfo.items" :key="_">
                 <td>{{_+1}}</td>
                 <td>{{i.name}}</td>
                 <td>{{i.brief}}</td>
+                <td>{{boardsInfoDict[i.parent_id] ? boardsInfoDict[i.parent_id].name : '无'}}</td>
                 <td>{{i.weight}}</td>
                 <td>{{state.misc.POST_STATE_TXT[i.state]}}</td>
                 <td>
@@ -68,6 +70,16 @@
     height: 100%;
     width: 100%;
 }
+
+.board-tr > td {
+    overflow: hidden;
+}
+
+table {
+    table-layout: fixed;
+    word-break: break-all;
+    word-wrap: break-word;
+}
 </style>
 
 <script>
@@ -84,7 +96,8 @@ export default {
                 name: '',
                 brief: ''
             },
-            boardInfo: {}
+            boardInfo: {},
+            boardsInfoDict: {}
         }
     },
     methods: {
@@ -108,6 +121,9 @@ export default {
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.boardInfo = ret.data
+                for (let i of ret.data.items) {
+                    this.boardsInfoDict[i.id] = i
+                }
             } else {
                 $.message_by_code(ret.code)
             }
