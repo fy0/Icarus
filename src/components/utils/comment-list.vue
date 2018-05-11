@@ -13,7 +13,10 @@
                     <b><user-link :user="i.user_id" /></b>
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>
-                        <b><a :href="'#' + i.reply_to_cmt_id.id">{{i.reply_to_cmt_id.user_id.nickname}}</a></b>
+                        <b>
+                            <a v-if="i.reply_to_cmt_id.user_id" :href="'#' + i.reply_to_cmt_id.id">{{i.reply_to_cmt_id.user_id.nickname}}</a>
+                            <span v-else style="color: #999;">已删除内容</span>
+                        </b>
                     </span>
                     <span><ic-time :timestamp="i.time" /></span>
                     <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>

@@ -188,3 +188,15 @@ def check_is_users_post(ability, user, action, record: DataRecord, available_col
 
 
 normal_user.add_record_check((A.WRITE,), 'topic', func=check_is_users_post)
+
+# comment
+
+visitor.add_query_condition('comment', [
+    ('state', '>', POST_STATE.APPLY),
+    ('visible', '>', POST_VISIBLE.HIDE),
+])
+
+normal_user.add_query_condition('comment', [
+    ('state', '>', POST_STATE.APPLY),
+    ('visible', '>', POST_VISIBLE.HIDE),
+])
