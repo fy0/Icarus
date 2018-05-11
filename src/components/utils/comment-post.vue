@@ -6,8 +6,8 @@
         <div class="right-box" v-if="isClosed()">
             <mu-paper :zDepth="1" class="content">评论已关闭</mu-paper>
         </div>
-        <div class="right-box" v-else>
-            <mu-paper :zDepth="editing ? 2 : 1" class="content">
+        <div class="right-box content" v-else>
+            <mu-paper :zDepth="editing ? 2 : 1">
                 <textarea id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
             </mu-paper>
             <div style="display: flex; justify-content: space-between;" class="postBtnBox">

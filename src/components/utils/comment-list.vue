@@ -7,7 +7,7 @@
         <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
         <div v-else v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="ic-comment">
             <avatar :user="i.user_id" class="avatar"></avatar>
-            <mu-paper class="content" :zDepth="1">
+            <div class="content">
                 <div class="head">
                     <span>#{{(page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
                     <b><user-link :user="i.user_id" /></b>
@@ -22,7 +22,7 @@
                     <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>
                 </div>
                 <div class="post" v-html="marked(i.content || '')"></div>
-            </mu-paper>
+            </div>
         </div>
     </div>
     <comment-post @on-commented="commented" :item="item" :post-type="postType" ref="post"></comment-post>
@@ -32,17 +32,22 @@
 <style>
 /* 注意：评论样式不在 scope 之内，故意为之 */
 .ic-comment-list > .no-comment {
-    padding: 20px 0;
+    padding: 40px 0;
     text-align: center;
 }
 
 .ic-comment {
     display: flex;
-    margin-bottom: 1em;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ic-comment:target {
+    background-color: #ffa;
 }
 
 .ic-comment:target > .content {
-   background-color: #ffa;
+    background-color: #ffa;
 }
 
 .ic-comment:target > .content::after {
@@ -54,40 +59,10 @@
     /* padding-bottom: .6em; */
 }
 
-.ic-comment .content > .post {
-    padding: 0px 6px;
-}
-
 .ic-comment .content {
     flex: 1 0 0%;
-    margin-left: 15px;
-
-    border-radius: 3px;
     background: #fff;
-    padding: 1px;
-    position: relative;
-    padding: .6em;
-}
-
-.ic-comment .content:before, .ic-comment .content:after {
-    content:" ";
-    border-top-color:transparent !important; 
-    border-bottom-color:transparent !important; 
-    border-left-color:transparent !important;
-    border-style:solid;
-    border-width:8px;
-    height:0; 
-    width:0; 
-    left:-16px; 
-    top:12px;
-    color: #ccc;
-    position:absolute
-}
-
-.ic-comment .content:after {
-    float:left;
-    left:-15px;
-    border-color: #fff;
+    padding: 0 10px 0 20px;
 }
 </style>
 
