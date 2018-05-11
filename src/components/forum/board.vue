@@ -22,46 +22,48 @@
 
     <div class="board-page-box">
         <div class="topic-list" v-if="topics.items.length">
-            <div class="board-item" :class="{'top-post': i.sticky_weight}" :key="i.id" v-for="i in topics.items" @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
-                <div class="title">
-                    <h2>
-                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
-                            <span>{{i.title}}</span>
-                            <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
-                        </router-link>
-                        <span class="icons">
-                            <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
-                            <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                            <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(i)"></i>
-                        </span>
-                    </h2>
-                    <p class="info">
-                        <user-link :user="i.user_id" />  •  
-                        <span> 发布于<ic-time :timestamp="i.time" /></span>  •  
-                        <span>最后回复
-                            <span v-if="i.s.last_comment_id">
-                                <user-link :user="i.s.last_comment_id.user_id" />
-                                <ic-time :timestamp="i.s.last_comment_id.time" />
+            <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
+                <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
+                    <div class="title">
+                        <h2>
+                            <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                                <span>{{i.title}}</span>
+                                <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
+                            </router-link>
+                            <span class="icons">
+                                <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
+                                <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                                <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
                             </span>
-                            <span v-else>从未</span>
-                        </span>
-                    </p>
-                    <div class="icons">
-                        <i v-if="i.sticky_weight" class="mdi-icarus icon-pin" title="置顶" />
-                    </div>
-                </div>
-                <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
-                    <div class="count-block">
-                        <div class="count">
-                            <p class="num">{{i.s.click_count}}</p>
-                            <p class="txt">点击</p>
-                        </div>
-                        <div class="count">
-                            <p class="num">{{i.s.comment_count}}</p>
-                            <p class="txt">回复</p>
+                        </h2>
+                        <p class="info">
+                            <user-link :user="i.user_id" />  •  
+                            <span> 发布于<ic-time :timestamp="i.time" /></span>  •  
+                            <span>最后回复
+                                <span v-if="i.s.last_comment_id">
+                                    <user-link :user="i.s.last_comment_id.user_id" />
+                                    <ic-time :timestamp="i.s.last_comment_id.time" />
+                                </span>
+                                <span v-else>从未</span>
+                            </span>
+                        </p>
+                        <div class="icons">
+                            <i v-if="i.sticky_weight" class="mdi-icarus icon-pin" title="置顶" />
                         </div>
                     </div>
-                </div>
+                    <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
+                        <div class="count-block">
+                            <div class="count">
+                                <p class="num">{{i.s.click_count}}</p>
+                                <p class="txt">点击</p>
+                            </div>
+                            <div class="count">
+                                <p class="num">{{i.s.comment_count}}</p>
+                                <p class="txt">回复</p>
+                            </div>
+                        </div>
+                    </div>
+                </router-link>
             </div>
             <paginator :page-info='topics' :route-name='"forum_board"' />
         </div>

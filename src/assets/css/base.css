@@ -127,6 +127,7 @@ body, button, input, select, textarea {
 .ic-topbtns {
     display: flex;
     margin-bottom: 10px;
+    padding-left: 10px;    
 }
 
 .ic-topbtns > a {
@@ -153,36 +154,37 @@ a:hover {
 
 .ic-hidden {
     display: none;
-    /* flex 与 none 的冲突 */
+    /* flex 与 none 的冲突，试图使用以下属性解决： */
     width: 0; height: 0; opacity: 0;
+    visibility: hidden;
 }
 
 /* < 568px */
 @media screen and (max-width: 35.5em) {
     .ic-xs-hidden {display: none !important; }
-    .ic-xs { display: inherit; width: auto; height: auto; opacity: unset; }
+    .ic-xs { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 568px */
 @media screen and (min-width: 35.5em) and (max-width: 48em) {
     .ic-sm-hidden { display: none !important; }
-    .ic-sm { display: inherit; width: auto; height: auto; opacity: unset; }
+    .ic-sm { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 768px */
 @media screen and (min-width: 48em) and (max-width: 64em) {
     .ic-md-hidden { display: none !important; }
-    .ic-md { display: inherit; width: auto; height: auto; opacity: unset; }
+    .ic-md { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 1024px */
 @media screen and (min-width: 64em) and (max-width: 80em) {
     .ic-lg-hidden { display: none !important; }
-    .ic-lg { display: inherit; width: auto; height: auto; opacity: unset; }
+    .ic-lg { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 1280px */
 @media screen and (min-width: 80em) {
     .ic-xl-hidden { display: none !important; }
-    .ic-xl { display: inherit; width: auto; height: auto; opacity: unset; }
+    .ic-xl { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }

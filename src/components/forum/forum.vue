@@ -3,41 +3,43 @@
     <div v-title>{{state.config.title}}</div>
     <top-btns></top-btns>
     <div id="board-list" v-if="boardInfo.items && boardInfo.items.length">
-        <div class="board-item" v-if="!i.parent_id" :key= "i.id" v-for="i, _ in boardInfo.items">
-            <div class="title">
-                <h2><router-link :to="{ name: 'forum_board', params: {id: i.id} }">{{i.name}}</router-link></h2>
-                <div class="sub-boards" v-if="subBoards[i.id]" style="padding-top: 3px">
-                    <span>-</span>
-                    <template v-for="(j, _) in subBoards[i.id]">
-                        <router-link :key="j.id" :to="{ name: 'forum_board', params: {id: j.id} }" class="item" style="margin-right: 10px">{{j.name}}</router-link>
-                    </template>
-                </div>
-                <p>{{i.brief}}</p>
-            </div>
-            <div class="detail ic-xs-hidden">
-                <div class="count-block">
-                    <div class="count">
-                        <span v-if="false" class="tip">24h</span>
-                        <p class="num">{{i.s.topic_count}}</p>
-                        <p class="txt">主题</p>
+        <div class="board-item-box" v-if="!i.parent_id" :key= "i.id" v-for="(i, _) in boardInfo.items">
+            <router-link :to="{ name: 'forum_board', params: {id: i.id} }" class="board-item">
+                <div class="title">
+                    <h2><router-link :to="{ name: 'forum_board', params: {id: i.id} }">{{i.name}}</router-link></h2>
+                    <div class="sub-boards" v-if="subBoards[i.id]" style="padding-top: 3px">
+                        <span>-</span>
+                        <template v-for="(j, _) in subBoards[i.id]">
+                            <router-link :key="j.id" :to="{ name: 'forum_board', params: {id: j.id} }" class="item" style="margin-right: 10px">{{j.name}}</router-link>
+                        </template>
                     </div>
-                    <div class="count">
-                        <span v-if="false" class="tip">24h</span>
-                        <p class="num">{{i.s.comment_count}}</p>
-                        <p class="txt">回复</p>
+                    <p>{{i.brief}}</p>
+                </div>
+                <div class="detail ic-xs-hidden">
+                    <div class="count-block">
+                        <div class="count">
+                            <span v-if="false" class="tip">24h</span>
+                            <p class="num">{{i.s.topic_count}}</p>
+                            <p class="txt">主题</p>
+                        </div>
+                        <div class="count">
+                            <span v-if="false" class="tip">24h</span>
+                            <p class="num">{{i.s.comment_count}}</p>
+                            <p class="txt">回复</p>
+                        </div>
+                    </div>
+                    <div class="recent ic-xs-hidden ic-sm-hidden">
+                        <span class="line" :style="lineStyle(i)"></span>
+                        <div class="post" v-if="i.s.last_comment_id">
+                            <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
+                            <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{i.s.last_comment_id.content}}</router-link>
+                        </div>
+                        <div class="post" v-else>○ ○ ○ ○ ○</div>
+                        <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
+                        <div v-else class="time">从未</div>
                     </div>
                 </div>
-                <div class="recent ic-xs-hidden ic-sm-hidden">
-                    <span class="line" :style="lineStyle(i)"></span>
-                    <div class="post" v-if="i.s.last_comment_id">
-                        <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
-                        <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{i.s.last_comment_id.content}}</router-link>
-                    </div>
-                    <div class="post" v-else>○ ○ ○ ○ ○</div>
-                    <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
-                    <div v-else class="time">从未</div>
-                </div>
-            </div>
+            </router-link>
         </div>
     </div>
     <div v-else>
