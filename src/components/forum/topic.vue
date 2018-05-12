@@ -35,6 +35,7 @@
                 <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
         </div>
+        <div style="flex: 1 0 0"></div>
         <div class="info ic-xs-hidden">
             <div class="author">
                 <div style="display: flex; align-items: center;">
@@ -111,7 +112,7 @@
 }
 
 .topic-box > .main {
-    flex: 18 0 0%;
+    flex: 17 0 0%;
 }
 
 .info {

@@ -43,6 +43,11 @@
     min-height: 50px;
 }
 
+.ic-comment-post > .ic-comment {
+    padding: 20px 0;
+    border-bottom: none;
+}
+
 .right-box {
     flex: 1 0 0%;
     /* 视觉误差吧，总之加上之后舒服了一些*/

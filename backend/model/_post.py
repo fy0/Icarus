@@ -8,7 +8,7 @@ from peewee import *
 from config import POST_ID_GENERATOR
 from slim.utils.customid import CustomID
 from slim.utils.state_obj import StateObject
-from model import BaseModel
+from model import BaseModel, MyTimestampField
 
 
 class POST_STATE(StateObject):
@@ -60,3 +60,15 @@ class POST_TYPES(StateObject):
         elif related_type == POST_TYPES.WIKI:
             w = WikiItem.get_by_pk(related_id)
             if w: return w
+
+
+class PostModel(BaseModel):
+    id = BlobField(primary_key=True, constraints=[SQL("DEFAULT int2bytea(nextval('id_gen_seq'))")])
+    state = IntegerField(default=POST_STATE.NORMAL, index=True)
+    visible = IntegerField(default=POST_VISIBLE.NORMAL, index=True)
+    time = MyTimestampField(index=True)  # 发布时间
+    user_id = BlobField(index=True, null=True, default=None)  # 发布用户，对 user 表来说是推荐者，对 board 来说是创建者
+
+
+class LongIdPostModel(PostModel):
+    id = BlobField(primary_key=True)

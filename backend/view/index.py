@@ -3,7 +3,7 @@ from aiohttp import web
 
 from app import app
 from model.notif import NOTIF_TYPE
-from model.post import POST_TYPES, POST_STATE, POST_VISIBLE
+from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE

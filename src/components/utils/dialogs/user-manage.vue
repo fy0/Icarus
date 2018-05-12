@@ -19,7 +19,7 @@
     <div class="topic-manage-item">
         <span class="label">注册时间</span>
         <div class="right">
-            <ic-time :ago="false" :timestamp="user.reg_time" />
+            <ic-time :ago="false" :timestamp="user.time" />
         </div>
     </div>
     <div class="topic-manage-item">

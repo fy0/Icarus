@@ -7,7 +7,7 @@
     <div class="topic-manage-item">
         <span class="label">创建者</span>
         <div class="right">
-            <user-link v-if="board.creator_id" :user="board.creator_id" />
+            <user-link v-if="board.user_id" :user="board.user_id" />
             <div v-else>系统</div>
         </div>
     </div>
@@ -154,7 +154,10 @@ export default {
     watch: {
         'state.dialog.boardManage': async function (val) {
             if (val) {
-                let info = await api.board.get({id: state.dialog.boardManageData.id}, 'admin')
+                let info = await api.board.get({
+                    id: state.dialog.boardManageData.id,
+                    loadfk: {'user_id': null}
+                }, 'admin')
                 if (info.code === api.retcode.SUCCESS) {
                     this.board = info.data
                     this.board.state = this.board.state.toString()

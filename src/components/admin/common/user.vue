@@ -12,7 +12,7 @@
                 <div class="right">
                     <user-link :user="i" />
                     <div class="info">
-                        <span>注册于 <ic-time :ago="false" :timestamp="i.reg_time" /></span> ·
+                        <span>注册于 <ic-time :ago="false" :timestamp="i.time" /></span> ·
                         <span>{{state.misc.USER_GROUP_TXT[i.group]}}</span> ·
                         <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
                         <i class="mdi-icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setUserManage(i)"></i>
@@ -56,7 +56,7 @@
     border: 1px solid #ddd;
     font-size: 1.3rem;
     box-sizing: border-box;
-    transition: all .2s ease;    
+    transition: all .2s ease;
 }
 
 .search-box > .search-btn {

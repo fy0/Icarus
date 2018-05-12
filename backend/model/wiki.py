@@ -3,7 +3,7 @@ import random
 import time
 from peewee import *
 
-from model.post import POST_STATE, POST_VISIBLE
+from model._post import POST_STATE, POST_VISIBLE
 from slim.utils import StateObject
 from model import BaseModel, MyTimestampField
 from model.user import User

@@ -1,4 +1,4 @@
-from model.post import POST_STATE, POST_VISIBLE
+from model._post import POST_STATE, POST_VISIBLE
 from slim.base.permission import Ability, A, DataRecord
 from slim.base.sqlquery import SQLQueryInfo
 
@@ -26,7 +26,7 @@ visitor = Ability(None, {
         'group': (A.READ,),
         'number': (A.READ,),
         'biology': (A.READ,),
-        'reg_time': (A.READ,),
+        'time': (A.READ,),
         'key_time': (A.READ,),
 
         'email': (A.CREATE,),
@@ -117,12 +117,12 @@ super_user = Ability('superuser', {
         'color': (A.READ, A.WRITE, A.CREATE),
         'state': A.ALL,
         'category': A.ALL,
-        'creator_id': (A.READ, A.CREATE),
+        'user_id': (A.READ, A.CREATE),
         'parent_id': A.ALL
     },
     'user': {
         'key': (A.WRITE,),
-        'reg_time': (A.READ,),
+        'time': (A.READ,),
         'state': (A.READ,),
         'email': A.ALL,
         'nickname': A.ALL,

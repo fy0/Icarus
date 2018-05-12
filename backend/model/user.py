@@ -3,6 +3,7 @@ import os
 import time
 from peewee import *
 import config
+from model._post import PostModel
 from slim.base.user import BaseUser
 from slim.utils import StateObject
 from model import BaseModel, MyTimestampField, CITextField, db, SerialField
@@ -22,8 +23,7 @@ def get_user_count_seq():
     return db.execute_sql("select nextval('user_count_seq')").fetchone()[0]
 
 
-class User(BaseModel, BaseUser):
-    id = BlobField(primary_key=True, constraints=[SQL("DEFAULT int2bytea(nextval('id_gen_seq'))")])
+class User(PostModel, BaseUser):
     email = TextField(index=True, unique=True)
     nickname = CITextField(index=True, unique=True)  # CITextField
     password = BlobField()
@@ -32,11 +32,9 @@ class User(BaseModel, BaseUser):
 
     # level = IntegerField(index=True)  # 用户级别
     group = IntegerField(index=True)  # 用户权限组
-    state = IntegerField(index=True)
 
     key = BlobField(index=True, null=True)
     key_time = MyTimestampField()
-    reg_time = MyTimestampField()
 
     phone = TextField(null=True, default=None)  # 大陆地区
     number = IntegerField(default=get_user_count_seq)  # 序号，第N个用户 sequence='user_count_seq'

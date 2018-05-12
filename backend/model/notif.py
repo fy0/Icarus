@@ -3,7 +3,7 @@ from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 import config
 from model import BaseModel, MyTimestampField, db
-from model.post import POST_STATE
+from model._post import POST_STATE
 from model.user import User
 from slim import json_ex_dumps
 from slim.utils import StateObject

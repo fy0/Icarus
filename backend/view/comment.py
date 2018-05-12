@@ -8,7 +8,7 @@ from slim.base.permission import Permissions
 from slim.base.sqlquery import SQLValuesToWrite, DataRecord
 from slim.utils.customid import CustomID
 from model.comment import Comment
-from model.post import POST_TYPES, POST_STATE, POST_VISIBLE
+from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView

@@ -1,4 +1,4 @@
-﻿from model.post import POST_VISIBLE, POST_STATE
+﻿from model._post import POST_VISIBLE, POST_STATE, PostModel
 from slim.utils import StateObject
 from peewee import *
 from model import db, BaseModel, MyTimestampField
@@ -13,14 +13,9 @@ from model.board import Board
 """
 
 
-class Topic(BaseModel):
-    id = BlobField(primary_key=True, constraints=[SQL("DEFAULT int2bytea(nextval('id_gen_seq'))")])
+class Topic(PostModel):
     title = TextField(index=True)
-    user_id = BlobField(index=True)
     board_id = BlobField(index=True)
-    time = MyTimestampField(index=True)
-    state = IntegerField(default=POST_STATE.NORMAL, index=True)
-    visible = IntegerField(default=POST_VISIBLE.NORMAL, index=True)
 
     edit_count = IntegerField(default=0)
     edit_time = MyTimestampField(index=True, null=True)

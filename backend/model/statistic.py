@@ -2,7 +2,7 @@ from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 from model import BaseModel, MyTimestampField
 from model.board import Board
-from model.post import POST_TYPES
+from model._post import POST_TYPES
 from model.topic import Topic
 from slim import json_ex_dumps
 

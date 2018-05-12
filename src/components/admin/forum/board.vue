@@ -115,7 +115,7 @@ export default {
         fetchData: async function () {
             let ret = await api.board.list({
                 order: 'weight.desc,time.asc',
-                loadfk: {'creator_id': null}
+                loadfk: {'user_id': null}
                 // select: 'id, time, user_id, board_id, title, state',
             }, 1, null, 'admin')
 

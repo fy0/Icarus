@@ -21,6 +21,9 @@
                     <span><ic-time :timestamp="i.time" /></span>
                     <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>
                 </div>
+                <blockquote v-if="i.reply_to_cmt_id && i.reply_to_cmt_id.user_id">
+                    <div v-html="marked(i.reply_to_cmt_id.content || '')"></div>
+                </blockquote>
                 <div class="post" v-html="marked(i.content || '')"></div>
             </div>
         </div>

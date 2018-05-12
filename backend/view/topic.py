@@ -1,7 +1,7 @@
 from typing import Dict, List
 import time
 import config
-from model.post import POST_TYPES
+from model._post import POST_TYPES
 from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click, statistic_move_topic
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord

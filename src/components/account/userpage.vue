@@ -8,7 +8,7 @@
             <div>
                 <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>
                 <div>第 {{user.number}} 名会员</div>
-                <div title="加入时间"><ic-time :ago="false" :timestamp="user.reg_time"/></div>
+                <div title="加入时间"><ic-time :ago="false" :timestamp="user.time"/></div>
             </div>
         </div>
         <div class="right">

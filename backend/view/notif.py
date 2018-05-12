@@ -11,7 +11,7 @@ from model.topic import Topic
 from slim.base.ws import WSRouter
 from slim.utils.customid import CustomID
 from model.comment import Comment
-from model.post import POST_TYPES
+from model._post import POST_TYPES
 from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView

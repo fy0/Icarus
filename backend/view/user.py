@@ -3,7 +3,7 @@ import time
 import config
 from typing import Dict, Type, List
 from model.notif import UserNotifRecord
-from model.post import POST_TYPES, POST_STATE
+from model._post import POST_TYPES, POST_STATE
 from model.statistic import statistic_new
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.base.user import BaseUser, BaseAccessTokenUserMixin
@@ -151,14 +151,13 @@ class UserView(UserMixin, PeeweeView):
 
         if 'key' in raw_post:
             values.update(User.gen_key())
-            values['reg_time'] = int(time.time())
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]
         # 必须存在以下值：
         # email password nickname
         # 自动填充或改写以下值：
-        # id password salt group state key key_time reg_time
+        # id password salt group state key key_time time
         if not config.USER_ALLOW_SIGNUP:
             return RETCODE.FAILED, '注册未开放'
 
@@ -183,7 +182,7 @@ class UserView(UserMixin, PeeweeView):
             values['state'] = POST_STATE.NORMAL
 
         values.update(User.gen_key())
-        values['reg_time'] = int(time.time())
+        values['time'] = int(time.time())
         self._key = values['key']
 
     def after_insert(self, raw_post: Dict, values_lst: SQLValuesToWrite, records: List[DataRecord]):

@@ -1,7 +1,7 @@
 import time
 from typing import Mapping, Dict, List
 import config
-from model.post import POST_TYPES
+from model._post import POST_TYPES
 from model.statistic import statistic_new
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -35,7 +35,7 @@ class BoardView(PeeweeView, UserMixin):
     def ready(cls):
         cls.add_soft_foreign_key('id', 'statistic', 's')
         cls.add_soft_foreign_key('id', 'statistic24h', 's24')
-        cls.add_soft_foreign_key('creator_id', 'user')
+        cls.add_soft_foreign_key('user_id', 'user')
         cls.add_soft_foreign_key('parent_id', 'board')
 
     @classmethod
@@ -55,6 +55,7 @@ class BoardView(PeeweeView, UserMixin):
             if not config.POST_ID_GENERATOR == config.AutoGenerator:
                 values['id'] = config.POST_ID_GENERATOR().digest()
             values['time'] = int(time.time())
+            values['user_id'] = self.current_user.id
 
     async def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
         for record in records:
