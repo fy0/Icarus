@@ -2,6 +2,7 @@ import config
 from aiohttp import web
 
 from app import app
+from model.logs import MANAGE_OPERATION
 from model.notif import NOTIF_TYPE
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from model.user import USER_GROUP
@@ -31,6 +32,9 @@ class TestBaseView(BaseView):
             'POST_STATE_TXT': POST_STATE.txt,
             'POST_VISIBLE': POST_VISIBLE.to_dict(),
             'POST_VISIBLE_TXT': POST_VISIBLE.txt,
+
+            'MANAGE_OPERATION': MANAGE_OPERATION,
+            'MANAGE_OPERATION_TXT': MANAGE_OPERATION.txt,
 
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,

@@ -164,7 +164,7 @@ class Notification(BaseModel):
         for i in r.get_notifications(True):
             if i['type'] == NOTIF_TYPE.BE_COMMENTED:
                 new.append({
-                    'id': config.HIDE_ID_GENERATOR().to_bin(),
+                    'id': config.LONG_ID_GENERATOR().to_bin(),
                     'sender_ids': (i['comment']['user']['id'],),
                     'receiver_id': user_id,
                     'type': NOTIF_TYPE.BE_COMMENTED,
@@ -173,7 +173,7 @@ class Notification(BaseModel):
                 })
             elif i['type'] == NOTIF_TYPE.BE_REPLIED:
                 new.append({
-                    'id': config.HIDE_ID_GENERATOR().to_bin(),
+                    'id': config.LONG_ID_GENERATOR().to_bin(),
                     'sender_ids': (i['comment']['user']['id'],),
                     'receiver_id': user_id,
                     'type': NOTIF_TYPE.BE_REPLIED,

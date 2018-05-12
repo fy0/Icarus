@@ -9,7 +9,7 @@
             <avatar :user="i.user_id" class="avatar"></avatar>
             <div class="content">
                 <div class="head">
-                    <span>#{{(page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
+                    <span>#{{i.post_number || (page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
                     <b><user-link :user="i.user_id" /></b>
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>

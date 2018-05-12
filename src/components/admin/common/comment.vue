@@ -126,7 +126,8 @@ export default {
             //     id: params.id,
             // })
             let ret = await api.comment.list({
-                loadfk: {user_id: null, reply_to_cmt_id: {loadfk: {'user_id': null}}}
+                loadfk: {user_id: null, reply_to_cmt_id: {loadfk: {'user_id': null}}},
+                order: 'time.desc'
             }, params.page, null, 'admin')
 
             if (ret.code === api.retcode.SUCCESS) {

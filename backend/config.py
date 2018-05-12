@@ -56,8 +56,10 @@ class AutoGenerator:
 
 PASSWORD_HASH_FUNC = hashlib.sha256
 SESSION_ID_GENERATOR = CustomID
-HIDE_ID_GENERATOR = CustomID
+
+# 被数据库所使用的两个ID，短ID与长ID
 POST_ID_GENERATOR = AutoGenerator  # 代表SQL自动生成
+LONG_ID_GENERATOR = CustomID
 
 try:
     from private import *

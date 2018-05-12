@@ -53,6 +53,7 @@ visitor = Ability(None, {
         'state': (A.READ,),
         'visible': (A.READ,),
         'content': (A.READ,),
+        'post_number': (A.READ,),
     },
     'statistic': {
         'id': (A.READ, A.QUERY),

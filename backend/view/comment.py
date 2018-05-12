@@ -75,8 +75,8 @@ class CommentView(UserMixin, PeeweeView):
 
             values['reply_to_cmt_id'] = rtid.to_bin()
 
-        if not isinstance(config.HIDE_ID_GENERATOR, config.AutoGenerator):
-            values['id'] = config.HIDE_ID_GENERATOR().to_bin()
+        if not isinstance(config.LONG_ID_GENERATOR, config.AutoGenerator):
+            values['id'] = config.LONG_ID_GENERATOR().to_bin()
         values['related_id'] = cid.to_bin()
         values['related_type'] = int(values['related_type'])
         values['user_id'] = self.current_user.id
@@ -87,5 +87,7 @@ class CommentView(UserMixin, PeeweeView):
             post.weight_inc()
 
     def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
-        values = values_lst[0]
-        statistic_add_comment(values['related_type'], values['related_id'], values['id'])
+        for record in records:
+            statistic_add_comment(record['related_type'], record['related_id'], record['id'])
+            post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
+            Comment.update(post_number = post_number).where(Comment.id == record['id']).execute()
