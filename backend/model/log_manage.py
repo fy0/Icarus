@@ -13,11 +13,12 @@ class MANAGE_OPERATION(StateObject):
     POST_STATE_CHANGE = 0  # 改变状态：例如删除等等
     POST_VISIBLE_CHANGE = 1
 
-    TOPIC_EDIT = 20  # 修改主题
-    TOPIC_BOARD_MOVE = 21  # 移动主题到其他板块
-    TOPIC_AWESOME_CHANGE = 22  # 移动主题到其他板块
-    TOPIC_STICKY_WEIGHT_CHANGE = 24
-    TOPIC_WEIGHT_CHANGE = 25
+    TOPIC_CONTENT_CHANGE = 20  # 修改主题
+    TOPIC_TITLE_CHANGE = 21  # 修改标题
+    TOPIC_BOARD_MOVE = 22  # 移动主题到其他板块
+    TOPIC_AWESOME_CHANGE = 23
+    TOPIC_STICKY_WEIGHT_CHANGE = 25
+    TOPIC_WEIGHT_CHANGE = 26
 
     USER_PASSWORD_CHANGE = 40  # 设置用户密码（未来再做区分，现在进有这个）
     USER_PASSWORD_RESET = 41  # 重置用户密码
@@ -30,8 +31,9 @@ class MANAGE_OPERATION(StateObject):
         POST_STATE_CHANGE: '改变状态',
         POST_VISIBLE_CHANGE: '修改可见度',
 
-        TOPIC_BOARD_MOVE: '移动主题',
-        TOPIC_EDIT: '修改主题',
+        TOPIC_BOARD_MOVE: '移动',
+        TOPIC_CONTENT_CHANGE: '编辑内容',
+        TOPIC_TITLE_CHANGE: '修改标题',
         TOPIC_AWESOME_CHANGE: '设置优秀文章',
         TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
         TOPIC_WEIGHT_CHANGE: '修改板块权重',

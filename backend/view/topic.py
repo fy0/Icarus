@@ -74,11 +74,16 @@ class TopicView(UserMixin, PeeweeView):
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
-            if 'content' in values or 'title' in values:
-                # 管理日志：编辑
+            if 'content' in values:
+                # 管理日志：正文编辑
                 ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'],
-                              MOP.TOPIC_EDIT, None)
+                              MOP.TOPIC_CONTENT_CHANGE, None)
                 Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
+
+            if 'title' in values:
+                # 管理日志：标题编辑
+                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'],
+                              MOP.TOPIC_TITLE_CHANGE, None)
 
             # 管理日志：改变状态
             ManageLog.add_by_post_change(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.TOPIC,
@@ -106,15 +111,22 @@ class TopicView(UserMixin, PeeweeView):
                                          values, old_record, record)
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+        record = records[0]
         form = TopicEditForm(**raw_post)
         if not form.validate():
             return RETCODE.FAILED, form.errors
 
         # 防止置空提交，因为这里这两项的校验是 optional
-        if 'title' in values and not values['title']:
-            del values['title']
-        if 'content' in values and not values['content']:
-            del values['content']
+        if 'title' in values:
+            if not values['title']:
+                del values['title']
+            elif values['title'] == record['title']:
+                del values['title']
+        if 'content' in values:
+            if not values['content']:
+                del values['content']
+            elif values['content'] == record['content']:
+                del values['content']
 
         if 'topic' in values or 'content' in values:
             values['edit_time'] = int(time.time())

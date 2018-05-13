@@ -138,6 +138,7 @@ aside > .brief {
 
 .board-page-box > .board-info {
     flex: 7 0 0;
+    padding-left: 20px;
 }
 
 .topic-new-btn {

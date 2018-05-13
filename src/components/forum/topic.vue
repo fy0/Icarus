@@ -184,7 +184,11 @@ export default {
             }, state.user ? 'user' : null)
 
             if (ret.code === api.retcode.SUCCESS) {
-                let mlog = await api.logManage.list({related_id: ret.data.id, loadfk: {'user_id': null}})
+                let mlog = await api.logManage.list({
+                    related_id: ret.data.id,
+                    order: 'time.desc',
+                    loadfk: {'user_id': null}
+                })
                 if (mlog.code === api.retcode.SUCCESS) {
                     this.mlog = mlog.data
                 }
