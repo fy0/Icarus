@@ -118,7 +118,7 @@
 }
 
 .topic-box > .main {
-    flex: 19 0 0%;
+    flex: 18 0 0%;
 }
 
 .info > .box {
@@ -146,7 +146,7 @@
 }
 
 .topic-box > .info {
-    flex: 5 0 0%;
+    flex: 6 0 0%;
 }
 </style>
 

@@ -24,7 +24,7 @@
         <div class="topic-list" v-if="topics.items.length">
             <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                 <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                    <div class="title" style="flex: 15 0 0%">
+                    <div class="title" style="flex: 14 0 0%">
                         <h2>
                             <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                 <span>{{i.title}}</span>
@@ -136,11 +136,11 @@ aside > .brief {
 
 .board-page-box > .topic-list {
     /* grow shrink basis*/
-    flex: 19 0 0%;
+    flex: 18 0 0%;
 }
 
 .board-page-box > .board-info {
-    flex: 5 0 0%;
+    flex: 6 0 0%;
 }
 
 .topic-new-btn {

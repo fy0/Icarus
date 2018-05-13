@@ -6,7 +6,7 @@
     <div v-else-if="topics.items && topics.items.length" id="board-list">
         <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
             <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                <div class="title" style="flex: 13 0 0%">
+                <div class="title" style="flex: 12 0 0%">
                     <h2>
                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                             <span>{{i.title}}</span>
@@ -23,7 +23,7 @@
                         <span> 发布于 <ic-time :timestamp="i.time" /></span>
                     </p>
                 </div>
-                <div class="detail ic-xs-hidden" style="flex: 11 0 0%">
+                <div class="detail ic-xs-hidden" style="flex: 12 0 0%">
                     <div class="count-block" style="flex: 6 0 0;">
                         <router-link tag="div" class="count" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">
                             <p class="board">
