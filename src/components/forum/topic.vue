@@ -40,38 +40,39 @@
                 <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
         </div>
-        <div style="flex: 1 0 0"></div>
         <div class="info ic-xs-hidden">
-            <div class="author">
-                <div style="display: flex; align-items: center;">
-                    <avatar :user="topic.user_id" :size="60" class="avatar"></avatar>
-                    <div style="margin-left: 6px; line-height: 1.3em;">
-                        <user-link :user="topic.user_id" />
-                        <div>{{state.misc.USER_GROUP_TXT[topic.user_id.group]}}</div>
+            <div class="box">
+                <div class="author">
+                    <div style="display: flex; align-items: center;">
+                        <avatar :user="topic.user_id" :size="60" class="avatar"></avatar>
+                        <div style="margin-left: 6px; line-height: 1.3em;">
+                            <user-link :user="topic.user_id" />
+                            <div>{{state.misc.USER_GROUP_TXT[topic.user_id.group]}}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="other">
-                <div class="txt3">
-                    <div>发布时间：<ic-time :timestamp="topic.time" /></div>
-                    <div>最后修改：<ic-time :timestamp="topic.edit_time" /></div>
-                    <div>阅读次数：<span>{{topic.s.click_count}}</span></div>
-                </div>
+                <div class="other">
+                    <div class="txt3">
+                        <div>发布时间：<ic-time :timestamp="topic.time" /></div>
+                        <div>最后修改：<ic-time :timestamp="topic.edit_time" /></div>
+                        <div>阅读次数：<span>{{topic.s.click_count}}</span></div>
+                    </div>
 
-                <div v-if="false">
-                    <a  class="furbtn furbtn-s furbtn-blue"><i class="fa fa-star-o"></i> 关注作者</a>
-                    <a class="furbtn furbtn-s furbtn-green"><i class="fa fa-heart-o"></i> 收藏主题</a>
-                    <a class="furbtn furbtn-s furbtn-green" fav="1"><i class="fa fa-heart"></i> 取消收藏</a>
-                    <a class="furbtn furbtn-s furbtn-blue" follow="1"><i class="fa fa-star"></i> 取消关注</a>
-                </div>
+                    <div v-if="false">
+                        <a  class="furbtn furbtn-s furbtn-blue"><i class="fa fa-star-o"></i> 关注作者</a>
+                        <a class="furbtn furbtn-s furbtn-green"><i class="fa fa-heart-o"></i> 收藏主题</a>
+                        <a class="furbtn furbtn-s furbtn-green" fav="1"><i class="fa fa-heart"></i> 取消收藏</a>
+                        <a class="furbtn furbtn-s furbtn-blue" follow="1"><i class="fa fa-star"></i> 取消关注</a>
+                    </div>
 
-                <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
-                <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
-                    <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
-                    <p>历史编辑次数 {{topic.edit_count}} 次</p>
-                </div>
-                <div class="topic-manage" v-if="isAdmin">
-                    <i class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
+                    <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
+                    <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
+                        <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
+                        <p>历史编辑次数 {{topic.edit_count}} 次</p>
+                    </div>
+                    <div class="topic-manage" v-if="isAdmin">
+                        <i class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,14 +118,14 @@
 }
 
 .topic-box > .main {
-    flex: 17 0 0%;
+    flex: 19 0 0%;
 }
 
-.info {
+.info > .box {
     padding: 0 20px;
 }
 
-.info > .other {
+.info > .box > .other {
     padding-top: 30px;
 }
 
@@ -145,7 +146,7 @@
 }
 
 .topic-box > .info {
-    flex: 6 0 0%;
+    flex: 5 0 0%;
 }
 </style>
 

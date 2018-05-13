@@ -24,7 +24,7 @@
         <div class="topic-list" v-if="topics.items.length">
             <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                 <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                    <div class="title">
+                    <div class="title" style="flex: 15 0 0%">
                         <h2>
                             <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                 <span>{{i.title}}</span>
@@ -51,7 +51,7 @@
                             <i v-if="i.sticky_weight" class="mdi-icarus icon-pin" title="置顶" />
                         </div>
                     </div>
-                    <div class="detail ic-xs-hidden" style="flex: 5 0 0%">
+                    <div class="detail ic-xs-hidden" style="flex: 4 0 0%">
                         <div class="count-block">
                             <div class="count">
                                 <p class="num">{{i.s.click_count}}</p>
@@ -70,11 +70,13 @@
         <div class="topic-list" v-else>还未有人发言 ...</div>
 
         <div class="board-info ic-xs-hidden">
-            <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
-            <div class="board-note fade-transition" style="margin-top:5px">
-                <p><strong>版块公告</strong></p>
-                <div v-if="board.desc" v-html="marked(board.desc || '')"></div>
-                <div v-else>版主很懒，什么也没有写</div>
+            <div class="box" style="padding-left: 0px">
+                <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
+                <div class="board-note fade-transition" style="margin-top:5px">
+                    <p><strong>版块公告</strong></p>
+                    <div v-if="board.desc" v-html="marked(board.desc || '')"></div>
+                    <div v-else>版主很懒，什么也没有写</div>
+                </div>
             </div>
         </div>
     </div>
@@ -133,12 +135,12 @@ aside > .brief {
 }
 
 .board-page-box > .topic-list {
-    flex: 18 0 0;
+    /* grow shrink basis*/
+    flex: 19 0 0%;
 }
 
 .board-page-box > .board-info {
-    flex: 7 0 0;
-    padding-left: 20px;
+    flex: 5 0 0%;
 }
 
 .topic-new-btn {
