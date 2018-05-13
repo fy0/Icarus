@@ -27,7 +27,7 @@
 
     <!-- 主题 -->
     <template v-else-if="type === state.misc.POST_TYPES.TOPIC">
-        <template v-if="showType">主题</template>
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">主题</span>
         <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="item.title">
             <template v-if="!useSlot">
                 <template>{{item.title || '错误的值'}}</template>
@@ -40,6 +40,9 @@
 </template>
 
 <style scoped>
+.bold {
+    font-weight: bold;
+}
 </style>
 
 <script>
@@ -55,6 +58,9 @@ export default {
         item: {},
         type: null,
         showType: {
+            default: false
+        },
+        typeBold: {
             default: false
         },
         goto: {

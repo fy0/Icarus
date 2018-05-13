@@ -18,6 +18,7 @@ import AdminForumBoard from '@/components/admin/forum/board.vue'
 import AdminForumTopic from '@/components/admin/forum/topic.vue'
 import AdminCommonUser from '@/components/admin/common/user.vue'
 import AdminCommonComment from '@/components/admin/common/comment.vue'
+import AdminCommonLogAdmin from '@/components/admin/common/log_admin.vue'
 
 import About from '@/components/about.vue'
 
@@ -127,6 +128,12 @@ export default new Router({
             path: '/admin/common/comment/:page(\\d+)?/:name(.+)?',
             name: 'admin_common_comment',
             component: AdminCommonComment
+        },
+        // 管理 - 综合 - 评论
+        {
+            path: '/admin/common/log/admin/:page(\\d+)?/:name(.+)?',
+            name: 'admin_common_log_admin',
+            component: AdminCommonLogAdmin
         },
 
         // 关于

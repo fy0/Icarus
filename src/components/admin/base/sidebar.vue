@@ -22,6 +22,7 @@
         <ul>
             <router-link tag="li" :to="{ name: 'admin_common_user' }" ><a>用户管理</a></router-link>
             <router-link tag="li" :to="{ name: 'admin_common_comment' }" ><a>评论管理</a></router-link>
+            <router-link tag="li" :to="{ name: 'admin_common_log_admin' }" ><a>管理日志</a></router-link>
         </ul>
     </div>
 
