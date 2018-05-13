@@ -28,6 +28,7 @@ class TestBaseView(BaseView):
     async def info(self):
         self.finish(RETCODE.SUCCESS, {
             'POST_TYPES': POST_TYPES.to_dict(),
+            'POST_TYPES_TXT': POST_TYPES.txt,
             'POST_STATE': POST_STATE.to_dict(),
             'POST_STATE_TXT': POST_STATE.txt,
             'POST_VISIBLE': POST_VISIBLE.to_dict(),

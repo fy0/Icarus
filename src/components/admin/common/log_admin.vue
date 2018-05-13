@@ -96,19 +96,38 @@ export default {
             }, params.page, null, 'admin')
 
             if (ret.code === api.retcode.SUCCESS) {
+                let userIds = []
+                let boardIds = []
                 let topicIds = []
+                let commentIds = []
 
                 for (let i of ret.data.items) {
-                    if (i.related_type === state.misc.POST_TYPES.TOPIC) {
+                    if (i.related_type === state.misc.POST_TYPES.USER) {
+                        userIds.push(i.related_id)
+                    } else if (i.related_type === state.misc.POST_TYPES.BOARD) {
+                        boardIds.push(i.related_id)
+                    } else if (i.related_type === state.misc.POST_TYPES.TOPIC) {
                         topicIds.push(i.related_id)
+                    } else if (i.related_type === state.misc.POST_TYPES.COMMENT) {
+                        commentIds.push(i.related_id)
                     }
                 }
 
                 this.postsOfComments = {}
-                let retTopic = await api.topic.list({'id.in': JSON.stringify(topicIds)}, 1)
-                for (let i of retTopic.data.items) {
-                    this.postsOfComments[i.id] = i
+
+                let doRequest = async (name, ids) => {
+                    if (ids.length) {
+                        let retPost = await api[name].list({'id.in': JSON.stringify(ids)}, 1, null, 'admin')
+                        for (let i of retPost.data.items) {
+                            this.postsOfComments[i.id] = i
+                        }
+                    }
                 }
+
+                await doRequest('user', userIds)
+                await doRequest('board', boardIds)
+                await doRequest('topic', topicIds)
+                await doRequest('comment', commentIds)
 
                 this.page = ret.data // 提示：注意次序，渲染page依赖上层内容
             }

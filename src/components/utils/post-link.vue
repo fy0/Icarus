@@ -3,7 +3,7 @@
 <span v-if="item">
     <!-- 用户 -->
     <template v-if="type === state.misc.POST_TYPES.USER">
-        <template v-if="showType">用户</template>
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="item.nickname">
             <template v-if="!useSlot">
                 <template>{{item.nickname || '错误的值'}}</template>
@@ -15,7 +15,7 @@
 
     <!-- 板块 -->
     <template v-else-if="type === state.misc.POST_TYPES.BOARD">
-        <template v-if="showType">板块</template>
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="item.name">
             <template v-if="!useSlot">
                 <template>{{item.name || '错误的值'}}</template>
@@ -27,7 +27,7 @@
 
     <!-- 主题 -->
     <template v-else-if="type === state.misc.POST_TYPES.TOPIC">
-        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">主题</span>
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="item.title">
             <template v-if="!useSlot">
                 <template>{{item.title || '错误的值'}}</template>

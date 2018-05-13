@@ -39,6 +39,8 @@ class POST_TYPES(StateObject):
     WIKI    = 40
     COMMENT = 50
 
+    txt = {NONE: "???", USER:"用户", BOARD: '板块', TOPIC: '主题', WIKI: '百科', COMMENT: '评论'}
+
     @classmethod
     def get_post(cls, related_type, related_id):
         from model.user import User
