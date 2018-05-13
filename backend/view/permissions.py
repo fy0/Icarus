@@ -77,6 +77,17 @@ visitor = Ability(None, {
 
         'follow_count': (A.READ,),
     },
+    'manage_log': {
+        'id': (A.READ,),
+        'user_id': (A.READ,),
+        'role': (A.READ,),
+        'time': (A.READ,),
+        'related_type': (A.READ,),
+        'related_id': (A.READ, A.QUERY),
+        'operation': (A.READ,),
+        'value': (A.READ,),
+        'note': (A.READ,)
+    }
 })
 
 normal_user = Ability('user', {

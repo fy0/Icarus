@@ -31,6 +31,11 @@
                     <p>登陆后可见正文</p>
                 </div>
                 <div class="content" v-else v-html="marked(topic.content || '')"></div>
+                <div v-if="mlog && mlog.items" class="mlog-area">
+                    <div v-for="i in mlog.items" :key="i.id">
+                        <user-link :user="i.user_id" /> 对此主题进行了{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}操作
+                    </div>
+                </div>
                 <p class="ic-hr"></p>
                 <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
@@ -158,7 +163,8 @@ export default {
             commentPage: 1,
             loading: true,
             POST_TYPES: state.misc.POST_TYPES,
-            topic: { board_id: {id: 1} }
+            topic: { board_id: {id: 1} },
+            mlog: null
         }
     },
     computed: {
@@ -178,6 +184,11 @@ export default {
             }, state.user ? 'user' : null)
 
             if (ret.code === api.retcode.SUCCESS) {
+                let mlog = await api.logManage.list({related_id: ret.data.id, loadfk: {'user_id': null}})
+                if (mlog.code === api.retcode.SUCCESS) {
+                    this.mlog = mlog.data
+                }
+
                 this.topic = ret.data
                 let pageNumber = this.$route.query.page
                 if (pageNumber) this.commentPage = parseInt(pageNumber)

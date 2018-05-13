@@ -4,6 +4,7 @@ from model import db, BaseModel
 from model.board import Board
 from model.follow import Follow
 from model.comment import Comment
+from model.log_manage import ManageLog
 from model.notif import Notification, UserNotifRecord
 from model.statistic import Statistic, Statistic24h
 from model.test import Test
@@ -59,6 +60,7 @@ except peewee.ProgrammingError:
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
                   Notification, UserNotifRecord,
+                  ManageLog,
                   Statistic, Statistic24h], safe=True)
 
 

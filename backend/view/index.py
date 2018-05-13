@@ -2,7 +2,7 @@ import config
 from aiohttp import web
 
 from app import app
-from model.logs import MANAGE_OPERATION
+from model.log_manage import MANAGE_OPERATION
 from model.notif import NOTIF_TYPE
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from model.user import USER_GROUP

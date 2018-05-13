@@ -2,6 +2,7 @@ from typing import Dict, List
 import time
 import config
 from model._post import POST_TYPES
+from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click, statistic_move_topic
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
@@ -73,10 +74,36 @@ class TopicView(UserMixin, PeeweeView):
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
-            if old_record['board_id'] != record['board_id']:
+            if 'content' in values or 'title' in values:
+                # 管理日志：编辑
+                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'],
+                              MOP.TOPIC_EDIT, None)
+                Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
+
+            # 管理日志：改变状态
+            ManageLog.add_by_post_change(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.TOPIC,
+                                         values, old_record, record)
+
+            # 管理日志：改变可见度
+            ManageLog.add_by_post_change(self, 'visible', MOP.POST_VISIBLE_CHANGE, POST_TYPES.TOPIC,
+                                         values, old_record, record)
+
+            # 管理日志：移动板块
+            if ManageLog.add_by_post_change(self, 'board_id', MOP.TOPIC_BOARD_MOVE, POST_TYPES.TOPIC,
+                                         values, old_record, record):
                 statistic_move_topic(old_record['board_id'], record['board_id'], record['id'])
 
-            Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
+            # 管理日志：设置精华
+            ManageLog.add_by_post_change(self, 'awesome', MOP.TOPIC_AWESOME_CHANGE, POST_TYPES.TOPIC,
+                                         values, old_record, record)
+
+            # 管理日志：置顶权重
+            ManageLog.add_by_post_change(self, 'sticky_weight', MOP.TOPIC_STICKY_WEIGHT_CHANGE, POST_TYPES.TOPIC,
+                                         values, old_record, record)
+
+            # 管理日志：修改权重
+            ManageLog.add_by_post_change(self, 'weight', MOP.TOPIC_WEIGHT_CHANGE, POST_TYPES.TOPIC,
+                                         values, old_record, record)
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         form = TopicEditForm(**raw_post)

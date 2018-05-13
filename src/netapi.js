@@ -178,5 +178,6 @@ export default {
     board: new SlimViewRequest('board'),
     topic: new SlimViewRequest('topic'),
     comment: new SlimViewRequest('comment'),
-    notif: new NotifViewRequest('notif')
+    notif: new NotifViewRequest('notif'),
+    logManage: new NotifViewRequest('log/manage')
 }
