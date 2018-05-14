@@ -82,9 +82,7 @@
     </div>
     <dialog-topic-manage />
 </div>
-<div class="ic-container" v-else>
-    什么也没有
-</div>
+<page-not-found v-else />
 </template>
 
 <style scoped>
@@ -207,7 +205,7 @@ export default {
             let ret = await api.board.get({id: params.id, 'loadfk': {'parent_id': null}})
 
             if (ret.code) {
-                $.message_by_code(ret.code)
+                // $.message_by_code(ret.code)
                 this.loading = false
                 return
             }

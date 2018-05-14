@@ -59,7 +59,7 @@ class BoardView(PeeweeView, UserMixin):
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
-            # 注：此处记录不考虑可写不可读的情况
+            # 注：此处记录不考虑可写不可读的情况。代码比较丑陋，后面改吧
             o = old_record.to_dict()
             n = record.to_dict()
             to_remove = set()
@@ -73,7 +73,6 @@ class BoardView(PeeweeView, UserMixin):
                 del o[k]
                 del n[k]
 
-            print(o, n)
             # 管理日志
             ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
                           MOP.BOARD_CHANGE, [o, n])

@@ -21,6 +21,7 @@ import AdminCommonComment from '@/components/admin/common/comment.vue'
 import AdminCommonLogAdmin from '@/components/admin/common/log_admin.vue'
 
 import About from '@/components/about.vue'
+import NotFoundComponent from '@/components/404.vue'
 
 Vue.use(Router)
 
@@ -134,6 +135,11 @@ export default new Router({
             path: '/admin/common/log/admin/:page(\\d+)?/:name(.+)?',
             name: 'admin_common_log_admin',
             component: AdminCommonLogAdmin
+        },
+
+        {
+            path: '*',
+            component: NotFoundComponent
         },
 
         // 关于

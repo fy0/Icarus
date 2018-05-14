@@ -99,6 +99,7 @@ import api from './netapi.js'
 import ws from './ws.js'
 // import config from './config.js'
 
+import PageNotFound from './components/404.vue'
 import Paginator from './components/utils/paginator.vue'
 import Loading from './components/utils/loading.vue'
 import Avatar from './components/utils/avatar.vue'
@@ -110,6 +111,7 @@ import PostLink from './components/utils/post-link.vue'
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
 import DialogUserManage from './components/utils/dialogs/user-manage.vue'
 
+Vue.component('page-not-found', PageNotFound)
 Vue.component('paginator', Paginator)
 Vue.component('loading', Loading)
 Vue.component('avatar', Avatar)
@@ -194,12 +196,14 @@ router.beforeEach(async function (to, from, next) {
         }
     }
 
-    if (to.name.startsWith('admin_')) {
-        if (!(state.user && state.misc && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
-            state.loading = 0
-            nprogress.done()
-            $.message_error('当前账户没有权限访问此页面')
-            toUrl = '/'
+    if (to.name) {
+        if (to.name.startsWith('admin_')) {
+            if (!(state.user && state.misc && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
+                state.loading = 0
+                nprogress.done()
+                $.message_error('当前账户没有权限访问此页面')
+                toUrl = '/'
+            }
         }
     }
 
