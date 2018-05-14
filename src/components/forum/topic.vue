@@ -80,6 +80,7 @@
 
     <dialog-topic-manage />
 </div>
+<page-not-found v-else />
 </template>
 
 <style>
@@ -198,7 +199,9 @@ export default {
                 let pageNumber = this.$route.query.page
                 if (pageNumber) this.commentPage = parseInt(pageNumber)
             } else {
-                $.message_by_code(ret.code)
+                if (ret.code !== api.retcode.NOT_FOUND) {
+                    $.message_by_code(ret.code)
+                }
             }
         }
     },
