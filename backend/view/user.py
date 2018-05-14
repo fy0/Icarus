@@ -2,6 +2,8 @@ import re
 import time
 import config
 from typing import Dict, Type, List
+
+from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.notif import UserNotifRecord
 from model._post import POST_TYPES, POST_STATE
 from model.statistic import statistic_new
@@ -151,6 +153,16 @@ class UserView(UserMixin, PeeweeView):
 
         if 'key' in raw_post:
             values.update(User.gen_key())
+
+    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
+        for old_record, record in zip(old_records, records):
+            # 管理日志：重置访问令牌
+            ManageLog.add_by_post_change(self, 'key', MOP.USER_KEY_RESET, POST_TYPES.USER,
+                                         values, old_record, record, value=None)
+
+            # 管理日志：重置密码
+            ManageLog.add_by_post_change(self, 'password', MOP.USER_PASSWORD_CHANGE, POST_TYPES.USER,
+                                         values, old_record, record, value=None)
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]

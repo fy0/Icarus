@@ -13,36 +13,43 @@ class MANAGE_OPERATION(StateObject):
     POST_STATE_CHANGE = 0  # 改变状态：例如删除等等
     POST_VISIBLE_CHANGE = 1
 
-    TOPIC_CONTENT_CHANGE = 20  # 修改主题
-    TOPIC_TITLE_CHANGE = 21  # 修改标题
-    TOPIC_BOARD_MOVE = 22  # 移动主题到其他板块
-    TOPIC_AWESOME_CHANGE = 23
-    TOPIC_STICKY_WEIGHT_CHANGE = 25
-    TOPIC_WEIGHT_CHANGE = 26
+    USER_PASSWORD_CHANGE = 100  # 设置用户密码（未来再做区分，现在仅有这个）
+    USER_PASSWORD_RESET = 101  # 重置用户密码
+    USER_KEY_RESET = 102
+    USER_GROUP_CHANGE = 103
+    USER_CREDIT_CHANGE = 104
+    USER_REPUTATION_CHANGE = 105
 
-    USER_PASSWORD_CHANGE = 40  # 设置用户密码（未来再做区分，现在进有这个）
-    USER_PASSWORD_RESET = 41  # 重置用户密码
-    USER_KEY_RESET = 42
-    USER_GROUP_CHANGE = 43
-    USER_CREDIT_CHANGE = 44
-    USER_REPUTATION_CHANGE = 45
+    BOARD_NEW = 200
+    BOARD_CHANGE = 201
+
+    TOPIC_TITLE_CHANGE = 300  # 修改标题
+    TOPIC_CONTENT_CHANGE = 301  # 修改主题
+    TOPIC_BOARD_MOVE = 302  # 移动主题到其他板块
+    TOPIC_AWESOME_CHANGE = 303
+    TOPIC_STICKY_WEIGHT_CHANGE = 305
+    TOPIC_WEIGHT_CHANGE = 306
 
     txt = {
         POST_STATE_CHANGE: '改变状态',
         POST_VISIBLE_CHANGE: '修改可见度',
 
-        TOPIC_BOARD_MOVE: '移动',
-        TOPIC_CONTENT_CHANGE: '编辑内容',
-        TOPIC_TITLE_CHANGE: '修改标题',
-        TOPIC_AWESOME_CHANGE: '设置优秀文章',
-        TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
-        TOPIC_WEIGHT_CHANGE: '修改板块权重',
-
-        USER_PASSWORD_CHANGE: '重置用户密码',
+        USER_PASSWORD_CHANGE: '重设用户密码',
+        USER_PASSWORD_RESET: '重置用户密码',
         USER_KEY_RESET: "重置用户访问令牌",
         USER_GROUP_CHANGE: '修改用户组',
         USER_CREDIT_CHANGE: '积分变更',
         USER_REPUTATION_CHANGE: "声望变更",
+
+        BOARD_NEW: '新建板块',
+        BOARD_CHANGE: '修改板块信息',
+
+        TOPIC_TITLE_CHANGE: '修改标题',
+        TOPIC_CONTENT_CHANGE: '编辑内容',
+        TOPIC_BOARD_MOVE: '移动',
+        TOPIC_AWESOME_CHANGE: '设置优秀文章',
+        TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
+        TOPIC_WEIGHT_CHANGE: '修改板块权重',
     }
 
 
@@ -72,10 +79,13 @@ class ManageLog(BaseModel):
         )
 
     @classmethod
-    def add_by_post_change(cls, view, key, operation, related_type, values, old_record, record, note=None):
+    def add_by_post_change(cls, view, key, operation, related_type, values, old_record, record, note=None,
+                           *, value=NotImplemented):
         if key in values:
+            if value is NotImplemented:
+                value = [old_record[key], record[key]]
             return cls.new(view.current_user, view.current_role, related_type, record['id'],
-                    operation, [old_record[key], record[key]], note=note)
+                    operation, value, note=note)
 
     class Meta:
         db_table = 'manage_log'
