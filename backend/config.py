@@ -61,6 +61,13 @@ SESSION_ID_GENERATOR = CustomID
 POST_ID_GENERATOR = AutoGenerator  # 代表SQL自动生成
 LONG_ID_GENERATOR = CustomID
 
+EMAIL_SENDER = 'Icarus 社区程序'
+EMAIL_HOST = 'smtp.xxx.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True
+EMAIL_USERNAME = 'user'
+EMAIL_PASSWORD = 'pasword'
+
 try:
     from private import *
 except:
