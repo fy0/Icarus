@@ -7,6 +7,9 @@ from slim.utils import CustomID
 PROJECT_NAME = 'Icarus'
 VERSION = '1.0.0'
 
+SITE_NAME = 'Icarus'  # 站点名称
+SITE_URL = 'https://localhost:8080' # 站点地址
+
 HOST = '0.0.0.0'
 PORT = 9999
 DEBUG = logging.DEBUG

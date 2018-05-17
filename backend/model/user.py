@@ -96,7 +96,7 @@ class User(PostModel, BaseUser):
 
     def get_activation_code(self):
         # 不考虑同一秒生成的salt碰撞的可能性
-        raw = self.salt + self.time.to_bytes(8, 'little')  # len == 16 + 8 == 24
+        raw = self.salt.tobytes() + self.time.to_bytes(8, 'little')  # len == 16 + 8 == 24
         return str(binascii.hexlify(raw), 'utf-8')
 
     @classmethod
