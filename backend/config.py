@@ -8,7 +8,15 @@ PROJECT_NAME = 'Icarus'
 VERSION = '1.0.0'
 
 SITE_NAME = 'Icarus'  # 站点名称
-SITE_URL = 'https://localhost:8080' # 站点地址
+SITE_URL = 'http://localhost:8080'  # 站点地址
+EMAIL_ACTIVATION_ENABLE = False
+
+EMAIL_SENDER = 'Icarus 社区程序'
+EMAIL_HOST = 'smtp.xxx.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True
+EMAIL_USERNAME = 'user'
+EMAIL_PASSWORD = 'pasword'
 
 HOST = '0.0.0.0'
 PORT = 9999
@@ -63,13 +71,6 @@ SESSION_ID_GENERATOR = CustomID
 # 被数据库所使用的两个ID，短ID与长ID
 POST_ID_GENERATOR = AutoGenerator  # 代表SQL自动生成
 LONG_ID_GENERATOR = CustomID
-
-EMAIL_SENDER = 'Icarus 社区程序'
-EMAIL_HOST = 'smtp.xxx.com'
-EMAIL_PORT = 465
-EMAIL_USE_TLS = True
-EMAIL_USERNAME = 'user'
-EMAIL_PASSWORD = 'pasword'
 
 try:
     from private import *

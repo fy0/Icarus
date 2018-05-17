@@ -3,6 +3,7 @@ import time
 import config
 from typing import Dict, Type, List
 
+from lib import mail
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.notif import UserNotifRecord
 from model._post import POST_TYPES, POST_STATE
@@ -14,6 +15,7 @@ from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin
+from slim.utils.jsdict import JsDict
 from view import route, ValidateForm
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, DataRecord
@@ -102,6 +104,14 @@ class UserView(UserMixin, PeeweeView):
         permission.add(admin)
 
     @route.interface('GET')
+    async def activation(self):
+        user = User.check_active(self.params['uid'], self.params['code'])
+        if user:
+            self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
+        else:
+            self.finish(RETCODE.FAILED)
+
+    @route.interface('GET')
     async def get_userid(self):
         if self.current_user:
             self.finish(RETCODE.SUCCESS, {'id': to_hex(self.current_user.id)})
@@ -188,7 +198,10 @@ class UserView(UserMixin, PeeweeView):
 
         if 'group' not in values:
             # 如果无权限，那此时即使带着 group 参数也被刷掉了，直接设为 normal
-            values['group'] = USER_GROUP.NORMAL
+            if config.EMAIL_ACTIVATION_ENABLE:
+                values['group'] = USER_GROUP.INACTIVE
+            else:
+                values['group'] = USER_GROUP.NORMAL
 
         if 'state' not in values:
             values['state'] = POST_STATE.NORMAL
@@ -197,12 +210,16 @@ class UserView(UserMixin, PeeweeView):
         values['time'] = int(time.time())
         self._key = values['key']
 
-    def after_insert(self, raw_post: Dict, values_lst: SQLValuesToWrite, records: List[DataRecord]):
+    async def after_insert(self, raw_post: Dict, values_lst: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
         if record['number'] == 1:
             u = User.get(User.id == record['id'])
             u.group = USER_GROUP.ADMIN
             u.save()
+
+        # 发送注册邮件
+        if config.EMAIL_ACTIVATION_ENABLE:
+            await mail.send_register_activation(JsDict(record.to_dict()))
 
         # 添加统计记录
         statistic_new(POST_TYPES.USER, record['id'])

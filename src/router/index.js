@@ -6,6 +6,7 @@ import AccountSignup from '@/components/account/signup.vue'
 import AccountUserPage from '@/components/account/userpage.vue'
 import AccountNotif from '@/components/account/notif.vue'
 import AccountSetting from '@/components/account/setting.vue'
+import AccountActivation from '@/components/account/activation.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
@@ -39,6 +40,12 @@ export default new Router({
             path: '/account/signup',
             name: 'account_signup',
             component: AccountSignup
+        },
+        // 用户 - 激活
+        {
+            path: '/account/activation',
+            name: 'account_activation',
+            component: AccountActivation
         },
 
         // 用户 - 个人主页

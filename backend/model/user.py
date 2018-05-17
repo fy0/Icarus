@@ -100,8 +100,13 @@ class User(PostModel, BaseUser):
         return str(binascii.hexlify(raw), 'utf-8')
 
     @classmethod
-    def check_active(cls, activation_code):
-        if activation_code == 48:
+    def check_active(cls, uid, activation_code):
+        try:
+            uid = binascii.unhexlify(uid)
+        except:
+            return
+
+        if len(activation_code) == 48:
             # 时间为最近3天
             ts = int.from_bytes(binascii.unhexlify(activation_code[32:]), 'little')
             if time.time() - ts < 3 * 24 * 60 * 60:

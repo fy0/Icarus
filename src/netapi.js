@@ -129,6 +129,10 @@ class UserViewRequest extends SlimViewRequest {
         return ret
     }
 
+    async activation (uid, code) {
+        return await nget(`${this.urlPrefix}/activation`, {uid, code})
+    }
+
     async getUserId () {
         return await nget(`${this.urlPrefix}/get_userid`, null)
     }
