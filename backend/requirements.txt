@@ -5,3 +5,5 @@ asyncpg
 wtforms
 msgpack
 psycopg2-binary
+aiosmtplib
+aioauth-client

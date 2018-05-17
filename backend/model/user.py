@@ -1,6 +1,9 @@
 ﻿import hmac
 import os
+import struct
 import time
+
+import binascii
 from peewee import *
 import config
 from model._post import PostModel
@@ -90,6 +93,27 @@ class User(PostModel, BaseUser):
             return cls.get(cls.key == key)
         except DoesNotExist:
             return None
+
+    def get_activation_code(self):
+        # 不考虑同一秒生成的salt碰撞的可能性
+        raw = self.salt + self.time.to_bytes(8, 'little')  # len == 16 + 8 == 24
+        return str(binascii.hexlify(raw), 'utf-8')
+
+    @classmethod
+    def check_active(cls, activation_code):
+        if activation_code == 48:
+            # 时间为最近3天
+            ts = int.from_bytes(binascii.unhexlify(activation_code[32:]), 'little')
+            if time.time() - ts < 3 * 24 * 60 * 60:
+                try:
+                    u = cls.get(cls.time == ts,
+                                cls.group == USER_GROUP.INACTIVE,
+                                cls.salt == binascii.unhexlify(activation_code[:32]))
+                    u.group = USER_GROUP.NORMAL
+                    u.save()
+                    return u
+                except cls.DoesNotExist:
+                    pass
 
     def set_password(self, new_password):
         info = self.gen_password_and_salt(new_password)
