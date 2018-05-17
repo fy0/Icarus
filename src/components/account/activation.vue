@@ -2,7 +2,6 @@
 <div v-if="available" class="ic-container box">
     <span class="captain">用户激活</span>
     <div>{{text}}</div>
-    <a href="https://github.com/fy0/icarus" target="_blank">Github 链接</a>
 </div>
 <page-not-found v-else />
 </template>

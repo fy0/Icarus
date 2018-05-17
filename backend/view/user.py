@@ -219,7 +219,7 @@ class UserView(UserMixin, PeeweeView):
 
         # 发送注册邮件
         if config.EMAIL_ACTIVATION_ENABLE:
-            await mail.send_register_activation(JsDict(record.to_dict()))
+            await mail.send_register_activation(record.val)
 
         # 添加统计记录
         statistic_new(POST_TYPES.USER, record['id'])
