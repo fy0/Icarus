@@ -1,17 +1,23 @@
 <template>
 <loading v-if="loading"/>
 <div v-else-if="board" class="ic-container">
-    <mu-paper class="board-title" :zDepth="1" :style="lineStyle(board)">
-        <h3 class="name">{{ board.name }}</h3>
-        <div v-if="board.parent_id">
-            <span>父板块:</span>
-            <router-link :key="board.parent_id.id" :to="{ name: 'forum_board', params: {id: board.parent_id.id} }" class="parent-link">{{board.parent_id.name}}</router-link>
+    <mu-paper class="board-header" :zDepth="1" :style="lineStyle(board)">
+        <div class="left">
+            <h3 class="name">{{ board.name }}</h3>
+            <div v-if="board.parent_id">
+                <span>父板块:</span>
+                <router-link :key="board.parent_id.id" :to="{ name: 'forum_board', params: {id: board.parent_id.id} }" class="parent-link">{{board.parent_id.name}}</router-link>
+            </div>
+            <div v-if="subBoards">
+                <span>子板块:</span>
+                <router-link class="sub-board-item" v-for="j in subBoards" :key="j.id" :to="{ name: 'forum_board', params: {id: j.id} }">{{j.name}}</router-link>
+            </div>
+            <div class="brief">{{ board.brief }}</div>
         </div>
-        <div v-if="subBoards">
-            <span>子板块:</span>
-            <router-link class="sub-board-item" v-for="j in subBoards" :key="j.id" :to="{ name: 'forum_board', params: {id: j.id} }">{{j.name}}</router-link>
+
+        <div class="right">
+            <router-link class="topic-new-btn" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
         </div>
-        <div class="brief">{{ board.brief }}</div>
     </mu-paper>
     <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
     <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
@@ -71,7 +77,6 @@
 
         <div class="board-info ic-xs-hidden">
             <div class="box" style="padding-left: 0px">
-                <router-link class="topic-new-btn fade-transition" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
                 <div class="board-note fade-transition" style="margin-top:5px">
                     <p><strong>版块公告</strong></p>
                     <div v-if="board.desc" v-html="marked(board.desc || '')"></div>
@@ -106,6 +111,13 @@
     justify-content: center;
 }
 
+.board-header > .right {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .xs-box {
     padding-top: 15px;
 }
@@ -119,11 +131,13 @@ aside > .brief {
     font-size: 0.9em;
 }
 
-.board-title {
+.board-header {
     background: #1f8dd6;
     padding: 1em 1em;
     border-radius: 3px;
     color: #fff;
+    display: flex;
+    justify-content: space-between;
 }
 
 .board-page-box {
@@ -143,10 +157,10 @@ aside > .brief {
 
 .topic-new-btn {
     border: 1px solid #eee;
-    color: #000;
-    padding:1em 1em;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
     text-align: center;
-    display: block;
 }
 
 .topic-new-btn:hover {
@@ -154,7 +168,6 @@ aside > .brief {
 }
 
 .board-note {
-    border: 1px solid #eee;
     padding: 1em 1em;
     font-size: 14px;
 }

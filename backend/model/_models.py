@@ -30,8 +30,8 @@ def reset():
     DROP TABLE IF EXISTS "wiki_item";
     DROP TABLE IF EXISTS "wiki_article";
 
-    DROP SEQUENCE IF EXISTS id_gen_seq;
-    DROP SEQUENCE IF EXISTS user_count_seq;
+    DROP SEQUENCE IF EXISTS "id_gen_seq";
+    DROP SEQUENCE IF EXISTS "user_count_seq";
     """)
 
 
