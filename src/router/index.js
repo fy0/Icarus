@@ -8,6 +8,7 @@ import AccountNotif from '@/components/account/notif.vue'
 import AccountSetting from '@/components/account/setting.vue'
 import AccountActivation from '@/components/account/activation.vue'
 import AccountPasswordReset from '@/components/account/password_reset.vue'
+import AccountPasswordResetRequest from '@/components/account/password_reset_req.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
@@ -48,7 +49,13 @@ export default new Router({
             name: 'account_activation',
             component: AccountActivation
         },
-        // 用户 - 激活
+        // 用户 - 申请重置密码
+        {
+            path: '/account/lost_password',
+            name: 'account_password_reset_request',
+            component: AccountPasswordResetRequest
+        },
+        // 用户 - 重置密码
         {
             path: '/account/password_reset',
             name: 'account_password_reset',

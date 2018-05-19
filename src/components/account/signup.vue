@@ -140,7 +140,7 @@ export default {
             if (!this.info.agreeLicense) {
                 return
             }
-            if (this.checkPassword && this.checkPassword2 && this.checkEmail) {
+            if (this.checkPassword && this.checkPassword2 && this.checkEmail && this.checkNickname) {
                 let ret = await api.user.new(this.info)
                 if (ret.code !== api.retcode.SUCCESS) {
                     this.formErrors = ret.data

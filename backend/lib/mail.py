@@ -17,7 +17,8 @@ async def try_reconnect():
 
     try:
         await smtp.helo()
-    except aiosmtplib.SMTPServerDisconnected:
+    except (aiosmtplib.SMTPServerDisconnected, AssertionError):
+        # AssertionError: Client not connected 另外还遇到了这个异常
         # smtp.is_connected 本来有个这个，但经测试并不管用，只在触发异常后被重置，而不能主动探测。
         await smtp.connect()
         await smtp.login(config.EMAIL_USERNAME, config.EMAIL_PASSWORD)
@@ -82,4 +83,4 @@ async def send_password_reset(user):
     {config.SITE_URL}<br/>
     '''
 
-    return await send(f'{user.nickname} <{user.email}>', f'[{config.SITE_NAME}] Email 地址验证', content)
+    return await send(f'{user.nickname} <{user.email}>', f'[{config.SITE_NAME}] 重置密码', content)
