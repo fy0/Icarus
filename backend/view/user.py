@@ -46,6 +46,13 @@ class ChangePasswordForm(ValidateForm):
     ])
 
 
+class PasswordForm(ValidateForm):
+    password = StringField('密码', validators=[
+        va.required(),
+        va.Length(config.PASSWORD_MIN, config.PASSWORD_MAX)
+    ])
+
+
 class SigninForm(ValidateForm):
     email = StringField('邮箱', validators=[va.required(), va.Length(3, config.EMAIL_MAX), va.Email()])
 
@@ -92,6 +99,15 @@ class SignupForm(SigninForm):
     ])
 
 
+class ResetPasswordForm(ValidateForm):
+    email = StringField('邮箱', validators=[va.required(), va.Length(3, config.EMAIL_MAX), va.Email()])
+    nickname = StringField('昵称', validators=[
+        va.required(),
+        va.Length(min(config.NICKNAME_CN_FOR_REG_MIN, config.NICKNAME_FOR_REG_MIN), config.NICKNAME_FOR_REG_MAX),
+        nickname_check
+    ])
+
+
 @route('user')
 class UserView(UserMixin, PeeweeView):
     model = User
@@ -102,6 +118,51 @@ class UserView(UserMixin, PeeweeView):
         permission.add(visitor)
         permission.add(normal_user)
         permission.add(admin)
+
+    @route.interface('POST')
+    async def request_password_reset(self):
+        """
+        申请重置密码 / 忘记密码
+        :return:
+        """
+        post = await self.post_data()
+        form = ResetPasswordForm(**post)
+        if not form.validate():
+            return self.finish(RETCODE.FAILED, form.errors)
+
+        try:
+            user = User.get(User.nickname == post['nickname'], User.email == post['email'])
+        except User.DoesNotExist:
+            user = None
+
+        if user:
+            key = user.gen_reset_key()
+            user.reset_key = key
+            user.save()
+            await mail.send_password_reset(user)
+            self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
+        else:
+            self.finish(RETCODE.FAILED)
+
+    @route.interface('POST')
+    async def validate_password_reset(self):
+        """
+        验证忘记密码
+        :return:
+        """
+        post = await self.post_data()
+        form = PasswordForm(**post)
+        if not form.validate():
+            return self.finish(RETCODE.FAILED, form.errors)
+
+        user = User.check_reset(self.params['uid'], self.params['code'])
+        if user:
+            info = User.gen_password_and_salt(post['password'])
+            user.password = info['password']
+            user.salt = info['salt']
+            self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
+        else:
+            self.finish(RETCODE.FAILED)
 
     @route.interface('GET')
     async def activation(self):

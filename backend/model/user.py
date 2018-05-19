@@ -4,6 +4,8 @@ import struct
 import time
 
 import binascii
+from typing import Union
+
 from peewee import *
 import config
 from model._post import PostModel
@@ -43,6 +45,8 @@ class User(PostModel, BaseUser):
     number = IntegerField(default=get_user_count_seq)  # 序号，第N个用户 sequence='user_count_seq'
     credit = IntegerField(default=0)  # 积分，会消费
     reputation = IntegerField(default=0)  # 声望，不会消失
+
+    reset_key = BlobField(index=True, null=True, default=None)  # 重置密码所用key
 
     class Meta:
         db_table = 'user'
@@ -95,7 +99,6 @@ class User(PostModel, BaseUser):
             return None
 
     def get_activation_code(self):
-        # 不考虑同一秒生成的salt碰撞的可能性
         raw = self.salt.tobytes() + self.time.to_bytes(8, 'little')  # len == 16 + 8 == 24
         return str(binascii.hexlify(raw), 'utf-8')
 
@@ -112,10 +115,32 @@ class User(PostModel, BaseUser):
             if time.time() - ts < 3 * 24 * 60 * 60:
                 try:
                     u = cls.get(cls.time == ts,
+                                cls.id == uid,
                                 cls.group == USER_GROUP.INACTIVE,
                                 cls.salt == binascii.unhexlify(activation_code[:32]))
                     u.group = USER_GROUP.NORMAL
                     u.save()
+                    return u
+                except cls.DoesNotExist:
+                    pass
+
+    def gen_reset_key(self):
+        raw = os.urandom(16) + self.time.to_bytes(8, 'little')  # len == 16 + 8 == 24
+        return str(binascii.hexlify(raw), 'utf-8')
+
+    @classmethod
+    def check_reset(cls, uid, code) -> Union['User', None]:
+        try: uid = binascii.unhexlify(uid)
+        except: return
+
+        if len(code) == 48:
+            # 时间为最近12小时
+            ts = int.from_bytes(binascii.unhexlify(code[32:]), 'little')
+            if time.time() - ts < 12 * 60 * 60:
+                try:
+                    u = cls.get(cls.time == ts,
+                                cls.id == uid,
+                                cls.reset_key == binascii.unhexlify(code[:32]))
                     return u
                 except cls.DoesNotExist:
                     pass

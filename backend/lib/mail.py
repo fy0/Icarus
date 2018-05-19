@@ -58,4 +58,28 @@ async def send_register_activation(user):
 {config.SITE_URL}<br/>
 '''
 
+
+async def send_password_reset(user):
+    act_code = user.reset_key
+    act_url = f'{config.SITE_URL}/account/password_reset?uid={user.id.hex()}&code={act_code}'
+
+    content = f'''重置密码<br/><br/>
+
+    您好，{user.nickname}。<br/>
+    您收到这封邮件，是由于在 {config.SITE_NAME} 进行了忘记密码操作。<br/>
+    如果您未申请密码重置，请忽略这封电子邮件，您的密码将不作任何更改。<br/>
+    <br/><br/>
+
+    点击下面的链接进行密码重置：<br/>
+    <a href="{act_url}" target="_blank">{act_url}</a><br/>
+    （如果上面不是链接形式，请将该地址手工复制到浏览器地址栏中打开以完成验证）<br/><br/>
+
+    建议您设置易于记住且安全程度较高的密码。尽量不要使用他人容易猜到的密码，而是组合使用大小写字母以及数字和/或特殊字符。<br/>
+    此链接将在12小时内有效，12小时后需要重新进行操作。<br/><br/>
+
+    向您问好，<br/>
+    {config.SITE_NAME} 管理团队<br/>
+    {config.SITE_URL}<br/>
+    '''
+
     return await send(f'{user.nickname} <{user.email}>', f'[{config.SITE_NAME}] Email 地址验证', content)
