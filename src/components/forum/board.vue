@@ -4,14 +4,6 @@
     <mu-paper class="board-header" :zDepth="1" :style="lineStyle(board)">
         <div class="left">
             <h3 class="name">{{ board.name }}</h3>
-            <div v-if="board.parent_id">
-                <span>父板块:</span>
-                <router-link :key="board.parent_id.id" :to="{ name: 'forum_board', params: {id: board.parent_id.id} }" class="parent-link">{{board.parent_id.name}}</router-link>
-            </div>
-            <div v-if="subBoards">
-                <span>子板块:</span>
-                <router-link class="sub-board-item" v-for="j in subBoards" :key="j.id" :to="{ name: 'forum_board', params: {id: j.id} }">{{j.name}}</router-link>
-            </div>
             <div class="brief">{{ board.brief }}</div>
         </div>
 
@@ -78,9 +70,30 @@
         <div class="board-info ic-xs-hidden">
             <div class="box" style="padding-left: 0px">
                 <div class="board-note fade-transition" style="margin-top:5px">
-                    <p><strong>版块公告</strong></p>
+                    <p><strong style="font-size: 16px">版块公告</strong></p>
                     <div v-if="board.desc" v-html="marked(board.desc || '')"></div>
                     <div v-else>版主很懒，什么也没有写</div>
+                </div>
+                <div class="others">
+                    <template  v-if="board.parent_id">
+                        <p><strong>上级板块</strong></p>
+                        <div class="ul-subboards">
+                            <router-link class="item" :to="{ name: 'forum_board', params: {id: board.parent_id.id} }">
+                                <div class="sign" :style="lineStyle(board.parent_id)"></div>
+                                <span class="sub-board-item">{{board.parent_id.name}}</span>
+                            </router-link>
+                        </div>
+                    </template>
+
+                    <template v-if="subBoards">
+                        <p><strong>子版块</strong></p>
+                        <div class="ul-subboards">
+                            <router-link v-for="j in subBoards" :key="j.id" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
+                                <div class="sign" :style="lineStyle(j)"></div>
+                                <span class="sub-board-item">{{j.name}}</span>
+                            </router-link>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -91,9 +104,26 @@
 </template>
 
 <style scoped>
+.ul-subboards > .item {
+    display: flex;
+    align-items: center;
+}
+
+.ul-subboards > .item > .sign {
+    width: 1em;
+    height: 1em;
+    background-color: #000;
+    border-radius: 3px;
+}
+
+.ul-subboards {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
 .sub-board-item {
-    color: #fff;
-    margin-right: 16px;
+    margin-left: 5px;
 }
 
 .sub-board-item:not(:last-child)::after {
@@ -167,8 +197,12 @@ aside > .brief {
     border-color: #bbb;
 }
 
-.board-note {
+.board-info > .box > .others {
     padding: 1em 1em;
+}
+
+.board-note {
+    padding: 0em 1em 1em 1em;
     font-size: 14px;
 }
 
