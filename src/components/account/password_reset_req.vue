@@ -24,7 +24,11 @@
         </form>
     </div>
 </div>
-<div class="ic-container box" v-else>操作已完成，请检查邮箱。</div>
+<redirecting class="ic-container box" v-else>
+    <span>操作已成功完成，请检查邮箱。</span>
+    <span>若一段时间后未收到密码重置邮件，请重新进行忘记密码操作。</span>
+    <span>若问题还未解决，请联系站点管理员。</span>
+</redirecting>
 </template>
 
 <style scoped>

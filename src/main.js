@@ -100,6 +100,7 @@ import ws from './ws.js'
 // import config from './config.js'
 
 import PageNotFound from './components/404.vue'
+import Redirecting from './components/utils/redirecting.vue'
 import Paginator from './components/utils/paginator.vue'
 import Loading from './components/utils/loading.vue'
 import Avatar from './components/utils/avatar.vue'
@@ -112,6 +113,7 @@ import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
 import DialogUserManage from './components/utils/dialogs/user-manage.vue'
 
 Vue.component('page-not-found', PageNotFound)
+Vue.component('redirecting', Redirecting)
 Vue.component('paginator', Paginator)
 Vue.component('loading', Loading)
 Vue.component('avatar', Avatar)
