@@ -61,7 +61,7 @@ async def send_register_activation(user):
 
 
 async def send_password_reset(user):
-    act_code = user.reset_key
+    act_code = user.reset_key.hex()
     act_url = f'{config.SITE_URL}/account/password_reset?uid={user.id.hex()}&code={act_code}'
 
     content = f'''重置密码<br/><br/>

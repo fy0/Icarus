@@ -103,44 +103,47 @@ class User(PostModel, BaseUser):
         return str(binascii.hexlify(raw), 'utf-8')
 
     @classmethod
-    def check_active(cls, uid, activation_code):
+    def check_active(cls, uid, code):
+        if not code: return
         try:
             uid = binascii.unhexlify(uid)
+            code = binascii.unhexlify(code)
         except:
             return
 
-        if len(activation_code) == 48:
+        if len(code) == 24:
             # 时间为最近3天
-            ts = int.from_bytes(binascii.unhexlify(activation_code[32:]), 'little')
+            ts = int.from_bytes(binascii.unhexlify(code[16:]), 'little')
             if time.time() - ts < 3 * 24 * 60 * 60:
                 try:
                     u = cls.get(cls.time == ts,
                                 cls.id == uid,
                                 cls.group == USER_GROUP.INACTIVE,
-                                cls.salt == binascii.unhexlify(activation_code[:32]))
+                                cls.salt == binascii.unhexlify(code[:16]))
                     u.group = USER_GROUP.NORMAL
                     u.save()
                     return u
                 except cls.DoesNotExist:
                     pass
 
-    def gen_reset_key(self):
-        raw = os.urandom(16) + self.time.to_bytes(8, 'little')  # len == 16 + 8 == 24
-        return str(binascii.hexlify(raw), 'utf-8')
+    @staticmethod
+    def gen_reset_key():
+        return os.urandom(16) + int(time.time()).to_bytes(8, 'little')  # len == 16 + 8 == 24
 
     @classmethod
     def check_reset(cls, uid, code) -> Union['User', None]:
-        try: uid = binascii.unhexlify(uid)
+        if not code: return
+        try:
+            uid = binascii.unhexlify(uid)
+            code = binascii.unhexlify(code)
         except: return
 
-        if len(code) == 48:
+        if len(code) == 24:
             # 时间为最近12小时
-            ts = int.from_bytes(binascii.unhexlify(code[32:]), 'little')
+            ts = int.from_bytes(code[16:], 'little')
             if time.time() - ts < 12 * 60 * 60:
                 try:
-                    u = cls.get(cls.time == ts,
-                                cls.id == uid,
-                                cls.reset_key == binascii.unhexlify(code[:32]))
+                    u = cls.get(cls.id == uid, cls.reset_key == code)
                     return u
                 except cls.DoesNotExist:
                     pass

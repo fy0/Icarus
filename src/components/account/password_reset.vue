@@ -1,5 +1,5 @@
 <template>
-<div v-if="available" class="ic-container box">
+<div v-if="stage === 1" class="ic-container box">
     <form class="ic-form">
         <div class="ic-form-row">
             <span></span>
@@ -22,16 +22,25 @@
         </div>
     </form>
 </div>
+<redirecting v-else-if="stage === 2">
+    <span>重置密码成功，指定用户的会话将同时失效。请使用新密码登陆。</span>
+</redirecting>
 <page-not-found v-else />
 </template>
 
 <style scoped>
+.box {
+    justify-content: center;
+}
+
 .ic-form {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 420px;
 
+    align-self: center;
+    justify-self: center;
     padding: 10px 30px;
 }
 
@@ -66,13 +75,13 @@ export default {
     data () {
         return {
             info: {
-                old_password: '',
                 password: '',
                 password2: '',
                 verify: ''
             },
+            requesting: false,
             formErrors: {},
-            available: false
+            stage: 0
         }
     },
     computed: {
@@ -90,37 +99,29 @@ export default {
     },
     methods: {
         resetPassword: async function () {
+            if (this.requesting) return
+            this.requesting = true
             if (this.checkPassword && this.checkPassword2) {
-                let ret = await api.user.changePassword(this.info)
-                if (ret.code !== api.retcode.SUCCESS) {
-                    this.formErrors = ret.data
-                    $.message_error('修改密码失败')
+                let query = this.$route.query
+                let ret = await api.user.validatePasswordReset(query.uid, query.code, this.info.password)
+                if (ret.code === api.retcode.SUCCESS) {
+                    this.stage = 2
+                    if (state.user && state.user.id === ret.data.id) {
+                        state.user = null
+                    }
                 } else {
-                    api.saveAccessToken(ret.data)
-                    $.message_by_code(ret.code)
-                    this.info.old_password = ''
-                    this.info.password = ''
-                    this.info.password2 = ''
-                    this.info.verify = ''
+                    this.formErrors = ret.data
+                    $.message_error('重置密码失败')
                 }
             } else {
                 $.message_error('请正确填写所有项目')
             }
+            this.requesting = false
         },
         fetchData: async function () {
-            this.available = true
-            /*
             let query = this.$route.query
             if (!(query.uid && query.code)) return
-            this.available = true
-
-            let ret = await api.user.activation(query.uid, query.code)
-            if (ret.code === api.retcode.SUCCESS) {
-                this.text = '帐号激活成功！'
-            } else {
-                this.available = false
-            }
-            */
+            this.stage = 1
         }
     },
     created: async function () {

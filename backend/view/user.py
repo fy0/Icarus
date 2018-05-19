@@ -154,12 +154,18 @@ class UserView(UserMixin, PeeweeView):
         form = PasswordForm(**post)
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
+        if 'uid' not in post or 'code' not in post:
+            return self.finish(RETCODE.FAILED)
 
-        user = User.check_reset(self.params['uid'], self.params['code'])
+        user = User.check_reset(post['uid'], post['code'])
         if user:
             info = User.gen_password_and_salt(post['password'])
             user.password = info['password']
             user.salt = info['salt']
+            user.reset_key = None
+            user.save()
+            user.refresh_key()
+            self.setup_user_key(user.key, 30)
             self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
         else:
             self.finish(RETCODE.FAILED)
