@@ -26,9 +26,9 @@
     <div class="ic-comment" v-else>
         <avatar :anonymous="true" class="avatar"></avatar>
         <div class="right-box">
-            <mu-paper :zDepth="editing ? 2 : 1" class="content">
-                需要 <router-link :to="{ name: `account_signin` }">登录</router-link> 后方可回复, 如果你还没有账号你可以 <router-link :to="{ name: `account_signup` }">注册</router-link> 一个帐号。
-            </mu-paper>
+            <div :zDepth="editing ? 2 : 1" class="not-signin-content">
+                需要 <router-link :to="{ name: `account_signin` }">登录</router-link> 后方可回复, 如果你还没有账号，那么可以 <router-link :to="{ name: `account_signup` }">注册</router-link> 一个帐号。
+            </div>
         </div>
     </div>
 </div>
@@ -37,6 +37,12 @@
 <style scoped>
 .ic-comment-post {
     margin-top: 20px
+}
+
+.ic-comment .not-signin-content {
+    margin-left: 20px;
+    min-height: 50px;
+    padding: 10px 20px;
 }
 
 .ic-comment .content {

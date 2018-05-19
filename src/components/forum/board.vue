@@ -75,7 +75,7 @@
                     <div v-else>版主很懒，什么也没有写</div>
                 </div>
                 <div class="others">
-                    <template  v-if="board.parent_id">
+                    <template v-if="board.parent_id">
                         <p><strong>上级板块</strong></p>
                         <div class="ul-subboards">
                             <router-link class="item" :to="{ name: 'forum_board', params: {id: board.parent_id.id} }">
