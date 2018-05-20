@@ -11,18 +11,37 @@ class Statistic(BaseModel):
     id = BlobField(primary_key=True)
     post_type = IntegerField(index=True)
 
-    # board
-    click_count = IntegerField(default=0)
-    comment_count = IntegerField(default=0)
-    topic_count = IntegerField(default=0)
+    # all options
     last_comment_id = BlobField(null=True, default=None)
-
-    # topic
     viewed_users = ArrayField(BlobField, null=True)
     commented_users = ArrayField(BlobField, null=True)
+    bookmarked_users = ArrayField(BlobField, null=True)
+    upvoted_users = ArrayField(BlobField, null=True)
+    downvoted_users = ArrayField(BlobField, null=True)
+    thanked_users = ArrayField(BlobField, null=True)
+
+    click_count = BigIntegerField(default=0)  # 点击数量
+    comment_count = BigIntegerField(default=0)  # 评论数量
+    topic_count = IntegerField(default=0)  # 主题数量
+    follow_count = IntegerField(default=0)  # 关注数量
+    bookmark_count = IntegerField(default=0)  # 收藏数量
+    upvote_count = BigIntegerField(default=0)  # 赞同数量
+    downvote_count = BigIntegerField(default=0)  # 反对数量
+    thank_count = IntegerField(default=0)  # 感谢数量
+    vote_weight = BigIntegerField(default=0, index=True)  # 权重
+
+    # board
     # click_count = IntegerField(default=0)
     # comment_count = IntegerField(default=0)
-    follow_count = IntegerField(default=0)
+    # topic_count = IntegerField(default=0)
+    # last_comment_id = BlobField(null=True, default=None)
+
+    # topic
+    # viewed_users = ArrayField(BlobField, null=True)
+    # commented_users = ArrayField(BlobField, null=True)
+    # click_count = IntegerField(default=0)
+    # comment_count = IntegerField(default=0)
+    # follow_count = IntegerField(default=0)
     # last_comment_id = BlobField(null=True)
 
     # user
@@ -42,6 +61,11 @@ class Statistic24h(BaseModel):
     click_count = IntegerField(default=0)  # 24小时点击数
     comment_count = IntegerField(default=0)  # 24小时评论数
     topic_count = IntegerField(default=0)  # 24小时文章数
+
+    bookmark_count = IntegerField(default=0)  # 收藏数量
+    upvote_count = BigIntegerField(default=0)  # 赞同数量
+    downvote_count = BigIntegerField(default=0)  # 反对数量
+    thank_count = IntegerField(default=0)  # 感谢数量
 
     # topic
     # click_count = IntegerField(default=0)
