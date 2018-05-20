@@ -11,9 +11,13 @@ curloop = None
 async def init(loop):
     global smtp, curloop
     curloop = loop
-    smtp = aiosmtplib.SMTP(hostname=config.EMAIL_HOST, port=config.EMAIL_PORT, loop=loop, use_tls=config.EMAIL_USE_TLS)
-    await smtp.connect()
-    await smtp.login(config.EMAIL_USERNAME, config.EMAIL_PASSWORD)
+    try:
+        smtp = aiosmtplib.SMTP(hostname=config.EMAIL_HOST, port=config.EMAIL_PORT, loop=loop, use_tls=config.EMAIL_USE_TLS)
+        await smtp.connect()
+        await smtp.login(config.EMAIL_USERNAME, config.EMAIL_PASSWORD)
+        return True
+    except aiosmtplib.SMTPConnectError:
+        pass
 
 
 async def try_reconnect():
@@ -29,14 +33,15 @@ async def try_reconnect():
                 async with async_timeout.timeout(10):
                     print('Email reconnect', times)
                     # 经测试如果不重新生成smtp对象，有可能陷入无限期connect，timeout对其无效
-                    await init(curloop)
-                    return True
+                    if await init(curloop):
+                        return True
             except asyncio.TimeoutError:
                 times -= 1
 
 
 async def send(to, title, content):
-    await try_reconnect()
+    if not curloop: return
+    if not await try_reconnect(): return
     message = MIMEText(content, 'html', 'utf-8')
     message['From'] = '%s <%s>' % (config.EMAIL_SENDER, config.EMAIL_USERNAME)
     message['To'] = to
