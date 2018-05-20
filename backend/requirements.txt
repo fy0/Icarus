@@ -7,3 +7,4 @@ msgpack
 psycopg2-binary
 aiosmtplib
 aioauth-client
+async_timeout

@@ -1,27 +1,38 @@
+import asyncio
 import aiosmtplib
 from email.mime.text import MIMEText
+import async_timeout
 import config
 
 smtp = None
+curloop = None
 
 
 async def init(loop):
-    global smtp
+    global smtp, curloop
+    curloop = loop
     smtp = aiosmtplib.SMTP(hostname=config.EMAIL_HOST, port=config.EMAIL_PORT, loop=loop, use_tls=config.EMAIL_USE_TLS)
     await smtp.connect()
     await smtp.login(config.EMAIL_USERNAME, config.EMAIL_PASSWORD)
 
 
 async def try_reconnect():
-    global smtp
-
     try:
         await smtp.helo()
+        return True
     except (aiosmtplib.SMTPServerDisconnected, AssertionError):
         # AssertionError: Client not connected 另外还遇到了这个异常
         # smtp.is_connected 本来有个这个，但经测试并不管用，只在触发异常后被重置，而不能主动探测。
-        await smtp.connect()
-        await smtp.login(config.EMAIL_USERNAME, config.EMAIL_PASSWORD)
+        times = 3
+        while times:
+            try:
+                async with async_timeout.timeout(10):
+                    print('Email reconnect', times)
+                    # 经测试如果不重新生成smtp对象，有可能陷入无限期connect，timeout对其无效
+                    await init(curloop)
+                    return True
+            except asyncio.TimeoutError:
+                times -= 1
 
 
 async def send(to, title, content):

@@ -17,12 +17,51 @@
             <div class="ic-form-row">
                 <router-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</router-link>
             </div>
+            <div class="ic-form-row three-auth">
+                <span class="title"> 第三方登录 </span>
+                <div class="icons">
+                    <span class="icon">QQ</span>
+                    <span class="icon">微博</span>
+                    <span class="icon">Github</span>
+                </div>
+            </div>
         </form>
     </div>
 </div>
 </template>
 
 <style scoped>
+.three-auth {
+    display: flex;
+    flex-direction: column;
+}
+
+.three-auth > .title {
+    text-align: center;
+}
+
+.three-auth > .title:before, .three-auth > .title:after {
+    display: inline-block;
+    width: 50px;
+    content: " ";
+    border-top: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.three-auth > .icons {
+    display: flex;
+    justify-content: center;
+}
+
+.three-auth > .icons > .icon {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.three-auth > .icons > .icon:not(:first-child) {
+    margin-left: 20px;
+}
+
 .lost-poasswrod {
     color: #aaa;
 }

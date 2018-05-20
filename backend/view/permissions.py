@@ -24,6 +24,7 @@ visitor = Ability(None, {
         'id': (A.QUERY, A.READ),
         'nickname': (A.READ, A.CREATE),
         'group': (A.READ,),
+        'state': (A.READ,),
         'number': (A.READ,),
         'biology': (A.READ,),
         'time': (A.READ,),
@@ -135,7 +136,7 @@ super_user = Ability('superuser', {
     'user': {
         'key': (A.WRITE,),
         'time': (A.READ,),
-        'state': (A.READ,),
+        'state': A.ALL,
         'email': A.ALL,
         'nickname': A.ALL,
         'credit': A.ALL,
