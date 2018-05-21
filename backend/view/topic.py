@@ -14,7 +14,7 @@ from slim.utils import to_bin, dict_filter_inplace
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField
 
-from view.permissions import visitor, normal_user, super_user, admin
+from view.permissions import permissions_add_all
 from view.user import UserMixin
 
 
@@ -56,10 +56,7 @@ class TopicView(UserMixin, PeeweeView):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        permission.add(visitor)
-        permission.add(normal_user)
-        permission.add(super_user)
-        permission.add(admin)
+        permissions_add_all(permission)
 
     async def get(self):
         await super().get()

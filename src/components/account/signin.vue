@@ -148,7 +148,7 @@ export default {
                 this.state.loadingInc(this.$route, key)
                 let ret = await api.user.signin(this.info)
                 if (ret.code === api.retcode.SUCCESS) {
-                    ret = await api.user.get({id: ret.data.id}, 'user')
+                    ret = await api.user.get({id: ret.data.id}, 'inactive_user')
                     if (ret.code !== api.retcode.SUCCESS) return
                     Vue.set(state, 'user', ret.data) // 这样顶栏可以接到事件
                     $.notifLoopOn()

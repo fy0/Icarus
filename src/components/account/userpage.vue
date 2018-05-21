@@ -149,7 +149,7 @@ export default {
             let role = null
             let params = this.$route.params
 
-            if (state.user && (params.id === state.user.id)) role = 'user'
+            if (state.user && (params.id === state.user.id)) role = state.getRole('user')
             let ret = await api.user.get(params, role)
 
             if (ret.code === api.retcode.SUCCESS) {

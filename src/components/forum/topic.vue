@@ -183,7 +183,7 @@ export default {
             let ret = await api.topic.get({
                 id: params.id,
                 loadfk: {user_id: null, board_id: null, last_edit_user_id: null, 'id': {'as': 's'}}
-            }, state.user ? 'user' : null)
+            }, state.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {
                 let mlog = await api.logManage.list({
@@ -195,9 +195,9 @@ export default {
                     this.mlog = mlog.data
                 }
 
-                this.topic = ret.data
                 let pageNumber = this.$route.query.page
                 if (pageNumber) this.commentPage = parseInt(pageNumber)
+                this.topic = ret.data
             } else {
                 if (ret.code !== api.retcode.NOT_FOUND) {
                     $.message_by_code(ret.code)

@@ -15,8 +15,7 @@ from slim.support.peewee import PeeweeView
 from slim.utils import to_bin
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
-
-from view.permissions import visitor, normal_user, admin
+from view.permissions import permissions_add_all
 from view.user import UserMixin
 
 
@@ -32,9 +31,7 @@ class CommentView(UserMixin, PeeweeView):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        permission.add(visitor)
-        permission.add(normal_user)
-        permission.add(admin)
+        permissions_add_all(permission)
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]

@@ -91,6 +91,16 @@ visitor = Ability(None, {
     }
 })
 
+banned_user = Ability('banned_user', {}, based_on=visitor)
+
+inactive_user = Ability('inactive_user', {
+    'user': {
+        'nickname': (A.QUERY, A.READ, A.WRITE),
+        'group': (A.READ,),
+        # 'key': ['query', 'read']
+    }
+}, based_on=visitor)
+
 normal_user = Ability('user', {
     'user': {
         'nickname': (A.QUERY, A.READ, A.WRITE),
@@ -109,7 +119,7 @@ normal_user = Ability('user', {
         'state': (A.READ, A.WRITE,),
         'content': (A.READ, A.CREATE,),
     },
-}, based_on=visitor)
+}, based_on=inactive_user)
 
 super_user = Ability('superuser', {
     'topic': {
@@ -150,6 +160,15 @@ admin = Ability('admin', {
         'group': A.ALL,
     }
 }, based_on=super_user)
+
+
+def permissions_add_all(permission):
+    permission.add(visitor)
+    permission.add(banned_user)
+    permission.add(inactive_user)
+    permission.add(normal_user)
+    permission.add(super_user)
+    permission.add(admin)
 
 
 # user

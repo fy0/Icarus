@@ -61,6 +61,7 @@ class Statistic24h(BaseModel):
     click_count = IntegerField(default=0)  # 24小时点击数
     comment_count = IntegerField(default=0)  # 24小时评论数
     topic_count = IntegerField(default=0)  # 24小时文章数
+    follow_count = IntegerField(default=0)
 
     bookmark_count = IntegerField(default=0)  # 收藏数量
     upvote_count = BigIntegerField(default=0)  # 赞同数量
@@ -70,7 +71,7 @@ class Statistic24h(BaseModel):
     # topic
     # click_count = IntegerField(default=0)
     # comment_count = IntegerField(default=0)
-    follow_count = IntegerField(default=0)
+    # follow_count = IntegerField(default=0)
 
     # user
     # click_count = IntegerField(default=0)

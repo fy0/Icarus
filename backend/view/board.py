@@ -11,7 +11,7 @@ from model.board import Board
 from view import route, ValidateForm
 from wtforms import StringField, validators as va
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from view.permissions import visitor, normal_user, super_user, admin
+from view.permissions import permissions_add_all
 from view.user import UserMixin
 
 
@@ -41,10 +41,7 @@ class BoardView(PeeweeView, UserMixin):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        permission.add(visitor)
-        permission.add(normal_user)
-        permission.add(super_user)
-        permission.add(admin)
+        permissions_add_all(permission)
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         for values in values_lst:

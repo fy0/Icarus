@@ -1,10 +1,17 @@
 <!-- 评论 -->
 <template>
 <div class="ic-comment-post" id="ic-comment-post">
-    <div class="ic-comment" v-if="state.user">
+    <div class="ic-comment" v-if="isInactiveUser">
+        <avatar :user="state.user" class="avatar"></avatar>
+        <div class="right-box">
+            <mu-paper :zDepth="1" class="not-signin-content">你的账号需要激活后才能发言，请检查邮箱</mu-paper>
+        </div>
+    </div>
+
+    <div class="ic-comment" v-else-if="state.user">
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box" v-if="isClosed()">
-            <mu-paper :zDepth="1" class="content">评论已关闭</mu-paper>
+            <mu-paper :zDepth="1" class="not-signin-content">评论已关闭</mu-paper>
         </div>
         <div class="right-box content" v-else>
             <mu-paper :zDepth="editing ? 2 : 1">
@@ -96,6 +103,12 @@ export default {
                 related_type: null,
                 content: ''
             }
+        }
+    },
+    computed: {
+        isInactiveUser: function () {
+            console.log(111, state.getRole('user'), state.user, 'inactive_user')
+            return state.getRole('user') === 'inactive_user'
         }
     },
     created: function () {

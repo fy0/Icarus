@@ -259,7 +259,7 @@ export default {
 
             let subBoards = await api.board.list({
                 parent_id: params.id
-            }, 1, null, state.user ? 'user' : null)
+            }, 1, null, state.getRole('user'))
             this.subBoards = subBoards.data.items
 
             let retList = await api.topic.list({
@@ -267,7 +267,7 @@ export default {
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 select: 'id, time, user_id, board_id, title, sticky_weight, state, awesome',
                 loadfk: {'parent_id': null, 'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
-            }, params.page, null, state.user ? 'user' : null)
+            }, params.page, null, state.getRole('user'))
 
             if (retList.code === api.retcode.SUCCESS) {
                 this.board = ret.data

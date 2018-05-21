@@ -5,7 +5,7 @@ from slim.support.peewee import PeeweeView
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 
-from view.permissions import visitor, normal_user, admin
+from view.permissions import permissions_add_all
 from view.user import UserMixin
 
 
@@ -20,9 +20,7 @@ class StatisticView(UserMixin, PeeweeView):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        permission.add(visitor)
-        permission.add(normal_user)
-        permission.add(admin)
+        permissions_add_all(permission)
 
 
 @route('statistic24h', None)
@@ -32,6 +30,4 @@ class Statistic24hView(UserMixin, PeeweeView):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        permission.add(visitor)
-        permission.add(normal_user)
-        permission.add(admin)
+        permissions_add_all(permission)

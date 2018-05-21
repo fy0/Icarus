@@ -167,7 +167,7 @@ router.beforeEach(async function (to, from, next) {
                 // 未登录，后续不必进行
                 Vue.set(state, 'initLoadDone', true)
             } else {
-                ret = await api.user.get({id: ret.data.id}, 'user')
+                ret = await api.user.get({id: ret.data.id}, 'inactive_user')
                 if (ret.code !== api.retcode.SUCCESS) {
                     // 执行未成功
                     state.loading = 0

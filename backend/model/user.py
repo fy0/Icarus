@@ -55,9 +55,16 @@ class User(PostModel, BaseUser):
 
     @property
     def roles(self):
-        if self.group == USER_GROUP.ADMIN:
-            return [None, 'user', 'admin']
-        return [None, 'user']
+        ret = [None]
+        if self.group >= USER_GROUP.ADMIN:
+            ret.append('admin')
+        if self.group >= USER_GROUP.SUPERUSER:
+            ret.append('superuser')
+        if self.group >= USER_GROUP.NORMAL:
+            ret.append('user')
+        if self.group >= USER_GROUP.INACTIVE:
+            ret.append('inactive_user')
+        return ret
 
     @classmethod
     def gen_id(cls):

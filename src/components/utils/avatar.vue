@@ -1,7 +1,9 @@
 <!-- 用户头像 -->
 <template>
 <div style="display: flex">
-<router-link class="sa-avatar" :style="style" :to="linkTo" >
+<a class="sa-avatar" :style="style" v-if="placeholder">
+</a>
+<router-link v-else class="sa-avatar" :style="style" :to="linkTo" >
     <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
 </router-link>
 </div>
@@ -32,6 +34,9 @@ export default {
         anonymous: {
             default: false
         },
+        placeholder: {
+            default: false
+        },
         size: {
             default: 50
         }
@@ -58,6 +63,7 @@ export default {
         style: function () {
             let size, fsize, bgColor
             if (this.anonymous) bgColor = '334455'
+            else if (this.placeholder) bgColor = 'e9e9e9'
             else {
                 if ((!this.user) || (!this.user.nickname)) return ''
                 bgColor = murmurhash.v3(this.user.nickname).toString(16).slice(1, 7)
