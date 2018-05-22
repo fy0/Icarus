@@ -6,6 +6,7 @@ import view.comment
 import view.statistic
 import view.notif
 import view.logs
+import view.upload
 
 import view.ws
 import view.chat
