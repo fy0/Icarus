@@ -1,5 +1,6 @@
 from model.upload import Upload
 from slim.base.permission import Permissions
+from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from view import route
 from view.permissions import permissions_add_all

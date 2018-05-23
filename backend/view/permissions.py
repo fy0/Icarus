@@ -119,6 +119,20 @@ normal_user = Ability('user', {
         'state': (A.READ, A.WRITE,),
         'content': (A.READ, A.CREATE,),
     },
+    'upload': {
+        'id': (A.READ, A.QUERY),
+        'state': (A.READ,),
+        'visible': (A.READ,),
+        'time': (A.READ,),
+        'user_id': (A.READ,),
+        'hash': (A.READ,)
+    },
+    'upload_entity': {
+        'id': (A.READ,),
+        'time': (A.READ,),
+        'size': (A.READ,),
+        'format': (A.READ,)
+    }
 }, based_on=inactive_user)
 
 super_user = Ability('superuser', {
