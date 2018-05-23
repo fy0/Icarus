@@ -16,8 +16,8 @@
     </mu-breadcrumb>
 
     <div class="ic-hidden ic-xs" style="display: flex;align-items: center;">
-        <user-link style="display: flex;padding: 10px 0;" class="user-link" :nickname="false" :user="topic.user_id">
-            <avatar style="margin-right: 6px;" :user="topic.user_id" :size="28" class="avatar"></avatar>
+        <user-link style="display: flex; padding: 10px 0;" class="user-link" :nickname="false" :user="topic.user_id">
+            <avatar style="margin-right: 10px;" :user="topic.user_id" :size="28" class="avatar"></avatar>
             <span>{{topic.user_id.nickname}}</span>
         </user-link>
         <div style="margin-left: 10px">发布于 <ic-time :timestamp="topic.time" /></div>

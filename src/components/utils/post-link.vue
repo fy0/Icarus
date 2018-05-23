@@ -36,12 +36,30 @@
             <slot v-else />
         </router-link>
     </template>
+
+    <!-- 评论 -->
+    <template v-else-if="type === state.misc.POST_TYPES.COMMENT">
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
+        <template v-if="!useSlot">
+            <span class="limited-title">“{{item.content}}”</span>
+        </template>
+        <slot v-else />
+    </template>
 </span>
 </template>
 
 <style scoped>
 .bold {
     font-weight: bold;
+}
+
+.limited-title {
+    max-width: 120px;
+    display: inline-flex;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 </style>
 

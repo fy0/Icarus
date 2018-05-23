@@ -30,6 +30,8 @@ class MANAGE_OPERATION(StateObject):
     TOPIC_STICKY_WEIGHT_CHANGE = 305
     TOPIC_WEIGHT_CHANGE = 306
 
+    COMMENT_STATE_CHANGE = 500  # 修改评论状态
+
     txt = {
         POST_STATE_CHANGE: '改变状态',
         POST_VISIBLE_CHANGE: '修改可见度',
@@ -50,6 +52,8 @@ class MANAGE_OPERATION(StateObject):
         TOPIC_AWESOME_CHANGE: '设置优秀文章',
         TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
         TOPIC_WEIGHT_CHANGE: '修改板块权重',
+
+        COMMENT_STATE_CHANGE: '修改评论状态',
     }
 
 

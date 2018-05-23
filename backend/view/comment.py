@@ -2,6 +2,7 @@ import time
 import config
 from typing import Dict, List
 
+from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.statistic import statistic_add_comment
 from model.topic import Topic
 from slim.base.permission import Permissions
@@ -88,3 +89,10 @@ class CommentView(UserMixin, PeeweeView):
             statistic_add_comment(record['related_type'], record['related_id'], record['id'])
             post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
             Comment.update(post_number = post_number).where(Comment.id == record['id']).execute()
+
+    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord],
+                     records: List[DataRecord]):
+        for old_record, record in zip(old_records, records):
+            # 管理日志：修改评论状态
+            ManageLog.add_by_post_change(self, 'state', MOP.COMMENT_STATE_CHANGE, POST_TYPES.COMMENT,
+                                         values, old_record, record)

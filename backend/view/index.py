@@ -34,7 +34,7 @@ class TestBaseView(BaseView):
             'POST_VISIBLE': POST_VISIBLE.to_dict(),
             'POST_VISIBLE_TXT': POST_VISIBLE.txt,
 
-            'MANAGE_OPERATION': MANAGE_OPERATION,
+            'MANAGE_OPERATION': MANAGE_OPERATION.to_dict(),
             'MANAGE_OPERATION_TXT': MANAGE_OPERATION.txt,
 
             'USER_GROUP': USER_GROUP.to_dict(),
