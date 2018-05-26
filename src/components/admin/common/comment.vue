@@ -97,6 +97,10 @@ export default {
             }
             $.message_by_code(ret.code)
         },
+        setCommentManage: async function (item) {
+            state.dialog.commentManageData = item
+            state.dialog.commentManage = true
+        },
         fetchData: async function () {
             let key = state.loadingGetKey(this.$route)
             this.state.loadingInc(this.$route, key)

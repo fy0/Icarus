@@ -7,6 +7,7 @@
     </div>
     <dialog-topic-manage />
     <dialog-user-manage />
+    <dialog-comment-manage />
 </div>
 </template>
 

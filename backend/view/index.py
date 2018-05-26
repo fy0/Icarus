@@ -42,13 +42,27 @@ class TestBaseView(BaseView):
 
             'NOTIF_TYPE': NOTIF_TYPE.to_dict(),
 
-            'NICKNAME_MIN': config.NICKNAME_MIN,
-            'NICKNAME_MAX': config.NICKNAME_MAX,
-            'NICKNAME_CN_FOR_REG_MIN': config.NICKNAME_CN_FOR_REG_MIN,
-            'NICKNAME_FOR_REG_MIN': config.NICKNAME_FOR_REG_MIN,
-            'NICKNAME_FOR_REG_MAX': config.NICKNAME_FOR_REG_MAX,
-            'PASSWORD_MIN': config.PASSWORD_MIN,
-            'PASSWORD_MAX': config.PASSWORD_MAX,
+            'BACKEND_CONFIG': {
+                'USER_NICKNAME_MIN': config.USER_NICKNAME_MIN,
+                'USER_NICKNAME_MAX': config.USER_NICKNAME_MAX,
+                'USER_NICKNAME_CN_FOR_REG_MIN': config.USER_NICKNAME_CN_FOR_REG_MIN,
+                'USER_NICKNAME_FOR_REG_MIN': config.USER_NICKNAME_FOR_REG_MIN,
+                'USER_NICKNAME_FOR_REG_MAX': config.USER_NICKNAME_FOR_REG_MAX,
+                'USER_PASSWORD_MIN': config.USER_PASSWORD_MIN,
+                'USER_PASSWORD_MAX': config.USER_PASSWORD_MAX,
+
+                'TOPIC_TITLE_LENGTH_MIN': config.TOPIC_TITLE_LENGTH_MIN,
+                'TOPIC_TITLE_LENGTH_MAX': config.TOPIC_TITLE_LENGTH_MAX,
+                'TOPIC_CONTENT_LENGTH_MAX': config.TOPIC_CONTENT_LENGTH_MAX,
+            },
+
+            'NICKNAME_MIN': config.USER_NICKNAME_MIN,
+            'NICKNAME_MAX': config.USER_NICKNAME_MAX,
+            'NICKNAME_CN_FOR_REG_MIN': config.USER_NICKNAME_CN_FOR_REG_MIN,
+            'NICKNAME_FOR_REG_MIN': config.USER_NICKNAME_FOR_REG_MIN,
+            'NICKNAME_FOR_REG_MAX': config.USER_NICKNAME_FOR_REG_MAX,
+            'PASSWORD_MIN': config.USER_PASSWORD_MIN,
+            'PASSWORD_MAX': config.USER_PASSWORD_MAX,
 
             'TOPIC_TITLE_LENGTH_MIN': config.TOPIC_TITLE_LENGTH_MIN,
             'TOPIC_TITLE_LENGTH_MAX': config.TOPIC_TITLE_LENGTH_MAX,

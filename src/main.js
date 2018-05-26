@@ -111,6 +111,7 @@ import PostLink from './components/utils/post-link.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
 import DialogUserManage from './components/utils/dialogs/user-manage.vue'
+import DialogCommentManage from './components/utils/dialogs/comment-manage.vue'
 
 Vue.component('page-not-found', PageNotFound)
 Vue.component('redirecting', Redirecting)
@@ -122,6 +123,7 @@ Vue.component('user-link', UserLink)
 Vue.component('post-link', PostLink)
 Vue.component('dialog-topic-manage', DialogTopicManage)
 Vue.component('dialog-user-manage', DialogUserManage)
+Vue.component('dialog-comment-manage', DialogCommentManage)
 
 Vue.directive('title', {
     inserted: function (el, binding) {
