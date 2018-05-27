@@ -10,6 +10,7 @@ from model.statistic import Statistic, Statistic24h
 from model.test import Test
 from model.topic import Topic
 from model.user import User
+from model.user_oauth import UserOAuth
 from model.wiki import WikiItem, WikiArticle, WikiHistory
 
 db.connect()
@@ -60,6 +61,7 @@ except peewee.ProgrammingError:
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
                   Notification, UserNotifRecord,
+                  # UserOAuth,
                   ManageLog,
                   Statistic, Statistic24h], safe=True)
 

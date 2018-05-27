@@ -5,6 +5,7 @@ import AccountSignin from '@/components/account/signin.vue'
 import AccountSignup from '@/components/account/signup.vue'
 import AccountUserPage from '@/components/account/userpage.vue'
 import AccountNotif from '@/components/account/notif.vue'
+import AccountOAuth from '@/components/account/oauth.vue'
 import AccountSetting from '@/components/account/setting.vue'
 import AccountActivation from '@/components/account/activation.vue'
 import AccountPasswordReset from '@/components/account/password_reset.vue'
@@ -168,6 +169,13 @@ export default new Router({
             path: '/about',
             name: 'about',
             component: About
+        },
+
+        // OAuth
+        {
+            path: '/account/oauth',
+            name: 'account_oauth',
+            component: AccountOAuth
         }
     ]
 })
