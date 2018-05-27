@@ -47,7 +47,9 @@ export default {
             let val = null
 
             if (ago) {
-                if (offset < -10) {
+                if (isNaN(offset)) {
+                    val = '未知'
+                } else if (offset < -10) {
                     // 有时候服务器和本地时间会有些偏差，我们加个10秒容错
                     val = '未来'
                 } else if (offset < 30) {

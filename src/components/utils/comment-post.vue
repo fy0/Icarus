@@ -107,7 +107,6 @@ export default {
     },
     computed: {
         isInactiveUser: function () {
-            console.log(111, state.getRole('user'), state.user, 'inactive_user')
             return state.getRole('user') === 'inactive_user'
         }
     },

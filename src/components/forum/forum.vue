@@ -30,7 +30,7 @@
                     </div>
                     <div class="recent ic-xs-hidden ic-sm-hidden">
                         <span class="line" :style="lineStyle(i)"></span>
-                        <div class="post" v-if="i.s.last_comment_id">
+                        <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
                             <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
                             <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{i.s.last_comment_id.content}}</router-link>
                         </div>

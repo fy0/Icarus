@@ -10,6 +10,7 @@
                     <post-link :goto="true" :show-type="true" :type-bold="true" :type="i.related_type" :item="postsOfComments[i.related_id]"/>
                     <span>被进行了</span>
                     <b style="font-weight: bold">{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</b>
+                    <span v-if="i.operation === state.misc.MANAGE_OPERATION.COMMENT_STATE_CHANGE">({{i.value.map(postStateTxt).join(' -> ')}})</span>
                     <span>操作</span>
                 </div>
                 <ic-time class="time" :timestamp="i.time" />
@@ -78,6 +79,9 @@ export default {
         }
     },
     methods: {
+        postStateTxt: function (postState) {
+            return state.misc.POST_STATE_TXT[postState]
+        },
         toMonth: function (ts) {
             let date = new Date()
             date.setTime(ts * 1000)

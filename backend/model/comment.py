@@ -10,7 +10,7 @@ class Comment(LongIdPostModel):
     related_type = IntegerField(index=True)  # 被评论文章的类型
     reply_to_cmt_id = BlobField(null=True)  # 是否指定回复某个评论
     content = TextField()  # 文本
-    post_number = IntegerField()  # 楼层数
+    post_number = IntegerField(null=True)  # 楼层数
 
     class Meta:
         db_table = 'comment'
