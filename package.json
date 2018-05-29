@@ -23,6 +23,7 @@
     "nprogress": "^0.2.0",
     "objectid-js": "^1.0.2patch1",
     "prismjs": "^1.8.1",
+    "qiniu-js": "^2.2.2",
     "sweetalert2": "^7.18.0",
     "tweezer.js": "^1.4.0",
     "vue": "^2.4.2",

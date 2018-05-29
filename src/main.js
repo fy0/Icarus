@@ -8,6 +8,7 @@ import nprogress from 'nprogress/nprogress.js'
 import 'animate.css'
 import 'font-awesome/css/font-awesome.css'
 import 'lodash'
+import 'qiniu-js'
 import 'nprogress/nprogress.css'
 // muse-ui 包含 normalize.css
 import MuseUI from 'muse-ui'

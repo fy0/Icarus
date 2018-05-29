@@ -1,3 +1,4 @@
+from lib import upload
 from model.upload import Upload
 from slim.base.permission import Permissions
 from slim.retcode import RETCODE
@@ -10,6 +11,14 @@ from view.user import UserMixin
 @route('upload')
 class TopicView(UserMixin, PeeweeView):
     model = Upload
+
+    @route.interface('POST')
+    async def token(self):
+        user = self.current_user
+        if user:
+            if self.current_role in ('user', 'admin', 'superuser'):
+                return self.finish(RETCODE.SUCCESS, upload.get_token(user.id.hex()))
+        self.finish(RETCODE.FAILED)
 
     @classmethod
     def ready(cls):

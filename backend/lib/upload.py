@@ -7,11 +7,11 @@ q = None
 
 def init():
     global q
-    if config.UPLOAD_ENABLE:
-        q = qiniu.Auth(config.UPLOAD_QINIU_ACCESS_KEY, config.UPLOAD_QINIU_SECRET_KEY)
+    q = qiniu.Auth(config.UPLOAD_QINIU_ACCESS_KEY, config.UPLOAD_QINIU_SECRET_KEY)
 
 
 def get_token(user_id=None):
+    if not config.UPLOAD_ENABLE: return
     token = q.upload_token(config.UPLOAD_QINIU_BUCKET, policy={
         'scope': config.UPLOAD_QINIU_BUCKET,
         'saveKey': config.UPLOAD_QINIU_SAVEKEY,
@@ -28,4 +28,5 @@ def get_token(user_id=None):
 
 
 def upload_local(token, data, key=None):
+    if not config.UPLOAD_ENABLE: return
     return qiniu.put_data(token, key, data)

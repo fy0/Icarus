@@ -9,6 +9,7 @@ import AccountSetting from '@/components/account/setting.vue'
 import AccountActivation from '@/components/account/activation.vue'
 import AccountPasswordReset from '@/components/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/components/account/password_reset_req.vue'
+import AccountFiles from '@/components/account/files.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
@@ -74,6 +75,13 @@ export default new Router({
             path: '/account/setting',
             name: 'account_setting',
             component: AccountSetting
+        },
+
+        // 用户 - 个人文件
+        {
+            path: '/account/files',
+            name: 'account_files',
+            component: AccountFiles
         },
 
         // 用户 - 个人提醒

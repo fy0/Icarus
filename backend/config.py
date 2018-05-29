@@ -8,9 +8,6 @@ from slim.utils import CustomID
 # 必填部分
 ##########################################
 
-PROJECT_NAME = 'Icarus'  # 项目名
-VERSION = '1.0.0'
-
 SITE_NAME = 'Icarus'  # 站点名称
 SITE_URL = 'http://localhost:8080'  # 站点地址
 
@@ -60,6 +57,7 @@ TOPIC_CONTENT_LENGTH_MAX = 60000
 # 可选 - 邮件发送配置，默认关闭注册邮件
 ##########################################
 
+EMAIL_ENABLE = False
 EMAIL_ACTIVATION_ENABLE = False
 EMAIL_SENDER = 'Icarus 社区程序'
 EMAIL_HOST = 'smtp.xxx.com'
