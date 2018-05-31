@@ -14,8 +14,8 @@
                 <input type="file" ref="inputFile" @change="onFileChange" accept="image/*" class="input-file" />
                 <button @click="selectFile">上传</button>
             </div>
-            
-            <div>
+
+            <div v-for="i in timeline" :key="i[0]">
                 <div>2018.09</div>
                 <div>
                     <div></div>
@@ -58,13 +58,16 @@
 <script>
 import state from '@/state.js'
 import api from '@/netapi.js'
-// import * as qiniu from 'qiniu-js'
+import * as qiniu from 'qiniu-js'
 
 export default {
     data () {
         return {
             state,
             image: '',
+            timeline: [
+                ['2018.03', []]
+            ],
             uploadToken: '',
             keyTime: 0
         }
@@ -97,6 +100,12 @@ export default {
             if (!files.length) return
             let token = await this.getUploadToken()
             if (token !== null) {
+                let ob = qiniu.upload(files[0], null, token, null)
+                ob.subscribe({
+                    complete: (res) => {
+                        console.log('done', res)
+                    }
+                })
             }
             this.createImage(files[0])
         },

@@ -20,4 +20,4 @@ class Upload(LongIdPostModel):
     hash = BlobField()
 
     class Meta:
-        db_table = 'upload'
+        db_table = 'uploads'

@@ -119,7 +119,7 @@ normal_user = Ability('user', {
         'state': (A.READ, A.WRITE,),
         'content': (A.READ, A.CREATE,),
     },
-    'upload': {
+    'uploads': {
         'id': (A.READ, A.QUERY),
         'state': (A.READ,),
         'visible': (A.READ,),
