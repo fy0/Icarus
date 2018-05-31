@@ -111,7 +111,7 @@ class TopicView(UserMixin, PeeweeView):
         record = records[0]
         form = TopicEditForm(**raw_post)
         if not form.validate():
-            return RETCODE.FAILED, form.errors
+            return self.finish(RETCODE.FAILED, form.errors)
 
         # 防止置空提交，因为这里这两项的校验是 optional
         if 'title' in values:
@@ -133,8 +133,9 @@ class TopicView(UserMixin, PeeweeView):
         values = values_lst[0]
         form = TopicNewForm(**raw_post)
         if not form.validate():
-            return RETCODE.FAILED, form.errors
+            return self.finish(RETCODE.FAILED, form.errors)
         values['user_id'] = self.current_user.id
+        print(values)
 
         # 以下通用
         if not config.POST_ID_GENERATOR == config.AutoGenerator:

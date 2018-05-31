@@ -1,5 +1,5 @@
 from lib import upload
-from model.upload import Upload
+from model.upload import UserUpload
 from slim.base.permission import Permissions
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -10,7 +10,7 @@ from view.user import UserMixin
 
 @route('upload')
 class TopicView(UserMixin, PeeweeView):
-    model = Upload
+    model = UserUpload
 
     @route.interface('POST')
     async def token(self):

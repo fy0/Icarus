@@ -246,11 +246,11 @@ class UserView(UserMixin, PeeweeView):
         # 自动填充或改写以下值：
         # id password salt group state key key_time time
         if not config.USER_ALLOW_SIGNUP:
-            return RETCODE.FAILED, '注册未开放'
+            return self.finish(RETCODE.FAILED, '注册未开放')
 
         form = SignupForm(**raw_post)
         if not form.validate():
-            return RETCODE.FAILED, form.errors
+            return self.finish(RETCODE.FAILED, form.errors)
 
         if not config.POST_ID_GENERATOR == config.AutoGenerator:
             uid = User.gen_id().to_bin()

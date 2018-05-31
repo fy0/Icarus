@@ -79,6 +79,7 @@ UPLOAD_QINIU_SAVEKEY = '$(etag)'
 UPLOAD_QINIU_DEADLINE_OFFSET = 3600  # 上传key有效时间 10分钟
 UPLOAD_FILE_SIZE_MIN = 100
 UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024
+UPLOAD_QINIU_MAGIC_KEY = '6Z2S6Z2S5a2Q6KG/77yM5oKg5oKg5oiR5b+D44CC'
 UPLOAD_QINIU_MIME_LIMIT = 'image/jpeg;image/png'
 
 ##########################################
