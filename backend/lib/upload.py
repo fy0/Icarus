@@ -1,3 +1,4 @@
+import json
 import time
 import qiniu
 import config
@@ -10,24 +11,30 @@ def init():
     q = qiniu.Auth(config.UPLOAD_QINIU_ACCESS_KEY, config.UPLOAD_QINIU_SECRET_KEY)
 
 
-def get_token(user_id=None):
+def get_token(user_id=None, type_name=None):
     if not config.UPLOAD_ENABLE: return
+    empty = 'null'
     token = q.upload_token(config.UPLOAD_QINIU_BUCKET, policy={
         'scope': config.UPLOAD_QINIU_BUCKET,
         'saveKey': config.UPLOAD_QINIU_SAVEKEY,
         'deadline': int(time.time()) + config.UPLOAD_QINIU_DEADLINE_OFFSET,
-        # 'callbackUrl': '',
-        # 'callbackHost': '1',
-        'callbackBody': {"key": "$(key)", "hash": "$(etag)", 'user_id': user_id,
-                         "w": "$(imageInfo.width)", "h": "$(imageInfo.height)"},
-        'callbackHost': config.UPLOAD_QINIU_MAGIC_KEY,
-        'callbackBodyType': 'application/json',
+        'callbackUrl': config.UPLOAD_QINIU_CALLBACK_URL,
+        # 'callbackBody': json.dumps({"key": "$(key)", "hash": "$(etag)",
+        #                  "w": "$(imageInfo.width)", "h": "$(imageInfo.height)"}),
+        # 'callbackBodyType': 'application/json',
+        'callbackBody': 'key=$(key)&hash=$(etag)&w=$(imageInfo.width)&h=$(imageInfo.height)'
+                        f'&user_id={user_id or empty}&type_name={type_name or empty}',
         'fsizeMin': config.UPLOAD_FILE_SIZE_MIN,
         'fsizeLimit': config.UPLOAD_FILE_SIZE_MAX,
         'mimeLimit': config.UPLOAD_QINIU_MIME_LIMIT,
         'endUser': user_id,
     })
     return token
+
+
+def verify_callback(auth, url, body):
+    if not config.UPLOAD_ENABLE: return
+    return q.verify_callback(auth, url, body)
 
 
 def upload_local(token, data, key=None):

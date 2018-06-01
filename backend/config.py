@@ -9,15 +9,15 @@ from slim.utils import CustomID
 ##########################################
 
 SITE_NAME = 'Icarus'  # 站点名称
-SITE_URL = 'http://localhost:8080'  # 站点地址
+SITE_URL = 'http://localhost:8080'  # 必填，站点地址，末尾不要带 /
 
 HOST = '0.0.0.0'
 PORT = 9999
 DEBUG = logging.DEBUG
-DATABASE_URI = 'postgresql://postgres@localhost/icarus'
-COOKIE_SECRET = b"6aOO5ZC55LiN5pWj6ZW/5oGo77yM6Iqx5p+T5LiN6YCP5Lmh5oSB44CC"
+DATABASE_URI = 'postgresql://postgres@localhost/icarus'  # 必填
+COOKIE_SECRET = b"6aOO5ZC55LiN5pWj6ZW/5oGo77yM6Iqx5p+T5LiN6YCP5Lmh5oSB44CC"  # 必填，务必修改默认值
 
-REDIS_HOST = 'localhost'
+REDIS_HOST = 'localhost'  # 现阶段暂未使用
 REDIS_PORT = 6378
 
 ##########################################
@@ -77,10 +77,10 @@ UPLOAD_QINIU_SECRET_KEY = 'PLACE_HOLDER'
 UPLOAD_QINIU_BUCKET = 'PLACE_HOLDER'
 UPLOAD_QINIU_SAVEKEY = '$(etag)'
 UPLOAD_QINIU_DEADLINE_OFFSET = 3600  # 上传key有效时间 10分钟
+UPLOAD_QINIU_MIME_LIMIT = 'image/*'
+UPLOAD_QINIU_CALLBACK_URL = 'PLACE_HOLDER'  # 开启时必填，七牛上传回调地址
 UPLOAD_FILE_SIZE_MIN = 100
 UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024
-UPLOAD_QINIU_MAGIC_KEY = '6Z2S6Z2S5a2Q6KG/77yM5oKg5oKg5oiR5b+D44CC'
-UPLOAD_QINIU_MIME_LIMIT = 'image/jpeg;image/png'
 
 ##########################################
 # 可选 - ID生成器配置

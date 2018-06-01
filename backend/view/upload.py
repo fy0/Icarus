@@ -20,6 +20,20 @@ class TopicView(UserMixin, PeeweeView):
                 return self.finish(RETCODE.SUCCESS, upload.get_token(user.id.hex()))
         self.finish(RETCODE.FAILED)
 
+    @route.interface('POST')
+    async def qn_callback(self):
+        ua = self.headers.get('User-Agent', None)
+        if not (ua and ua.startswith('qiniu-callback')):
+            return self.finish(RETCODE.FAILED)
+
+        auth = self.headers.get('Authorization', None)
+        if auth:
+            if upload.verify_callback(auth, self._request.url, str(await self._request.content.read(), 'utf-8')):
+                # 鉴权成功，确认为七牛服务器回调。
+                return self.finish(RETCODE.SUCCESS)
+
+        self.finish(RETCODE.FAILED)
+
     @classmethod
     def ready(cls):
         cls.add_soft_foreign_key('hash', 'upload_entity')
