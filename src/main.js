@@ -188,7 +188,7 @@ router.beforeEach(async function (to, from, next) {
     }
 
     if (!state.user) {
-        if (to.name === 'account_setting') {
+        if (to.name === 'setting') {
             state.loading = 0
             nprogress.done()
             toUrl = '/'
