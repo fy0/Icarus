@@ -1,35 +1,67 @@
 <template>
-<div class="ic-container">
-    <form class="ic-form">
-        <div class="ic-form-row">
-            <span></span>
-            <h4 style="margin: 0">修改密码</h4>
+<setting-base>
+    <div v-title>修改密码 - 用户设置 - {{state.config.title}}</div>
+    <div class="left">
+        <div>
         </div>
+    </div>
+    <div class="right">
+        <div class="rbox">
+            <form class="ic-form">
+                <div class="ic-form-row">
+                    <span></span>
+                    <h4 style="margin: 0">修改密码</h4>
+                </div>
 
-        <check-row :flex="true" :results="formErrors.old_password" :check="true" :text='checkPasswordText'>
-            <label for="old_password">旧密码</label>
-            <input type="password" name="old_password" id="old_password" v-model="info.old_password">
-        </check-row>
+                <check-row :flex="true" :results="formErrors.old_password" :check="true" :text='checkPasswordText'>
+                    <label for="old_password">旧密码</label>
+                    <input type="password" name="old_password" id="old_password" v-model="info.old_password">
+                </check-row>
 
-        <check-row :flex="true" :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
-            <label for="password">新密码</label>
-            <input type="password" name="password" id="password" v-model="info.password">
-        </check-row>
+                <check-row :flex="true" :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
+                    <label for="password">新密码</label>
+                    <input type="password" name="password" id="password" v-model="info.password">
+                </check-row>
 
-        <check-row :flex="true" :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
-            <label for="password2">重复密码</label>
-            <input type="password" name="password2" id="password2" v-model="info.password2">
-        </check-row>
+                <check-row :flex="true" :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
+                    <label for="password2">重复密码</label>
+                    <input type="password" name="password2" id="password2" v-model="info.password2">
+                </check-row>
 
-        <div class="ic-form-row">
-            <span></span>
-            <input class="ic-btn green click" type="submit" @click.prevent="changePassword" value="确 认">
+                <div class="ic-form-row">
+                    <span></span>
+                    <input class="ic-btn green click" type="submit" @click.prevent="changePassword" value="确 认">
+                </div>
+            </form>
         </div>
-    </form>
-</div>
+    </div>
+</setting-base>
 </template>
 
 <style scoped>
+
+.box {
+    display: flex;
+    flex-direction: row;
+}
+
+.box > .left {
+    display: flex;
+    flex: 3 0 0%;
+
+    /* border: 1px solid #ccc; */
+    align-items: center;
+    justify-content: center;
+}
+
+.box > .right {
+    flex: 9 0 0%;
+}
+
+.right > .rbox {
+    margin-left: 20px;
+}
+
 .ic-form {
     display: flex;
     flex-direction: column;
@@ -64,11 +96,13 @@
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
-import CheckRow from '../utils/checkrow.vue'
+import SettingBase from '../base/base.vue'
+import CheckRow from '@/components/utils/checkrow.vue'
 
 export default {
     data () {
         return {
+            state,
             info: {
                 old_password: '',
                 password: '',
@@ -113,7 +147,8 @@ export default {
         }
     },
     components: {
-        CheckRow
+        CheckRow,
+        SettingBase
     }
 }
 </script>

@@ -1,3 +1,5 @@
+import json
+
 from lib import upload
 from model.upload import UserUpload
 from slim.base.permission import Permissions
@@ -28,8 +30,11 @@ class TopicView(UserMixin, PeeweeView):
 
         auth = self.headers.get('Authorization', None)
         if auth:
-            if upload.verify_callback(auth, self._request.url, str(await self._request.content.read(), 'utf-8')):
-                # 鉴权成功，确认为七牛服务器回调。
+            content = str(await self._request.content.read(), 'utf-8')
+            if upload.verify_callback(auth, self._request.url, content):
+                # 鉴权成功，确认为七牛服务器回调
+                info = json.loads(content)
+                # key hash user_id type_name w h
                 return self.finish(RETCODE.SUCCESS)
 
         self.finish(RETCODE.FAILED)

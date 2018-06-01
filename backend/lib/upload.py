@@ -19,11 +19,12 @@ def get_token(user_id=None, type_name=None):
         'saveKey': config.UPLOAD_QINIU_SAVEKEY,
         'deadline': int(time.time()) + config.UPLOAD_QINIU_DEADLINE_OFFSET,
         'callbackUrl': config.UPLOAD_QINIU_CALLBACK_URL,
-        # 'callbackBody': json.dumps({"key": "$(key)", "hash": "$(etag)",
-        #                  "w": "$(imageInfo.width)", "h": "$(imageInfo.height)"}),
-        # 'callbackBodyType': 'application/json',
-        'callbackBody': 'key=$(key)&hash=$(etag)&w=$(imageInfo.width)&h=$(imageInfo.height)'
-                        f'&user_id={user_id or empty}&type_name={type_name or empty}',
+        'callbackBody': json.dumps({"key": "$(key)", "hash": "$(etag)", "user_id": user_id,
+                                    "type_name": type_name, "w": "$(imageInfo.width)",
+                                    "h": "$(imageInfo.height)"}),
+        'callbackBodyType': 'application/json',
+        #'callbackBody': 'key=$(key)&hash=$(etag)&w=$(imageInfo.width)&h=$(imageInfo.height)'
+        #                f'&user_id={user_id or empty}&type_name={type_name or empty}',
         'fsizeMin': config.UPLOAD_FILE_SIZE_MIN,
         'fsizeLimit': config.UPLOAD_FILE_SIZE_MAX,
         'mimeLimit': config.UPLOAD_QINIU_MIME_LIMIT,
@@ -34,7 +35,7 @@ def get_token(user_id=None, type_name=None):
 
 def verify_callback(auth, url, body):
     if not config.UPLOAD_ENABLE: return
-    return q.verify_callback(auth, url, body)
+    return q.verify_callback(auth, url, body, 'application/json')
 
 
 def upload_local(token, data, key=None):

@@ -5,11 +5,15 @@ import AccountSignin from '@/components/account/signin.vue'
 import AccountSignup from '@/components/account/signup.vue'
 import AccountUserPage from '@/components/account/userpage.vue'
 import AccountNotif from '@/components/account/notif.vue'
-import AccountSetting from '@/components/account/setting.vue'
 import AccountActivation from '@/components/account/activation.vue'
 import AccountPasswordReset from '@/components/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/components/account/password_reset_req.vue'
 import AccountFiles from '@/components/account/files.vue'
+
+import AccountSetting from '@/components/account/settings/setting.vue'
+import AccountSettingUserinfoMe from '@/components/account/settings/userinfo/me.vue'
+import AccountSettingSecurityPassword from '@/components/account/settings/security/password.vue'
+import AccountSettingSecurityOAuth from '@/components/account/settings/security/oauth.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
@@ -75,6 +79,24 @@ export default new Router({
             path: '/account/setting',
             name: 'account_setting',
             component: AccountSetting
+        },
+        // 用户 - 设置 - 个人信息
+        {
+            path: '/account/setting/userinfo/me',
+            name: 'account_setting_userinfo_me',
+            component: AccountSettingUserinfoMe
+        },
+        // 用户 - 设置 - 修改密码
+        {
+            path: '/account/setting/security/password',
+            name: 'account_setting_security_password',
+            component: AccountSettingSecurityPassword
+        },
+        // 用户 - 设置 - 绑定账号（第三方登录）
+        {
+            path: '/account/setting/security/oauth',
+            name: 'account_setting_security_oauth',
+            component: AccountSettingSecurityOAuth
         },
 
         // 用户 - 个人文件
