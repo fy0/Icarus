@@ -31,10 +31,11 @@ class TopicView(UserMixin, PeeweeView):
         auth = self.headers.get('Authorization', None)
         if auth:
             content = str(await self._request.content.read(), 'utf-8')
-            if upload.verify_callback(auth, self._request.url, content):
+            if upload.verify_callback(auth, str(self._request.url), content):
                 # 鉴权成功，确认为七牛服务器回调
                 info = json.loads(content)
-                # key hash user_id type_name w h
+                UserUpload.new(info['user_id'], info['key'], info['size'],
+                               info['ext'], info['type_name'], info['image_info'])
                 return self.finish(RETCODE.SUCCESS)
 
         self.finish(RETCODE.FAILED)

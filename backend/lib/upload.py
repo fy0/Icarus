@@ -13,15 +13,20 @@ def init():
 
 def get_token(user_id=None, type_name=None):
     if not config.UPLOAD_ENABLE: return
-    empty = 'null'
     token = q.upload_token(config.UPLOAD_QINIU_BUCKET, policy={
         'scope': config.UPLOAD_QINIU_BUCKET,
         'saveKey': config.UPLOAD_QINIU_SAVEKEY,
         'deadline': int(time.time()) + config.UPLOAD_QINIU_DEADLINE_OFFSET,
         'callbackUrl': config.UPLOAD_QINIU_CALLBACK_URL,
-        'callbackBody': json.dumps({"key": "$(key)", "hash": "$(etag)", "user_id": user_id,
-                                    "type_name": type_name, "w": "$(imageInfo.width)",
-                                    "h": "$(imageInfo.height)"}),
+        'callbackBody': json.dumps({"key": "$(key)", "user_id": user_id,
+                                    "type_name": type_name, "size": "$(fsize)", "ext": "$(ext)",
+                                    "image_info": {
+                                        "format": "$(imageInfo.format)",
+                                        "width": "$(imageInfo.width)",
+                                        "height": "$(imageInfo.height)",
+                                        "colorModel": "$(imageInfo.colorModel)",
+                                        "size": "$(imageInfo.size)",
+                                    }}),
         'callbackBodyType': 'application/json',
         #'callbackBody': 'key=$(key)&hash=$(etag)&w=$(imageInfo.width)&h=$(imageInfo.height)'
         #                f'&user_id={user_id or empty}&type_name={type_name or empty}',
@@ -33,7 +38,7 @@ def get_token(user_id=None, type_name=None):
     return token
 
 
-def verify_callback(auth, url, body):
+def verify_callback(auth, url: str, body: str):
     if not config.UPLOAD_ENABLE: return
     return q.verify_callback(auth, url, body, 'application/json')
 
