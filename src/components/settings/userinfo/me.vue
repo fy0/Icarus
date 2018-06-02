@@ -1,7 +1,49 @@
 <template>
 <setting-base>
     <div v-title>个人信息 - 用户设置 - {{state.config.title}}</div>
-    <span>测试</span>
+
+    <div class="topic-manage-item">
+        <span class="label">Email</span>
+        <div class="right">
+            <div>{{user.email}}</div>
+        </div>
+    </div>
+    <div class="topic-manage-item">
+        <span class="label">昵称</span>
+        <div class="right">
+            <div>{{user.nickname}}</div>
+        </div>
+    </div>
+    <div class="topic-manage-item">
+        <span class="label">注册时间</span>
+        <div class="right">
+            <ic-time :ago="false" :timestamp="user.time" />
+        </div>
+    </div>
+    <div class="topic-manage-item">
+        <span class="label">最后登录时间</span>
+        <div class="right">
+            <ic-time :ago="false" :timestamp="user.key_time" />
+        </div>
+    </div>
+    <div class="topic-manage-item">
+        <span class="label">简介</span>
+        <div class="right">
+            <mu-text-field v-model="user.biology" :maxLength="255"/>
+        </div>
+    </div>
+    <div class="topic-manage-item" style="align-items: center">
+        <span class="label">状态</span>
+        <div class="right" style="display: flex">
+            {{state.misc.POST_STATE_TXT[user.state]}}
+        </div>
+    </div>
+    <div class="topic-manage-item" style="align-items: center">
+        <span class="label">用户组</span>
+        <div class="right" style="display: flex">
+            {{state.misc.USER_GROUP_TXT[user.group]}}
+        </div>
+    </div>
 </setting-base>
 </template>
 
@@ -19,6 +61,11 @@ export default {
             state
         }
     },
+    computed: {
+        'user': function () {
+            return state.user
+        }
+    },
     methods: {
         fetchData: async function () {
             // let params = this.$route.params
@@ -28,6 +75,7 @@ export default {
         }
     },
     created: async function () {
+        console.log(state.user)
         let key = state.loadingGetKey(this.$route)
         this.state.loadingInc(this.$route, key)
         await this.fetchData()

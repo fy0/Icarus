@@ -1,7 +1,7 @@
 import json
 
 from lib import upload
-from model.upload import UserUpload
+from model.user_upload import UserUpload
 from slim.base.permission import Permissions
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -42,7 +42,7 @@ class TopicView(UserMixin, PeeweeView):
 
     @classmethod
     def ready(cls):
-        cls.add_soft_foreign_key('hash', 'upload_entity')
+        pass
 
     @classmethod
     def permission_init(cls):

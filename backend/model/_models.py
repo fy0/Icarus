@@ -9,7 +9,7 @@ from model.notif import Notification, UserNotifRecord
 from model.statistic import Statistic, Statistic24h
 from model.test import Test
 from model.topic import Topic
-from model.upload import UserUpload
+from model.user_upload import UserUpload
 from model.user import User
 from model.wiki import WikiItem, WikiArticle, WikiHistory
 
