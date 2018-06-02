@@ -15,6 +15,10 @@ body, button, input, select, textarea {
     box-sizing: border-box;
 }
 
+h1, h2, h3, h4, h5, h6, h7 {
+    margin: 0;
+}
+
 .del-line {
     text-decoration-line: line-through;
 }
@@ -24,6 +28,14 @@ body, button, input, select, textarea {
     margin-right: auto;
     margin: 30px 0 !important;
     border-bottom: 1px solid #eee;
+}
+
+.ic-header {
+    font-weight: bolder;
+    font-size: 18px;
+    border-bottom: 1px #e1e4e8 solid;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
 }
 
 .ic-container {
@@ -36,6 +48,11 @@ body, button, input, select, textarea {
     
     display: flex;
     flex-direction: column;
+}
+
+.ic-input {
+    resize: none;
+    border: 1px #ccc solid;
 }
 
 .pure-table {
