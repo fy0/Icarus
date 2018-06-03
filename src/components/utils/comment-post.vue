@@ -24,7 +24,7 @@
                     <div style="margin-left: 10px">正在回复：{{replyTo.user_id.nickname}}</div>
                 </div>
                 <mu-paper :zDepth="editing ? 2 : 1">
-                    <mu-raised-button label="发表" class="postBtn" @click="commentPost" primary />
+                    <button class="postBtn ic-btn primary" @click="commentPost">发表</button>
                 </mu-paper>
             </div>
         </div>
@@ -80,6 +80,8 @@
 }
 
 .postBtn {
+    padding-left: 20px;
+    padding-right: 20px;
 }
 </style>
 

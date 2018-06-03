@@ -1,7 +1,7 @@
 <template>
 <div class="ic-topbtns" style="margin-bottom: 15px">
-    <router-link class="ic-btn keep blue" :to="{ name: 'admin' }">管理界面</router-link>
-    <router-link class="ic-btn keep orange" :to="{ name: 'forum_recent' }">概览</router-link>
+    <router-link class="top-nav-btn keep blue" :to="{ name: 'admin' }">管理界面</router-link>
+    <router-link class="top-nav-btn keep orange" :to="{ name: 'forum_recent' }">概览</router-link>
 </div>
 </template>
 

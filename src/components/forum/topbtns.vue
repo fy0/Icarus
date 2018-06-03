@@ -1,8 +1,8 @@
 <template>
 <div class="ic-topbtns">
-    <router-link class="ic-btn keep blue" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
-    <router-link class="ic-btn orange" :to="{ name: 'forum' }" :class="navActiveStrict('forum')">板块列表</router-link>
-    <router-link class="ic-btn orange" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">最近话题</router-link>
+    <router-link class="ic-btn primary" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
+    <router-link class="ic-btn borderless orange" :to="{ name: 'forum' }" :class="navActiveStrict('forum')">板块列表</router-link>
+    <router-link class="ic-btn borderless orange" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">最近话题</router-link>
 </div>
 </template>
 

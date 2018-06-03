@@ -90,12 +90,7 @@ marked.setOptions({
     }
 })
 
-import './assets/css/base.scss'
-import './assets/css/base.css'
-import './assets/css/button.css'
-import './assets/css/form.css'
-import './assets/css/am-alert.css'
-import './assets/icons/iconfont.css'
+import './assets/css/base-ui.scss'
 import './tools.js'
 
 import state from './state.js'

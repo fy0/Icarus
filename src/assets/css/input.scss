@@ -2,9 +2,9 @@
 .ic-form > .ic-form-row > input[type=number], .ic-form > .ic-form-row > input[type=search], .ic-form > .ic-form-row > input[type=text], .ic-form > .ic-form-row > input[type=password], .ic-form > .ic-form-row > input[type=datetime], 
 .ic-form > .ic-form-row > input[type=datetime-local], .ic-form > .ic-form-row > input[type=date], .ic-form > .ic-form-row > input[type=month], .ic-form > .ic-form-row > input[type=time], .ic-form > .ic-form-row > input[type=week], 
 .ic-form > .ic-form-row > input[type=email], .ic-form > .ic-form-row > input[type=url], .ic-form > .ic-form-row > input[type=tel], .ic-form > .ic-form-row > input[type=color], .ic-form > .ic-form-row select, .ic-form > .ic-form-row textarea, .ic-form > .ic-form-row-field {
-    border-color: #ddd !important;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    border-color: $gray-300 !important;
+    background-color: $white;
+    border: 1px solid $gray-400;
     line-height: 20px;
     height: 30px;
     padding: 0px 5px;
@@ -24,4 +24,9 @@
 
 .ic-form > .ic-form-row.error > input {
     border-color: #FF6060 !important;
+}
+
+.ic-input {
+    resize: none;
+    border: 1px $gray-400 solid;
 }

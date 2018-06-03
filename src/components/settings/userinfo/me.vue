@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <button class="ic-btn keep blue">更新个人信息</button>
+                <button class="ic-btn primary">更新个人信息</button>
             </div>
         </div>
         <div class="right">

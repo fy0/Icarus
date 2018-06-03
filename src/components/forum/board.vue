@@ -15,7 +15,7 @@
     <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
 
     <div class="ic-xs ic-hidden xs-box">
-        <router-link class="ic-btn keep blue" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
+        <router-link class="top-nav-btn keep blue" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
     </div>
 
     <div class="board-page-box">

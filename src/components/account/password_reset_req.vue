@@ -15,7 +15,7 @@
 
             <div class="ic-form-row">
                 <span></span>
-                <input class="ic-btn green click" type="submit" @click.prevent="resetPassword" value="申请重置密码">
+                <input class="top-nav-btn green click" type="submit" @click.prevent="resetPassword" value="申请重置密码">
             </div>
     
             <div class="ic-form-row">

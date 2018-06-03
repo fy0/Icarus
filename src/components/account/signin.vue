@@ -12,7 +12,7 @@
                 <input type="password" name="password" id="password" v-model="info.password">
             </check-row>
             <div class="ic-form-row">
-                <input class="ic-btn green click" type="submit" @click.prevent="login" name="" value="登 录">
+                <input class="top-nav-btn green click" type="submit" @click.prevent="login" name="" value="登 录">
             </div>
             <div class="ic-form-row">
                 <router-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</router-link>
