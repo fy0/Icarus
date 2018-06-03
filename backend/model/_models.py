@@ -28,6 +28,7 @@ def reset():
     DROP TABLE IF EXISTS "topic";
     DROP TABLE IF EXISTS "user";
     DROP TABLE IF EXISTS "user_notif_record";
+    DROP TABLE IF EXISTS "user_oauth";
     DROP TABLE IF EXISTS "wiki_history";
     DROP TABLE IF EXISTS "wiki_item";
     DROP TABLE IF EXISTS "wiki_article";
@@ -62,7 +63,7 @@ except peewee.ProgrammingError:
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
                   Notification, UserNotifRecord,
-                  # UserOAuth,
+                  UserOAuth,
                   Upload, UploadEntity,
                   ManageLog,
                   Statistic, Statistic24h], safe=True)
