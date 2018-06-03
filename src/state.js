@@ -34,7 +34,9 @@ let state = {
         boardManage: null,
         boardManageData: null,
         userManage: null,
-        userManageData: null
+        userManageData: null,
+        commentManage: null,
+        commentManageData: null
     },
     unread: 0,
     user: null,

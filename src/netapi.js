@@ -170,6 +170,12 @@ class NotifViewRequest extends SlimViewRequest {
     }
 }
 
+class UploadViewRequest extends SlimViewRequest {
+    async token (role) {
+        return await npost(`${this.urlPrefix}/token`, null, null, role)
+    }
+}
+
 let retcode = {
     SUCCESS: 0
 }
@@ -193,5 +199,6 @@ export default {
     topic: new SlimViewRequest('topic'),
     comment: new SlimViewRequest('comment'),
     notif: new NotifViewRequest('notif'),
+    upload: new UploadViewRequest('upload'),
     logManage: new NotifViewRequest('log/manage')
 }

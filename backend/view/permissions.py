@@ -1,6 +1,8 @@
+from typing import List, Set
+
 from model._post import POST_STATE, POST_VISIBLE
 from slim.base.permission import Ability, A, DataRecord
-from slim.base.sqlquery import SQLQueryInfo
+from slim.base.sqlquery import SQLQueryInfo, SQL_OP
 
 visitor = Ability(None, {
     'topic': {
@@ -119,19 +121,15 @@ normal_user = Ability('user', {
         'state': (A.READ, A.WRITE,),
         'content': (A.READ, A.CREATE,),
     },
-    'upload': {
+    'user_upload': {
         'id': (A.READ, A.QUERY),
+        'user_id': (A.READ, A.QUERY),
         'state': (A.READ,),
         'visible': (A.READ,),
         'time': (A.READ,),
-        'user_id': (A.READ,),
-        'hash': (A.READ,)
-    },
-    'upload_entity': {
-        'id': (A.READ,),
-        'time': (A.READ,),
-        'size': (A.READ,),
-        'format': (A.READ,)
+        'key': (A.READ, A.QUERY),
+        'size': (A.READ, A.QUERY),
+        'type_name': (A.READ, A.QUERY),
     }
 }, based_on=inactive_user)
 
@@ -187,13 +185,23 @@ def permissions_add_all(permission):
 
 # user
 
-def user_check(ability, user, action, record: DataRecord, available_columns: list):
-    if user and record.get('id') == user.id:
-        available_columns.append('email')
-    return True
+def func(ability, user, query: 'SQLQueryInfo'):
+    for i in query.conditions.find('id'):
+        if i[1] == SQL_OP.EQ and i[2] == user.id.hex():
+            query.select.add('email')
 
 
-normal_user.add_record_check([A.READ], 'user', func=user_check)
+inactive_user.add_query_condition('user', func=func)
+normal_user.add_query_condition('user', func=func)
+
+# user_upload
+
+
+def func(ability, user, query: 'SQLQueryInfo'):
+    query.add_condition('user_id', '==', user.id)
+
+
+normal_user.add_query_condition('user_upload', func=func)
 
 # topic
 

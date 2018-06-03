@@ -1,11 +1,8 @@
 <template>
-<div class="ic-container">
+<setting-base>
+    <div v-title>修改密码 - 用户设置 - {{state.config.title}}</div>
+    <h3 class="ic-header">修改密码</h3>
     <form class="ic-form">
-        <div class="ic-form-row">
-            <span></span>
-            <h4 style="margin: 0">修改密码</h4>
-        </div>
-
         <check-row :flex="true" :results="formErrors.old_password" :check="true" :text='checkPasswordText'>
             <label for="old_password">旧密码</label>
             <input type="password" name="old_password" id="old_password" v-model="info.old_password">
@@ -26,7 +23,7 @@
             <input class="ic-btn green click" type="submit" @click.prevent="changePassword" value="确 认">
         </div>
     </form>
-</div>
+</setting-base>
 </template>
 
 <style scoped>
@@ -36,7 +33,7 @@
     align-items: center;
     width: 420px;
 
-    padding: 10px 30px;
+    padding: 10px 30px 10px 0px;
 }
 
 .ic-form-row {
@@ -64,11 +61,13 @@
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
-import CheckRow from '../utils/checkrow.vue'
+import SettingBase from '../base/base.vue'
+import CheckRow from '@/components/utils/checkrow.vue'
 
 export default {
     data () {
         return {
+            state,
             info: {
                 old_password: '',
                 password: '',
@@ -113,7 +112,8 @@ export default {
         }
     },
     components: {
-        CheckRow
+        CheckRow,
+        SettingBase
     }
 }
 </script>

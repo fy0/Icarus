@@ -5,11 +5,20 @@ import AccountSignin from '@/components/account/signin.vue'
 import AccountSignup from '@/components/account/signup.vue'
 import AccountUserPage from '@/components/account/userpage.vue'
 import AccountNotif from '@/components/account/notif.vue'
+<<<<<<< HEAD
 import AccountOAuth from '@/components/account/oauth.vue'
 import AccountSetting from '@/components/account/setting.vue'
+=======
+>>>>>>> e6f6c24f210259243c40a81579bb24f7fedc3f1f
 import AccountActivation from '@/components/account/activation.vue'
 import AccountPasswordReset from '@/components/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/components/account/password_reset_req.vue'
+import AccountFiles from '@/components/account/files.vue'
+
+import Setting from '@/components/settings/setting.vue'
+import SettingUserinfoMe from '@/components/settings/userinfo/me.vue'
+import SettingSecurityPassword from '@/components/settings/security/password.vue'
+import SettingSecurityOAuth from '@/components/settings/security/oauth.vue'
 
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
@@ -70,11 +79,11 @@ export default new Router({
             component: AccountUserPage
         },
 
-        // 用户 - 设置
+        // 用户 - 个人文件
         {
-            path: '/account/setting',
-            name: 'account_setting',
-            component: AccountSetting
+            path: '/account/files',
+            name: 'account_files',
+            component: AccountFiles
         },
 
         // 用户 - 个人提醒
@@ -119,6 +128,31 @@ export default new Router({
             path: '/topic/:id([a-fA-F0-9]+)',
             name: 'forum_topic',
             component: ForumTopic
+        },
+
+        // 设置
+        {
+            path: '/setting',
+            name: 'setting',
+            component: Setting
+        },
+        // 设置 - 用户 - 个人信息
+        {
+            path: '/setting/user/me',
+            name: 'setting_user_me',
+            component: SettingUserinfoMe
+        },
+        // 设置 - 安全 - 修改密码
+        {
+            path: '/setting/security/password',
+            name: 'setting_security_password',
+            component: SettingSecurityPassword
+        },
+        // 设置 - 安全 - 绑定账号（第三方登录）
+        {
+            path: '/setting/security/oauth',
+            name: 'setting_security_oauth',
+            component: SettingSecurityOAuth
         },
 
         // 管理

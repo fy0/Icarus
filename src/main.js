@@ -8,6 +8,7 @@ import nprogress from 'nprogress/nprogress.js'
 import 'animate.css'
 import 'font-awesome/css/font-awesome.css'
 import 'lodash'
+import 'qiniu-js'
 import 'nprogress/nprogress.css'
 // muse-ui 包含 normalize.css
 import MuseUI from 'muse-ui'
@@ -111,6 +112,7 @@ import PostLink from './components/utils/post-link.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
 import DialogUserManage from './components/utils/dialogs/user-manage.vue'
+import DialogCommentManage from './components/utils/dialogs/comment-manage.vue'
 
 Vue.component('page-not-found', PageNotFound)
 Vue.component('redirecting', Redirecting)
@@ -122,6 +124,7 @@ Vue.component('user-link', UserLink)
 Vue.component('post-link', PostLink)
 Vue.component('dialog-topic-manage', DialogTopicManage)
 Vue.component('dialog-user-manage', DialogUserManage)
+Vue.component('dialog-comment-manage', DialogCommentManage)
 
 Vue.directive('title', {
     inserted: function (el, binding) {
@@ -185,7 +188,7 @@ router.beforeEach(async function (to, from, next) {
     }
 
     if (!state.user) {
-        if (to.name === 'account_setting') {
+        if (to.name === 'setting') {
             state.loading = 0
             nprogress.done()
             toUrl = '/'

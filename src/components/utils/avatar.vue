@@ -1,11 +1,18 @@
 <!-- 用户头像 -->
 <template>
-<div style="display: flex">
-<a class="sa-avatar" :style="style" v-if="placeholder">
-</a>
-<router-link v-else class="sa-avatar" :style="style" :to="linkTo" >
-    <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
-</router-link>
+<div style="display: flex" v-if="isLink">
+    <a class="sa-avatar" :style="style" v-if="placeholder">
+    </a>
+    <router-link v-else class="sa-avatar" :style="style" :to="linkTo" >
+        <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
+    </router-link>
+</div>
+<div style="display: flex" v-else>
+    <span class="sa-avatar" :style="style" v-if="placeholder">
+    </span>
+    <span v-else class="sa-avatar" :style="style">
+        <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
+    </span>
 </div>
 </template>
 
@@ -36,6 +43,9 @@ export default {
         },
         placeholder: {
             default: false
+        },
+        isLink: {
+            default: true
         },
         size: {
             default: 50
