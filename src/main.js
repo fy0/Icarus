@@ -1,5 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+/* eslint-disable import/first */
+
 import Vue from 'vue'
 import App from './app'
 import router from './router'
@@ -88,6 +90,7 @@ marked.setOptions({
     }
 })
 
+import './assets/css/base.scss'
 import './assets/css/base.css'
 import './assets/css/button.css'
 import './assets/css/form.css'

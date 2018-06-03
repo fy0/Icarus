@@ -88,7 +88,7 @@ class SlimViewRequest {
         if (params && params.loadfk) {
             params.loadfk = JSON.stringify(params.loadfk)
         }
-        return await nget(`${this.urlPrefix}/get`, params, role)
+        return nget(`${this.urlPrefix}/get`, params, role)
     }
 
     async list (params, page = 1, size = null, role = null) {
@@ -97,26 +97,26 @@ class SlimViewRequest {
         }
         let url = `${this.urlPrefix}/list/${page}`
         if (size) url += `/${size}`
-        return await nget(url, params, role)
+        return nget(url, params, role)
     }
 
     async set (params, data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
-        return await npost(`${this.urlPrefix}/update`, params, data, role)
+        return npost(`${this.urlPrefix}/update`, params, data, role)
     }
 
     async update (params, data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
-        return await npost(`${this.urlPrefix}/update`, params, data, role)
+        return npost(`${this.urlPrefix}/update`, params, data, role)
     }
 
     async new (data, role = null, filter = null) {
         if (filter) data = filterValues(filter, data)
-        return await npost(`${this.urlPrefix}/new`, null, data, role)
+        return npost(`${this.urlPrefix}/new`, null, data, role)
     }
 
     async delete (params, role = null) {
-        return await npost(`${this.urlPrefix}/delete`, params, null, role)
+        return npost(`${this.urlPrefix}/delete`, params, null, role)
     }
 }
 
@@ -130,49 +130,50 @@ class UserViewRequest extends SlimViewRequest {
     }
 
     async activation (uid, code) {
-        return await nget(`${this.urlPrefix}/activation`, {uid, code})
+        return nget(`${this.urlPrefix}/activation`, {uid, code})
     }
 
     async getUserId () {
-        return await nget(`${this.urlPrefix}/get_userid`, null)
+        return nget(`${this.urlPrefix}/get_userid`, null)
     }
 
+    /* eslint-disable camelcase */
     async changePassword ({old_password, password}) {
-        return await npost(`${this.urlPrefix}/change_password`, null, {old_password, password})
+        return npost(`${this.urlPrefix}/change_password`, null, {old_password, password})
     }
 
     // 申请重置密码
     async RequestPasswordReset (nickname, email) {
-        return await npost(`${this.urlPrefix}/request_password_reset`, null, {nickname, email})
+        return npost(`${this.urlPrefix}/request_password_reset`, null, {nickname, email})
     }
 
     // 验证重置密码
     async validatePasswordReset (uid, code, password) {
-        return await npost(`${this.urlPrefix}/validate_password_reset`, null, {uid, code, password})
+        return npost(`${this.urlPrefix}/validate_password_reset`, null, {uid, code, password})
     }
 
     async signout () {
-        return await npost(`${this.urlPrefix}/signout`)
+        return npost(`${this.urlPrefix}/signout`)
     }
 }
 
 class NotifViewRequest extends SlimViewRequest {
     async count () {
-        return await nget(`${this.urlPrefix}/count`, null)
+        return nget(`${this.urlPrefix}/count`, null)
     }
 
     async refresh () {
-        return await npost(`${this.urlPrefix}/refresh`, null)
+        return npost(`${this.urlPrefix}/refresh`, null)
     }
 
     async setRead () {
-        return await npost(`${this.urlPrefix}/set_read`, null)
+        return npost(`${this.urlPrefix}/set_read`, null)
     }
 }
 
 class UploadViewRequest extends SlimViewRequest {
     async token (role) {
-        return await npost(`${this.urlPrefix}/token`, null, null, role)
+        return npost(`${this.urlPrefix}/token`, null, null, role)
     }
 }
 
@@ -191,7 +192,7 @@ export default {
 
     /** 获取综合信息 */
     misc: async function () {
-        return await nget(`${remote.API_SERVER}/api/misc/info`)
+        return nget(`${remote.API_SERVER}/api/misc/info`)
     },
 
     user: new UserViewRequest('user'),

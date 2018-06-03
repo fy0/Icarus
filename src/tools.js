@@ -16,11 +16,11 @@ $.scrollTo = function (el) {
         end: el.getBoundingClientRect().top + window.pageYOffset,
         duration: 500
     })
-    .on('tick', v => window.scrollTo(0, v))
-    .on('done', () => {
-        scroller = null
-    })
-    .begin()
+        .on('tick', v => window.scrollTo(0, v))
+        .on('done', () => {
+            scroller = null
+        })
+        .begin()
 }
 
 $.dateFormat = function (d, format) {

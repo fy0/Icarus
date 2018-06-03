@@ -130,7 +130,7 @@ export default {
                     if (password === '') {
                         swal.showValidationError('密码不能为空。')
                     }
-                    return await api.user.set({id: user.id}, {password}, 'admin')
+                    return api.user.set({id: user.id}, {password}, 'admin')
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -159,7 +159,7 @@ export default {
                 confirmButtonText: '确定，我要重置',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
-                    return await api.user.set({id: user.id}, {'key': '1'}, 'admin')
+                    return api.user.set({id: user.id}, {'key': '1'}, 'admin')
                 }
             }).then((result) => {
                 if (result.value == null) return

@@ -46,7 +46,7 @@ export default {
         text: String,
         results: Array,
 
-        absolute: {  // 注：multi 会覆盖此属性
+        absolute: { // 注：multi 会覆盖此属性
             type: Boolean,
             default: true
         },
