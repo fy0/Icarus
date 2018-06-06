@@ -39,14 +39,28 @@
                 <div class="setting-item">
                     <span class="label">简介</span>
                     <div class="line">
-                        <textarea class="commentArea" rows="5" placeholder="" v-model="user.biology" maxLength="255"></textarea>
+                        <textarea class="ic-input commentArea" rows="5" placeholder="" v-model="user.biology" maxLength="255"></textarea>
                     </div>
                 </div>
 
                 <div class="setting-item">
                     <span class="label">URL</span>
                     <div class="line">
-                        <input class="commentArea" rows="5" placeholder="" v-model="user.url" />
+                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.url" />
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <span class="label">所在地</span>
+                    <div class="line">
+                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.location" />
+                    </div>
+                </div>
+
+                <div class="setting-item" v-if="false">
+                    <span class="label">手机</span>
+                    <div class="line">
+                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.phone" />
                     </div>
                 </div>
 
@@ -93,8 +107,6 @@
 }
 
 .commentArea {
-    resize: none;
-    border: 1px #ccc solid;
     width: 100%;
 }
 

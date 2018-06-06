@@ -15,7 +15,7 @@
     <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
 
     <div class="ic-xs ic-hidden xs-box">
-        <router-link class="top-nav-btn keep blue" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
+        <router-link class="ic-btn primary" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
     </div>
 
     <div class="board-page-box">
@@ -81,6 +81,16 @@
                             <router-link class="item" :to="{ name: 'forum_board', params: {id: board.parent_id.id} }">
                                 <div class="sign" :style="lineStyle(board.parent_id)"></div>
                                 <span class="sub-board-item">{{board.parent_id.name}}</span>
+                            </router-link>
+                        </div>
+                    </template>
+
+                    <template v-if="siblingBoards">
+                        <p><strong>同级板块</strong></p>
+                        <div class="ul-subboards">
+                            <router-link v-for="j in siblingBoards" :key="j.id" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
+                                <div class="sign" :style="lineStyle(j)"></div>
+                                <span class="sub-board-item">{{j.name}}</span>
                             </router-link>
                         </div>
                     </template>
@@ -225,6 +235,7 @@ export default {
             loading: true,
             board: null,
             subBoards: [],
+            siblingBoards: [],
             topics: []
         }
     },
@@ -261,6 +272,11 @@ export default {
                 parent_id: params.id
             }, 1, null, state.getRole('user'))
             this.subBoards = subBoards.data.items
+
+            let siblingBoards = await api.board.list({
+                parent_id: ret.data.parent_id
+            }, 1, null, state.getRole('user'))
+            this.siblingBoards = siblingBoards.data.items
 
             let retList = await api.topic.list({
                 board_id: params.id,

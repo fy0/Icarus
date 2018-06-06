@@ -15,7 +15,7 @@
         </thead>
 
         <tbody>
-            <tr class="board-tr" v-for="i, _ in boardInfo.items" :key="_">
+            <tr class="board-tr" v-for="(i, _) in boardInfo.items" :key="_">
                 <td>{{_+1}}</td>
                 <td>{{i.name}}</td>
                 <td>{{i.brief}}</td>
@@ -36,7 +36,7 @@
             <input name="board_brief" v-model="boardNewInfo.brief" type="text" placeholder="简介">
         </div>
         <div class="btn">
-            <button class="top-nav-btn click blue" @click="boardNew">新建板块</button>
+            <button class="ic-btn success" @click="boardNew">新建板块</button>
         </div>
     </div>
     <dialog-board-manage />

@@ -44,13 +44,13 @@
     <div class="topic-manage-item" style="align-items: center">
         <span class="label">状态</span>
         <div class="right" style="display: flex">
-            <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="board.state" v-for="i, j in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
+            <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="board.state" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
         </div>
     </div>
     <div class="topic-manage-item" style="align-items: center">
         <span class="label">可见性</span>
         <div class="right" style="display: flex">
-            <mu-radio name="visible" :label="i" :nativeValue="j.toString()" v-model="board.visible" v-for="i, j in state.misc.POST_VISIBLE_TXT" :key="j" class="demo-radio"/>
+            <mu-radio name="visible" :label="i" :nativeValue="j.toString()" v-model="board.visible" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j" class="demo-radio"/>
         </div>
     </div>
     <div class="topic-manage-item" style="align-items: center">

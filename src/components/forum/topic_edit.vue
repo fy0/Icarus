@@ -5,7 +5,7 @@
         <div v-title>{{ is_edit ? '编辑主题' : '新建主题' }} - {{state.config.title}}</div>
         <h3 class="" v-if="!is_edit">新建主题</h3>
         <h3 class="" v-else>编辑主题<span v-if="asAdmin"> - 管理员模式</span></h3>
-        <button class="top-nav-btn click blue right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
+        <button class="ic-btn primary right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
     </div>
 
     <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
@@ -19,7 +19,7 @@
             <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
         </check-row>
         <div class="ic-form-row">
-            <button class="top-nav-btn click blue" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
+            <button class="ic-btn primary" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
         </div>
     </form>
 </div>
