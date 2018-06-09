@@ -208,7 +208,7 @@ aside > .brief {
 }
 
 .board-info > .box > .others {
-    padding: 1em 1em;
+    padding: 0 1em;
 }
 
 .board-note {
@@ -274,8 +274,9 @@ export default {
             this.subBoards = subBoards.data.items
 
             let siblingBoards = await api.board.list({
-                parent_id: ret.data.parent_id
+                parent_id: ret.data.parent_id ? ret.data.parent_id.id : null
             }, 1, null, state.getRole('user'))
+            console.log(111, siblingBoards, ret.data)
             this.siblingBoards = siblingBoards.data.items
 
             let retList = await api.topic.list({

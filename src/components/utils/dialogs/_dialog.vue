@@ -1,9 +1,9 @@
 <template>
-<div class="dialog-wrapper" tabindex="-1">
-    <div class="dialog-box" @click="closeOutside">
+<div class="dialog-wrapper" tabindex="-1" v-if="show">
+    <div class="dialog-box">
         <slot />
     </div>
-    <div class="dialog-overlay"></div>
+    <div class="dialog-overlay" @click="closeOutside"></div>
 </div>
 </template>
 
@@ -11,7 +11,7 @@
 .dialog-box {
     width: 75%;
     max-width: 768px;
-    padding: 0;
+    padding: 20px;
     background-color: #fff;
     border-radius: 2px;
     font-size: 16px;
@@ -91,7 +91,7 @@ export default {
             type: Boolean,
             default: true
         },
-        'okText': {
+        'confirmText': {
             type: String,
             default: '确定'
         },
@@ -99,11 +99,15 @@ export default {
             type: String,
             default: '取消'
         },
-        'onOK': {
+        'onConfirm': {
             type: Function,
             default: null
         },
         'onCancel': {
+            type: Function,
+            default: null
+        },
+        'onClose': {
             type: Function,
             default: null
         },
@@ -121,6 +125,12 @@ export default {
             state
         }
     },
-    methods: {}
+    methods: {
+        closeOutside: async function () {
+            if (this.onClose) {
+                this.onClose()
+            }
+        }
+    }
 }
 </script>

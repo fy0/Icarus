@@ -69,7 +69,7 @@
         </div>
         <div class="right">
             <div class="setting-item">
-                <div class="line" @click="avatarUploadShow = true" >
+                <div class="line" @click="state.dialog.userSetAvatar = true" >
                     <avatar :is-link="false" :user="user" :size="200" class="avatar"></avatar>
                 </div>
             </div>

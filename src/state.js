@@ -36,7 +36,9 @@ let state = {
         userManage: null,
         userManageData: null,
         commentManage: null,
-        commentManageData: null
+        commentManageData: null,
+        userSetAvatar: false,
+        userSetAvatarData: null
     },
     unread: 0,
     user: null,

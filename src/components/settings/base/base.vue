@@ -5,6 +5,7 @@
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>
     </div>
+    <dialog-user-set-avatar />
 </div>
 </template>
 
