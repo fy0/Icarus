@@ -34,6 +34,7 @@ $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
 $red:     #dc3545 !default;
+$red-2:   #e70013 !default;
 $orange:  #e45735 !default;
 $yellow:  #ffc107 !default;
 $green:   #55AA55 !default;
@@ -75,9 +76,10 @@ $theme-colors: map-merge((
   "info":       $info,
   "warning":    $warning,
   "danger":     $danger,
-  "orange":     $orange,
   "light":      $light,
-  "dark":       $dark
+  "dark":       $dark,
+  "icarus":     $red-2,
+  "orange":     $orange
 ), $theme-colors);
 
 // Set a specific jump point for requesting color jumps

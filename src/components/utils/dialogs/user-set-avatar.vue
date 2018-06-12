@@ -17,6 +17,15 @@
                 </div>
                 <div class="vicp-range">
                     <input class="ic-input primary" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input secondary" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input success" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input info" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input warning" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input warning" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input danger" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input orange" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input light" type="range" step="1" min="0" max="100" value="68">
+                    <input class="ic-input dark" type="range" step="1" min="0" max="100" value="68">
                     <i class="vicp-icon5"></i>
                     <i class="vicp-icon6"></i>
                 </div>

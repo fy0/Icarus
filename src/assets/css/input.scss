@@ -49,7 +49,8 @@
 input.ic-input[type=range] {
     border: none;
     display: block;
-    padding-top: 5px;
+    padding-top: 7px;
+    padding-bottom: 6px;
     margin: 0 auto;
     width: 180px;
     height: 8px;
@@ -150,16 +151,22 @@ input.ic-input[type=range] {
 }
 
 @mixin input-range-variant($color) {
+    /* 滑块 */
     &::-webkit-slider-thumb {
-        background-color: lighten($primary, 10);
+        background-color: lighten($color, 10);
     }
 
     &::-moz-range-thumb {
-        background-color: lighten($primary, 10);
+        background-color: lighten($color, 10);
     }
 
     &::-ms-thumb {
         background-color: lighten($color, 10);
+    }
+
+    /* 轨道 */
+    &::-webkit-slider-runnable-track {
+        background-color: rgba($color, 0.3);
     }
 
     &::-moz-range-track {
