@@ -21,7 +21,7 @@
             <div class="up">
                 <div class="left">
                     <div class="img-container">
-                        <img :src="image" />
+                        <img :style="imgStyle" :src="image" />
                     </div>
                     <div class="range-area">
                         <input class="ic-input primary" type="range" step="1" min="0" max="100" value="68">
@@ -197,7 +197,23 @@ export default {
         return {
             state,
             image: '',
-            image2: ''
+            image2: '',
+            camera: {
+                w: 240,
+                h: 180,
+                top: 0,
+                left: 0
+            }
+        }
+    },
+    computed: {
+        imgStyle: function () {
+            return {
+                top: `${this.top}px`,
+                left: `${this.left}px`,
+                width: `${this.w}px`,
+                height: `${this.h}px`
+            }
         }
     },
     methods: {
