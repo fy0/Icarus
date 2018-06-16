@@ -21,7 +21,7 @@
             <div class="up">
                 <div class="left">
                     <div class="img-container">
-                        <img :style="imgStyle" :src="image" />
+                        <img @load="imgChanged" ref="img" :style="imgStyle" :src="image" />
                     </div>
                     <div class="range-area">
                         <input class="ic-input primary" type="range" step="1" min="0" max="100" value="68">
@@ -198,6 +198,8 @@ export default {
             state,
             image: '',
             image2: '',
+            imgWidth: 0,
+            imgHeight: 0,
             camera: {
                 w: 240,
                 h: 180,
@@ -209,16 +211,20 @@ export default {
     computed: {
         imgStyle: function () {
             return {
-                top: `${this.top}px`,
-                left: `${this.left}px`,
-                width: `${this.w}px`,
-                height: `${this.h}px`
+                top: `${this.camera.top}px`,
+                left: `${this.camera.left}px`,
+                width: `${this.camera.w}px`,
+                height: `${this.camera.h}px`
             }
         }
     },
     methods: {
         selectFile: async function () {
             this.$refs.inputFile.click()
+        },
+        imgChanged: function (e) {
+            this.imgWidth = e.target.naturalWidth
+            this.imgWidth = e.target.naturalHeight
         },
         onFileChange: async function (e) {
             let files = e.target.files || e.dataTransfer.files
