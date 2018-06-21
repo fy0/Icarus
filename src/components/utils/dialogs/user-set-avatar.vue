@@ -21,10 +21,17 @@
             <div class="up">
                 <div class="left">
                     <div class="img-container">
-                        <img @load="imgChanged" ref="img" :style="imgStyle" :src="image" />
+                        <div v-if="shadeState == 1" :style="{'height': shadeSpacing + 'px'}" class="shade top"></div>
+                        <div v-if="shadeState == 1" :style="{'height': shadeSpacing + 'px'}" class="shade bottom"></div>
+                        <div v-if="shadeState == 2" :style="{'width': shadeSpacing + 'px'}" class="shade left"></div>
+                        <div v-if="shadeState == 2" :style="{'width': shadeSpacing + 'px'}" class="shade right"></div>
+                        <img @load="imgChanged" @mousedown.prevent="cameraMoveStart" @touchstart.prevent="cameraMoveStart"
+                            @mouseout="cameraMoveEnd" @mouseup="cameraMoveEnd" @touchend="cameraMoveEnd"
+                            @touchcancel="cameraMoveEnd" @mousemove="cameraMove" @touchmove="cameraMove"
+                            ref="img" :style="imgStyle" :src="image" />
                     </div>
                     <div class="range-area">
-                        <input class="ic-input primary" type="range" step="1" min="0" max="100" value="68">
+                        <input class="ic-input primary" type="range" step="1" min="0" max="100" v-model="scale">
                         <i class="icon5"></i>
                         <i class="icon6"></i>
                     </div>
@@ -67,6 +74,40 @@
     width: 240px;
     height: 180px;
     overflow: hidden;
+    position: relative;
+
+    img {
+        position: absolute;
+    }
+
+    .shade {
+        z-index: 1;
+        position: absolute;
+        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.18);
+        background-color: rgba(241, 242, 243, 0.8);
+
+        &.top {
+            height: 28px;
+            width: 100%;
+        }
+
+        &.bottom {
+            height: 28px;
+            width: 100%;
+            bottom: 0;
+        }
+
+        &.left {
+            height: 100%;
+            width: 28px;
+        }
+
+        &.right {
+            height: 100%;
+            width: 28px;
+            right: 0;
+        }
+    }
 }
 
 .input-file {
@@ -198,13 +239,34 @@ export default {
             state,
             image: '',
             image2: '',
-            imgWidth: 0,
-            imgHeight: 0,
-            camera: {
+            shadeState: 0, // 0 不显示 1 上下 2 左右
+            shadeSpacing: 0,
+
+            scale: 0,
+
+            imgBox: {
                 w: 240,
-                h: 180,
+                h: 180
+            },
+
+            imgMax: {
+                w: 0,
+                h: 0
+            },
+
+            imgMin: {
+                w: 0,
+                h: 0
+            },
+
+            camera: {
                 top: 0,
-                left: 0
+                left: 0,
+                w: 0,
+                h: 0,
+
+                moving: false,
+                movePoint: {x: 0, y: 0}
             }
         }
     },
@@ -214,17 +276,63 @@ export default {
                 top: `${this.camera.top}px`,
                 left: `${this.camera.left}px`,
                 width: `${this.camera.w}px`,
-                height: `${this.camera.h}px`
+                height: `${this.camera.h}px`,
+                transform: `translate(${this.shadeSpacing}px, 0px)`
             }
+        }
+    },
+    watch: {
+        scale: function (val) {
+            let ncw = (this.imgMax.w - this.imgMin.w) * (val / 100) + this.imgMin.w
+            let nch = (this.imgMax.h - this.imgMin.h) * (val / 100) + this.imgMin.h
+            this.camera.left -= (ncw - this.camera.w) / 2
+            this.camera.top -= (nch - this.camera.h) / 2
+            this.camera.w = ncw
+            this.camera.h = nch
         }
     },
     methods: {
         selectFile: async function () {
             this.$refs.inputFile.click()
         },
+        cameraMoveStart: function (e) {
+            this.camera.movePoint.x = e.clientX
+            this.camera.movePoint.y = e.clientY
+            this.camera.moving = true
+        },
+        cameraMoveEnd: function (e) {
+            this.camera.moving = false
+        },
+        cameraMove: function (e) {
+            if (this.camera.moving) {
+                this.camera.left += e.clientX - this.camera.movePoint.x
+                this.camera.top += e.clientY - this.camera.movePoint.y
+                this.camera.movePoint.x = e.clientX
+                this.camera.movePoint.y = e.clientY
+            }
+        },
         imgChanged: function (e) {
-            this.imgWidth = e.target.naturalWidth
-            this.imgWidth = e.target.naturalHeight
+            this.scale = 0
+            this.imgMax.w = e.target.naturalWidth
+            this.imgMax.h = e.target.naturalHeight
+
+            let ratioImg = this.imgMax.w / this.imgMax.h
+            let ratioStd = this.imgBox.w / this.imgBox.h
+
+            if (ratioImg > ratioStd) {
+                // 上下
+                this.shadeState = 1
+            } else if (ratioImg < ratioStd) {
+                // 左右
+                this.imgMin.w = this.imgBox.h / ratioImg
+                this.imgMin.h = this.imgBox.h
+
+                this.shadeState = 2
+                this.shadeSpacing = (240 - this.imgMin.w) / 2
+            }
+
+            this.camera.w = this.imgMin.w
+            this.camera.h = this.imgMin.h
         },
         onFileChange: async function (e) {
             let files = e.target.files || e.dataTransfer.files
