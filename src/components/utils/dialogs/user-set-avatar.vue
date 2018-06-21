@@ -239,6 +239,7 @@ export default {
             state,
             image: '',
             image2: '',
+            tooSmall: false,
             shadeState: 0, // 0 不显示 1 上下 2 左右
             shadeSpacing: 0,
 
@@ -289,9 +290,20 @@ export default {
             this.camera.top -= (nch - this.camera.h) / 2
             this.camera.w = ncw
             this.camera.h = nch
+        },
+        'camera.left': function (val) {
+            // this.camera.left = -this.clamp(-val, 0, this.camera.w - this.imgMin.w)
+        },
+        'camera.top': function (val) {
+            this.camera.top = -this.clamp(-val, 0, this.camera.h - this.imgMin.h)
         }
     },
     methods: {
+        clamp: function (val, a, b) {
+            if (val < a) return a
+            if (val > b) return b
+            return val
+        },
         selectFile: async function () {
             this.$refs.inputFile.click()
         },
@@ -313,6 +325,11 @@ export default {
         },
         imgChanged: function (e) {
             this.scale = 0
+            if (e.target.naturalWidth < 180 || e.target.naturalHeight < 180) {
+                this.image = ''
+                this.tooSmall = true
+                return
+            }
             this.imgMax.w = e.target.naturalWidth
             this.imgMax.h = e.target.naturalHeight
 
@@ -320,15 +337,26 @@ export default {
             let ratioStd = this.imgBox.w / this.imgBox.h
 
             if (ratioImg > ratioStd) {
-                // 上下
-                this.shadeState = 1
+                // 横向宽于标准尺寸
+                this.imgMin.w = this.imgBox.h * ratioImg
+                this.imgMin.h = this.imgBox.h
+
+                this.shadeState = 2
+                this.shadeSpacing = (240 - this.imgMin.w) / 2
             } else if (ratioImg < ratioStd) {
-                // 左右
+                // 横向窄于标准尺寸
                 this.imgMin.w = this.imgBox.h / ratioImg
                 this.imgMin.h = this.imgBox.h
 
                 this.shadeState = 2
                 this.shadeSpacing = (240 - this.imgMin.w) / 2
+            } else {
+                // 正好标准比例
+                this.imgMin.w = this.imgBox.w
+                this.imgMin.h = this.imgBox.h
+
+                this.shadeState = 0
+                this.shadeSpacing = 0
             }
 
             this.camera.w = this.imgMin.w
