@@ -21,10 +21,8 @@
             <div class="up">
                 <div class="left">
                     <div class="img-container">
-                        <div v-if="shadeState == 1" :style="{'height': shadeSpacing + 'px'}" class="shade top"></div>
-                        <div v-if="shadeState == 1" :style="{'height': shadeSpacing + 'px'}" class="shade bottom"></div>
-                        <div v-if="shadeState == 2" :style="{'width': shadeSpacing + 'px'}" class="shade left"></div>
-                        <div v-if="shadeState == 2" :style="{'width': shadeSpacing + 'px'}" class="shade right"></div>
+                        <div class="shade left"></div>
+                        <div class="shade right"></div>
                         <img @load="imgChanged" @mousedown.prevent="cameraMoveStart" @touchstart.prevent="cameraMoveStart"
                             @mouseout="cameraMoveEnd" @mouseup="cameraMoveEnd" @touchend="cameraMoveEnd"
                             @touchcancel="cameraMoveEnd" @mousemove="cameraMove" @touchmove="cameraMove"
@@ -37,11 +35,11 @@
                     </div>
                 </div>
                 <div class="right">
-                    <img :src="image2" />
-                    <img :src="image2" />
-                    123
+                    <img :width="imgBox.h" :height="imgBox.h" :src="imageResult" />
+                    <img :width="imgBox.h" :height="imgBox.h" :src="imageResult" />
                 </div>
             </div>
+            <canvas style="display: none" :width="imgBox.h" :height="imgBox.h" ref="canvas" />
             <div class="down">
                 <button class="ic-btn primary">取消</button>
             </div>
@@ -85,17 +83,8 @@
         position: absolute;
         box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.18);
         background-color: rgba(241, 242, 243, 0.8);
-
-        &.top {
-            height: 28px;
-            width: 100%;
-        }
-
-        &.bottom {
-            height: 28px;
-            width: 100%;
-            bottom: 0;
-        }
+        width: 30px; // (240-180)/2
+        pointer-events: none;
 
         &.left {
             height: 100%;
@@ -238,10 +227,12 @@ export default {
         return {
             state,
             image: '',
-            image2: '',
+            imageResult: '',
+
             tooSmall: false,
-            shadeState: 0, // 0 不显示 1 上下 2 左右
-            shadeSpacing: 0,
+            offsetX: 0,
+            offsetY: 0,
+            shadeWidth: 30,
 
             scale: 0,
 
@@ -278,7 +269,7 @@ export default {
                 left: `${this.camera.left}px`,
                 width: `${this.camera.w}px`,
                 height: `${this.camera.h}px`,
-                transform: `translate(${this.shadeSpacing}px, 0px)`
+                transform: `translate(${-this.offsetX}px, ${-this.offsetY}px)`
             }
         }
     },
@@ -290,12 +281,15 @@ export default {
             this.camera.top -= (nch - this.camera.h) / 2
             this.camera.w = ncw
             this.camera.h = nch
+            this.debounceRefreshResult()
         },
         'camera.left': function (val) {
-            // this.camera.left = -this.clamp(-val, 0, this.camera.w - this.imgMin.w)
+            let ocx = this.camera.w - this.imgMin.w
+            this.camera.left = -this.clamp(-val, -this.offsetX - this.shadeWidth, this.offsetX + this.shadeWidth + ocx)
         },
         'camera.top': function (val) {
-            this.camera.top = -this.clamp(-val, 0, this.camera.h - this.imgMin.h)
+            let ocy = this.camera.h - this.imgMin.h
+            this.camera.top = -this.clamp(-val, -this.offsetY, this.offsetY + ocy)
         }
     },
     methods: {
@@ -314,7 +308,25 @@ export default {
         },
         cameraMoveEnd: function (e) {
             this.camera.moving = false
+            this.refreshResult()
         },
+        refreshResult: function () {
+            let width = this.imgBox.h
+            let img = this.$refs.img
+            let canvas = this.$refs.canvas
+            let ctx = canvas.getContext('2d')
+            ctx.clearRect(0, 0, width, width)
+
+            let factor = this.imgMax.w / this.camera.w
+            ctx.drawImage(img, 
+                (-this.camera.left + this.offsetX + this.shadeWidth) * factor,
+                (-this.camera.top + this.offsetY) * factor, 
+                width * factor, width * factor, 0, 0, width, width)
+            this.imageResult = canvas.toDataURL('image/png')
+        },
+        debounceRefreshResult: _.debounce(function () {
+            this.refreshResult()
+        }, 500),
         cameraMove: function (e) {
             if (this.camera.moving) {
                 this.camera.left += e.clientX - this.camera.movePoint.x
@@ -340,27 +352,34 @@ export default {
                 // 横向宽于标准尺寸
                 this.imgMin.w = this.imgBox.h * ratioImg
                 this.imgMin.h = this.imgBox.h
-
-                this.shadeState = 2
-                this.shadeSpacing = (240 - this.imgMin.w) / 2
+                this.offsetX = (this.imgMin.w - this.imgBox.w) / 2
+                this.offsetY = 0
             } else if (ratioImg < ratioStd) {
                 // 横向窄于标准尺寸
-                this.imgMin.w = this.imgBox.h / ratioImg
-                this.imgMin.h = this.imgBox.h
-
-                this.shadeState = 2
-                this.shadeSpacing = (240 - this.imgMin.w) / 2
+                if (ratioImg === 1) {
+                    // 正方形
+                    this.imgMin.w = this.imgBox.h
+                    this.imgMin.h = this.imgBox.h
+                    this.offsetX = (this.imgMin.w - this.imgBox.w) / 2
+                    this.offsetY = (this.imgMin.h - this.imgBox.h) / 2
+                } else {
+                    // 长方形
+                    this.imgMin.w = this.imgBox.w
+                    this.imgMin.h = this.imgBox.w / ratioImg
+                    this.offsetX = 0
+                    this.offsetY = (this.imgMin.h - this.imgBox.h) / 2
+                }
             } else {
                 // 正好标准比例
                 this.imgMin.w = this.imgBox.w
                 this.imgMin.h = this.imgBox.h
-
-                this.shadeState = 0
-                this.shadeSpacing = 0
+                this.offsetX = 0
+                this.offsetY = 0
             }
 
             this.camera.w = this.imgMin.w
             this.camera.h = this.imgMin.h
+            this.refreshResult()
         },
         onFileChange: async function (e) {
             let files = e.target.files || e.dataTransfer.files
