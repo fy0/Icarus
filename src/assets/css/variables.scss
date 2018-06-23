@@ -64,9 +64,10 @@ $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
-$orange:        $orange !default;
 $light:         $gray-100 !default;
 $dark:          $gray-800 !default;
+$icarus:        $red-2 !default;
+$orange:        $orange !default;
 
 $theme-colors: () !default;
 $theme-colors: map-merge((
@@ -78,7 +79,7 @@ $theme-colors: map-merge((
   "danger":     $danger,
   "light":      $light,
   "dark":       $dark,
-  "icarus":     $red-2,
+  "icarus":     $icarus,
   "orange":     $orange
 ), $theme-colors);
 

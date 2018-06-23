@@ -9,7 +9,6 @@
 
 <style scoped>
 .dialog-box {
-    width: 75%;
     max-width: 768px;
     padding: 20px;
     background-color: #fff;

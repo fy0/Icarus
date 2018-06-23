@@ -1,16 +1,25 @@
 <template>
 <ic-dialog :show="state.dialog.userSetAvatar" :on-close="close">
     <div class="content">
-        <template v-if="!image">
+        <template v-if="loading">
+            <div class="loading">
+                <line-scale-pulse-out-loader :size="'50px'"/>
+                <span>应用中 ...</span>
+            </div>
+        </template>
+        <template v-else-if="!image">
             <div class="up">
-                <input type="file" ref="inputFile" @change="onFileChange" accept="image/*" class="input-file" />
-                <div @click="selectFile" class="rect">
-                    <i class="icon1">
-                        <i class="arrow"></i>
-                        <i class="body"></i>
-                        <i class="bottom"></i>
-                    </i>
-                    <span>点击或拖动图片至此处</span>
+                <div class="box">
+                    <input type="file" ref="inputFile" @change="onFileChange" accept="image/*" class="input-file" />
+                    <div @click="selectFile" class="rect">
+                        <i class="icon1">
+                            <i class="arrow"></i>
+                            <i class="body"></i>
+                            <i class="bottom"></i>
+                        </i>
+                        <span>点击或拖动图片至此处</span>
+                    </div>
+                    <div v-show="tooSmall" style="color: red; text-align: center">× 图片最低像素为（宽*高）：200*200</div>
                 </div>
             </div>
             <div class="down">
@@ -35,13 +44,20 @@
                     </div>
                 </div>
                 <div class="right">
-                    <img :width="imgBox.h" :height="imgBox.h" :src="imageResult" />
-                    <img :width="imgBox.h" :height="imgBox.h" :src="imageResult" />
+                    <div class="preview-item rect">
+                        <img :src="imageResult" />
+                        <span class="text">预览</span>
+                    </div>
+                    <div class="preview-item circle">
+                        <img :src="imageResult" />
+                        <span class="text">预览</span>
+                    </div>
                 </div>
             </div>
             <canvas style="display: none" :width="imgBox.h" :height="imgBox.h" ref="canvas" />
             <div class="down">
-                <button class="ic-btn primary">取消</button>
+                <button class="ic-btn primary" @click="backToStep1">返回</button>
+                <button class="ic-btn primary" @click="saveAvatarImage">保存</button>
             </div>
         </template>
     </div>
@@ -49,19 +65,95 @@
 </template>
 
 <style lang="scss" scoped>
-.content {
+</style>
+
+<style lang="scss" scoped>
+.loading {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .vue-loaders > * {
+        background-color: $icarus !important;
+    }
+}
+
+.preview-item {
+    width: 100px;
+    height: 100px;
     display: flex;
     flex-direction: column;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .text {
+        color: $gray-600;
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    &.rect {
+        img {
+            padding: 3px;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
+    }
+
+    &.circle {
+        img {
+            border-radius: 100%;
+            padding: 3px;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
+    }
+}
+
+.content {
+    width: 580px;
+    height: 295px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     .up {
         display: flex;
 
+        .box {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .rect {
+                flex: 1 0 0%;
+                text-align: center;
+                background-color: $gray-200;
+                padding: 60px 0;
+            }
+        }
+
         .right {
+            margin: 0 0 0 80px;
             flex: 1 0 0%;
+            display: flex;
+            justify-content: space-between;
         }
     }
 
     .down {
+        .ic-btn {
+            margin-left: 10px;
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+
         margin-top: 20px;
         display: flex;
         justify-content: flex-end;
@@ -69,8 +161,8 @@
 }
 
 .img-container {
-    width: 240px;
-    height: 180px;
+    width: 260px;
+    height: 200px;
     overflow: hidden;
     position: relative;
 
@@ -83,17 +175,17 @@
         position: absolute;
         box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.18);
         background-color: rgba(241, 242, 243, 0.8);
-        width: 30px; // (240-180)/2
+        width: 30px; // (260-200)/2
         pointer-events: none;
 
         &.left {
             height: 100%;
-            width: 28px;
+            width: 30px;
         }
 
         &.right {
             height: 100%;
-            width: 28px;
+            width: 30px;
             right: 0;
         }
     }
@@ -103,18 +195,10 @@
     display: none;
 }
 
-.rect {
-    flex: 1 0 0%;
-    text-align: center;
-    background-color: $gray-200;
-    padding: 60px 0;
-    margin-bottom: 60px;
-}
-
 .range-area {
     position: relative;
     margin: 30px 0 10px 0;
-    width: 240px;
+    width: 260px;
     height: 18px;
 }
 
@@ -228,6 +312,7 @@ export default {
             state,
             image: '',
             imageResult: '',
+            loading: false,
 
             tooSmall: false,
             offsetX: 0,
@@ -237,8 +322,8 @@ export default {
             scale: 0,
 
             imgBox: {
-                w: 240,
-                h: 180
+                w: 260,
+                h: 200
             },
 
             imgMax: {
@@ -293,6 +378,9 @@ export default {
         }
     },
     methods: {
+        backToStep1: function () {
+            this.image = ''
+        },
         clamp: function (val, a, b) {
             if (val < a) return a
             if (val > b) return b
@@ -318,9 +406,9 @@ export default {
             ctx.clearRect(0, 0, width, width)
 
             let factor = this.imgMax.w / this.camera.w
-            ctx.drawImage(img, 
+            ctx.drawImage(img,
                 (-this.camera.left + this.offsetX + this.shadeWidth) * factor,
-                (-this.camera.top + this.offsetY) * factor, 
+                (-this.camera.top + this.offsetY) * factor,
                 width * factor, width * factor, 0, 0, width, width)
             this.imageResult = canvas.toDataURL('image/png')
         },
@@ -337,11 +425,12 @@ export default {
         },
         imgChanged: function (e) {
             this.scale = 0
-            if (e.target.naturalWidth < 180 || e.target.naturalHeight < 180) {
+            if (e.target.naturalWidth < 200 || e.target.naturalHeight < 200) {
                 this.image = ''
                 this.tooSmall = true
                 return
             }
+            this.tooSmall = false
             this.imgMax.w = e.target.naturalWidth
             this.imgMax.h = e.target.naturalHeight
 
@@ -395,6 +484,9 @@ export default {
         },
         close: function () {
             state.dialog.userSetAvatar = false
+        },
+        saveAvatarImage: function () {
+            this.loading = true
         }
     }
 }
