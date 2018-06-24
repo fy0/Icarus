@@ -305,6 +305,7 @@ $i_h: 42px;
 
 <script>
 import state from '@/state.js'
+import * as qiniu from 'qiniu-js'
 
 export default {
     data () {
@@ -485,8 +486,24 @@ export default {
         close: function () {
             state.dialog.userSetAvatar = false
         },
-        saveAvatarImage: function () {
+        saveAvatarImage: async function () {
             this.loading = true
+            let dataUrlToBlob = (imgURL) => {
+                var png = imgURL.split(',')[1]
+                return new Blob([window.atob(png)], {type: 'image/png', encoding: 'utf-8'})
+            }
+
+            let pngFile = dataUrlToBlob(this.imageResult)
+            let token = await $.asyncGetUploadToken(true)
+            console.log(111, pngFile, token)
+            if (token !== null) {
+                let ob = qiniu.upload(pngFile, null, token, null)
+                ob.subscribe({
+                    complete: (res) => {
+                        console.log('done', res)
+                    }
+                })
+            }
         }
     }
 }

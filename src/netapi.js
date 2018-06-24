@@ -172,7 +172,7 @@ class NotifViewRequest extends SlimViewRequest {
 }
 
 class UploadViewRequest extends SlimViewRequest {
-    async token (isAvatar, role) {
+    async token (role, isAvatar) {
         return npost(`${this.urlPrefix}/token`, {'is_avatar': isAvatar}, null, role)
     }
 }

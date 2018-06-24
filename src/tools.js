@@ -102,7 +102,7 @@ let uploadToken = ''
 
 $.asyncGetUploadToken = async function (isAvatarUpload = false) {
     if (isAvatarUpload) {
-        let ret = await api.upload.token(true, 'user')
+        let ret = await api.upload.token('user', true)
         if (ret.code === api.retcode.SUCCESS) {
             return ret.data
         }
