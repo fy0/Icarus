@@ -19,7 +19,8 @@ class TopicView(UserMixin, PeeweeView):
         user = self.current_user
         if user:
             if self.current_role in ('user', 'admin', 'superuser'):
-                return self.finish(RETCODE.SUCCESS, upload.get_token(user.id.hex()))
+                type_name = 'avatar' if self.params.get('is_avatar', False) else None
+                return self.finish(RETCODE.SUCCESS, upload.get_token(user.id.hex(), type_name))
         self.finish(RETCODE.FAILED)
 
     @route.interface('POST')
