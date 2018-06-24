@@ -82,6 +82,7 @@ export default {
             if (!files.length) return
             let token = await $.asyncGetUploadToken()
             if (token !== null) {
+                console.log(files[0])
                 let ob = qiniu.upload(files[0], null, token, null)
                 ob.subscribe({
                     complete: (res) => {

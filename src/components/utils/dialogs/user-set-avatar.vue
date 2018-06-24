@@ -2,7 +2,7 @@
 <ic-dialog :show="state.dialog.userSetAvatar" :on-close="close">
     <div class="content">
         <template v-if="loading">
-            <div class="loading">
+            <div class="user-set-avatar-loading">
                 <line-scale-pulse-out-loader :size="'50px'"/>
                 <span>应用中 ...</span>
             </div>
@@ -64,20 +64,22 @@
 </ic-dialog>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.user-set-avatar-loading {
+    .vue-loaders > * {
+        // 这个必须暴露于全局
+        background-color: $icarus !important;
+    }
+}
 </style>
 
 <style lang="scss" scoped>
-.loading {
+.user-set-avatar-loading {
     display: flex;
     height: 100%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    .vue-loaders > * {
-        background-color: $icarus !important;
-    }
 }
 
 .preview-item {
@@ -488,19 +490,15 @@ export default {
         },
         saveAvatarImage: async function () {
             this.loading = true
-            let dataUrlToBlob = (imgURL) => {
-                var png = imgURL.split(',')[1]
-                return new Blob([window.atob(png)], {type: 'image/png', encoding: 'utf-8'})
-            }
+            let pngFile = $.dataURItoBlob(this.imageResult)
+            let token = await $.asyncGetUploadToken()
 
-            let pngFile = dataUrlToBlob(this.imageResult)
-            let token = await $.asyncGetUploadToken(true)
-            console.log(111, pngFile, token)
             if (token !== null) {
                 let ob = qiniu.upload(pngFile, null, token, null)
                 ob.subscribe({
                     complete: (res) => {
                         console.log('done', res)
+                        this.loading = false
                     }
                 })
             }
