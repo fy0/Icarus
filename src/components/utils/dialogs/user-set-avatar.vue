@@ -1,5 +1,5 @@
 <template>
-<ic-dialog :show="state.dialog.userSetAvatar" :on-close="close">
+<ic-dialog :show="state.dialog.userSetAvatar" :show-button-area="false" :on-close="close" :allow-outside-close="false">
     <div class="content">
         <template v-if="loading">
             <div class="user-set-avatar-loading">
@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="down">
-                <button class="ic-btn primary">取消</button>
+                <button class="ic-btn primary" @click="close">取消</button>
             </div>
         </template>
         <template v-else>
@@ -306,8 +306,9 @@ $i_h: 42px;
 </style>
 
 <script>
-import state from '@/state.js'
 import * as qiniu from 'qiniu-js'
+import state from '@/state.js'
+import api from '@/netapi.js'
 
 export default {
     data () {
@@ -482,10 +483,13 @@ export default {
             let reader = new FileReader()
             reader.onload = (e) => {
                 this.image = e.target.result
+                this.scale = 0
             }
             reader.readAsDataURL(file)
         },
         close: function () {
+            this.image = ''
+            this.imageResult = ''
             state.dialog.userSetAvatar = false
         },
         saveAvatarImage: async function () {
@@ -497,8 +501,14 @@ export default {
                 let ob = qiniu.upload(pngFile, null, token, null)
                 ob.subscribe({
                     complete: (res) => {
+                        // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                         console.log('done', res)
+                        if (res.code === api.retcode.SUCCESS) {
+                            state.user.avatar = res.data
+                        }
+                        // TODO: 完成的效果先不弄了，直接关掉了事
                         this.loading = false
+                        this.close()
                     }
                 })
             }

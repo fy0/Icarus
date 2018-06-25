@@ -55,6 +55,7 @@ class TestBaseView(BaseView):
                 'TOPIC_TITLE_LENGTH_MAX': config.TOPIC_TITLE_LENGTH_MAX,
                 'TOPIC_CONTENT_LENGTH_MAX': config.TOPIC_CONTENT_LENGTH_MAX,
 
+                'UPLOAD_STATIC_HOST': config.UPLOAD_STATIC_HOST,
                 'UPLOAD_QINIU_DEADLINE_OFFSET': config.UPLOAD_QINIU_DEADLINE_OFFSET,
             },
 

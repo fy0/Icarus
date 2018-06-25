@@ -126,7 +126,7 @@ export default {
     },
     methods: {
         closeOutside: async function () {
-            if (this.onClose) {
+            if (this.allowOutsideClose && this.onClose) {
                 this.onClose()
             }
         }

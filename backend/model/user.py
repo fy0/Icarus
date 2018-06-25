@@ -34,6 +34,8 @@ class User(PostModel, BaseUser):
     password = BlobField()
     salt = BlobField()  # auto
     biology = TextField(null=True)  # 简介
+    avatar = TextField(null=True)
+    type = IntegerField(default=0)  # 账户类型，0默认，1组织
 
     # level = IntegerField(index=True)  # 用户级别
     group = IntegerField(index=True)  # 用户权限组

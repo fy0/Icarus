@@ -20,7 +20,10 @@ let state = {
             50: '正常'
         },
         POST_STATE: { ... },
-        POST_STATE_TXT: { ... }
+        POST_STATE_TXT: { ... },
+        BACKEND_CONFIG: {
+            ...
+        }
     },
     */
     config,

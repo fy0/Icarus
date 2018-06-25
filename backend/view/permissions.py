@@ -31,6 +31,8 @@ visitor = Ability(None, {
         'biology': (A.READ,),
         'time': (A.READ,),
         'key_time': (A.READ,),
+        'avatar': (A.READ,),
+        'type': (A.READ,),
 
         'email': (A.CREATE,),
     },

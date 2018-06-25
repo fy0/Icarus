@@ -1,15 +1,31 @@
 <!-- 用户头像 -->
 <template>
+<!-- 带链接情况 -->
 <div style="display: flex" v-if="isLink">
     <a class="sa-avatar" :style="style" v-if="placeholder">
     </a>
+    <!-- 存在图像头像情况 -->
+    <span class="sa-avatar" :style="userStyle" v-if="user.avatar">
+        <mu-paper :zDepth="1" class="paper" style="line-height: 0">
+            <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
+        </mu-paper>
+    </span>
     <router-link v-else class="sa-avatar" :style="style" :to="linkTo" >
         <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
     </router-link>
 </div>
+<!-- 不带链接情况 -->
 <div style="display: flex" v-else>
+    <!-- 纯占位符情况 -->
     <span class="sa-avatar" :style="style" v-if="placeholder">
     </span>
+    <!-- 存在图像头像情况 -->
+    <span class="sa-avatar" :style="userStyle" v-if="user.avatar">
+        <mu-paper :zDepth="1" class="paper" style="line-height: 0">
+            <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
+        </mu-paper>
+    </span>
+    <!-- 自动生成头像情况 -->
     <span v-else class="sa-avatar" :style="style">
         <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
     </span>
@@ -33,6 +49,7 @@
 </style>
 
 <script>
+import state from '@/state.js'
 import murmurhash from 'murmurhash'
 
 export default {
@@ -49,6 +66,11 @@ export default {
         },
         size: {
             default: 50
+        }
+    },
+    methods: {
+        staticUrl: function (key) {
+            return `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${key}`
         }
     },
     computed: {
@@ -69,6 +91,13 @@ export default {
             if (this.anonymous) return '?'
             if (!this.user.nickname) return ''
             return this.user.nickname[0].toUpperCase()
+        },
+        userStyle: function () {
+            let size = `${this.size}px`
+            return {
+                'width': size,
+                'height': size
+            }
         },
         style: function () {
             let size, fsize, bgColor

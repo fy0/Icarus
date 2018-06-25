@@ -69,8 +69,9 @@
         </div>
         <div class="right">
             <div class="setting-item">
-                <div class="line" @click="state.dialog.userSetAvatar = true" >
+                <div class="line box-avatar" @click="state.dialog.userSetAvatar = true" >
                     <avatar :is-link="false" :user="user" :size="200" class="avatar"></avatar>
+                    <button class="ic-btn primary btn-upload" style="margin-top: 10px; width: 100%">点此上传新头像</button>
                 </div>
             </div>
 
@@ -101,6 +102,16 @@
 </template>
 
 <style scoped>
+.box-avatar {
+    position: relative;
+}
+
+.box-avatar > .btn-upload {
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+    opacity: 0.7;
+}
 
 .lbox {
     width: 85%;
