@@ -1,7 +1,7 @@
 <template>
 <loading v-if="loading"/>
 <div v-else-if="board" class="ic-container">
-    <mu-paper class="board-header" :zDepth="1" :style="lineStyle(board)">
+    <div class="ic-paper round ic-z1 board-header" :style="lineStyle(board)">
         <div class="left">
             <h3 class="name">{{ board.name }}</h3>
             <div class="brief">{{ board.brief }}</div>
@@ -10,7 +10,7 @@
         <div class="right">
             <router-link class="topic-new-btn" :to="{ name: 'forum_topic_new', params: {'board_id': board.id }}">发表主题</router-link>
         </div>
-    </mu-paper>
+    </div>
     <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
     <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
 

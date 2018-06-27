@@ -1,38 +1,41 @@
 <!-- 用户头像 -->
 <template>
 <!-- 带链接情况 -->
-<div style="display: flex" v-if="isLink">
+<div style="display: flex; padding:3px" v-if="isLink">
+    <!-- 纯占位符情况 -->
     <a class="sa-avatar" :style="style" v-if="placeholder">
     </a>
     <!-- 存在图像头像情况 -->
-    <span class="sa-avatar" :style="userStyle" v-if="user.avatar">
-        <mu-paper :zDepth="1" class="paper" style="line-height: 0">
+    <router-link v-else-if="user.avatar" class="sa-avatar" :style="userStyle" :to="linkTo">
+        <div class="ic-paper round ic-z0 paper" :style="userStyle">
             <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
-        </mu-paper>
-    </span>
+        </div>
+    </router-link>
+    <!-- 自动生成头像情况 -->
     <router-link v-else class="sa-avatar" :style="style" :to="linkTo" >
-        <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
+        <div class="ic-paper round ic-z0 paper">{{char}}</div>
     </router-link>
 </div>
 <!-- 不带链接情况 -->
-<div style="display: flex" v-else>
+<div style="display: flex; padding:3px" v-else>
     <!-- 纯占位符情况 -->
     <span class="sa-avatar" :style="style" v-if="placeholder">
     </span>
     <!-- 存在图像头像情况 -->
     <span class="sa-avatar" :style="userStyle" v-if="user.avatar">
-        <mu-paper :zDepth="1" class="paper" style="line-height: 0">
+        <div class="ic-paper round ic-z0 paper" style="line-height: 0">
             <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
-        </mu-paper>
+        </div>
     </span>
     <!-- 自动生成头像情况 -->
     <span v-else class="sa-avatar" :style="style">
-        <mu-paper :zDepth="1" class="paper">{{char}}</mu-paper>
+        <div class="ic-paper round ic-z0 paper">{{char}}</div>
     </span>
 </div>
 </template>
 
-<style>
+<style lang="scss">
+/* sa: simple avatar */
 .sa-avatar {
     text-align: center;
     border-radius: 4px;

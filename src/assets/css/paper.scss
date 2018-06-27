@@ -1,0 +1,18 @@
+
+.ic-paper {
+    transition: all .45s cubic-bezier(.23,1,.32,1);
+    color: rgba(0,0,0,.87);
+    background-color: #fff;
+
+    &.round {
+        border-radius: 2px;
+    }
+
+    &.circle {
+        border-radius: 50%;
+    }
+}
+
+// transition: all .45s @easeOutFunction;
+// color: @textColor;
+// background-color: @dialogBackgroundColor;
