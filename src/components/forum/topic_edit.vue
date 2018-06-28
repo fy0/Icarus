@@ -292,7 +292,6 @@ export default {
             if (editor) {
                 let uploadImage = async function (editor, fileList) {
                     let theFile = null
-                    console.log(111, fileList, editor)
 
                     if (fileList.length === 0) return
                     for (let i of fileList) {
@@ -309,17 +308,23 @@ export default {
                         line: editor.getCursor().line,
                         ch: editor.getCursor().ch
                     })
-                    let ret = qiniu.upload(theFile, null, token, null)
+                    let ob = qiniu.upload(theFile, null, token, null)
 
-                    if (ret.code === api.retcode.SUCCESS) {
-                        // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
-                        let url = `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
-                        let newTxt = `![](${url})`
-                        let offset = newTxt.length - placeholder.length
-                        let cur = editor.getCursor()
-                        editor.setValue(editor.getValue().replace(placeholder, newTxt + '\n'))
-                        editor.setCursor(cur.line, cur.ch + offset)
-                    }
+                    ob.subscribe({
+                        complete: (ret) => {
+                            // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
+                            console.log('done', ret)
+                            if (ret.code === api.retcode.SUCCESS) {
+                                // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
+                                let url = `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
+                                let newTxt = `![](${url})`
+                                let offset = newTxt.length - placeholder.length
+                                let cur = editor.getCursor()
+                                editor.setValue(editor.getValue().replace(placeholder, newTxt + '\n'))
+                                editor.setCursor(cur.line, cur.ch + offset)
+                            }
+                        }
+                    })
                 }
 
                 let cm = editor.simplemde.codemirror
