@@ -495,7 +495,7 @@ export default {
         saveAvatarImage: async function () {
             this.loading = true
             let pngFile = $.dataURItoBlob(this.imageResult)
-            let token = await $.asyncGetUploadToken()
+            let token = await $.asyncGetUploadToken(true)
 
             if (token !== null) {
                 let ob = qiniu.upload(pngFile, null, token, null)

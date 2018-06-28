@@ -16,7 +16,7 @@
             <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
         <check-row :multi="true">
-            <markdown-editor :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
+            <markdown-editor ref="editor" :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
         </check-row>
         <div class="ic-form-row">
             <button class="ic-btn primary" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
@@ -38,6 +38,7 @@
 
 .edit-page-title {
     display: flex;
+    padding: 20px 0;
     justify-content: space-between;
     align-items: center;
 }
@@ -92,6 +93,8 @@ import api from '@/netapi.js'
 import state from '@/state.js'
 import CheckRow from '../utils/checkrow.vue'
 import nprogress from 'nprogress/nprogress.js'
+import * as qiniu from 'qiniu-js'
+import Objectid from 'objectid-js'
 
 export default {
     data () {
@@ -116,7 +119,7 @@ export default {
             mdeConfig: {
                 spellChecker: false,
                 autoDownloadFontAwesome: false,
-                placeholder: '这里填写内容，支持 Markdown 格式 ...',
+                placeholder: '这里填写内容，支持 Markdown 格式。\n支持图片上传，可通过拖拽或粘贴进行上传，大小限制5MB，不支持GIF',
                 autosave: {
                     enabled: false,
                     uniqueId: 'topic-post-content'
@@ -281,8 +284,57 @@ export default {
             // this.title = localStorage.getItem('topic-post-title') || ''
         }
     },
-    created () {
-        this.fetchData()
+    created: async function () {
+        await this.fetchData()
+
+        let func = async () => {
+            let editor = this.$refs.editor
+            if (editor) {
+                let uploadImage = async function (editor, fileList) {
+                    let theFile = null
+                    console.log(111, fileList, editor)
+
+                    if (fileList.length === 0) return
+                    for (let i of fileList) {
+                        if (i.type.indexOf('image') !== -1) {
+                            theFile = i
+                            break
+                        }
+                    }
+                    if (!theFile) return false
+                    let token = await $.asyncGetUploadToken()
+
+                    let placeholder = `![Uploading ${theFile['name']} - ${(new Objectid()).toString()} ...]()`
+                    editor.replaceRange(placeholder, {
+                        line: editor.getCursor().line,
+                        ch: editor.getCursor().ch
+                    })
+                    let ret = qiniu.upload(theFile, null, token, null)
+
+                    if (ret.code === api.retcode.SUCCESS) {
+                        // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
+                        let url = `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
+                        let newTxt = `![](${url})`
+                        let offset = newTxt.length - placeholder.length
+                        let cur = editor.getCursor()
+                        editor.setValue(editor.getValue().replace(placeholder, newTxt + '\n'))
+                        editor.setCursor(cur.line, cur.ch + offset)
+                    }
+                }
+
+                let cm = editor.simplemde.codemirror
+                cm.on('drop', async (editor, e) => {
+                    await uploadImage(editor, e.dataTransfer.files)
+                })
+                cm.on('paste', async (editor, e) => {
+                    await uploadImage(editor, e.clipboardData.files)
+                    return false
+                })
+            } else {
+                setTimeout(func, 500)
+            }
+        }
+        setTimeout(func, 500)
     },
     watch: {
         'topicInfo.title': _.debounce(function (val, oldVal) {
