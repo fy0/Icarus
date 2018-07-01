@@ -118,6 +118,10 @@ $.dataURItoBlob = function (dataURI) {
 let uploadKeyTime = 0
 let uploadToken = ''
 
+$.staticUrl = function (key) {
+    return `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${key}`
+}
+
 $.asyncGetUploadToken = async function (isAvatarUpload = false) {
     if (isAvatarUpload) {
         let ret = await api.upload.token('user', isAvatarUpload)

@@ -158,7 +158,6 @@
 // import api from '@/netapi.js'
 import state from '@/state.js'
 import SettingBase from '../base/base.vue'
-import myUpload from 'vue-image-crop-upload'
 
 export default {
     data () {
@@ -191,7 +190,6 @@ export default {
         '$route': 'fetchData'
     },
     components: {
-        myUpload,
         SettingBase
     }
 }

@@ -30,7 +30,6 @@
     "tweezer.js": "^1.4.0",
     "vue": "^2.5.2",
     "vue-cropperjs": "^2.2.1",
-    "vue-image-crop-upload": "^2.3.1",
     "vue-loaders": "^2.0.0",
     "vue-media": "^1.1.1",
     "vue-multiselect": "^2.1.0",
