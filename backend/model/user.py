@@ -36,6 +36,8 @@ class User(PostModel, BaseUser):
     biology = TextField(null=True)  # 简介
     avatar = TextField(null=True)
     type = IntegerField(default=0)  # 账户类型，0默认，1组织
+    url = TextField(null=True)  # 个人主页
+    location = TextField(null=True)  # 所在地
 
     # level = IntegerField(index=True)  # 用户级别
     group = IntegerField(index=True)  # 用户权限组

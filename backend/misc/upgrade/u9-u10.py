@@ -13,7 +13,10 @@ def work():
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "reset_key" BYTEA NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "avatar" TEXT NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "type" INTEGER DEFAULT 0;')
+        db.execute_sql('ALTER TABLE "user" ADD COLUMN "url" TEXT NULL DEFAULT NULL;')
+        db.execute_sql('ALTER TABLE "user" ADD COLUMN "location" TEXT NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" RENAME "reg_time" TO "time";')
+
         db.execute_sql('ALTER TABLE "board" RENAME "creator_id" TO "user_id";')
         db.execute_sql('ALTER TABLE "comment" ADD COLUMN "post_number" INTEGER NULL;')
 
