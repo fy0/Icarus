@@ -3,15 +3,6 @@
     <div v-title>个人信息 - 用户设置 - {{state.config.title}}</div>
     <h3 class="ic-header">个人信息</h3>
 
-	<my-upload field="img"
-        v-model="avatarUploadShow"
-		:width="300"
-		:height="300"
-		url="/upload"
-		:params="{}"
-		:headers="{}"
-		img-format="png"></my-upload>
-
     <div class="box">
         <div class="left">
             <div class="lbox">
@@ -64,7 +55,7 @@
                     </div>
                 </div>
 
-                <button class="ic-btn primary">更新个人信息</button>
+                <button class="ic-btn primary" @click="updateInfo">更新个人信息</button>
             </div>
         </div>
         <div class="right">
@@ -177,6 +168,11 @@ export default {
             // let ret = await api.topic.get({
             //     id: params.id,
             // })
+        },
+        updateInfo: async function () {
+            this.updating = true
+            // ...
+            this.updating = false
         }
     },
     created: async function () {

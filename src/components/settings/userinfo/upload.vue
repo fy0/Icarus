@@ -65,7 +65,7 @@ export default {
             // let ret = await api.upload.token('user')
 
             let ret = await api.upload.list({
-                'type_name.is': null,
+                'type_name.is': null
             }, 1, null, state.getRole('user'))
 
             console.log(111, ret)
