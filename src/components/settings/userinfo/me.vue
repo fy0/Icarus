@@ -146,7 +146,7 @@
 </style>
 
 <script>
-// import api from '@/netapi.js'
+import api from '@/netapi.js'
 import state from '@/state.js'
 import SettingBase from '../base/base.vue'
 
@@ -154,12 +154,16 @@ export default {
     data () {
         return {
             state,
+            userSave: null,
             avatarUploadShow: false
         }
     },
     computed: {
         'user': function () {
-            return state.user
+            if (!this.userSave) {
+                this.userSave = _.clone(state.user)
+            }
+            return this.userSave
         }
     },
     methods: {
@@ -170,8 +174,20 @@ export default {
             // })
         },
         updateInfo: async function () {
+            if (this.updating) return
             this.updating = true
-            // ...
+            let data = $.objDiff(this.userSave, state.user)
+            if (Object.keys(data).length) {
+                let ret = await api.user.set({id: state.user.id}, data, 'user')
+                if (ret.code === api.retcode.SUCCESS) {
+                    for (let [k, v] of Object.entries(data)) {
+                        state.user[k] = v
+                    }
+                    $.message_success('信息修改成功！')
+                }
+            } else {
+                $.message_warning('未发现修改')
+            }
             this.updating = false
         }
     },
