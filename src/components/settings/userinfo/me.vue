@@ -55,7 +55,7 @@
                     </div>
                 </div>
 
-                <button class="ic-btn primary" @click="updateInfo">更新个人信息</button>
+                <button class="ic-btn primary" :class="[changed && (!updating) ? '' : 'disabled']" @click="updateInfo">{{ updating ? '更新中 ...' : '更新个人信息' }}</button>
             </div>
         </div>
         <div class="right">
@@ -155,6 +155,7 @@ export default {
         return {
             state,
             userSave: null,
+            updating: false,
             avatarUploadShow: false
         }
     },
@@ -164,6 +165,10 @@ export default {
                 this.userSave = _.clone(state.user)
             }
             return this.userSave
+        },
+        changed: function () {
+            let data = $.objDiff(this.userSave, state.user)
+            return Object.keys(data).length
         }
     },
     methods: {
@@ -175,18 +180,16 @@ export default {
         },
         updateInfo: async function () {
             if (this.updating) return
+            if (!this.changed) return
             this.updating = true
             let data = $.objDiff(this.userSave, state.user)
-            if (Object.keys(data).length) {
-                let ret = await api.user.set({id: state.user.id}, data, 'user')
-                if (ret.code === api.retcode.SUCCESS) {
-                    for (let [k, v] of Object.entries(data)) {
-                        state.user[k] = v
-                    }
-                    $.message_success('信息修改成功！')
+            let ret = await api.user.set({id: state.user.id}, data, 'user')
+            if (ret.code === api.retcode.SUCCESS) {
+                for (let [k, v] of Object.entries(data)) {
+                    state.user[k] = v
                 }
-            } else {
-                $.message_warning('未发现修改')
+                this.userSave = _.clone(state.user)
+                $.message_success('信息修改成功！')
             }
             this.updating = false
         }

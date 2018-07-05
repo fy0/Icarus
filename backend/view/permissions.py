@@ -112,7 +112,7 @@ normal_user = Ability('user', {
         'nickname': (A.QUERY, A.READ),
         'group': (A.READ,),
         'biology': (A.QUERY, A.READ, A.WRITE),
-        'avatar': (A.QUERY, A.READ, A.WRITE),
+        'avatar': (A.QUERY, A.READ),
         'type': (A.QUERY, A.READ, A.WRITE),
         'url': (A.QUERY, A.READ, A.WRITE),
         'location': (A.QUERY, A.READ, A.WRITE),
@@ -202,10 +202,18 @@ def func(ability, user, query: 'SQLQueryInfo'):
 
 inactive_user.add_query_condition('user', func=func)
 normal_user.add_query_condition('user', func=func)
-# normal_user.add_record_check()
+
+
+def check_is_user(ability, user, action, record: DataRecord, available_columns: list):
+    if user:
+        if record.get('id') != user.id:
+            available_columns.clear()
+    return True
+
+
+normal_user.add_record_check((A.WRITE,), 'user', func=check_is_user)
 
 # upload
-
 
 def func(ability, user, query: 'SQLQueryInfo'):
     query.add_condition('user_id', '==', user.id)
