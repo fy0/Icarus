@@ -23,6 +23,7 @@
                     <span class="icon">QQ</span>
                     <span class="icon">微博</span>
                     <span class="icon">Github</span>
+                    <input type="submit" name="" value="github" @click.prevent="github_url">
                 </div>
             </div>
         </form>
@@ -173,6 +174,13 @@ export default {
             } else {
                 $.message_error('请正确填写所有项目')
             }
+        },
+        github_url: async function () {
+            // 获取url，然后跳转
+            let ghUrl = await api.Oauth.getUrl('github')
+            window.open(ghUrl, '_blank')
+            console.log(ghUrl)
+            return
         }
     },
     components: {

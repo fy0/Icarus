@@ -5,11 +5,8 @@ import AccountSignin from '@/components/account/signin.vue'
 import AccountSignup from '@/components/account/signup.vue'
 import AccountUserPage from '@/components/account/userpage.vue'
 import AccountNotif from '@/components/account/notif.vue'
-<<<<<<< HEAD
 import AccountOAuth from '@/components/account/oauth.vue'
-import AccountSetting from '@/components/account/setting.vue'
-=======
->>>>>>> e6f6c24f210259243c40a81579bb24f7fedc3f1f
+import AccountOAuthCheck from '@/components/account/oauth_check.vue'
 import AccountActivation from '@/components/account/activation.vue'
 import AccountPasswordReset from '@/components/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/components/account/password_reset_req.vue'
@@ -210,6 +207,13 @@ export default new Router({
             path: '/account/oauth',
             name: 'account_oauth',
             component: AccountOAuth
+        },
+
+        // OAuth Registe Check
+        {
+            path: '/account/oauth_check',
+            name: 'account_oauth_check',
+            component: AccountOAuthCheck
         }
     ]
 })

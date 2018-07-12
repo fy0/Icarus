@@ -63,12 +63,8 @@ except peewee.ProgrammingError:
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
                   Notification, UserNotifRecord,
-<<<<<<< HEAD
                   UserOAuth,
-                  Upload, UploadEntity,
-=======
                   UserUpload,
->>>>>>> e6f6c24f210259243c40a81579bb24f7fedc3f1f
                   ManageLog,
                   Statistic, Statistic24h], safe=True)
 

@@ -176,8 +176,56 @@ class UploadViewRequest extends SlimViewRequest {
     }
 }
 
+// http://localhost:9999/api/user/oauth/get_oauth_url 取url链接
+class Oauth {
+    async getUrl (website) {
+        if (website === 'github') {
+            let info = await nget(`${remote.API_SERVER}/api/user/oauth/get_oauth_url`)
+            return info['data']['url']
+        } else if (website === 'qq') {
+            return await nget()
+        } else if (website === 'sina') {
+            return await nget()
+        }
+    }
+    async oauthUpdate (userdata) {
+        console.log('oauthUpdate:', userdata)
+        let ret = await npost(`${remote.API_SERVER}/api/user/oauth/update`, null, userdata, null)
+        if (ret.code === retcode.SUCCESS) {
+            return retcode.SUCCESS
+        }
+        return retcode.FAILED
+    }
+    async send (code) {
+        console.log('send', code)
+        let ret = await nget(`${remote.API_SERVER}/api/user/oauth/get_user_data`, {'code': code})
+        console.log('NET API - ret:', ret)
+        if (ret.code !== retcode.FAILED) {
+            console.log(ret['data']['id2user'])
+            // 判断返回的id2user是否是长id，是的话说明是新登陆的用户，返回1，跳转到用户补全界面。否则返回1，直接登陆到主页
+            let id2user = ret['data']['id2user']
+            console.log('net api - id2user:', id2user)
+            if (id2user.toString().length !== 9) {
+                if (ret['code'] === retcode.SUCCESS) {
+                    saveAccessToken(ret.data.access_token)
+                    console.log('netapi - success - ret', ret)
+                    return ret
+                    // return retcode.SUCCESS
+                }
+            } else if (id2user.toString().length === 9) {
+                console.log('netapi MIDDLE -1')
+                return {'code': -1, 'data': ret}
+            }
+        } else {
+            console.log('netapi FAILED')
+            return {'code': retcode.FAILED, 'data': null}
+        }
+    }
+}
+
 let retcode = {
-    SUCCESS: 0
+    SUCCESS: 0,
+    FAILED: -255
 }
 
 let retinfo = {
@@ -200,5 +248,7 @@ export default {
     comment: new SlimViewRequest('comment'),
     notif: new NotifViewRequest('notif'),
     upload: new UploadViewRequest('upload'),
-    logManage: new NotifViewRequest('log/manage')
+    logManage: new NotifViewRequest('log/manage'),
+
+    Oauth: new Oauth()
 }
