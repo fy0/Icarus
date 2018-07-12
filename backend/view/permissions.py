@@ -31,6 +31,8 @@ visitor = Ability(None, {
         'biology': (A.READ,),
         'time': (A.READ,),
         'key_time': (A.READ,),
+        'avatar': (A.READ,),
+        'type': (A.READ,),
 
         'email': (A.CREATE,),
     },
@@ -121,7 +123,7 @@ normal_user = Ability('user', {
         'state': (A.READ, A.WRITE,),
         'content': (A.READ, A.CREATE,),
     },
-    'user_upload': {
+    'upload': {
         'id': (A.READ, A.QUERY),
         'user_id': (A.READ, A.QUERY),
         'state': (A.READ,),

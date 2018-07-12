@@ -27,7 +27,6 @@
 </style>
 
 <script>
-import TopBtns from './topbtns.vue'
 import Sidebar from './sidebar.vue'
 import state from '@/state.js'
 
@@ -38,7 +37,6 @@ export default {
         }
     },
     components: {
-        TopBtns,
         Sidebar
     }
 }

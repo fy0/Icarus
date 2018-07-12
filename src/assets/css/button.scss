@@ -1,0 +1,99 @@
+.ic-btn {
+    border: none;
+    padding: 6px 12px;
+    font-size: 1em;
+    line-height: 1.3em;
+    text-decoration: none;
+    transition: background .15s;
+    border: $btn-border-width solid transparent;
+
+    &.disabled {
+        color: rgba(0, 0, 0, 0.3);
+        cursor: not-allowed;
+        background-color: #bfbfbf !important;
+    }
+}
+
+@mixin button-variant($background, $border, $hover-background: darken($background, 7.5%), $hover-border: darken($border, 10%), $active-background: darken($background, 10%), $active-border: darken($border, 12.5%)) {
+    color: color-yiq($background);
+    background-color: $background;
+
+    &:hover {
+        color: #fff;
+        background-color: $active-background;
+    }
+}
+
+@mixin button-outline-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
+    color: $color;
+    background-color: transparent;
+    background-image: none;
+    border-color: $color;
+
+    &:hover {
+        color: $color-hover;
+        background-color: $active-background;
+        border-color: $active-border;
+    }
+
+    // &:focus,
+    // &.focus {
+    //     box-shadow: 0 0 0 $btn-focus-width rgba($color, .5);
+    // }
+
+    &.disabled,
+    &:disabled {
+        color: $color;
+        background-color: transparent;
+    }
+}
+
+@mixin button-borderless-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
+    color: color-nyiq($color);
+    background-color: transparent;
+    background-image: none;
+
+    &.keep {
+        color: color-yiq($color);
+        background-color: $color;
+
+        &:hover {
+            color: color-yiq($color);
+            background-color: $color;
+        }
+    }
+
+    &:hover {
+        color: $color-hover;
+        background-color: lighten($active-background, 30%);
+    }
+
+    // &:focus,
+    // &.focus {
+    //     box-shadow: 0 0 0 $btn-focus-width rgba($color, .5);
+    // }
+
+    &.disabled,
+    &:disabled {
+        color: $color;
+        background-color: transparent;
+    }
+}
+
+@each $color, $value in $theme-colors {
+    .ic-btn.#{$color} {
+        @include button-variant($value, $value);
+    }
+}
+
+@each $color, $value in $theme-colors {
+    .ic-btn.borderless.#{$color} {
+        @include button-borderless-variant($value, $value);
+    }
+}
+
+@each $color, $value in $theme-colors {
+    .ic-btn.outline.#{$color} {
+        @include button-outline-variant($value);
+    }
+}

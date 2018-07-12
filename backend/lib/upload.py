@@ -12,6 +12,12 @@ def init():
 
 
 def get_token(user_id=None, type_name=None):
+    """
+
+    :param user_id:
+    :param type_name: None, avatar
+    :return:
+    """
     if not config.UPLOAD_ENABLE: return
     token = q.upload_token(config.UPLOAD_QINIU_BUCKET, policy={
         'scope': config.UPLOAD_QINIU_BUCKET,

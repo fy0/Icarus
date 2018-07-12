@@ -1,6 +1,6 @@
 <template>
     <div class="ic-container">
-        <span>OAuth测试页面。</span>
+        <span>登陆中，请稍等。</span>
 
         <div v-title>OAuth</div>
     </div>
@@ -23,33 +23,22 @@ export default {
             state
         }
     },
-    beforeCreate () {  // 判断是否有参数提交，如果没有就跳转到主页
+    beforeCreate () { // 判断是否有参数提交，如果没有就跳转到主页
         if (this.$route.query.code) { // xx?oauth=xxx
-            console.log('beforeCreate', this.$route.query.code)
-            alert(this.$route.query.code)
-            return
         } else {
             this.$router.replace('/')
-            return
         }
     },
     created () {
-        console.log('created:', this.$route.query.code)
         this.check(this.$route.query.code)
     },
     methods: {
         check: async function (code) {
             // console.log('check', code)
-            alert('check:', code)
             let ret = await api.Oauth.send(code) // 拿到oauth返回的code，交给 api - get_user_data
             // 判断返回值，跳转到主页或者补全信息界面
-            console.log('OAUTH', ret)
-            console.log('OAUTH CODE', ret['code'])
-            console.log(ret['code'] === -1)
-            console.log(api.retcode)
             if (ret['code'] === api.retcode.SUCCESS) {
                 console.log('登陆成功')
-                console.log(ret.data.id2user)
 
                 let uret = await api.user.get({id: ret.data.id2user}, 'inactive_user')
                 if (uret.code !== api.retcode.SUCCESS) return
@@ -76,9 +65,7 @@ export default {
                 }) // 跳转到验证界面
             } else {
                 console.log('非法状态')
-                return
             }
-            return
         }
     }
 }

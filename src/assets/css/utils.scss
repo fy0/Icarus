@@ -1,0 +1,87 @@
+
+.ic-container {
+    max-width: 1020px !important;
+    margin-left: auto;
+    margin-right: auto;
+    /* 为窄屏幕留白 */
+    padding-left: 10px;
+    padding-right: 10px;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.ic-hr {
+    margin-left: auto;
+    margin-right: auto;
+    margin: 30px 0 !important;
+    border-bottom: 1px solid #eee;
+}
+
+.ic-header {
+    font-weight: bolder;
+    font-size: 18px;
+    border-bottom: 1px #e1e4e8 solid;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.del-line {
+    text-decoration-line: line-through;
+}
+
+/* 列表 */
+.ic-collection {
+    margin: 0.5rem 0 1rem 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+    list-style-type: none;
+    
+    .ic-collection-item {
+        background-color: #fff;
+        line-height: 1.5rem;
+        padding: 20px;
+        margin: 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+}
+
+
+/* 其他 */
+
+.ic-topic-manage-icon {
+    color: #71c1ef;
+    cursor: pointer;
+}
+
+/* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
+.ic-topbtns {
+    display: flex;
+    margin-bottom: 10px;
+    padding-left: 10px;
+
+    > a {
+      display: block;
+      margin-right: .35em;
+    }
+}
+
+.e-ripple {
+	position: absolute;
+	border-radius: 100%;
+	background-color: rgba(0, 0, 0, 0.15);
+	background-clip: padding-box;
+	pointer-events: none;
+	user-select: none;
+	transform: scale(0);
+	opacity: 1;
+
+	&.z-active {
+		opacity: 0;
+		transform: scale(2);
+		transition: opacity 1.2s ease-out, transform 0.6s ease-out;
+	}
+}

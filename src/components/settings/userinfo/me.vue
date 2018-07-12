@@ -3,15 +3,6 @@
     <div v-title>个人信息 - 用户设置 - {{state.config.title}}</div>
     <h3 class="ic-header">个人信息</h3>
 
-	<my-upload field="img"
-        v-model="avatarUploadShow"
-		:width="300"
-		:height="300"
-		url="/upload"
-		:params="{}"
-		:headers="{}"
-		img-format="png"></my-upload>
-
     <div class="box">
         <div class="left">
             <div class="lbox">
@@ -39,24 +30,39 @@
                 <div class="setting-item">
                     <span class="label">简介</span>
                     <div class="line">
-                        <textarea class="commentArea" rows="5" placeholder="" v-model="user.biology" maxLength="255"></textarea>
+                        <textarea class="ic-input commentArea" rows="5" placeholder="" v-model="user.biology" maxLength="255"></textarea>
                     </div>
                 </div>
 
                 <div class="setting-item">
                     <span class="label">URL</span>
                     <div class="line">
-                        <input class="commentArea" rows="5" placeholder="" v-model="user.url" />
+                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.url" />
                     </div>
                 </div>
 
-                <button class="ic-btn keep blue">更新个人信息</button>
+                <div class="setting-item">
+                    <span class="label">所在地</span>
+                    <div class="line">
+                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.location" />
+                    </div>
+                </div>
+
+                <div class="setting-item" v-if="false">
+                    <span class="label">手机</span>
+                    <div class="line">
+                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.phone" />
+                    </div>
+                </div>
+
+                <button class="ic-btn primary" @click="updateInfo">更新个人信息</button>
             </div>
         </div>
         <div class="right">
             <div class="setting-item">
-                <div class="line" @click="avatarUploadShow = true" >
+                <div class="line box-avatar" @click="state.dialog.userSetAvatar = true" >
                     <avatar :is-link="false" :user="user" :size="200" class="avatar"></avatar>
+                    <button class="ic-btn primary btn-upload" style="margin-top: 10px; width: 100%">点此上传新头像</button>
                 </div>
             </div>
 
@@ -87,14 +93,22 @@
 </template>
 
 <style scoped>
+.box-avatar {
+    position: relative;
+}
+
+.box-avatar > .btn-upload {
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+    opacity: 0.7;
+}
 
 .lbox {
     width: 85%;
 }
 
 .commentArea {
-    resize: none;
-    border: 1px #ccc solid;
     width: 100%;
 }
 
@@ -135,7 +149,6 @@
 // import api from '@/netapi.js'
 import state from '@/state.js'
 import SettingBase from '../base/base.vue'
-import myUpload from 'vue-image-crop-upload'
 
 export default {
     data () {
@@ -155,6 +168,11 @@ export default {
             // let ret = await api.topic.get({
             //     id: params.id,
             // })
+        },
+        updateInfo: async function () {
+            this.updating = true
+            // ...
+            this.updating = false
         }
     },
     created: async function () {
@@ -168,7 +186,6 @@ export default {
         '$route': 'fetchData'
     },
     components: {
-        myUpload,
         SettingBase
     }
 }

@@ -14,6 +14,7 @@ import AccountFiles from '@/components/account/files.vue'
 
 import Setting from '@/components/settings/setting.vue'
 import SettingUserinfoMe from '@/components/settings/userinfo/me.vue'
+import SettingUserinfoUpload from '@/components/settings/userinfo/upload.vue'
 import SettingSecurityPassword from '@/components/settings/security/password.vue'
 import SettingSecurityOAuth from '@/components/settings/security/oauth.vue'
 
@@ -138,6 +139,12 @@ export default new Router({
             path: '/setting/user/me',
             name: 'setting_user_me',
             component: SettingUserinfoMe
+        },
+        // 设置 - 用户 - 个人信息
+        {
+            path: '/setting/user/upload',
+            name: 'setting_user_upload',
+            component: SettingUserinfoUpload
         },
         // 设置 - 安全 - 修改密码
         {

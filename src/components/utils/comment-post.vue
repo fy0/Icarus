@@ -4,28 +4,28 @@
     <div class="ic-comment" v-if="isInactiveUser">
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box">
-            <mu-paper :zDepth="1" class="not-signin-content">你的账号需要激活后才能发言，请检查邮箱</mu-paper>
+            <div class="ic-paper round ic-z1 not-signin-content">你的账号需要激活后才能发言，请检查邮箱</div>
         </div>
     </div>
 
     <div class="ic-comment" v-else-if="state.user">
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box" v-if="isClosed()">
-            <mu-paper :zDepth="1" class="not-signin-content">评论已关闭</mu-paper>
+            <div class="ic-paper round ic-z1 not-signin-content">评论已关闭</div>
         </div>
         <div class="right-box content" v-else>
-            <mu-paper :zDepth="editing ? 2 : 1">
+            <div class="ic-paper round" :class="[editing ? 'ic-z3' : 'ic-z1']">
                 <textarea id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
-            </mu-paper>
+            </div>
             <div style="display: flex; justify-content: space-between;" class="postBtnBox">
                 <div v-if="!replyTo"></div>
                 <div style="align-items: center; display: flex;" v-else>
                     <a href="javascript:void(0)" @click="setReplyTo(null)">×</a>
                     <div style="margin-left: 10px">正在回复：{{replyTo.user_id.nickname}}</div>
                 </div>
-                <mu-paper :zDepth="editing ? 2 : 1">
-                    <mu-raised-button label="发表" class="postBtn" @click="commentPost" primary />
-                </mu-paper>
+                <div class="ic-paper round" :class="[editing ? 'ic-z3' : 'ic-z1']">
+                    <button class="postBtn ic-btn primary" @click="commentPost">发表</button>
+                </div>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
     <div class="ic-comment" v-else>
         <avatar :anonymous="true" class="avatar"></avatar>
         <div class="right-box">
-            <div :zDepth="editing ? 2 : 1" class="not-signin-content">
+            <div class="not-signin-content">
                 需要 <router-link :to="{ name: `account_signin` }">登录</router-link> 后方可回复, 如果你还没有账号，那么可以 <router-link :to="{ name: `account_signup` }">注册</router-link> 一个帐号。
             </div>
         </div>
@@ -80,6 +80,8 @@
 }
 
 .postBtn {
+    padding-left: 20px;
+    padding-right: 20px;
 }
 </style>
 

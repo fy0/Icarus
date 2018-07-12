@@ -12,7 +12,7 @@
                 <input type="password" name="password" id="password" v-model="info.password">
             </check-row>
             <div class="ic-form-row">
-                <input class="ic-btn green click" type="submit" @click.prevent="login" name="" value="登 录">
+                <input class="ic-btn success" type="submit" @click.prevent="login" name="" value="登 录">
             </div>
             <div class="ic-form-row">
                 <router-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</router-link>
@@ -180,7 +180,6 @@ export default {
             let ghUrl = await api.Oauth.getUrl('github')
             window.open(ghUrl, '_blank')
             console.log(ghUrl)
-            return
         }
     },
     components: {

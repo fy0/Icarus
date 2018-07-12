@@ -1,5 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+/* eslint-disable import/first */
+
 import Vue from 'vue'
 import App from './app'
 import router from './router'
@@ -88,11 +90,7 @@ marked.setOptions({
     }
 })
 
-import './assets/css/base.css'
-import './assets/css/button.css'
-import './assets/css/form.css'
-import './assets/css/am-alert.css'
-import './assets/icons/iconfont.css'
+import './assets/css/base-ui.scss'
 import './tools.js'
 
 import state from './state.js'
@@ -108,11 +106,13 @@ import Avatar from './components/utils/avatar.vue'
 import ICTime from './components/utils/ic-time.vue'
 import UserLink from './components/utils/user-link.vue'
 import PostLink from './components/utils/post-link.vue'
+import ICDialog from './components/utils/dialogs/_dialog.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
 import DialogUserManage from './components/utils/dialogs/user-manage.vue'
 import DialogCommentManage from './components/utils/dialogs/comment-manage.vue'
+import DialogUserSetAvatar from './components/utils/dialogs/user-set-avatar.vue'
 
 Vue.component('page-not-found', PageNotFound)
 Vue.component('redirecting', Redirecting)
@@ -122,9 +122,11 @@ Vue.component('avatar', Avatar)
 Vue.component('ic-time', ICTime)
 Vue.component('user-link', UserLink)
 Vue.component('post-link', PostLink)
+Vue.component('ic-dialog', ICDialog)
 Vue.component('dialog-topic-manage', DialogTopicManage)
 Vue.component('dialog-user-manage', DialogUserManage)
 Vue.component('dialog-comment-manage', DialogCommentManage)
+Vue.component('dialog-user-set-avatar', DialogUserSetAvatar)
 
 Vue.directive('title', {
     inserted: function (el, binding) {

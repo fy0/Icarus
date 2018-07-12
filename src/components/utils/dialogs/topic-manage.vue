@@ -174,7 +174,7 @@ export default {
     },
     methods: {
         next: async function () {
-            this.stage ++
+            this.stage++
             if (this.stage === 3) {
                 let change = this.changed
 

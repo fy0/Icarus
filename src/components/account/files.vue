@@ -57,7 +57,7 @@
 
 <script>
 import state from '@/state.js'
-import api from '@/netapi.js'
+// import api from '@/netapi.js'
 import * as qiniu from 'qiniu-js'
 
 export default {
@@ -67,9 +67,7 @@ export default {
             image: '',
             timeline: [
                 ['2018.03', []]
-            ],
-            uploadToken: '',
-            keyTime: 0
+            ]
         }
     },
     created: async function () {
@@ -79,27 +77,12 @@ export default {
         selectFile: async function () {
             this.$refs.inputFile.click()
         },
-        getUploadToken: async function () {
-            let offset = state.misc.BACKEND_CONFIG.UPLOAD_QINIU_DEADLINE_OFFSET - 2 * 60
-            let now = Date.parse(new Date()) / 1000
-            // 若 token 的有效时间降至，那么申请一个新的（2min余量）
-            if ((now - this.keyTime) > offset) {
-                let ret = await api.upload.token('user')
-                if (ret.code === api.retcode.SUCCESS) {
-                    this.keyTime = now
-                    this.uploadToken = ret.data
-                } else {
-                    // 异常情况
-                    return null
-                }
-            }
-            return this.uploadToken
-        },
         onFileChange: async function (e) {
             let files = e.target.files || e.dataTransfer.files
             if (!files.length) return
-            let token = await this.getUploadToken()
+            let token = await $.asyncGetUploadToken()
             if (token !== null) {
+                console.log(files[0])
                 let ob = qiniu.upload(files[0], null, token, null)
                 ob.subscribe({
                     complete: (res) => {

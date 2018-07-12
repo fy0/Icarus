@@ -16,11 +16,11 @@ $.scrollTo = function (el) {
         end: el.getBoundingClientRect().top + window.pageYOffset,
         duration: 500
     })
-    .on('tick', v => window.scrollTo(0, v))
-    .on('done', () => {
-        scroller = null
-    })
-    .begin()
+        .on('tick', v => window.scrollTo(0, v))
+        .on('done', () => {
+            scroller = null
+        })
+        .begin()
 }
 
 $.dateFormat = function (d, format) {
@@ -95,6 +95,56 @@ $.media = {
     md: {minWidth: '48em'},
     lg: {minWidth: '64em'},
     xl: {minWidth: '80em'}
+}
+
+$.dataURItoBlob = function (dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = atob(dataURI.split(',')[1])
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length)
+    var ia = new Uint8Array(ab)
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+    }
+
+    return new Blob([ab], {type: mimeString})
+}
+
+let uploadKeyTime = 0
+let uploadToken = ''
+
+$.staticUrl = function (key) {
+    return `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${key}`
+}
+
+$.asyncGetUploadToken = async function (isAvatarUpload = false) {
+    if (isAvatarUpload) {
+        let ret = await api.upload.token('user', isAvatarUpload)
+        if (ret.code === api.retcode.SUCCESS) {
+            return ret.data
+        }
+        return null
+    }
+
+    let offset = state.misc.BACKEND_CONFIG.UPLOAD_QINIU_DEADLINE_OFFSET - 2 * 60
+    let now = Date.parse(new Date()) / 1000
+    // 若 token 的有效时间降至，那么申请一个新的（2min余量）
+    if ((now - uploadKeyTime) > offset) {
+        let ret = await api.upload.token('user')
+        if (ret.code === api.retcode.SUCCESS) {
+            uploadKeyTime = now
+            uploadToken = ret.data
+        } else {
+            // 异常情况
+            return null
+        }
+    }
+    return uploadToken
 }
 
 $.lineStyle = function (board, key = 'border-left-color') {

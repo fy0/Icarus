@@ -41,6 +41,9 @@ class UserOAuthView(UserMixin, PeeweeView):
         code = self.params
         print(code)
         code = code['code']
+        if code == 'undefined':
+            self.finish(RETCODE.FAILED)
+            return
         otoken, _ = await self.github.get_access_token(code)
         github = GithubClient(
             client_id=config.CLIENT_ID,
@@ -48,7 +51,6 @@ class UserOAuthView(UserMixin, PeeweeView):
             access_token=otoken,
         )
         response = await github.request('GET', 'user')
-        print('response:', response)
         # response = json.loads(response)
         if response['id']:
             try:
@@ -56,14 +58,9 @@ class UserOAuthView(UserMixin, PeeweeView):
             except UserOAuth.DoesNotExist:
                 account = None
 
-            print('account:', account)
             if account:
                 if account.user_id:  # 返回用户已有信息
-                    print('retcode', RETCODE.SUCCESS)
                     u = User.get_by_pk(account.user_id)
-                    print('account.id2user', account.id2user)
-                    print('account.id:', account.id)
-                    print('u:', u)
                     if u:
                         expires = 30
                         u.refresh_key()
@@ -76,7 +73,6 @@ class UserOAuthView(UserMixin, PeeweeView):
                 #     self.finish(RETCODE.FAILED)
             else:  # 在oauth表中新建用户，返回部分用户数据
                 changid = ''.join([random.choice(string.digits) for i in range(9)])
-                print('changid:', changid)
                 ins = [{'id2user': int(changid), 'login_id': response['id'], 'time': time.time(), 'platform': 'github'}]
                 UserOAuth.insert_many(ins).execute()
                 self.finish(RETCODE.SUCCESS, {'oauthcode': 1, 'id2user': ins[0]['id2user'],
@@ -99,15 +95,11 @@ class UserOAuthView(UserMixin, PeeweeView):
             account = None
             print('keyerror')
 
-        print(account)
         if account:
             if len(str(account.id2user)) == 9:  # 长id # 这里读字段不是这样读的，错了。
                 # 把原来随机的id2user更新成user表中对应的用户id
-                print('post_id:', post['id'])
                 post_user_id = to_bin(post['id'])
-                print('post_user_id:', post_user_id)
                 UserOAuth.update(id2user=post['id'], user_id=post_user_id).where(UserOAuth.id2user == post['id2user']).execute()
-                print('success')
                 self.finish(RETCODE.SUCCESS)
             else:
                 print('非法参数')

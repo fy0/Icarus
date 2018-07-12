@@ -122,20 +122,15 @@ export default {
                     $.message_by_code(ret.code)
                 } else {
                     let userinfo = ret.data
-                    console.log('this.info:', this.info)
                     if (ret.code === 0) {
                         api.saveAccessToken(userinfo['access_token'])
                         ret = await api.user.get({id: ret.data.id}, 'user')
                         Vue.set(state, 'user', ret.data)
-                        console.log('1:', userinfo.id)
                         $.notifLoopOn()
                         $.message_by_code(ret.code)
                         // 用户注册完之后顺便把对应内容发给 oauthUpdate 更新
                         this.info.id = userinfo.id
-                        console.log('2:', ret.data.id)
-                        console.log('3:', this.info.id)
                         let retUpdate = await api.Oauth.oauthUpdate(this.info)
-                        console.log('retUpdate:', retUpdate)
                         if (retUpdate === api.retcode.SUCCESS) {
                             alert('信息录入成功')
                             this.$router.go('/')
@@ -153,7 +148,6 @@ export default {
             }
         },
         cancel: async function () {
-            return
         }
     },
     components: {

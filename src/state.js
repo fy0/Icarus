@@ -20,7 +20,10 @@ let state = {
             50: '正常'
         },
         POST_STATE: { ... },
-        POST_STATE_TXT: { ... }
+        POST_STATE_TXT: { ... },
+        BACKEND_CONFIG: {
+            ...
+        }
     },
     */
     config,
@@ -36,7 +39,9 @@ let state = {
         userManage: null,
         userManageData: null,
         commentManage: null,
-        commentManageData: null
+        commentManageData: null,
+        userSetAvatar: false,
+        userSetAvatarData: null
     },
     unread: 0,
     user: null,

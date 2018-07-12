@@ -1,0 +1,130 @@
+html {
+    overflow-y: scroll !important;
+}
+
+body {
+    overflow: hidden;
+    background-color: $main-background-color;
+}
+
+body, button, input, select, textarea {
+    font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans, FontAwesome, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6, h7 {
+    margin: 0;
+}
+
+a {
+    color: $link-color;
+    text-decoration: none;
+}
+
+a:hover {
+    color: $link-hover-color;
+}
+
+// Elevations
+
+.ic-z0 {
+    @include depth(0);
+}
+
+.ic-z1 {
+    @include depth(1);
+}
+
+.ic-z2 {
+    @include depth(2);
+}
+
+.ic-z3 {
+    @include depth(3);
+}
+
+.ic-z4 {
+    @include depth(4);
+}
+
+.ic-z5 {
+    @include depth(5);
+}
+
+.ic-z6 {
+    @include depth(6);
+}
+
+.ic-z7 {
+    @include depth(7);
+}
+
+.ic-z8 {
+    @include depth(8);
+}
+
+.ic-z9 {
+    @include depth(9);
+}
+
+.ic-z10 {
+    @include depth(10);
+}
+
+.ic-z11 {
+    @include depth(11);
+}
+
+.ic-z12 {
+    @include depth(12);
+}
+.ic-z13 {
+    @include depth(13);
+}
+
+.ic-z14 {
+    @include depth(14);
+}
+
+.ic-z15 {
+    @include depth(15);
+}
+
+.ic-z16 {
+    @include depth(16);
+}
+
+.ic-z17 {
+    @include depth(17);
+}
+
+.ic-z18 {
+    @include depth(18);
+}
+
+.ic-z19 {
+    @include depth(19);
+}
+
+.ic-z20 {
+    @include depth(20);
+}
+
+.ic-z21 {
+    @include depth(21);
+}
+
+.ic-z22 {
+    @include depth(22);
+}
+
+.ic-z23 {
+    @include depth(23);
+}
+
+.ic-z24 {
+    @include depth(24);
+}

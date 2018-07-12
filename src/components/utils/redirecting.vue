@@ -46,7 +46,7 @@ export default {
     methods: {
         fetchData: function () {
             this.timer = setInterval(() => {
-                this.second --
+                this.second--
                 if (!this.second) {
                     clearInterval(this.timer)
                     this.$router.push(this.autoRedirectPath)

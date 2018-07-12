@@ -9,7 +9,7 @@ from model.notif import Notification, UserNotifRecord
 from model.statistic import Statistic, Statistic24h
 from model.test import Test
 from model.topic import Topic
-from model.user_upload import UserUpload
+from model.upload import Upload
 from model.user import User
 from model.user_oauth import UserOAuth
 from model.wiki import WikiItem, WikiArticle, WikiHistory
@@ -64,7 +64,7 @@ db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
                   Notification, UserNotifRecord,
                   UserOAuth,
-                  UserUpload,
+                  Upload,
                   ManageLog,
                   Statistic, Statistic24h], safe=True)
 
