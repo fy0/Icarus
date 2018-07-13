@@ -85,7 +85,6 @@
 
 .ic-comment .content {
     flex: 1 0 0%;
-    background: #fff;
     padding: 0 10px 0 20px;
 }
 </style>
