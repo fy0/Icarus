@@ -4,7 +4,7 @@ from playhouse.postgres_ext import BinaryJSONField
 
 import config
 from model import BaseModel, MyTimestampField
-from model.user import User
+from model._post import POST_TYPES
 from slim import json_ex_dumps
 from slim.utils import StateObject
 
@@ -64,15 +64,17 @@ class ManageLog(BaseModel):
     time = MyTimestampField(index=True)  # 操作时间
     related_type = IntegerField()  # 被操作对象类型
     related_id = BlobField(index=True)  # 被操作对象
+    # related_type2 = IntegerField(null=True)  # 附加被操作对象类型
+    # related_id2 = BlobField(index=True)  # 附加关联对象
     operation = IntegerField()  # 操作行为
     value = BinaryJSONField(dumps=json_ex_dumps, null=True)  # 操作数据
     note = TextField(null=True, default=None)
 
     @classmethod
-    def new(cls, user, role, related_type, related_id, operation, value, note=None):
+    def new(cls, user_id, role, related_type, related_id, operation, value, note=None):
         return cls.create(
             id=config.LONG_ID_GENERATOR().digest(),
-            user_id=user.id,
+            user_id=user_id,
             role=role,
             time=int(time.time()),
             related_type=related_type,
@@ -83,12 +85,44 @@ class ManageLog(BaseModel):
         )
 
     @classmethod
+    def add_by_change_credit(cls, view, changed_user, note=None, *, value=None):
+        if view:
+            user_id = view.current_user.id
+            role = view.current_role
+        else:
+            user_id = None
+            role = None
+
+        return cls.new(user_id, role, POST_TYPES.USER, changed_user.id,
+                       MANAGE_OPERATION.USER_CREDIT_CHANGE, value, note=note)
+
+    @classmethod
+    def add_by_change_credit_sys(cls, changed_user, note=None, *, value=None):
+        return cls.add_by_change_credit(changed_user, note, value=value)
+
+    @classmethod
+    def add_by_change_reputation(cls, view, changed_user, note=None, *, value=None):
+        if view:
+            user_id = view.current_user.id
+            role = view.current_role
+        else:
+            user_id = None
+            role = None
+
+        return cls.new(user_id, role, POST_TYPES.USER, changed_user.id,
+                       MANAGE_OPERATION.USER_REPUTATION_CHANGE, value, note=note)
+
+    @classmethod
+    def add_by_change_reputation_sys(cls, changed_user, note=None, *, value=None):
+        return cls.add_by_change_reputation(changed_user, note, value=value)
+
+    @classmethod
     def add_by_post_change(cls, view, key, operation, related_type, values, old_record, record, note=None,
                            *, value=NotImplemented):
         if key in values:
             if value is NotImplemented:
                 value = [old_record[key], record[key]]
-            return cls.new(view.current_user, view.current_role, related_type, record['id'],
+            return cls.new(view.current_user.id, view.current_role, related_type, record['id'],
                     operation, value, note=note)
 
     class Meta:

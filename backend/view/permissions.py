@@ -37,6 +37,8 @@ visitor = Ability(None, {
         'location': (A.READ,),
 
         'email': (A.CREATE,),
+        'credit': (A.READ,),
+        'reputation': (A.READ,),
     },
     'board': {
         'id': (A.QUERY, A.READ),
@@ -103,6 +105,7 @@ inactive_user = Ability('inactive_user', {
     'user': {
         'nickname': (A.QUERY, A.READ, A.WRITE),
         'group': (A.READ,),
+        'access_time': (A.READ,),
         # 'key': ['query', 'read']
     }
 }, based_on=visitor)

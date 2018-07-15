@@ -1,19 +1,46 @@
 <template>
-<div class="ic-topbtns">
-    <router-link class="ic-btn primary" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
-    <router-link class="ic-btn borderless orange" :to="{ name: 'forum' }" :class="navActiveStrict('forum')">板块列表</router-link>
-    <router-link class="ic-btn borderless orange" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">最近话题</router-link>
+<div class="ic-topbtns-box">
+    <div class="ic-topbtns">
+        <router-link class="ic-btn primary" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
+        <router-link class="ic-btn borderless orange" :to="{ name: 'forum' }" :class="navActiveStrict('forum')">板块列表</router-link>
+        <router-link class="ic-btn borderless orange" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">最近话题</router-link>
+    </div>
+    <div>
+        <span>声望: {{state.user.reputation}}</span>
+        <span>积分: {{state.user.credit}}</span>
+        <span class="ic-btn outline orange">签到</span>
+    </div>
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+/* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
+.ic-topbtns-box {
+    display: flex;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 12px;
+    align-items: center;
+    justify-content: space-between;
 
+    .ic-topbtns {
+        display: flex;
+        > a {
+            display: block;
+            margin-right: 6px;
+        }
+    }
+}
 </style>
 
 <script>
+import state from '@/state.js'
+// import api from '@/netapi.js'
+
 export default {
     data () {
         return {
+            state
         }
     },
     methods: {

@@ -8,7 +8,9 @@ from typing import Union
 
 from peewee import *
 import config
+from lib.utils import get_today_start_timestamp
 from model._post import PostModel
+from model.log_manage import ManageLog
 from slim.base.user import BaseUser
 from slim.utils import StateObject
 from model import BaseModel, MyTimestampField, CITextField, db, SerialField
@@ -43,7 +45,10 @@ class User(PostModel, BaseUser):
     group = IntegerField(index=True)  # 用户权限组
 
     key = BlobField(index=True, null=True)
-    key_time = MyTimestampField()
+    key_time = MyTimestampField()  # 最后登录时间
+    access_time = MyTimestampField(null=True, default=None)  # 最后访问时间，以misc为准吧
+    last_check_in_time = MyTimestampField(null=True, default=None)  # 上次签到时间
+    check_in_his = IntegerField(default=0)  # 连续签到天数
 
     phone = TextField(null=True, default=None)  # 大陆地区
     number = IntegerField(default=get_user_count_seq)  # 序号，第N个用户 sequence='user_count_seq'
@@ -164,6 +169,44 @@ class User(PostModel, BaseUser):
         self.salt = info['salt']
         self.password = info['password']
         self.save()
+
+    def update_access_time(self):
+        self.access_time = int(time.time())
+        self.save()
+        return self.access_time
+
+    def check_in(self):
+        old_time = self.last_check_in_time
+        last_midnight = get_today_start_timestamp()
+
+        # 今日未签到
+        if self.last_check_in_time > last_midnight:
+            self.last_check_in_time = int(time.time())
+            # 三天内有签到，连击
+            if old_time > last_midnight - 3 * 24 * 60:
+                self.check_in_his += 1
+            else:
+                self.check_in_his = 0
+            self.save()
+
+            # 签到加分
+            credit = self.credit
+            reputation = self.reputation
+            self.credit += 5
+            self.reputation += 5
+            self.save()
+            ManageLog.add_by_change_credit_sys(self, note='每日签到', value=[credit, self.credit])
+            ManageLog.add_by_change_reputation_sys(self, note='每日签到', value=[reputation, self.reputation])
+
+    def daily_access_reward(self):
+        old_time = self.access_time
+        self.update_access_time()
+
+        if old_time < get_today_start_timestamp():
+            credit = self.credit
+            self.credit += 5
+            self.save()
+            ManageLog.add_by_change_credit_sys(self, note='每日登录', value=[credit, self.credit])
 
     @classmethod
     def auth(cls, email, password_text):

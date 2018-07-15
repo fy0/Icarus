@@ -135,7 +135,6 @@ class TopicView(UserMixin, PeeweeView):
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
         values['user_id'] = self.current_user.id
-        print(values)
 
         # 以下通用
         if not config.POST_ID_GENERATOR == config.AutoGenerator:

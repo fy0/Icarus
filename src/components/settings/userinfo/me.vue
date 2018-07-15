@@ -86,7 +86,14 @@
                     <ic-time :ago="false" :timestamp="user.key_time" />
                 </div>
             </div>
-            
+
+            <div class="setting-item">
+                <span class="label">最后访问时间</span>
+                <div class="line">
+                    <ic-time :ago="false" :timestamp="user.access_time" />
+                </div>
+            </div>
+
         </div>
     </div>
 </setting-base>
