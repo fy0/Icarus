@@ -98,7 +98,7 @@ class ManageLog(BaseModel):
 
     @classmethod
     def add_by_change_credit_sys(cls, changed_user, note=None, *, value=None):
-        return cls.add_by_change_credit(changed_user, note, value=value)
+        return cls.add_by_change_credit(None, changed_user, note, value=value)
 
     @classmethod
     def add_by_change_reputation(cls, view, changed_user, note=None, *, value=None):
@@ -114,7 +114,7 @@ class ManageLog(BaseModel):
 
     @classmethod
     def add_by_change_reputation_sys(cls, changed_user, note=None, *, value=None):
-        return cls.add_by_change_reputation(changed_user, note, value=value)
+        return cls.add_by_change_reputation(None, changed_user, note, value=value)
 
     @classmethod
     def add_by_post_change(cls, view, key, operation, related_type, values, old_record, record, note=None,

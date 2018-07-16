@@ -168,6 +168,11 @@ class UserView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.FAILED)
 
+    @route.interface('POST')
+    async def check_in(self):
+        data = self.current_user.check_in()
+        self.finish(RETCODE.SUCCESS, data)
+
     @route.interface('GET')
     async def activation(self):
         user = User.check_active(self.params['uid'], self.params['code'])

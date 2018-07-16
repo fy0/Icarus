@@ -129,6 +129,10 @@ class UserViewRequest extends SlimViewRequest {
         return ret
     }
 
+    async checkIn () {
+        return npost(`${this.urlPrefix}/check_in`)
+    }
+
     async activation (uid, code) {
         return nget(`${this.urlPrefix}/activation`, {uid, code})
     }

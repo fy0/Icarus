@@ -176,17 +176,18 @@ class User(PostModel, BaseUser):
         return self.access_time
 
     def check_in(self):
+        self.last_check_in_time = self.last_check_in_time or 0
         old_time = self.last_check_in_time
         last_midnight = get_today_start_timestamp()
 
         # 今日未签到
-        if self.last_check_in_time > last_midnight:
+        if self.last_check_in_time < last_midnight:
             self.last_check_in_time = int(time.time())
             # 三天内有签到，连击
             if old_time > last_midnight - 3 * 24 * 60:
                 self.check_in_his += 1
             else:
-                self.check_in_his = 0
+                self.check_in_his = 1
             self.save()
 
             # 签到加分
@@ -198,7 +199,14 @@ class User(PostModel, BaseUser):
             ManageLog.add_by_change_credit_sys(self, note='每日签到', value=[credit, self.credit])
             ManageLog.add_by_change_reputation_sys(self, note='每日签到', value=[reputation, self.reputation])
 
+            return {
+                'credit': 5,
+                'reputation': 5,
+                'time': self.last_check_in_time
+            }
+
     def daily_access_reward(self):
+        self.access_time = self.access_time or 0
         old_time = self.access_time
         self.update_access_time()
 
@@ -207,6 +215,7 @@ class User(PostModel, BaseUser):
             self.credit += 5
             self.save()
             ManageLog.add_by_change_credit_sys(self, note='每日登录', value=[credit, self.credit])
+            return 5
 
     @classmethod
     def auth(cls, email, password_text):

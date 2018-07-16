@@ -106,6 +106,8 @@ inactive_user = Ability('inactive_user', {
         'nickname': (A.QUERY, A.READ, A.WRITE),
         'group': (A.READ,),
         'access_time': (A.READ,),
+        'last_check_in_time': (A.READ,),
+        'check_in_his': (A.READ,),
         # 'key': ['query', 'read']
     }
 }, based_on=visitor)

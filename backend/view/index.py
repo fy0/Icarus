@@ -29,11 +29,21 @@ class TestBaseView(UserMixin, BaseView):
         cls.use('info', 'GET')
 
     async def info(self):
+        extra = {
+            'midnight_time': get_today_start_timestamp()
+        }
+
         # 每日首次访问奖励
         if self.current_user:
-            self.current_user.daily_access_reward()
+            daily_reward = self.current_user.daily_access_reward()
+            if daily_reward:
+                extra['daily_reward'] = {
+                    'credit': daily_reward
+                }
 
         self.finish(RETCODE.SUCCESS, {
+            'extra': extra,
+
             'POST_TYPES': POST_TYPES.to_dict(),
             'POST_TYPES_TXT': POST_TYPES.txt,
             'POST_STATE': POST_STATE.to_dict(),
