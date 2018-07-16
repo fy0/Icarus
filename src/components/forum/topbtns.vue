@@ -9,7 +9,7 @@
         <span>声望: {{state.user.reputation}}</span>
         <span style="margin-right: 5px">积分: {{state.user.credit}}</span>
         <span class="ic-btn outline orange" @click="checkIn" v-if="!checkedIn">签到</span>
-        <span class="ic-btn orange" v-else>今日已签，连续{{state.user.check_in_his}}次</span>        
+        <span class="ic-btn orange" v-else>今日已签 x{{state.user.check_in_his}}</span>        
     </div>
 </div>
 </template>
@@ -52,7 +52,9 @@ export default {
     methods: {
         checkIn: async function () {
             let ret = await api.user.checkIn()
-            console.log(111, ret)
+            state.user['last_check_in_time'] = ret.data.time
+            state.user['check_in_his'] = ret.data.check_in_his
+            $.message_success(`签到成功！获得声望 ${ret.data.reputation} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
         },
         navActiveStrict: function (...names) {
             for (let name of names) {

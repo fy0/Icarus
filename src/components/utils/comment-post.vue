@@ -9,7 +9,7 @@
     </div>
 
     <div class="ic-comment" v-else-if="state.user">
-        <avatar :user="state.user" class="avatar"></avatar>
+        <avatar :depth="1" :user="state.user" class="avatar"></avatar>
         <div class="right-box" v-if="isClosed()">
             <div class="ic-paper round ic-z1 not-signin-content">评论已关闭</div>
         </div>

@@ -202,7 +202,8 @@ class User(PostModel, BaseUser):
             return {
                 'credit': 5,
                 'reputation': 5,
-                'time': self.last_check_in_time
+                'time': self.last_check_in_time,
+                'check_in_his': self.check_in_his
             }
 
     def daily_access_reward(self):

@@ -7,13 +7,13 @@
     </a>
     <!-- 存在图像头像情况 -->
     <router-link v-else-if="user.avatar" class="sa-avatar" :style="userStyle" :to="linkTo">
-        <div class="ic-paper round ic-z0 paper" :style="userStyle">
+        <div class="ic-paper round paper" :class="`ic-z${depth}`" :style="userStyle">
             <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
         </div>
     </router-link>
     <!-- 自动生成头像情况 -->
     <router-link v-else class="sa-avatar" :style="style" :to="linkTo" >
-        <div class="ic-paper round ic-z0 paper">{{char}}</div>
+        <div class="ic-paper round paper" :class="`ic-z${depth}`">{{char}}</div>
     </router-link>
 </div>
 <!-- 不带链接情况 -->
@@ -23,13 +23,13 @@
     </span>
     <!-- 存在图像头像情况 -->
     <span class="sa-avatar" :style="userStyle" v-if="user.avatar">
-        <div class="ic-paper round ic-z0 paper" style="line-height: 0">
+        <div class="ic-paper round paper" :class="`ic-z${depth}`" style="line-height: 0">
             <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
         </div>
     </span>
     <!-- 自动生成头像情况 -->
     <span v-else class="sa-avatar" :style="style">
-        <div class="ic-paper round ic-z0 paper">{{char}}</div>
+        <div class="ic-paper round paper" :class="`ic-z${depth}`">{{char}}</div>
     </span>
 </div>
 </template>
@@ -66,6 +66,9 @@ export default {
         },
         isLink: {
             default: true
+        },
+        depth: {
+            default: 0
         },
         size: {
             default: 50
