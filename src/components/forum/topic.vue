@@ -36,10 +36,17 @@
                         <user-link :user="i.user_id" /> 对此主题进行了{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}操作
                     </div>
                 </div>
+
+                <div style="display: flex; align-items: center;">
+                    <span>分享：</span>
+                    <div ref="share" class="share-component" data-disabled="douban,tencent,linkedin,diandian,google,qq"></div>
+                </div>
+
                 <p class="ic-hr"></p>
                 <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
         </div>
+
         <div class="info ic-xs-hidden">
             <div class="box">
                 <div class="author">
@@ -217,6 +224,9 @@ export default {
         let key = state.loadingGetKey(this.$route)
         this.state.loadingInc(this.$route, key)
         await this.fetchData()
+        window.socialShare(this.$refs.share, {
+            title: `${this.topic.title} - ${state.config.title}`
+        })
         this.state.loadingDec(this.$route, key)
     },
     mounted: function () {

@@ -16,6 +16,10 @@ import 'nprogress/nprogress.css'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 
+// social share
+import 'social-share.js/dist/js/social-share.min.js'
+import 'social-share.js/dist/css/share.min.css'
+
 Vue.use(MuseUI)
 
 import 'vue-loaders/dist/vue-loaders.css'
