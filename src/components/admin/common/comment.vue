@@ -1,6 +1,8 @@
 <template>
 <admin-base>
-    <paginator :page-info='page' :route-name='"admin_common_comment"' />
+    <div v-title>评论管理 - 管理界面 - {{state.config.title}}</div>
+    <h3 class="ic-header">评论管理</h3>
+
     <div v-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
     <div v-else class="comment-box">
         <div v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="comment">

@@ -184,7 +184,8 @@ class User(PostModel, BaseUser):
         if self.last_check_in_time < last_midnight:
             self.last_check_in_time = int(time.time())
             # 三天内有签到，连击
-            if old_time > last_midnight - 3 * 24 * 60:
+            print(old_time, last_midnight - 3 * 24 * 60 * 60)
+            if old_time > last_midnight - 3 * 24 * 60 * 60:
                 self.check_in_his += 1
             else:
                 self.check_in_his = 1

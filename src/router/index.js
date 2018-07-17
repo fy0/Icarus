@@ -131,6 +131,7 @@ export default new Router({
         {
             path: '/setting',
             name: 'setting',
+            redirect: { name: 'setting_user_me' },
             component: Setting
         },
         // 设置 - 用户 - 个人信息
@@ -139,7 +140,7 @@ export default new Router({
             name: 'setting_user_me',
             component: SettingUserinfoMe
         },
-        // 设置 - 用户 - 个人信息
+        // 设置 - 用户 - 我的上传
         {
             path: '/setting/user/upload',
             name: 'setting_user_upload',

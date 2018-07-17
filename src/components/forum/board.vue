@@ -274,9 +274,10 @@ export default {
             this.subBoards = subBoards.data.items
 
             let siblingBoards = await api.board.list({
-                parent_id: ret.data.parent_id ? ret.data.parent_id.id : null
+                parent_id: ret.data.parent_id ? ret.data.parent_id.id : null,
+                'id.ne': ret.data.id
             }, 1, null, state.getRole('user'))
-            console.log(111, siblingBoards, ret.data)
+
             this.siblingBoards = siblingBoards.data.items
 
             let retList = await api.topic.list({
