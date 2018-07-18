@@ -20,7 +20,7 @@
         </template>
         <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
         <div v-else v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="ic-comment">
-            <avatar :user="i.user_id" class="avatar"></avatar>
+            <avatar :depth="0" :user="i.user_id" class="avatar"></avatar>
             <div class="content">
                 <div class="head">
                     <span>#{{i.post_number || (page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
@@ -85,8 +85,11 @@
 
 .ic-comment .content {
     flex: 1 0 0%;
-    background: #fff;
     padding: 0 10px 0 20px;
+}
+
+#ic-comment-editor {
+    padding: 0 5px;
 }
 </style>
 

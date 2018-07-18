@@ -1,6 +1,8 @@
 <template>
 <admin-base>
-    <div v-title>版块管理 - 管理界面 - {{state.config.title}}</div>
+    <div v-title>板块管理 - 管理界面 - {{state.config.title}}</div>
+    <h3 class="ic-header">板块管理</h3>
+
     <table class="pure-table pure-table-horizontal" style="width: 100%">
         <thead>
             <tr>
@@ -30,10 +32,10 @@
     </table>
     <div class="board-add">
         <div class="board_name">
-            <input type="text" v-model="boardNewInfo.name" placeholder="板块名">
+            <input type="text" class="ic-input" v-model="boardNewInfo.name" placeholder="板块名">
         </div>
         <div class="board_brief">
-            <input name="board_brief" v-model="boardNewInfo.brief" type="text" placeholder="简介">
+            <input class="ic-input" name="board_brief" v-model="boardNewInfo.brief" type="text" placeholder="简介">
         </div>
         <div class="btn">
             <button class="ic-btn success" @click="boardNew">新建板块</button>
@@ -65,7 +67,6 @@
 }
 
 .board-add > div > * {
-    border: 0;
     display: block;
     height: 100%;
     width: 100%;

@@ -6,6 +6,7 @@
             <!-- 字典上只见“板块”，这里取为标准写法 -->
             <router-link tag="li" :to="{ name: 'setting_user_me' }" exact><a>个人信息</a></router-link>
             <router-link tag="li" :to="{ name: 'setting_user_upload' }" exact><a>我的上传</a></router-link>
+            <router-link tag="li" :to="{ name: 'setting_user_privacy' }" exact><a>隐私设置</a></router-link>
         </ul>
     </div>
 

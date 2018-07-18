@@ -6,6 +6,7 @@
     text-decoration: none;
     transition: background .15s;
     border: $btn-border-width solid transparent;
+    cursor: pointer;
 
     &.disabled {
         color: rgba(0, 0, 0, 0.3);

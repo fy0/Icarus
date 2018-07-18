@@ -16,6 +16,10 @@ import 'nprogress/nprogress.css'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 
+// social share
+import 'social-share.js/dist/js/social-share.min.js'
+import 'social-share.js/dist/css/share.min.css'
+
 Vue.use(MuseUI)
 
 import 'vue-loaders/dist/vue-loaders.css'
@@ -181,6 +185,10 @@ router.beforeEach(async function (to, from, next) {
                     $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
                     toUrl = '/'
                 } else {
+                    if (state.misc.extra.daily_reward) {
+                        $.message_success(`每日登陆，获得积分 ${state.misc.extra.daily_reward['credit']} 点`, 5000)
+                    }
+
                     Vue.set(state, 'user', ret.data)
                     Vue.set(state, 'initLoadDone', true)
                     $.notifLoopOn()

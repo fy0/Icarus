@@ -1,6 +1,8 @@
 <template>
 <admin-base>
-    <paginator :page-info='page' :route-name='"admin_common_log_admin"' />
+    <div v-title>管理日志 - 管理界面 - {{state.config.title}}</div>
+    <h3 class="ic-header">管理日志</h3>
+
     <div v-if="page.items.length === 0" class="no-comment">目前没有日志</div>
     <div v-else class="comment-box">
         <div v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="comment">

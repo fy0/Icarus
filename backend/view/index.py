@@ -2,13 +2,16 @@ import config
 from aiohttp import web
 
 from app import app
-from model.log_manage import MANAGE_OPERATION
+from lib.utils import get_today_start_timestamp
+from model.log_manage import MANAGE_OPERATION, ManageLog
 from model.notif import NOTIF_TYPE
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
+from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from view import route
+from view.user import UserMixin
 from view.ws import WSR
 
 
@@ -20,13 +23,27 @@ async def user_online():
 
 
 @route('misc')
-class TestBaseView(BaseView):
+class TestBaseView(UserMixin, BaseView):
     @classmethod
     def interface(cls):
         cls.use('info', 'GET')
 
     async def info(self):
+        extra = {
+            'midnight_time': get_today_start_timestamp()
+        }
+
+        # 每日首次访问奖励
+        if self.current_user:
+            daily_reward = self.current_user.daily_access_reward()
+            if daily_reward:
+                extra['daily_reward'] = {
+                    'credit': daily_reward
+                }
+
         self.finish(RETCODE.SUCCESS, {
+            'extra': extra,
+
             'POST_TYPES': POST_TYPES.to_dict(),
             'POST_TYPES_TXT': POST_TYPES.txt,
             'POST_STATE': POST_STATE.to_dict(),

@@ -1,6 +1,8 @@
 <template>
 <admin-base>
     <div v-title>主题管理 - 管理界面 - {{state.config.title}}</div>
+    <h3 class="ic-header">主题管理</h3>
+
     <div class="search-box" v-if="false">
         <input v-model="searchTxt" />
         <mu-raised-button @click="doSearch()" label="搜索" class="search-btn" primary/>
@@ -54,8 +56,6 @@
     width: 45%;
     height: 45px;
     padding: 10px 10px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
     background: #FFFFFF;
     border-radius: 2px;
     border: 1px solid #a4a4a4;

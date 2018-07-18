@@ -55,7 +55,7 @@
                     </div>
                 </div>
 
-                <button class="ic-btn primary" @click="updateInfo">更新个人信息</button>
+                <button class="ic-btn primary" :class="[changed && (!updating) ? '' : 'disabled']" @click="updateInfo">{{ updating ? '更新中 ...' : '更新个人信息' }}</button>
             </div>
         </div>
         <div class="right">
@@ -86,7 +86,14 @@
                     <ic-time :ago="false" :timestamp="user.key_time" />
                 </div>
             </div>
-            
+
+            <div class="setting-item">
+                <span class="label">最后访问时间</span>
+                <div class="line">
+                    <ic-time :ago="false" :timestamp="user.access_time" />
+                </div>
+            </div>
+
         </div>
     </div>
 </setting-base>
@@ -146,7 +153,7 @@
 </style>
 
 <script>
-// import api from '@/netapi.js'
+import api from '@/netapi.js'
 import state from '@/state.js'
 import SettingBase from '../base/base.vue'
 
@@ -154,12 +161,21 @@ export default {
     data () {
         return {
             state,
+            userSave: null,
+            updating: false,
             avatarUploadShow: false
         }
     },
     computed: {
         'user': function () {
-            return state.user
+            if (!this.userSave) {
+                this.userSave = _.clone(state.user)
+            }
+            return this.userSave
+        },
+        changed: function () {
+            let data = $.objDiff(this.userSave, state.user)
+            return Object.keys(data).length
         }
     },
     methods: {
@@ -170,8 +186,18 @@ export default {
             // })
         },
         updateInfo: async function () {
+            if (this.updating) return
+            if (!this.changed) return
             this.updating = true
-            // ...
+            let data = $.objDiff(this.userSave, state.user)
+            let ret = await api.user.set({id: state.user.id}, data, 'user')
+            if (ret.code === api.retcode.SUCCESS) {
+                for (let [k, v] of Object.entries(data)) {
+                    state.user[k] = v
+                }
+                this.userSave = _.clone(state.user)
+                $.message_success('信息修改成功！')
+            }
             this.updating = false
         }
     },

@@ -94,5 +94,5 @@ class CommentView(UserMixin, PeeweeView):
                      records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
             # 管理日志：修改评论状态
-            ManageLog.add_by_post_change(self, 'state', MOP.COMMENT_STATE_CHANGE, POST_TYPES.COMMENT,
-                                         values, old_record, record)
+            ManageLog.add_by_post_changed(self, 'state', MOP.COMMENT_STATE_CHANGE, POST_TYPES.COMMENT,
+                                          values, old_record, record)

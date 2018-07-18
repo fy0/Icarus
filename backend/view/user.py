@@ -168,6 +168,11 @@ class UserView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.FAILED)
 
+    @route.interface('POST')
+    async def check_in(self):
+        data = self.current_user.check_in()
+        self.finish(RETCODE.SUCCESS, data)
+
     @route.interface('GET')
     async def activation(self):
         user = User.check_active(self.params['uid'], self.params['code'])
@@ -232,12 +237,12 @@ class UserView(UserMixin, PeeweeView):
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
             # 管理日志：重置访问令牌
-            ManageLog.add_by_post_change(self, 'key', MOP.USER_KEY_RESET, POST_TYPES.USER,
-                                         values, old_record, record, value=None)
+            ManageLog.add_by_post_changed(self, 'key', MOP.USER_KEY_RESET, POST_TYPES.USER,
+                                          values, old_record, record, value=None)
 
             # 管理日志：重置密码
-            ManageLog.add_by_post_change(self, 'password', MOP.USER_PASSWORD_CHANGE, POST_TYPES.USER,
-                                         values, old_record, record, value=None)
+            ManageLog.add_by_post_changed(self, 'password', MOP.USER_PASSWORD_CHANGE, POST_TYPES.USER,
+                                          values, old_record, record, value=None)
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]

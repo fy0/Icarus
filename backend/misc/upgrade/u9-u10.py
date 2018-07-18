@@ -15,8 +15,11 @@ def work():
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "type" INTEGER DEFAULT 0;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "url" TEXT NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "location" TEXT NULL DEFAULT NULL;')
-        db.execute_sql('ALTER TABLE "user" RENAME "reg_time" TO "time";')
+        db.execute_sql('ALTER TABLE "user" ADD COLUMN "access_time" BIGINT NULL DEFAULT NULL;')
+        db.execute_sql('ALTER TABLE "user" ADD COLUMN "last_check_in_time" BIGINT NULL DEFAULT NULL;')
+        db.execute_sql('ALTER TABLE "user" ADD COLUMN "check_in_his" INT DEFAULT 0;')
 
+        db.execute_sql('ALTER TABLE "user" RENAME "reg_time" TO "time";')
         db.execute_sql('ALTER TABLE "board" RENAME "creator_id" TO "user_id";')
         db.execute_sql('ALTER TABLE "comment" ADD COLUMN "post_number" INTEGER NULL;')
 
@@ -29,6 +32,8 @@ def work():
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "upvoted_users" BYTEA[] NULL;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "downvoted_users" BYTEA[] NULL;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "thanked_users" BYTEA[] NULL;')
+
+        db.execute_sql('ALTER TABLE "manage_log" ADD COLUMN "related_user_id" BYTEA NULL;')
     except:
         print('failed')
         db.rollback()

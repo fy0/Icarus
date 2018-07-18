@@ -33,8 +33,12 @@ visitor = Ability(None, {
         'key_time': (A.READ,),
         'avatar': (A.READ,),
         'type': (A.READ,),
+        'url': (A.READ,),
+        'location': (A.READ,),
 
         'email': (A.CREATE,),
+        'credit': (A.READ,),
+        'reputation': (A.READ,),
     },
     'board': {
         'id': (A.QUERY, A.READ),
@@ -101,14 +105,22 @@ inactive_user = Ability('inactive_user', {
     'user': {
         'nickname': (A.QUERY, A.READ, A.WRITE),
         'group': (A.READ,),
+        'access_time': (A.READ,),
+        'last_check_in_time': (A.READ,),
+        'check_in_his': (A.READ,),
         # 'key': ['query', 'read']
     }
 }, based_on=visitor)
 
 normal_user = Ability('user', {
     'user': {
-        'nickname': (A.QUERY, A.READ, A.WRITE),
+        'nickname': (A.QUERY, A.READ),
         'group': (A.READ,),
+        'biology': (A.QUERY, A.READ, A.WRITE),
+        'avatar': (A.QUERY, A.READ),
+        'type': (A.QUERY, A.READ, A.WRITE),
+        'url': (A.QUERY, A.READ, A.WRITE),
+        'location': (A.QUERY, A.READ, A.WRITE),
         # 'key': ['query', 'read']
     },
     'topic': {
@@ -196,14 +208,23 @@ def func(ability, user, query: 'SQLQueryInfo'):
 inactive_user.add_query_condition('user', func=func)
 normal_user.add_query_condition('user', func=func)
 
-# user_upload
 
+def check_is_user(ability, user, action, record: DataRecord, available_columns: list):
+    if user:
+        if record.get('id') != user.id:
+            available_columns.clear()
+    return True
+
+
+normal_user.add_record_check((A.WRITE,), 'user', func=check_is_user)
+
+# upload
 
 def func(ability, user, query: 'SQLQueryInfo'):
     query.add_condition('user_id', '==', user.id)
 
 
-normal_user.add_query_condition('user_upload', func=func)
+normal_user.add_query_condition('upload', func=func)
 
 # topic
 

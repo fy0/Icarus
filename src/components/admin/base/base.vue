@@ -21,7 +21,7 @@
 }
 
 .admin-main {
-    flex: 5 0 0%;
+    flex: 4 0 0%;
     padding: 0 0;
 }
 </style>

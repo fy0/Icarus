@@ -41,7 +41,6 @@
     list-style-type: none;
     
     .ic-collection-item {
-        background-color: #fff;
         line-height: 1.5rem;
         padding: 20px;
         margin: 0;
@@ -55,18 +54,6 @@
 .ic-topic-manage-icon {
     color: #71c1ef;
     cursor: pointer;
-}
-
-/* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
-.ic-topbtns {
-    display: flex;
-    margin-bottom: 10px;
-    padding-left: 10px;
-
-    > a {
-      display: block;
-      margin-right: .35em;
-    }
 }
 
 .e-ripple {
