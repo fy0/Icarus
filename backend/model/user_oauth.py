@@ -3,14 +3,13 @@ from slim.base.user import BaseUser
 
 from peewee import *
 
-from model._post import PostModel
+from model._post import LongIdPostModel
 from model import BaseModel, MyTimestampField, CITextField, db, SerialField, user
 
 
-class UserOAuth(PostModel):
+class UserOAuth(LongIdPostModel):
 
     # 表字段
-    id2user = TextField(null=False)  # 对应user表的id 以此id去取用户数据。用 平台+平台id 来确认 user id。当用户未确认时，该值为5位随机id。
     login_id = IntegerField(null=False)  # 平台用户的id
     platform = TextField(null=True)  # 平台  各平台用户id可能会一样，只能作为对应平台的唯一标识。
 

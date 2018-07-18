@@ -1,10 +1,9 @@
 <template>
-    <div class="ic-container">
-        <span>登陆中，请稍等。</span>
+<div class="ic-container">
+    <span>登录中，请稍等。</span>
 
-        <div v-title>OAuth</div>
-    </div>
-
+    <div v-title>OAuth</div>
+</div>
 </template>
 
 <style scoped>
@@ -40,7 +39,7 @@ export default {
             if (ret['code'] === api.retcode.SUCCESS) {
                 console.log('登陆成功')
 
-                let uret = await api.user.get({id: ret.data.id2user}, 'inactive_user')
+                let uret = await api.user.get({id: ret.data.user_id}, 'inactive_user')
                 if (uret.code !== api.retcode.SUCCESS) return
                 Vue.set(state, 'user', uret.data) // 这样顶栏可以接到事件
                 $.notifLoopOn()

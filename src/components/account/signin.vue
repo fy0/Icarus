@@ -20,10 +20,12 @@
             <div class="ic-form-row three-auth">
                 <span class="title"> 第三方登录 </span>
                 <div class="icons">
-                    <span class="icon">QQ</span>
+                    <!-- <span class="icon">QQ</span>
                     <span class="icon">微博</span>
-                    <span class="icon">Github</span>
-                    <input type="submit" name="" value="github" @click.prevent="github_url">
+                    <span class="icon">Github</span> -->
+                    <input class="icon" type="submit" name="" value="QQ">  
+                    <input class="icon" type="submit" name="" value="微博">
+                    <input class="icon" type="submit" name="" value="github" @click.prevent="github_url">
                 </div>
             </div>
         </form>
@@ -57,6 +59,7 @@
 .three-auth > .icons > .icon {
     border: 1px solid #ccc;
     border-radius: 4px;
+    border-style: groove;
 }
 
 .three-auth > .icons > .icon:not(:first-child) {

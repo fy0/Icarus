@@ -203,15 +203,13 @@ class Oauth {
     async send (code) {
         let ret = await nget(`${remote.API_SERVER}/api/user/oauth/get_user_data`, {'code': code})
         if (ret.code !== retcode.FAILED) {
-            // 判断返回的id2user是否是长id，是的话说明是新登陆的用户，返回1，跳转到用户补全界面。否则返回1，直接登陆到主页
-            let id2user = ret['data']['id2user']
-            if (id2user.toString().length !== 9) {
+            let oauthState = ret['data']['state']
+            if (oauthState === 50) {
                 if (ret['code'] === retcode.SUCCESS) {
                     saveAccessToken(ret.data.access_token)
                     return ret
-                    // return retcode.SUCCESS
                 }
-            } else if (id2user.toString().length === 9) {
+            } else {
                 return {'code': -1, 'data': ret}
             }
         } else {

@@ -1,39 +1,36 @@
 <template>
 <div class="ic-container">
-    <div>
-        此页面需要做用户判断
-    </div>
-    <div>
-        <span>OAuth注册用户信息确认</span>
-            <form class="ic-form">
-                <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
-                    <label for="email">邮箱</label>
-                    <input type="email" name="email" id="email" v-model="info.email">
-                </check-row>
-                <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
-                    <label for="nickname">昵称</label>
-                    <input type="text" name="nickname" id="nickname" v-model="info.nickname">
-                </check-row>
-                <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
-                    <label for="password">密码</label>
-                    <input type="password" name="password" id="password" v-model="info.password">
-                </check-row>
-                <check-row :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
-                    <label for="password2">重复密码</label>
-                    <input type="password" name="password2" id="password2" v-model="info.password2">
-                </check-row>
-                <check-row :results="formErrors.verify" v-if="0">
-                    <label for="verify">验证码</label>
-                    <input type="text" name="verify" id="verify" v-model="info.verify">
-                </check-row>
-                <check-row style="display: flex;align-items: center;" :check="info.agreeLicense">
-                    <mu-checkbox v-model="info.agreeLicense"/>
-                    <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click.stop="dialogLicense = true">用户许可协议</a></span>
-                </check-row>
-                <div class="ic-form-row">
-                    <input class="ic-btn green click" :class="{ disabled : !info.agreeLicense }" type="submit" @click.prevent="confirm" value="注 册" style="width: 100%">
-                </div>
-            </form>
+    <div class="login">
+        <h3 class="title">第三方注册用户信息确认</h3>
+        <form class="ic-form">
+            <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
+                <label for="email">邮箱</label>
+                <input type="email" name="email" id="email" v-model="info.email">
+            </check-row>
+            <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
+                <label for="nickname">昵称</label>
+                <input type="text" name="nickname" id="nickname" v-model="info.nickname">
+            </check-row>
+            <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
+                <label for="password">密码</label>
+                <input type="password" name="password" id="password" v-model="info.password">
+            </check-row>
+            <check-row :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
+                <label for="password2">重复密码</label>
+                <input type="password" name="password2" id="password2" v-model="info.password2">
+            </check-row>
+            <check-row :results="formErrors.verify" v-if="0">
+                <label for="verify">验证码</label>
+                <input type="text" name="verify" id="verify" v-model="info.verify">
+            </check-row>
+            <check-row style="display: flex;align-items: center;" :check="info.agreeLicense">
+                <mu-checkbox v-model="info.agreeLicense"/>
+                <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click.stop="dialogLicense = true">用户许可协议</a></span>
+            </check-row>
+            <div class="ic-form-row">
+                <input class="ic-btn green click" :class="{ disabled : !info.agreeLicense }" type="submit" @click.prevent="confirm" value="注 册" style="width: 100%">
+            </div>
+        </form>
 
         <div v-title>OAuth</div>
     </div>
@@ -60,9 +57,11 @@ export default {
                 verify: '',
                 agreeLicense: false,
                 returning: true, // new 之后返回记录
-                id2user: '',
+                state: 0,
                 platform: 'github',
-                id: '' // 用户id
+                id: '', // 用户id
+                oauthId: '', // oauth表ID
+                loginId: ''
             },
             dialogLicense: false,
             formErrors: {}
@@ -73,7 +72,9 @@ export default {
         console.log(routerParams)
         if (routerParams !== undefined) {
             if (routerParams['code'] === -1) {
-                this.info.id2user = routerParams['data']['data']['id2user']
+                this.info.state = routerParams['data']['data']['state']
+                this.info.oauthId = routerParams['data']['data']['oauth_id']
+                this.info.loginId = routerParams['data']['data']['login_id']
             } else {
                 console.log('OAUTH CHECK: code is error!')
             }
@@ -157,6 +158,19 @@ export default {
 </script>
 
 <style scoped>
+
+.title {
+    color: #444;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .ic-form {
     display: flex;
     flex-direction: column;
@@ -166,6 +180,11 @@ export default {
     padding: 10px 30px;
     border: 1px solid #ddd;
 }
+
+.ic-form-row > * {
+    width: 100%;
+}
+
 .ic-form-row {
     width: 100%;
     padding-top: 10px;
