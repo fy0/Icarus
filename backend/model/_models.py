@@ -11,6 +11,7 @@ from model.test import Test
 from model.topic import Topic
 from model.upload import Upload
 from model.user import User
+from model.user_oauth import UserOAuth
 from model.wiki import WikiItem, WikiArticle, WikiHistory
 
 db.connect()
@@ -27,6 +28,7 @@ def reset():
     DROP TABLE IF EXISTS "topic";
     DROP TABLE IF EXISTS "user";
     DROP TABLE IF EXISTS "user_notif_record";
+    DROP TABLE IF EXISTS "user_oauth";
     DROP TABLE IF EXISTS "wiki_history";
     DROP TABLE IF EXISTS "wiki_item";
     DROP TABLE IF EXISTS "wiki_article";
@@ -61,6 +63,7 @@ except peewee.ProgrammingError:
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
                   Notification, UserNotifRecord,
+                  UserOAuth,
                   Upload,
                   ManageLog,
                   Statistic, Statistic24h], safe=True)

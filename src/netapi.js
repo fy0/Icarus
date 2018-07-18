@@ -185,8 +185,46 @@ class UploadViewRequest extends SlimViewRequest {
     }
 }
 
+// http://localhost:9999/api/user/oauth/get_oauth_url 取url链接
+class Oauth {
+    async getUrl (website) {
+        if (website === 'github') {
+            let info = await nget(`${remote.API_SERVER}/api/user/oauth/get_oauth_url`)
+            return info['data']['url']
+        } else if (website === 'qq') {
+            return nget()
+        } else if (website === 'sina') {
+            return nget()
+        }
+    }
+    async oauthUpdate (userdata) {
+        let ret = await npost(`${remote.API_SERVER}/api/user/oauth/update`, null, userdata, null)
+        if (ret.code === retcode.SUCCESS) {
+            return retcode.SUCCESS
+        }
+        return retcode.FAILED
+    }
+    async send (code) {
+        let ret = await nget(`${remote.API_SERVER}/api/user/oauth/get_user_data`, {'code': code})
+        if (ret.code !== retcode.FAILED) {
+            let oauthState = ret['data']['state']
+            if (oauthState === 50) {
+                if (ret['code'] === retcode.SUCCESS) {
+                    saveAccessToken(ret.data.access_token)
+                    return ret
+                }
+            } else {
+                return {'code': -1, 'data': ret}
+            }
+        } else {
+            return {'code': retcode.FAILED, 'data': null}
+        }
+    }
+}
+
 let retcode = {
-    SUCCESS: 0
+    SUCCESS: 0,
+    FAILED: -255
 }
 
 let retinfo = {
@@ -209,5 +247,7 @@ export default {
     comment: new SlimViewRequest('comment'),
     notif: new NotifViewRequest('notif'),
     upload: new UploadViewRequest('upload'),
-    logManage: new NotifViewRequest('log/manage')
+    logManage: new NotifViewRequest('log/manage'),
+
+    Oauth: new Oauth()
 }

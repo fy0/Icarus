@@ -25,6 +25,8 @@ REDIS_PORT = 6378
 ##########################################
 USER_ALLOW_SIGNUP = True  # 开放注册
 
+CLIENT_ID = '1b5caadeac09427e7570'
+CLIENT_SECRET = 'ea478414584c80d57cd1c9475cd9be2c9625e65d'
 
 def _nickname_checker(username):
     # 被禁止的用户名，此函数仅为示例

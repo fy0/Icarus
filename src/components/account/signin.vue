@@ -20,9 +20,12 @@
             <div class="ic-form-row three-auth">
                 <span class="title"> 第三方登录 </span>
                 <div class="icons">
-                    <span class="icon">QQ</span>
+                    <!-- <span class="icon">QQ</span>
                     <span class="icon">微博</span>
-                    <span class="icon">Github</span>
+                    <span class="icon">Github</span> -->
+                    <input class="icon" type="submit" name="" value="QQ">  
+                    <input class="icon" type="submit" name="" value="微博">
+                    <input class="icon" type="submit" name="" value="github" @click.prevent="github_url">
                 </div>
             </div>
         </form>
@@ -56,6 +59,7 @@
 .three-auth > .icons > .icon {
     border: 1px solid #ccc;
     border-radius: 4px;
+    border-style: groove;
 }
 
 .three-auth > .icons > .icon:not(:first-child) {
@@ -173,6 +177,12 @@ export default {
             } else {
                 $.message_error('请正确填写所有项目')
             }
+        },
+        github_url: async function () {
+            // 获取url，然后跳转
+            let ghUrl = await api.Oauth.getUrl('github')
+            window.open(ghUrl, '_blank')
+            console.log(ghUrl)
         }
     },
     components: {
