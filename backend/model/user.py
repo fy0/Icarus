@@ -197,8 +197,8 @@ class User(PostModel, BaseUser):
             self.credit += 5
             self.reputation += 5
             self.save()
-            ManageLog.add_by_change_credit_sys(self, note='每日签到', value=[credit, self.credit])
-            ManageLog.add_by_change_reputation_sys(self, note='每日签到', value=[reputation, self.reputation])
+            ManageLog.add_by_credit_changed_sys(self, note='每日签到', value=[credit, self.credit])
+            ManageLog.add_by_reputation_changed_sys(self, note='每日签到', value=[reputation, self.reputation])
 
             return {
                 'credit': 5,
@@ -216,7 +216,7 @@ class User(PostModel, BaseUser):
             credit = self.credit
             self.credit += 5
             self.save()
-            ManageLog.add_by_change_credit_sys(self, note='每日登录', value=[credit, self.credit])
+            ManageLog.add_by_credit_changed_sys(self, note='每日登录', value=[credit, self.credit])
             return 5
 
     @classmethod

@@ -83,29 +83,29 @@ class TopicView(UserMixin, PeeweeView):
                               MOP.TOPIC_TITLE_CHANGE, None)
 
             # 管理日志：改变状态
-            ManageLog.add_by_post_change(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.TOPIC,
-                                         values, old_record, record)
+            ManageLog.add_by_post_changed(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.TOPIC,
+                                          values, old_record, record)
 
             # 管理日志：改变可见度
-            ManageLog.add_by_post_change(self, 'visible', MOP.POST_VISIBLE_CHANGE, POST_TYPES.TOPIC,
-                                         values, old_record, record)
+            ManageLog.add_by_post_changed(self, 'visible', MOP.POST_VISIBLE_CHANGE, POST_TYPES.TOPIC,
+                                          values, old_record, record)
 
             # 管理日志：移动板块
-            if ManageLog.add_by_post_change(self, 'board_id', MOP.TOPIC_BOARD_MOVE, POST_TYPES.TOPIC,
-                                         values, old_record, record):
+            if ManageLog.add_by_post_changed(self, 'board_id', MOP.TOPIC_BOARD_MOVE, POST_TYPES.TOPIC,
+                                             values, old_record, record):
                 statistic_move_topic(old_record['board_id'], record['board_id'], record['id'])
 
             # 管理日志：设置精华
-            ManageLog.add_by_post_change(self, 'awesome', MOP.TOPIC_AWESOME_CHANGE, POST_TYPES.TOPIC,
-                                         values, old_record, record)
+            ManageLog.add_by_post_changed(self, 'awesome', MOP.TOPIC_AWESOME_CHANGE, POST_TYPES.TOPIC,
+                                          values, old_record, record)
 
             # 管理日志：置顶权重
-            ManageLog.add_by_post_change(self, 'sticky_weight', MOP.TOPIC_STICKY_WEIGHT_CHANGE, POST_TYPES.TOPIC,
-                                         values, old_record, record)
+            ManageLog.add_by_post_changed(self, 'sticky_weight', MOP.TOPIC_STICKY_WEIGHT_CHANGE, POST_TYPES.TOPIC,
+                                          values, old_record, record)
 
             # 管理日志：修改权重
-            ManageLog.add_by_post_change(self, 'weight', MOP.TOPIC_WEIGHT_CHANGE, POST_TYPES.TOPIC,
-                                         values, old_record, record)
+            ManageLog.add_by_post_changed(self, 'weight', MOP.TOPIC_WEIGHT_CHANGE, POST_TYPES.TOPIC,
+                                          values, old_record, record)
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

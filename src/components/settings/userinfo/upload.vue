@@ -27,7 +27,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 190px;
+            // min-height: 190px;
 
             img {
                 width: 100%;
@@ -67,8 +67,6 @@ export default {
             let ret = await api.upload.list({
                 'type_name.is': null
             }, 1, null, state.getRole('user'))
-
-            console.log(111, ret)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data

@@ -32,6 +32,8 @@ def work():
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "upvoted_users" BYTEA[] NULL;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "downvoted_users" BYTEA[] NULL;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "thanked_users" BYTEA[] NULL;')
+
+        db.execute_sql('ALTER TABLE "manage_log" ADD COLUMN "related_user_id" BYTEA NULL;')
     except:
         print('failed')
         db.rollback()
