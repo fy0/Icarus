@@ -5,7 +5,7 @@ re_at = re.compile(r'(?:^|(?<=\s))@([\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9
 re_at2 = re.compile('\x01(.+?)\x01')
 
 
-def at_search(text: str, usernames_filter) -> Tuple[str, Set[str], Set[str]]:
+def at_replace(text: str, usernames_filter) -> Tuple[str, Set[str], Set[str]]:
     new_text, times = re_at.subn('\x01\\1\x01', text)
     old_matched = set(re_at2.findall(text))  # 已经标注过的
     matched = set(re_at2.findall(new_text)) - old_matched  # 新增的
@@ -20,14 +20,14 @@ def at_search(text: str, usernames_filter) -> Tuple[str, Set[str], Set[str]]:
 
 
 if __name__ == '__main__':
-    print(at_search('@asd ,   @测试 , test@qq.com @end', None))
-    print(at_search('标准文本 test@qq.com', None))
-    print(at_search('@asd \x01测试\x01', None))
+    print(at_replace('@asd ,   @测试 , test@qq.com @end', None))
+    print(at_replace('标准文本 test@qq.com', None))
+    print(at_replace('@asd \x01测试\x01', None))
 
     def the_filter(input):
         return {'end'}
-    print(at_search('@asd ,   @测试 , test@qq.com @end', the_filter))
+    print(at_replace('@asd ,   @测试 , test@qq.com @end', the_filter))
 
     def the_filter(input):
         return set()
-    print(at_search('@asd ,   @测试 , test@qq.com @end', the_filter))
+    print(at_replace('@asd ,   @测试 , test@qq.com @end', the_filter))

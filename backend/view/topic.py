@@ -14,6 +14,7 @@ from slim.utils import to_bin, dict_filter_inplace
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField
 
+from view.at import check_content_with_at
 from view.permissions import permissions_add_all
 from view.user import UserMixin
 
@@ -73,13 +74,13 @@ class TopicView(UserMixin, PeeweeView):
         for old_record, record in zip(old_records, records):
             if 'content' in values:
                 # 管理日志：正文编辑
-                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'],
+                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'], record['user_id'],
                               MOP.TOPIC_CONTENT_CHANGE, None)
                 Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
 
             if 'title' in values:
                 # 管理日志：标题编辑
-                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'],
+                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'], record['user_id'],
                               MOP.TOPIC_TITLE_CHANGE, None)
 
             # 管理日志：改变状态
@@ -125,6 +126,7 @@ class TopicView(UserMixin, PeeweeView):
             elif values['content'] == record['content']:
                 del values['content']
 
+        print(values['content'])
         if 'topic' in values or 'content' in values:
             values['edit_time'] = int(time.time())
             values['last_edit_user_id'] = self.current_user.id
@@ -141,6 +143,7 @@ class TopicView(UserMixin, PeeweeView):
             values['id'] = config.POST_ID_GENERATOR().digest()
         values['time'] = int(time.time())
         values['weight'] = Topic.weight_gen()
+        values['content'] = check_content_with_at(values['content'])
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

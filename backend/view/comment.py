@@ -16,6 +16,8 @@ from slim.support.peewee import PeeweeView
 from slim.utils import to_bin
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
+
+from view.at import check_content_with_at
 from view.permissions import permissions_add_all
 from view.user import UserMixin
 
@@ -79,6 +81,7 @@ class CommentView(UserMixin, PeeweeView):
         values['related_type'] = int(values['related_type'])
         values['user_id'] = self.current_user.id
         values['time'] = int(time.time())
+        values['content'] = check_content_with_at(values['content'])
 
         if relate_type == POST_TYPES.TOPIC:
             post: Topic

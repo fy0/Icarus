@@ -72,7 +72,7 @@ class BoardView(PeeweeView, UserMixin):
 
             # 管理日志
             ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
-                          MOP.BOARD_CHANGE, [o, n])
+                          record['user_id'], MOP.BOARD_CHANGE, [o, n])
 
     async def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
         for record in records:
@@ -81,4 +81,4 @@ class BoardView(PeeweeView, UserMixin):
 
             # 管理日志：重置密码
             ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
-                          MOP.BOARD_NEW, record['name'])
+                          record['user_id'], MOP.BOARD_NEW, record['name'])
