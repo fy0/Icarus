@@ -32,7 +32,7 @@
                         <span class="line" :style="lineStyle(i)"></span>
                         <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
                             <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
-                            <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{i.s.last_comment_id.content}}</router-link>
+                            <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
                         </div>
                         <div class="post" v-else>○ ○ ○ ○ ○</div>
                         <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
@@ -81,6 +81,7 @@ export default {
         TopBtns
     },
     methods: {
+        atConvert: $.atConvert2,
         lineStyle: function (board) {
             return $.lineStyle(board)
         },

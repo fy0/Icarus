@@ -159,7 +159,7 @@
 </style>
 
 <script>
-import marked from 'marked'
+import marked from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/forum.css'
@@ -230,7 +230,6 @@ export default {
         this.state.loadingDec(this.$route, key)
     },
     mounted: function () {
-        ;
     },
     components: {
         CommentList

@@ -227,3 +227,13 @@ $.regex = {
     email: /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,
     nickname: /^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$/
 }
+
+$.atConvert = function (text) {
+    /* eslint-disable no-control-regex */
+    return text.replace(/\x01(.+?)\x01/g, '<a href="javascript:userPage(\'$1\')">@$1</a>')
+}
+
+$.atConvert2 = function (text) {
+    /* eslint-disable no-control-regex */
+    return text.replace(/\x01(.+?)\x01/g, '@$1')
+}

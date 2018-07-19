@@ -94,7 +94,7 @@
 </style>
 
 <script>
-import marked from 'marked'
+import marked from '@/md.js'
 import api from '@/netapi.js'
 import CommentPost from '../utils/comment-post.vue'
 

@@ -226,6 +226,9 @@ export default {
                     $.message_error('抱歉，发生了错误')
                     return
                 }
+
+                /* eslint-disable no-control-regex */
+                ret.data.content = ret.data.content.replace(/\x01(.+?)\x01/g, '@$1')
                 this.topicInfo = ret.data
             }
 
