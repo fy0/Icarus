@@ -96,7 +96,16 @@ router.beforeEach(async function (to, from, next) {
     state.dialog.topicManage = null
 
     if (state.misc === undefined) {
-        let ret = await api.misc()
+        let ret = null
+        while (true) {
+            try {
+                ret = await api.misc()
+                break
+            } catch (e) {
+                // 连接失败，重试
+                await $.timeout(3000)
+            }
+        }
         if (ret.code === 0) {
             Vue.set(state, 'misc', ret.data)
             api.retcode = ret.data.retcode
