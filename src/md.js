@@ -68,8 +68,7 @@ marked.setOptions({
 
 let myMarked = function (text, options, callback) {
     let html = marked(text, options, callback)
-    /* eslint-disable no-control-regex */
-    return html.replace(/\x01(.+?)\x01/g, '<a href="javascript:userPage(\'$1\')">@$1</a>')
+    return $.atConvert(html)
 }
 
 export default myMarked

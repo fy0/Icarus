@@ -238,10 +238,10 @@ $.regex = {
 
 $.atConvert = function (text) {
     /* eslint-disable no-control-regex */
-    return text.replace(/\x01(.+?)\x01/g, '<a href="javascript:userPage(\'$1\')">@$1</a>')
+    return text.replace(/\x01([a-zA-Z0-9]+)-(.+?)\x01/g, '<a href="javascript:userPage(\'$1\', \'$2\')">@$2</a>')
 }
 
 $.atConvert2 = function (text) {
     /* eslint-disable no-control-regex */
-    return text.replace(/\x01(.+?)\x01/g, '@$1')
+    return text.replace(/\x01([a-zA-Z0-9]+)-(.+?)\x01/g, '@$2')
 }

@@ -65,7 +65,10 @@ class User(PostModel, BaseUser):
     @classmethod
     def find_by_nicknames(cls, names):
         it = iter(names)
-        condition = cls.nickname == next(it)
+        try:
+            condition = cls.nickname == next(it)
+        except StopIteration:
+            return []
         for i in it:
             condition |= cls.nickname == i
         return cls.select().where(condition)

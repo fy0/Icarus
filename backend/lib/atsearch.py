@@ -4,12 +4,13 @@ from typing import List, Tuple, Set
 from slim.utils import to_hex
 
 re_at = re.compile(r'(?:^|(?<=\s))@([\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]{1,32})(?=\s|$)')
-re_at2 = re.compile('\x01[a-zA-Z0-9]-(.+?)\x01')
+re_at2 = re.compile('\x01(.+?)\x01')
+re_at3 = re.compile('\x01[a-zA-Z0-9]+-(.+?)\x01')
 
 
 def at_replace(text: str, find_by_nicknames_func) -> Tuple[str, Set[str], Set[str]]:
     new_text, times = re_at.subn('\x01\\1\x01', text)
-    old_matched = set(re_at2.findall(text))  # 已经标注过的
+    old_matched = set(re_at3.findall(text))  # 已经标注过的
     matched = set(re_at2.findall(new_text)) - old_matched  # 新增的
 
     if find_by_nicknames_func:

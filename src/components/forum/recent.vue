@@ -78,7 +78,7 @@ export default {
         }
     },
     methods: {
-        atConvert: $.atConvert,
+        atConvert: $.atConvert2,
         isAdmin: function () {
             return $.isAdmin()
         },
