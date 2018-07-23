@@ -63,16 +63,12 @@ class User(PostModel, BaseUser):
     #object_type = OBJECT_TYPES.USER
 
     @classmethod
-    def nicknames_filter(cls, names):
+    def find_by_nicknames(cls, names):
         it = iter(names)
         condition = cls.nickname == next(it)
         for i in it:
             condition |= cls.nickname == i
-
-        ret = set()
-        for i in cls.select().where(condition):
-            ret.add(i.nickname)
-        return ret
+        return cls.select().where(condition)
 
     @property
     def roles(self):
