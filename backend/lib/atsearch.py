@@ -1,5 +1,5 @@
 import re
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Mapping, Union, Any
 
 from slim.utils import to_hex
 
@@ -8,7 +8,7 @@ re_at2 = re.compile('\x01(.+?)\x01')
 re_at3 = re.compile('\x01[a-zA-Z0-9]+-(.+?)\x01')
 
 
-def at_replace(text: str, find_by_nicknames_func) -> Tuple[str, Set[str], Set[str]]:
+def at_replace(text: str, find_by_nicknames_func) -> Tuple[str, Set[str], Union[Mapping[str, Any], None]]:
     new_text, times = re_at.subn('\x01\\1\x01', text)
     old_matched = set(re_at3.findall(text))  # 已经标注过的
     matched = set(re_at2.findall(new_text)) - old_matched  # 新增的
@@ -25,9 +25,9 @@ def at_replace(text: str, find_by_nicknames_func) -> Tuple[str, Set[str], Set[st
         for i in data.values():
             new_text = new_text.replace('\x01%s\x01' % i.nickname, '\x01%s-%s\x01' % (to_hex(i.id), i.nickname))
 
-        matched = new_matched
+        return new_text, set(new_matched), data
 
-    return new_text, old_matched, matched
+    return new_text, matched, None
 
 
 if __name__ == '__main__':

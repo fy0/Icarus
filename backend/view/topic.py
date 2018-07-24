@@ -14,7 +14,7 @@ from slim.utils import to_bin, dict_filter_inplace
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField
 
-from view.at import check_content_with_at
+from view.mention import check_content_mention
 from view.permissions import permissions_add_all
 from view.user import UserMixin
 
@@ -143,7 +143,7 @@ class TopicView(UserMixin, PeeweeView):
             values['id'] = config.POST_ID_GENERATOR().digest()
         values['time'] = int(time.time())
         values['weight'] = Topic.weight_gen()
-        values['content'] = check_content_with_at(values['content'])
+        values['content'], self.do_mentions = check_content_mention(values['content'])
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

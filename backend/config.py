@@ -112,7 +112,7 @@ LONG_ID_GENERATOR = CustomID
 ##########################################
 
 NOTIF_FETCH_COOLDOWN = 14
-
+MENTION_LIMIT_PER_POST = 20
 
 ##########################################
 # 加载备用配置

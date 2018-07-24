@@ -17,7 +17,7 @@ from slim.utils import to_bin
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 
-from view.at import check_content_with_at
+from view.mention import check_content_mention
 from view.permissions import permissions_add_all
 from view.user import UserMixin
 
@@ -81,7 +81,7 @@ class CommentView(UserMixin, PeeweeView):
         values['related_type'] = int(values['related_type'])
         values['user_id'] = self.current_user.id
         values['time'] = int(time.time())
-        values['content'] = check_content_with_at(values['content'])
+        values['content'], self.do_mentions = check_content_mention(values['content'])
 
         if relate_type == POST_TYPES.TOPIC:
             post: Topic

@@ -5,6 +5,7 @@ from model.board import Board
 from model.follow import Follow
 from model.comment import Comment
 from model.log_manage import ManageLog
+from model.mention import Mention
 from model.notif import Notification, UserNotifRecord
 from model.statistic import Statistic, Statistic24h
 from model.test import Test
@@ -66,6 +67,7 @@ db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   UserOAuth,
                   Upload,
                   ManageLog,
+                  Mention,
                   Statistic, Statistic24h], safe=True)
 
 
