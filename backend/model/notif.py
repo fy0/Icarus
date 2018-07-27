@@ -92,6 +92,42 @@ def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
     return map(wrap, cur.fetchall())
 
 
+def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
+    return None
+    # 某某 在文章 某某某 中@了你： XXXXXX
+    # c2 是 user_id 的原评论，c 是回复评论的评论
+    cur = db.execute_sql('''
+        SELECT "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id, 
+          "t"."title", left("c".content, 50), "u"."nickname"
+        FROM topic AS t, comment AS c, comment AS c2, "user" as u
+        WHERE c2.user_id = %s AND c2.state >= %s AND
+          c2.id = c.reply_to_cmt_id AND c.id > %s AND c.state >= %s AND t.id = c.related_id
+          AND u.id = c.user_id AND "c"."user_id" != "c2"."user_id" -- 不查自己
+        ORDER BY "c"."id" DESC
+        ''', (user_id, POST_STATE.NORMAL, last_reply_id, POST_STATE.NORMAL))
+    # 时间，评论ID，文章ID，POST类型，用户ID，文章标题，前50个字，用户昵称
+
+    def wrap(i):
+        return {
+            'type': NOTIF_TYPE.BE_MENTIONED,
+            'time': i[0],
+            'post': {
+                'id': i[2],
+                'type': i[3],
+                'title': i[5]
+            },
+            'comment': {
+                'id': i[1],
+                'brief': i[6],
+                'user': {
+                    'id': i[4],
+                    'nickname': i[7]
+                }
+            }
+        }
+    return map(wrap, cur.fetchall())
+
+
 class UserNotifRecord(BaseModel):
     id = BlobField(primary_key=True)  # user_id
     last_comment_id = BlobField(default=b'\x00')
@@ -115,13 +151,16 @@ class UserNotifRecord(BaseModel):
         lst = []
         l1 = tuple(fetch_notif_of_comment(self.id, self.last_comment_id))
         l2 = tuple(fetch_notif_of_reply(self.id, self.last_reply_id))
+        l3 = tuple(fetch_notif_of_metion(self.id, self.last_mention_id))
         lst.extend(l1)
         lst.extend(l2)
+        lst.extend(l3)
         # lst.sort(key = lambda x: x['time'], reverse=True)
 
         if update_last:
             if l1: self.last_comment_id = l1[0]['comment']['id']
             if l2: self.last_reply_id = l2[0]['comment']['id']
+            if l3: self.last_mention_id = l3[0]['mention']['id']
             self.update_time = int(time.time())
             self.save()
 
