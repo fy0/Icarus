@@ -59,6 +59,9 @@ class TopicView(UserMixin, PeeweeView):
         permission: Permissions = cls.permission
         permissions_add_all(permission)
 
+    async def prepare(self):
+        self.do_mentions = None
+
     async def get(self):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
@@ -126,7 +129,6 @@ class TopicView(UserMixin, PeeweeView):
             elif values['content'] == record['content']:
                 del values['content']
 
-        print(values['content'])
         if 'topic' in values or 'content' in values:
             values['edit_time'] = int(time.time())
             values['last_edit_user_id'] = self.current_user.id
@@ -147,6 +149,12 @@ class TopicView(UserMixin, PeeweeView):
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
+
+        if self.do_mentions:
+            self.do_mentions(record['user_id'], POST_TYPES.TOPIC, record['id'], {
+                'title': record['title'],
+            })
+
         statistic_add_topic(record['board_id'], record['id'])
 
         # 添加统计记录

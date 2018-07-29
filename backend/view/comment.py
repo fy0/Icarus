@@ -36,6 +36,9 @@ class CommentView(UserMixin, PeeweeView):
         permission: Permissions = cls.permission
         permissions_add_all(permission)
 
+    async def prepare(self):
+        self.do_mentions = None
+
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]
         relate_type = values.get('related_type', None)
@@ -91,7 +94,15 @@ class CommentView(UserMixin, PeeweeView):
         for record in records:
             statistic_add_comment(record['related_type'], record['related_id'], record['id'])
             post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
-            Comment.update(post_number = post_number).where(Comment.id == record['id']).execute()
+            Comment.update(post_number=post_number).where(Comment.id == record['id']).execute()
+
+            if self.do_mentions:
+                self.do_mentions(record['user_id'], POST_TYPES.COMMENT, record['id'], {
+                    'comment_info': {
+                        'related_type': record['related_type'],
+                        'related_id': record['related_id'],
+                    }
+                })
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord],
                      records: List[DataRecord]):

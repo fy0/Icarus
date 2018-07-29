@@ -96,19 +96,35 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
     # 某某 在文章 某某某 中@了你： XXXXXX
     # c2 是 user_id 的原评论，c 是回复评论的评论
     from .mention import Mention
-    item_lst = Mention.select(Mention.who == user_id, Mention.id > last_mention_id)
+    item_lst = Mention.select().where(Mention.who == user_id, Mention.id > last_mention_id)
+
+    # 懒得写sql查询了
+    user_ids = []
+    id2user = {}
+    for m in item_lst:
+        user_ids.append(m.user_id)
+    for u in User.select().where(User.id.in_(user_ids)):
+        id2user[u.id] = u
+
+    def get_nickname(uid):
+        if uid == 0: return '系统'
+        u: User = id2user.get(uid, None)
+        if u is None: return
+        return u.nickname
 
     def wrap(i: Mention):
         return {
             'type': NOTIF_TYPE.BE_MENTIONED,
             'time': i.time,
-            'post': {
-                'id': i.related_id,
-                'type': i.related_type,
-            },
-            'sender': {
-                'id': i.user_id,
-                # 'nickname': i.user_id
+            'mention': {
+                'id': i.id,
+                'user': {
+                    'id': i.user_id,
+                    'nickname': get_nickname(i.user_id)
+                },
+                'related_id': i.related_id,
+                'related_type': i.related_type,
+                'data': i.data,
             }
         }
     return map(wrap, item_lst)
@@ -186,25 +202,28 @@ class Notification(BaseModel):
         if not r: return
         if cooldown and (time.time() - r.update_time < cooldown):
             return
+
+        def pack_notif(i, sender_ids):
+            # 看得出来初始设计是想要一定程度上合并同类消息，还没来得及搞，先这样吧
+            return {
+                'id': config.LONG_ID_GENERATOR().to_bin(),
+                'sender_ids': sender_ids,
+                'receiver_id': user_id,
+                'type': i['type'],
+                'time': i['time'],
+                'data': i,
+            }
+
         for i in r.get_notifications(True):
             if i['type'] == NOTIF_TYPE.BE_COMMENTED:
-                new.append({
-                    'id': config.LONG_ID_GENERATOR().to_bin(),
-                    'sender_ids': (i['comment']['user']['id'],),
-                    'receiver_id': user_id,
-                    'type': NOTIF_TYPE.BE_COMMENTED,
-                    'time': i['time'],
-                    'data': i,
-                })
+                sender_ids = (i['comment']['user']['id'],)
+                new.append(pack_notif(i, sender_ids))
             elif i['type'] == NOTIF_TYPE.BE_REPLIED:
-                new.append({
-                    'id': config.LONG_ID_GENERATOR().to_bin(),
-                    'sender_ids': (i['comment']['user']['id'],),
-                    'receiver_id': user_id,
-                    'type': NOTIF_TYPE.BE_REPLIED,
-                    'time': i['time'],
-                    'data': i,
-                })
+                sender_ids = (i['comment']['user']['id'],)
+                new.append(pack_notif(i, sender_ids))
+            elif i['type'] == NOTIF_TYPE.BE_MENTIONED:
+                sender_ids = (i['mention']['user']['id'],)
+                new.append(pack_notif(i, sender_ids))
 
         if new:
             cls.insert_many(new).execute()
