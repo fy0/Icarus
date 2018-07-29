@@ -6,7 +6,7 @@
     <a class="sa-avatar" :style="style" v-if="placeholder">
     </a>
     <!-- 存在图像头像情况 -->
-    <router-link v-else-if="user.avatar" class="sa-avatar" :style="userStyle" :to="linkTo">
+    <router-link v-else-if="user && user.avatar" class="sa-avatar" :style="userStyle" :to="linkTo">
         <div class="ic-paper round paper" :class="`ic-z${depth}`" :style="userStyle">
             <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
         </div>
@@ -61,6 +61,9 @@ export default {
         anonymous: {
             default: false
         },
+        system: {
+            default: false
+        },
         placeholder: {
             default: false
         },
@@ -81,7 +84,9 @@ export default {
     },
     computed: {
         linkTo: function () {
-            if (this.anonymous) {
+            if (this.system) {
+                return ''
+            } else if (this.anonymous) {
                 // 未登录用户
                 return {
                     name: 'account_signup'
@@ -94,6 +99,7 @@ export default {
             }
         },
         char: function () {
+            if (this.system) return '⚙️'
             if (this.anonymous) return '?'
             if (!this.user.nickname) return ''
             return this.user.nickname[0].toUpperCase()
@@ -107,7 +113,7 @@ export default {
         },
         style: function () {
             let size, fsize, bgColor
-            if (this.anonymous) bgColor = '334455'
+            if (this.anonymous || this.system) bgColor = '334455'
             else if (this.placeholder) bgColor = 'e9e9e9'
             else {
                 if ((!this.user) || (!this.user.nickname)) return ''

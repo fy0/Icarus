@@ -6,7 +6,7 @@
     <div v-if="page.items.length === 0" class="no-comment">目前没有日志</div>
     <div v-else class="comment-box">
         <div v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="comment">
-            <avatar :user="i.user_id" class="avatar"></avatar>
+            <avatar :system="i.user_id === null" :user="i.user_id" class="avatar"></avatar>
             <div class="info">
                 <div>
                     <post-link :goto="true" :show-type="true" :type-bold="true" :type="i.related_type" :item="postsOfComments[i.related_id]"/>

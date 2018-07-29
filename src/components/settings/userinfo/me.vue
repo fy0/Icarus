@@ -61,8 +61,8 @@
         <div class="right">
             <div class="setting-item">
                 <div class="line box-avatar" @click="state.dialog.userSetAvatar = true" >
-                    <avatar :is-link="false" :user="user" :size="200" class="avatar"></avatar>
-                    <button class="ic-btn primary btn-upload" style="margin-top: 10px; width: 100%">点此上传新头像</button>
+                    <avatar :is-link="false" :user="state.user" :size="200" class="avatar"></avatar>
+                    <button class="ic-btn primary btn-upload" style="margin-top: 10px">点此上传新头像</button>
                 </div>
             </div>
 
@@ -105,10 +105,12 @@
 }
 
 .box-avatar > .btn-upload {
-    width: 100%;
     bottom: 0;
     position: absolute;
     opacity: 0.7;
+    width: calc(100% - 6px);
+    margin-right: 3px;
+    margin-left: 3px;
 }
 
 .lbox {
@@ -190,6 +192,7 @@ export default {
             if (!this.changed) return
             this.updating = true
             let data = $.objDiff(this.userSave, state.user)
+            delete data['avatar'] // 头像的更新是独立的参见BUG12
             let ret = await api.user.set({id: state.user.id}, data, 'user')
             if (ret.code === api.retcode.SUCCESS) {
                 for (let [k, v] of Object.entries(data)) {
