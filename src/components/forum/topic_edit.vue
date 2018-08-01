@@ -91,7 +91,6 @@ import markdownEditor from 'vue-simplemde/src/markdown-editor'
 import 'simplemde/dist/simplemde.min.css'
 import api from '@/netapi.js'
 import state from '@/state.js'
-import CheckRow from '../utils/checkrow.vue'
 import nprogress from 'nprogress/nprogress.js'
 import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
@@ -350,7 +349,6 @@ export default {
         }, 5000)
     },
     components: {
-        CheckRow,
         Multiselect,
         markdownEditor
     }

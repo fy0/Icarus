@@ -94,7 +94,6 @@
 </style>
 
 <script>
-import Avatar from '../utils/avatar.vue'
 import state from '@/state.js'
 import api from '@/netapi.js'
 
@@ -171,7 +170,6 @@ export default {
         this.state.loadingDec(this.$route, key)
     },
     components: {
-        Avatar
     }
 }
 </script>

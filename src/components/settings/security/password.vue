@@ -62,7 +62,6 @@
 import api from '@/netapi.js'
 import state from '@/state.js'
 import SettingBase from '../base/base.vue'
-import CheckRow from '@/components/utils/checkrow.vue'
 
 export default {
     data () {
@@ -112,7 +111,6 @@ export default {
         }
     },
     components: {
-        CheckRow,
         SettingBase
     }
 }

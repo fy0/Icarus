@@ -37,13 +37,15 @@ import ws from './ws.js'
 
 import PageNotFound from './components/404.vue'
 import Redirecting from './components/utils/redirecting.vue'
-import Paginator from './components/utils/paginator.vue'
-import Loading from './components/utils/loading.vue'
-import Avatar from './components/utils/avatar.vue'
-import ICTime from './components/utils/ic-time.vue'
 import UserLink from './components/utils/user-link.vue'
 import PostLink from './components/utils/post-link.vue'
 import ICDialog from './components/utils/dialogs/_dialog.vue'
+
+import Loading from './components/utils/ui/loading.vue'
+import Avatar from './components/utils/ui/avatar.vue'
+import Paginator from './components/utils/ui/paginator.vue'
+import ICTime from './components/utils/ui/ic-time.vue'
+import CheckRow from './components/utils/ui/checkrow.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
@@ -53,12 +55,15 @@ import DialogUserSetAvatar from './components/utils/dialogs/user-set-avatar.vue'
 
 Vue.component('page-not-found', PageNotFound)
 Vue.component('redirecting', Redirecting)
+Vue.component('user-link', UserLink)
+Vue.component('post-link', PostLink)
+
 Vue.component('paginator', Paginator)
 Vue.component('loading', Loading)
 Vue.component('avatar', Avatar)
 Vue.component('ic-time', ICTime)
-Vue.component('user-link', UserLink)
-Vue.component('post-link', PostLink)
+Vue.component('check-row', CheckRow)
+
 Vue.component('ic-dialog', ICDialog)
 Vue.component('dialog-topic-manage', DialogTopicManage)
 Vue.component('dialog-user-manage', DialogUserManage)
