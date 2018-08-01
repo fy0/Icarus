@@ -20,30 +20,30 @@
             </mu-tabs>
             <div class="tab" v-if="activeTab === 'tabTopic'">
                 <div v-if="tabs.topic.topics" style="width: 100%">
-                    <mu-timeline v-if="tabs.topic.topics.items && tabs.topic.topics.items.length">
-                        <mu-timeline-item :key="i.id" v-for="i in tabs.topic.topics.items">
+                    <ic-timeline v-if="tabs.topic.topics.items && tabs.topic.topics.items.length">
+                        <ic-timeline-item :key="i.id" v-for="i in tabs.topic.topics.items">
                             <span slot="time"><ic-time :timestamp="i.time"/></span>
-                            <span slot="des">发表了一篇主题
+                            <span slot="content">发表了一篇主题
                                 <router-link :to="{ name: 'forum_topic', params: {id: i.id} }">《{{i.title}}》</router-link>
                             </span>
-                        </mu-timeline-item>
-                    </mu-timeline>
+                        </ic-timeline-item>
+                    </ic-timeline>
                     <div v-else>暂无数据</div>
                 </div>
                 <ball-beat-loader v-else style="margin-top:66px" size="90" color="#df2525"/>
             </div>
             <div class="tab" v-if="activeTab === 'tab2'">
                 <div v-if="tabs.comment.data" style="width: 100%">
-                    <mu-timeline v-if="tabs.comment.data.items && tabs.comment.data.items.length">
-                        <mu-timeline-item :key="i.id" v-for="i in tabs.comment.data.items">
+                    <ic-timeline v-if="tabs.comment.data.items && tabs.comment.data.items.length">
+                        <ic-timeline-item :key="i.id" v-for="i in tabs.comment.data.items">
                             <span slot="time"><ic-time :timestamp="i.time"></ic-time></span>
-                            <span slot="des">发表了一条评论
+                            <span slot="content">发表了一条评论
                                 <div>
-                                    <router-link :to="{ name: 'forum_topic', params: {id: i.related_id} }">{{i.content}}</router-link>
+                                    <router-link :to="{ name: 'forum_topic', params: {id: i.related_id} }">{{atConvert(i.content)}}</router-link>
                                 </div>
                             </span>
-                        </mu-timeline-item>
-                    </mu-timeline>
+                        </ic-timeline-item>
+                    </ic-timeline>
                     <div v-else>暂无数据</div>
                 </div>
                 <ball-beat-loader v-else style="margin-top:66px" size="90" color="#df2525"/>
@@ -117,6 +117,7 @@ export default {
         ;
     },
     methods: {
+        atConvert: $.atConvert2,
         tabTopicLoad: async function () {
             let uid = this.user.id
             let retList = await api.topic.list({

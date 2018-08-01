@@ -50,6 +50,7 @@ export default {
         await this.fetchData()
     },
     methods: {
+        atConvert: $.atConvert2,
         fetchData: async function () {
             let key = state.loadingGetKey(this.$route)
             this.state.loadingInc(this.$route, key)
