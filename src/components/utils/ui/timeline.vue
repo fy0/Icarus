@@ -1,15 +1,10 @@
 <template>
-<div class="ic-container loading">
+<div class="ic-timeline">
+    <slot />
 </div>
 </template>
 
 <style scoped>
-.loading {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 </style>
 
 <script>

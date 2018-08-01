@@ -1,34 +1,32 @@
 <template>
 <div class="ic-container">
     <span>用户个人提醒：评论、回复、关注、@、收藏、赞、私信、系统通知</span>
-    <div v-if="page.items">
-        <ul v-for="i in page.items" :key="i.id">
-            <li v-if="i.type === NOTIF_TYPE.BE_COMMENTED">
-                <div>
-                    <user-link :user="i.data.comment.user" />
-                    <span>评论了你的</span>
-                    <span>文章</span>
-                    <router-link :title="i.data.post.title" :to="{ name: 'forum_topic', params: {id: i.data.post.id} }">《{{i.data.post.title}}》</router-link>
-                    <ic-time :timestamp="i.time" />
-                </div>
+    <ic-timeline v-if="page.items">
+        <ic-timeline-item v-for="i in page.items" :key="i.id">
+            <span slot="time">
+                <ic-time :timestamp="i.time"/>
+            </span>
+            <div slot="content" v-if="i.type === NOTIF_TYPE.BE_COMMENTED">
+                <user-link :user="i.data.comment.user" />
+                <span>评论了你的</span>
+                <span>文章</span>
+                <router-link :title="i.data.post.title" :to="{ name: 'forum_topic', params: {id: i.data.post.id} }">《{{i.data.post.title}}》</router-link>
                 <div>{{i.data.comment.brief}}</div>
-            </li>
-            <li v-else-if="i.type === NOTIF_TYPE.BE_REPLIED">
-                <div>
-                    <user-link :user="i.data.comment.user" />
-                    <span>在文章</span>
-                    <router-link :title="i.data.post.title" :to="{ name: 'forum_topic', params: {id: i.data.post.id} }">《{{i.data.post.title}}》</router-link>
-                    <span>中回复了你的评论</span>
-                    <ic-time :timestamp="i.time" />
-                </div>
+            </div>
+            <div slot="content" v-else-if="i.type === NOTIF_TYPE.BE_REPLIED">
+                <user-link :user="i.data.comment.user" />
+                <span>在文章</span>
+                <router-link :title="i.data.post.title" :to="{ name: 'forum_topic', params: {id: i.data.post.id} }">《{{i.data.post.title}}》</router-link>
+                <span>中回复了你的评论</span>
+                <ic-time :timestamp="i.time" />
                 <div>{{i.data.comment.brief}}</div>
-            </li>
-            <li v-else>
+            </div>
+            <div slot="content" v-else>
                 {{i}}
-            </li>            
-        </ul>
-        <paginator :page-info='page' :route-name='"account_notif"' :link-method="'query'" />
-    </div>
+            </div>
+        </ic-timeline-item>
+    </ic-timeline>
+    <paginator :page-info='page' :route-name='"account_notif"' :link-method="'query'" />
 </div>
 </template>
 

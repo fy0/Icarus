@@ -46,6 +46,8 @@ import Avatar from './components/utils/ui/avatar.vue'
 import Paginator from './components/utils/ui/paginator.vue'
 import ICTime from './components/utils/ui/ic-time.vue'
 import CheckRow from './components/utils/ui/checkrow.vue'
+import Timeline from './components/utils/ui/timeline.vue'
+import TimelineItem from './components/utils/ui/timeline-item.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
@@ -63,6 +65,8 @@ Vue.component('loading', Loading)
 Vue.component('avatar', Avatar)
 Vue.component('ic-time', ICTime)
 Vue.component('check-row', CheckRow)
+Vue.component('ic-timeline', Timeline)
+Vue.component('ic-timeline-item', TimelineItem)
 
 Vue.component('ic-dialog', ICDialog)
 Vue.component('dialog-topic-manage', DialogTopicManage)
