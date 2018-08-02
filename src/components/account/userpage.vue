@@ -12,6 +12,11 @@
             </div>
         </div>
         <div class="right">
+            <ic-tabs v-model="activeTab">
+                <ic-tab value="tabTopic" title="主题" @active="handleActive"/>
+                <ic-tab value="tab2" title="评论"/>
+            </ic-tabs>
+    
             <mu-tabs :value="activeTab" @change="handleTabChange" class="api-view-tabs">
                 <mu-tab value="tabTopic" title="主题" @active="handleActive"/>
                 <mu-tab value="tab2" title="评论"/>
