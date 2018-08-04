@@ -1,0 +1,14 @@
+
+.manage-form-item {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 20px;
+
+    .label {
+        flex: 1 0 0;
+    }
+
+    .right {
+        flex: 3 0 0;
+    }
+}

@@ -3,7 +3,7 @@
     <slot></slot>
     <div v-if="isError">
         <ul class="multi-errors" v-if="multi">
-            <li class="tip" v-for="i in results">{{i}}</li>
+            <li class="tip" :key="i" v-for="i in results">{{i}}</li>
         </ul>
         <span v-else class="tip" :class="{absolute, flex}" >{{errtext}}</span>
     </div>
@@ -29,9 +29,6 @@
 .multi-errors {
     margin: 0;
     padding-left: 1em
-}
-
-.multi {
 }
 
 .error > input {

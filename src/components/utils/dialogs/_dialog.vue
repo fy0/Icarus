@@ -1,7 +1,13 @@
 <template>
-<div class="dialog-wrapper" tabindex="-1" v-if="show">
+<div class="dialog-wrapper" tabindex="-1" v-if="value">
     <div class="dialog-box">
-        <slot />
+        <div>
+            <span>{{title}}</span>
+            <div class="ic-hr" style="margin-top: 5px !important"></div>
+        </div>
+        <div>
+            <slot />
+        </div>
     </div>
     <div class="dialog-overlay" @click="closeOutside"></div>
 </div>
@@ -9,6 +15,7 @@
 
 <style scoped>
 .dialog-box {
+    overflow-y: scroll;
     max-width: 768px;
     padding: 20px;
     background-color: #fff;
@@ -62,7 +69,7 @@ import state from '@/state.js'
 
 export default {
     props: {
-        'show': {
+        'value': {
             type: Boolean,
             default: false
         },
@@ -126,8 +133,11 @@ export default {
     },
     methods: {
         closeOutside: async function () {
-            if (this.allowOutsideClose && this.onClose) {
-                this.onClose()
+            if (this.allowOutsideClose) {
+                if (this.onClose) {
+                    this.onClose()
+                }
+                this.$emit('input', false)
             }
         }
     }

@@ -1,103 +1,95 @@
 <template>
-<mu-dialog :open="state.dialog.boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
-    <div class="topic-manage-item" style="margin-top: 30px;">
-        <span class="label">ID</span>
-        <div class="right">{{board.id}}</div>
-    </div>
-    <div class="topic-manage-item">
-        <span class="label">创建者</span>
-        <div class="right">
-            <user-link v-if="board.user_id" :user="board.user_id" />
-            <div v-else>系统</div>
+<ic-dialog v-model="state.dialog.boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
+    <div class="wrapper ic-form">
+        <div class="manage-form-item" style="margin-top: 0px;">
+            <span class="label">ID</span>
+            <div class="right">{{board.id}}</div>
         </div>
-    </div>
-    <div class="topic-manage-item">
-        <span class="label">板块名</span>
-        <div class="right">
-            <mu-text-field v-model="board.name" :maxLength="30"/>
+        <div class="manage-form-item">
+            <span class="label">创建者</span>
+            <div class="right">
+                <user-link v-if="board.user_id" :user="board.user_id" />
+                <div v-else>系统</div>
+            </div>
         </div>
-    </div>
-    <div class="topic-manage-item">
-        <span class="label">简介</span>
-        <div class="right">
-            <mu-text-field v-model="board.brief" :maxLength="255"/>
+        <div class="manage-form-item">
+            <span class="label">板块名</span>
+            <div class="right">
+                <input class="ic-input" type="text" v-model="board.name">
+            </div>
         </div>
-    </div>
-    <div class="topic-manage-item">
-        <span class="label">权重</span>
-        <div class="right">
-            <mu-text-field type="number" v-model="board.weight" />
+        <div class="manage-form-item">
+            <span class="label">简介</span>
+            <div class="right">
+                <input class="ic-input" type="text" v-model="board.brief">
+            </div>
         </div>
-    </div>
-    <div class="topic-manage-item">
-        <span class="label">色彩</span>
-        <div class="right">
-            <mu-text-field hintText="需为十六进制颜色" v-model="board.color" :maxLength="8"/>
+        <div class="manage-form-item">
+            <span class="label">权重</span>
+            <div class="right">
+                <input class="ic-input" type="number" v-model="board.weight">
+            </div>
         </div>
-    </div>
-    <div class="topic-manage-item" style="align-items: center">
-        <span class="label">上级板块</span>
-        <div class="right">
-            <multiselect v-model="board.parent_id" :allow-empty="true" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2; width: 85%;" open-direction="bottom"></multiselect>
+        <div class="manage-form-item">
+            <span class="label">色彩</span>
+            <div class="right">
+                <input class="ic-input" type="text" placeholder="需为十六进制颜色" v-model="board.color">
+            </div>
         </div>
-    </div>
-    <div class="topic-manage-item" style="align-items: center">
-        <span class="label">状态</span>
-        <div class="right" style="display: flex">
-            <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="board.state" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
+        <div class="manage-form-item" style="align-items: center">
+            <span class="label">上级板块</span>
+            <div class="right">
+                <multiselect v-model="board.parent_id" :allow-empty="true" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2; width: 70%;" open-direction="bottom"></multiselect>
+            </div>
         </div>
-    </div>
-    <div class="topic-manage-item" style="align-items: center">
-        <span class="label">可见性</span>
-        <div class="right" style="display: flex">
-            <mu-radio name="visible" :label="i" :nativeValue="j.toString()" v-model="board.visible" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j" class="demo-radio"/>
+        <div class="manage-form-item" style="align-items: center">
+            <span class="label">状态</span>
+            <div class="right" style="display: flex">
+                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
+                    <label :for="'radio-state-'+i">
+                        <input type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="board.state" />
+                        <span>{{i}}</span>
+                    </label>
+                </span>
+            </div>
         </div>
-    </div>
-    <div class="topic-manage-item" style="align-items: center">
-        <span class="label">公告</span>
-        <div class="right">
-            <mu-text-field hintText="" multiLine :rows="3" v-model="board.desc" fullWidth :maxLength="1024"/>
+        <div class="manage-form-item" style="align-items: center">
+            <span class="label">可见性</span>
+            <div class="right">
+                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j">
+                    <label :for="'radio-visible-'+i">
+                        <input type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="board.visible" />
+                        <span>{{i}}</span>
+                    </label>
+                </span>
+            </div>
         </div>
-    </div>
+        <div class="manage-form-item" style="align-items: center">
+            <span class="label">公告</span>
+            <div class="right">
+                <textarea class="ic-input" rows="3" v-model="board.desc" />
+            </div>
+        </div>
 
-    <mu-flat-button slot="actions" @click="close" primary label="取消"/>
-    <mu-flat-button slot="actions" primary @click="ok" label="确定"/>
-</mu-dialog>
+        <!-- 注意，暂时解决不了底边留白问题，很尬，只好用margin顶一下 -->
+        <div class="bottom manage-form-item" style="margin: 20px 0">
+            <span class="label"></span>
+            <div class="right">
+                <span class="ic-btn primary" @click="ok">确定</span>
+                <span class="ic-btn primary" @click="close">取消</span>
+            </div>
+        </div>
+    </div>
+</ic-dialog>
 </template>
 
-<style>
-.no-left-padding {
-    padding-left: 0;
-    margin-left: 0;
-}
-</style>
-
-
 <style scoped>
-.topic-manage-item {
-    display: flex;
-    align-items: baseline;
-    min-height: 56px;
+.wrapper {
+    height: 70vh;
 }
 
-.topic-manage-item > .label {
-    flex: 1 0 0;
-}
-
-.topic-manage-item > .right {
-    flex: 4 0 0;
-}
-
-.demo-radio {
-    margin-right: 15px;
-}
-
-.demo-slider {
-    margin-bottom: 0;
-}
-
-.hl {
-    color: red
+.ic-input {
+    width: 70%;
 }
 </style>
 
@@ -106,6 +98,7 @@ import state from '@/state.js'
 import api from '@/netapi.js'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
+import '@/assets/css/_manage.scss'
 
 export default {
     data () {
@@ -131,9 +124,6 @@ export default {
         },
         ok: async function () {
             let data = $.objDiff(this.board, this.save)
-            if (data.state) data.state = Number(data.state)
-            if (data.weight) data.weight = Number(data.weight)
-            if (data.visible) data.visible = Number(data.visible)
 
             let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id'])
             let ret = await api.board.set({id: this.board.id}, data, 'admin', keys)
@@ -160,7 +150,7 @@ export default {
                 }, 'admin')
                 if (info.code === api.retcode.SUCCESS) {
                     this.board = info.data
-                    this.board.state = this.board.state.toString()
+                    // this.board.state = this.board.state.toString()
                     this.save = _.clone(this.board)
 
                     let ret = await api.board.list({
