@@ -10,9 +10,7 @@
     outline: none;
     cursor: pointer;
 
-    .text {
-        padding: 10px 20px;
-    }
+    padding: 10px 30px 12px 30px;
 }
 </style>
 
@@ -38,7 +36,12 @@ export default {
             return this.getCurrentActive() === this.value
         }
     },
-    inject: ['setActive', 'getCurrentActive'],
+    created: function () {
+        // 注：这里父组件得到的参数确实是当前组件，也就是this被传递了。
+        // 但是父组件的this还是父组件
+        this.addTab(this)
+    },
+    inject: ['setActive', 'getCurrentActive', 'addTab'],
     methods: {
         doActive: function () {
             this.setActive(this.value)

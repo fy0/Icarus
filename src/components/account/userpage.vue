@@ -13,16 +13,12 @@
         </div>
         <div class="right">
             <ic-tabs v-model="activeTab">
-                <ic-tab value="tabTopic" title="主题" @active="handleActive"/>
-                <ic-tab value="tab2" title="评论"/>
-            </ic-tabs>
-    
-            <mu-tabs :value="activeTab" @change="handleTabChange" class="api-view-tabs">
-                <mu-tab value="tabTopic" title="主题" @active="handleActive"/>
-                <mu-tab value="tab2" title="评论"/>
-                <mu-tab value="tab3" v-if="false" title="收藏" @active="handleActive"/>
+                <ic-tab value="tabTopic" title="主题" />
+                <ic-tab value="tabComment" title="评论"/>
+                <mu-tab value="tab3" v-if="false" title="收藏"/>
                 <mu-tab value="tab4" v-if="false" title="关注"/>
-            </mu-tabs>
+            </ic-tabs>
+
             <div class="tab" v-if="activeTab === 'tabTopic'">
                 <div v-if="tabs.topic.topics" style="width: 100%">
                     <ic-timeline v-if="tabs.topic.topics.items && tabs.topic.topics.items.length">
@@ -35,9 +31,9 @@
                     </ic-timeline>
                     <div v-else>暂无数据</div>
                 </div>
-                <ball-beat-loader v-else style="margin-top:66px" size="90" color="#df2525"/>
+                <ball-beat-loader v-else style="margin-top:66px" size="90" color="#e70013"/>
             </div>
-            <div class="tab" v-if="activeTab === 'tab2'">
+            <div class="tab" v-if="activeTab === 'tabComment'">
                 <div v-if="tabs.comment.data" style="width: 100%">
                     <ic-timeline v-if="tabs.comment.data.items && tabs.comment.data.items.length">
                         <ic-timeline-item :key="i.id" v-for="i in tabs.comment.data.items">
@@ -141,15 +137,6 @@ export default {
             })
             this.tabs.comment.data = retList.data
         },
-        handleTabChange (val) {
-            this.activeTab = val
-            if (val === 'tab2') {
-                this.tabCommentLoad()
-            }
-        },
-        handleActive () {
-            // window.alert('tab active')
-        },
         fetchData: async function () {
             let role = null
             let params = this.$route.params
@@ -167,7 +154,14 @@ export default {
     },
     watch: {
         // 如果路由有变化，会再次执行该方法
-        '$route': 'fetchData'
+        '$route': 'fetchData',
+        'activeTab': async function (newVal) {
+            if (newVal === 'tabTopic') {
+                await this.tabTopicLoad()
+            } else if (newVal === 'tabComment') {
+                await this.tabCommentLoad()
+            }
+        }
     },
     created: async function () {
         let key = state.loadingGetKey(this.$route)
