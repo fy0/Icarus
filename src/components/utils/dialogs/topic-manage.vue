@@ -1,13 +1,19 @@
 <template>
     <ic-dialog v-model="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
         <div v-if="stage == 1">
-            <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id, asAdmin: true} }">编辑文章</router-link>
             <div class="manage-form-item">
-                <span class="label">文章置顶</span>
+                <span class="label">
+                    <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id, asAdmin: true} }">编辑文章</router-link>
+                </span>
+                <div class="right">
+                </div>
+            </div>
+            <div class="manage-form-item">
+                <span class="label">置顶级别</span>
                 <div class="right">
                     <span style="margin-right: 10px" v-for="i in [0, 1, 2, 3, 4, 5]" :key="i">
-                        <label :for="'radio-state-'+i">
-                            <input type="radio" name="sticky" :value="i" :id="'radio-sticky-'+i" v-model="vSticky" />
+                        <label :for="'radio-sticky-'+i">
+                            <input class="ic-input" type="radio" name="sticky" :value="i" :id="'radio-sticky-'+i" v-model="vSticky" />
                             <span>{{i}}</span>
                         </label>
                     </span>
@@ -39,7 +45,7 @@
                 <div class="right">
                     <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
                         <label :for="'radio-state-'+i">
-                            <input type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="vState" />
+                            <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="vState" />
                             <span>{{i}}</span>
                         </label>
                     </span>
@@ -48,7 +54,7 @@
             <div class="manage-form-item">
                 <span class="label">优秀</span>
                 <div class="right">
-                    <input type="checkbox" v-model="vAwesome"/>
+                    <input class="ic-input" type="checkbox" v-model="vAwesome"/>
                 </div>
             </div>
         </div>
@@ -96,19 +102,25 @@
 
         <div class="bottom">
             <span class="ic-btn primary" v-if="stage <= 2" @click="next">确定</span>
-            <span class="ic-btn primary" v-if="stage <= 2" @click="close">取消</span>
+            <span class="ic-btn secondary" v-if="stage <= 2" @click="close">取消</span>
             <span class="ic-btn primary" v-if="stage === 4" @click="close">完成</span>
         </div>
     </ic-dialog>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .manage-form-item {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .bottom {
     text-align: right;
+
+    .ic-btn {
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-left: 10px;
+    }
 }
 </style>
 

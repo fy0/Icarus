@@ -28,7 +28,7 @@
 
 <style scoped>
 #form_topic input[name='title'] {
-    padding: 19px 12px;
+    padding: 9px 12px;
     width: 100%;
     font-weight: bolder;
     border-radius: 5px;

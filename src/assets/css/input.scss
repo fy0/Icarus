@@ -19,6 +19,10 @@ input.ic-input[type=email], input.ic-input[type=url], input.ic-input[type=tel], 
     }
 }
 
+input.ic-input[type=radio]:active {
+    color: $primary;
+}
+
 textarea.ic-input {
     resize: none;
 }
@@ -38,7 +42,6 @@ textarea.ic-input {
 .ic-input {
     resize: none;
     border: 1px $gray-400 solid;
-    padding-left: 5px;
 }
 
 // range
@@ -162,28 +165,28 @@ input.ic-input[type=range] {
 @mixin input-range-variant($color) {
     /* 滑块 */
     &::-webkit-slider-thumb {
-        background-color: lighten($color, 10);
+        background-color: lighten($color, 0);
     }
 
     &::-moz-range-thumb {
-        background-color: lighten($color, 10);
+        background-color: lighten($color, 0);
     }
 
     &::-ms-thumb {
-        background-color: lighten($color, 10);
+        background-color: lighten($color, 0);
     }
 
     /* 轨道 */
     &::-webkit-slider-runnable-track {
-        background-color: rgba($color, 0.3);
+        background-color: rgba($color, 0.5);
     }
 
     &::-moz-range-track {
-        background-color: rgba($color, 0.3);
+        background-color: rgba($color, 0.5);
     }
 
     &::-ms-fill-lower {
-        background-color: rgba($color, 0.3);
+        background-color: rgba($color, 0.5);
     }
 
     &::-ms-fill-upper {
@@ -192,19 +195,19 @@ input.ic-input[type=range] {
 
     &:focus {
         &::-webkit-slider-runnable-track {
-            background-color: rgba($color, 0.5);
+            background-color: rgba($color, 0.7);
         }
 
         &::-moz-range-track {
-            background-color: rgba($color, 0.5);
+            background-color: rgba($color, 0.7);
         }
 
         &::-ms-fill-lower {
-            background-color: rgba($color, 0.45);
+            background-color: rgba($color, 0.65);
         }
 
         &::-ms-fill-upper {
-            background-color: rgba($color, 0.25);
+            background-color: rgba($color, 0.45);
         }
     }
 }

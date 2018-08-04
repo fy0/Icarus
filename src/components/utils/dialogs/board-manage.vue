@@ -76,20 +76,28 @@
             <span class="label"></span>
             <div class="right">
                 <span class="ic-btn primary" @click="ok">确定</span>
-                <span class="ic-btn primary" @click="close">取消</span>
+                <span class="ic-btn secondary" @click="close">取消</span>
             </div>
         </div>
     </div>
 </ic-dialog>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .wrapper {
     height: 70vh;
 }
 
 .ic-input {
     width: 70%;
+}
+
+.bottom {
+    .ic-btn {
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-right: 10px;
+    }
 }
 </style>
 
