@@ -22,7 +22,7 @@
 }
 
 .dialog-box {
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 2px;

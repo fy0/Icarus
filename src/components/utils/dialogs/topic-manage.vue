@@ -1,65 +1,75 @@
 <template>
-    <mu-dialog :open="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
+    <ic-dialog v-model="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
         <div v-if="stage == 1">
             <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id, asAdmin: true} }">编辑文章</router-link>
-            <div class="topic-manage-item">
+            <div class="manage-form-item">
                 <span class="label">文章置顶</span>
                 <div class="right">
-                    <mu-radio name="sticky" :label="i.toString()" :nativeValue="i.toString()" v-model="vSticky" class="demo-radio" v-for="i in [0, 1, 2, 3, 4, 5]" :key="i" />
+                    <span style="margin-right: 10px" v-for="i in [0, 1, 2, 3, 4, 5]" :key="i">
+                        <label :for="'radio-state-'+i">
+                            <input type="radio" name="sticky" :value="i" :id="'radio-sticky-'+i" v-model="vSticky" />
+                            <span>{{i}}</span>
+                        </label>
+                    </span>
                 </div>
             </div>
-            <div class="topic-manage-item">
+            <div class="manage-form-item">
                 <span class="label">提升下沉</span>
                 <div class="right" style="display: flex; align-items: center;">
-                    <mu-slider v-model="vWeight" :step="1" :min="-100" :max="100" class="demo-slider"/>
+                    <input class="ic-input primary" style="width:100%" v-model="vWeight" :step="1" :min="-100" :max="100" type="range" />
                     <span style="min-width: 40px; text-align: center">{{vWeight}}</span>
                 </div>
             </div>
-            <div class="topic-manage-item">
+            <div class="manage-form-item">
                 <span class="label">文章评分</span>
                 <div class="right" style="display: flex; align-items: center;">
-                    <mu-slider v-model="vCredit" :step="1" :min="-100" :max="100"  class="demo-slider"/>
+                    <input class="ic-input primary" style="width:100%" v-model="vCredit" :step="1" :min="-100" :max="100" type="range" />
                     <span style="min-width: 40px; text-align: center">{{vCredit}}</span>
                 </div>
             </div>
-            <div class="topic-manage-item">
+            <div class="manage-form-item">
                 <span class="label">声望奖励</span>
                 <div class="right" style="display: flex; align-items: center;">
-                    <mu-slider v-model="vReputation" :step="1" :min="-100" :max="100"  class="demo-slider"/>
+                    <input class="ic-input primary" style="width:100%" v-model="vReputation" :step="1" :min="-100" :max="100" type="range" />
                     <span style="min-width: 40px; text-align: center">{{vReputation}}</span>
                 </div>
             </div>
-            <div class="topic-manage-item">
+            <div class="manage-form-item">
                 <span class="label">状态</span>
                 <div class="right">
-                    <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="vState" v-for="i, j in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
+                    <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
+                        <label :for="'radio-state-'+i">
+                            <input type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="vState" />
+                            <span>{{i}}</span>
+                        </label>
+                    </span>
                 </div>
             </div>
-            <div class="topic-manage-item">
+            <div class="manage-form-item">
                 <span class="label">优秀</span>
                 <div class="right">
-                    <mu-switch v-model="vAwesome" class="demo-switch" />
+                    <input type="checkbox" v-model="vAwesome"/>
                 </div>
             </div>
         </div>
         <div v-else>
             <span v-if="Object.keys(changed) == 0">无任何改动</span>
             <div v-else>
-                <div class="topic-manage-item" v-if="changed.vSticky">
+                <div class="manage-form-item" v-if="changed.vSticky">
                     <span class="label">文章置顶</span>
                     <div class="right">
                     <div class="right"><span class="hl">{{changed.vSticky[0]}}</span> -> <span class="hl">{{changed.vSticky[1]}}</span></div>
                     </div>
                 </div>
-                <div class="topic-manage-item" v-if="changed.vWeight">
+                <div class="manage-form-item" v-if="changed.vWeight">
                     <span class="label">提升下沉</span>
                     <div class="right"><span class="hl">{{changed.vWeight[0]}}</span> -> <span class="hl">{{changed.vWeight[1]}}</span></div>
                 </div>
-                <div class="topic-manage-item" v-if="changed.vCredit">
+                <div class="manage-form-item" v-if="changed.vCredit">
                     <span class="label">文章评分</span>
                     <div class="right"><span class="hl">{{changed.vCredit[1]}}</span></div>
                 </div>
-                <div class="topic-manage-item" v-if="changed.vState">
+                <div class="manage-form-item" v-if="changed.vState">
                     <span class="label">文章状态</span>
                     <div class="right">
                         <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[0]]}}</span>
@@ -67,11 +77,11 @@
                         <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[1]]}}</span>
                     </div>
                 </div>
-                <div class="topic-manage-item" v-if="changed.vReputation">
+                <div class="manage-form-item" v-if="changed.vReputation">
                     <span class="label">声望奖励</span>
                     <div class="right"><span class="hl">{{changed.vReputation[1]}}</span></div>
                 </div>
-                <div class="topic-manage-item" v-if="changed.vAwesome">
+                <div class="manage-form-item" v-if="changed.vAwesome">
                     <span class="label">精华文章</span>
                     <div class="right"><span class="hl">{{changed.vAwesome[0]}}</span> -> <span class="hl">{{changed.vAwesome[1]}}</span></div>
                 </div>
@@ -84,36 +94,21 @@
             </div>
         </div>
 
-        <mu-flat-button v-if="stage <= 2" slot="actions" @click="close" primary label="取消"/>
-        <mu-flat-button v-if="stage <= 2" slot="actions" primary @click="next" label="确定"/>
-        <mu-flat-button v-if="stage === 4" slot="actions" @click="close" primary label="完成"/>
-    </mu-dialog>
+        <div class="bottom">
+            <span class="ic-btn primary" v-if="stage <= 2" @click="next">确定</span>
+            <span class="ic-btn primary" v-if="stage <= 2" @click="close">取消</span>
+            <span class="ic-btn primary" v-if="stage === 4" @click="close">完成</span>
+        </div>
+    </ic-dialog>
 </template>
 
 <style scoped>
-.topic-manage-item {
-    display: flex;
-    align-items: center;
+.manage-form-item {
+    margin-bottom: 5px;
 }
 
-.topic-manage-item > .label {
-    flex: 1 0 0;
-}
-
-.topic-manage-item > .right {
-    flex: 4 0 0;
-}
-
-.demo-radio {
-    margin-right: 15px;
-}
-
-.demo-slider {
-    margin-bottom: 0;
-}
-
-.hl {
-    color: red
+.bottom {
+    text-align: right;
 }
 </style>
 
@@ -256,8 +251,8 @@ export default {
         'state.dialog.topicManage': function (val) {
             if (val) {
                 let topic = this.topic
-                this.vSticky = topic.sticky_weight.toString()
-                this.vState = topic.state.toString()
+                this.vSticky = topic.sticky_weight
+                this.vState = topic.state
                 this.vAwesome = Boolean(topic.awesome)
                 this.stage = 1
             }
