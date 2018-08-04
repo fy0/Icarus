@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-model="state.dialog.boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
+<ic-dialog :width="'70%'" v-model="state.dialog.boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
     <div class="wrapper ic-form">
         <div class="manage-form-item" style="margin-top: 0px;">
             <span class="label">ID</span>
@@ -125,6 +125,12 @@ export default {
         ok: async function () {
             let data = $.objDiff(this.board, this.save)
 
+            if (Object.keys(data).length === 0) {
+                // 什么都没修改
+                state.dialog.boardManage = null
+                return
+            }
+
             let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id'])
             let ret = await api.board.set({id: this.board.id}, data, 'admin', keys)
 
@@ -148,9 +154,9 @@ export default {
                     id: state.dialog.boardManageData.id,
                     loadfk: {'user_id': null}
                 }, 'admin')
+
                 if (info.code === api.retcode.SUCCESS) {
                     this.board = info.data
-                    // this.board.state = this.board.state.toString()
                     this.save = _.clone(this.board)
 
                     let ret = await api.board.list({

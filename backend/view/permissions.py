@@ -49,6 +49,7 @@ visitor = Ability(None, {
         'weight': (A.READ, A.QUERY),
         'color': (A.READ,),
         'state': (A.READ,),
+        'visible': (A.READ,),
         'category': (A.READ,),
         'parent_id': (A.QUERY, A.READ,)
     },

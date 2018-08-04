@@ -1,8 +1,8 @@
 <template>
 <div class="dialog-wrapper" tabindex="-1" v-if="value">
-    <div class="dialog-box">
+    <div class="dialog-box" :style="BoxStyle">
         <div>
-            <span>{{title}}</span>
+            <span class="title">{{title}}</span>
             <div class="ic-hr" style="margin-top: 5px !important"></div>
         </div>
         <div>
@@ -14,9 +14,15 @@
 </template>
 
 <style scoped>
+.title {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 32px;
+    color: rgba(0,0,0,.87);
+}
+
 .dialog-box {
     overflow-y: scroll;
-    max-width: 768px;
     padding: 20px;
     background-color: #fff;
     border-radius: 2px;
@@ -123,12 +129,20 @@ export default {
         },
         'width': {
             type: String,
-            default: '32em'
+            default: '768px'
         }
     },
     data () {
         return {
             state
+        }
+    },
+    computed: {
+        BoxStyle: function () {
+            return {
+                'width': this.width,
+                'max-width': this.width
+            }
         }
     },
     methods: {
