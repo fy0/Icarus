@@ -51,6 +51,7 @@ import TimelineItem from './components/utils/ui/timeline-item.vue'
 import Tab from './components/utils/ui/tab.vue'
 import Tabs from './components/utils/ui/tabs.vue'
 import Progress from './components/utils/ui/progress.vue'
+import Badge from './components/utils/ui/badge.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
@@ -73,6 +74,7 @@ Vue.component('ic-timeline-item', TimelineItem)
 Vue.component('ic-tab', Tab)
 Vue.component('ic-tabs', Tabs)
 Vue.component('ic-progress', Progress)
+Vue.component('ic-badge', Badge)
 
 Vue.component('ic-dialog', ICDialog)
 Vue.component('dialog-topic-manage', DialogTopicManage)

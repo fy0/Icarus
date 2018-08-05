@@ -46,7 +46,7 @@
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
                         <a class="nav-icon" title="提醒">
                             <i class="mdi-icarus icon-bell-ring" v-if="state.unread"></i>
-                            <mu-badge v-if="state.unread" :content="state.unread.toString()" primary style="margin-left: 6px" />
+                            <ic-badge v-if="state.unread" style="margin-left: 6px">{{state.unread}}</ic-badge>
                             <i v-else class="mdi-icarus icon-bell"></i>
                         </a>
                     </router-link>

@@ -1,0 +1,43 @@
+.ic-badge-container {
+    display: inline-block;
+    position: relative;
+}
+
+.ic-badge {
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 6px;
+    line-height: 1.5;
+    font-size: 12px;
+    font-style: normal;
+    background-color: $primary;
+    color: $white;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.ic-badge-float  {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+}
+
+.ic-badge-circle  {
+    border-radius: 50%;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
+}
+
+@mixin badge-variant($background) {
+    background-color: $background;
+}
+
+@each $color, $value in $theme-colors {
+    .ic-badge.#{$color} {
+        @include badge-variant($value);
+    }
+}
