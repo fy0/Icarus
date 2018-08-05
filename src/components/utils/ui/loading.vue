@@ -18,7 +18,7 @@
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .loading {
     flex: 1;
     display: flex;
@@ -31,15 +31,28 @@
     position: relative;
     overflow: hidden;
 }
-.mu-circle-wrapper.active {
-    -webkit-animation: e 1568ms linear infinite;
-    animation: e 1568ms linear infinite;
-}
+
 .mu-circle-wrapper {
     display: inline-block;
     position: relative;
     width: 48px;
     height: 48px;
+
+    &.active {
+        animation: container-rotate 1568ms linear infinite;
+    }
+
+    .mu-circle {
+        border-radius: 50%;
+    }
+
+    .left {
+        float: left!important;
+    }
+
+    .right {
+        float: right!important;
+    }
 }
 
 .mu-circle-spinner {
@@ -49,18 +62,35 @@
     opacity: 0;
     border-color: #7e57c2;
     opacity: 1;
-    -webkit-animation: b 5332ms cubic-bezier(.4,0,.2,1) infinite both;
-    animation: b 5332ms cubic-bezier(.4,0,.2,1) infinite both;
+    animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
-.mu-circle-wrapper .left {
-    float: left!important;
+.mu-circle-spinner.active .mu-circle-clipper.right .mu-circle {
+    animation: left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
+
+.mu-circle-spinner.active .mu-circle-clipper.right .mu-circle {
+    animation: right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+}
+
+.mu-circle-clipper.left .mu-circle {
+    left: 0;
+    border-right-color: transparent !important;
+    transform: rotate(129deg);
+}
+
+.mu-circle-clipper.right .mu-circle {
+    left: -100%;
+    border-left-color: transparent !important;
+    transform: rotate(-129deg);
+}
+
 .mu-circle-clipper, .mu-circle-gap-patch {
     height: 100%;
     overflow: hidden;
     border-color: inherit;
 }
+
 .mu-circle-clipper {
     display: inline-block;
     position: relative;
@@ -80,35 +110,12 @@
     border-color: inherit;
 }
 
-.mu-circle-wrapper .right {
-    float: right!important;
-}
-
-.mu-circle-clipper, .mu-circle-gap-patch {
-    height: 100%;
-    overflow: hidden;
-    border-color: inherit;
-}
-
 .mu-circle-clipper {
     display: inline-block;
     position: relative;
     width: 50%;
 }
 
-
-
-.mu-circle-spinner.active .mu-circle-clipper.right .mu-circle {
-    -webkit-animation: d 1333ms cubic-bezier(.4,0,.2,1) infinite both;
-    animation: d 1333ms cubic-bezier(.4,0,.2,1) infinite both;
-}
-.mu-circle-clipper.right .mu-circle {
-    left: -100%;
-    border-left-color: transparent!important;
-    -webkit-transform: rotate(-129deg);
-    -ms-transform: rotate(-129deg);
-    transform: rotate(-129deg);
-}
 .mu-circle-clipper .mu-circle {
     width: 200%;
     height: 100%;
@@ -117,7 +124,6 @@
     border-color: inherit;
     border-bottom-color: transparent!important;
     border-radius: 50%;
-    -webkit-animation: none;
     animation: none;
     position: absolute;
     top: 0;
@@ -125,8 +131,61 @@
     bottom: 0;
 }
 
-.mu-circle-wrapper .mu-circle {
-    border-radius: 50%;
+@keyframes fill-unfill-rotate {
+    12.5% {
+        transform: rotate(135deg);
+    }
+    25% {
+        transform: rotate(270deg);
+    }
+    37.5% {
+        transform: rotate(405deg);
+    }
+    50% {
+        transform: rotate(540deg);
+    }
+    62.5% {
+        transform: rotate(675deg);
+    }
+    75% {
+        transform: rotate(810deg);
+    }
+    87.5% {
+        transform: rotate(945deg);
+    }
+    to {
+        transform: rotate(1080deg);
+    }
+}
+
+@keyframes container-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes left-spin {
+    from {
+        transform: rotate(130deg);
+    }
+    50% {
+        transform: rotate(-5deg);
+    }
+    to {
+        transform: rotate(130deg);
+    }
+}
+
+@keyframes right-spin {
+    from {
+        transform: rotate(-130deg)
+    }
+    50% {
+        transform: rotate(5deg)
+    }
+    to {
+        transform: rotate(-130deg)
+    }
 }
 </style>
 

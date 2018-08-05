@@ -7,20 +7,21 @@ import App from './app'
 import router from './router'
 import nprogress from 'nprogress/nprogress.js'
 
-import 'animate.css'
-import 'font-awesome/css/font-awesome.css'
+import 'normalize.css'
 import 'lodash'
 import 'qiniu-js'
+import 'animate.css'
 import 'nprogress/nprogress.css'
+import 'font-awesome/css/font-awesome.css'
 // muse-ui 包含 normalize.css
-import MuseUI from 'muse-ui'
-import 'muse-ui/dist/muse-ui.css'
+// import MuseUI from 'muse-ui'
+// import 'muse-ui/dist/muse-ui.css'
 
 // social share
 import 'social-share.js/dist/js/social-share.min.js'
 import 'social-share.js/dist/css/share.min.css'
 
-Vue.use(MuseUI)
+// Vue.use(MuseUI)
 
 import 'vue-loaders/dist/vue-loaders.css'
 import * as VueLoaders from 'vue-loaders'
