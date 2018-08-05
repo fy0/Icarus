@@ -1,90 +1,78 @@
 <template>
-<mu-dialog :open="state.dialog.userManage" :title="`对用户 ${user.nickname} 进行管理操作`" @close="close" scrollable>
-    <div class="topic-manage-item" style="margin-top: 30px;">
+<ic-dialog v-model="state.dialog.userManage" :title="`对用户 ${user.nickname} 进行管理操作`" @close="close" scrollable>
+    <div class="manage-form-item" style="margin-top: 30px;">
         <span class="label">ID</span>
         <div class="right">{{user.id}}</div>
     </div>
-    <div class="topic-manage-item">
+    <div class="manage-form-item">
         <span class="label">Email</span>
         <div class="right">
             <div>{{user.email}}</div>
         </div>
     </div>
-    <div class="topic-manage-item">
+    <div class="manage-form-item">
         <span class="label">昵称</span>
         <div class="right">
             <div>{{user.nickname}}</div>
         </div>
     </div>
-    <div class="topic-manage-item">
+    <div class="manage-form-item">
         <span class="label">注册时间</span>
         <div class="right">
             <ic-time :ago="false" :timestamp="user.time" />
         </div>
     </div>
-    <div class="topic-manage-item">
+    <div class="manage-form-item">
         <span class="label">最后登录时间</span>
         <div class="right">
             <ic-time :ago="false" :timestamp="user.key_time" />
         </div>
     </div>
-    <div class="topic-manage-item">
+    <div class="manage-form-item">
         <span class="label">简介</span>
         <div class="right">
-            <mu-text-field v-model="user.biology" :maxLength="255"/>
+            <input type="text" class="ic-input" v-model="user.biology" />
         </div>
     </div>
-    <div class="topic-manage-item" style="align-items: center">
+    <div class="manage-form-item" style="align-items: center">
         <span class="label">状态</span>
         <div class="right" style="display: flex">
-            <mu-radio name="state" :label="i" :nativeValue="j.toString()" v-model="user.state" v-for="i, j in state.misc.POST_STATE_TXT" :key="j" class="demo-radio"/>
+            <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
+                <label :for="'radio-state-'+i">
+                    <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="user.state" />
+                    <span>{{i}}</span>
+                </label>
+            </span>
         </div>
     </div>
-    <div class="topic-manage-item" style="align-items: center">
+    <div class="manage-form-item" style="align-items: center">
         <span class="label">用户组</span>
         <div class="right" style="display: flex">
-            <mu-radio name="group" :label="i" :nativeValue="j.toString()" v-model="user.group" v-for="i, j in state.misc.USER_GROUP_TXT" :key="j" class="demo-radio"/>
+            <span style="margin-right: 10px" v-for="(i, j) in state.misc.USER_GROUP_TXT" :key="j">
+                <label :for="'radio-group-'+i">
+                    <input class="ic-input" type="radio" name="group" :value="j" :id="'radio-group-'+i" v-model="user.group" />
+                    <span>{{i}}</span>
+                </label>
+            </span>
         </div>
     </div>
 
-    <mu-flat-button slot="actions" @click="close" primary label="取消"/>
-    <mu-flat-button slot="actions" primary @click="ok" label="确定"/>
-</mu-dialog>
+    <div class="bottom">
+        <span class="ic-btn primary" @click="ok">确定</span>
+        <span class="ic-btn secondary" @click="close">取消</span>
+    </div>
+</ic-dialog>
 </template>
 
-<style>
-.no-left-padding {
-    padding-left: 0;
-    margin-left: 0;
-}
-</style>
+<style lang="scss" scoped>
+.bottom {
+    text-align: right;
 
-
-<style scoped>
-.topic-manage-item {
-    display: flex;
-    align-items: baseline;
-    min-height: 56px;
-}
-
-.topic-manage-item > .label {
-    flex: 1 0 0;
-}
-
-.topic-manage-item > .right {
-    flex: 4 0 0;
-}
-
-.demo-radio {
-    margin-right: 15px;
-}
-
-.demo-slider {
-    margin-bottom: 0;
-}
-
-.hl {
-    color: red
+    .ic-btn {
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-left: 10px;
+    }
 }
 </style>
 

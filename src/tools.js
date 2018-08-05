@@ -245,3 +245,7 @@ $.atConvert2 = function (text) {
     /* eslint-disable no-control-regex */
     return text.replace(/\x01([a-zA-Z0-9]+)-(.+?)\x01/g, '@$2')
 }
+
+window.userPage = function (uid, nickname) {
+    console.log(uid, nickname)
+}

@@ -20,9 +20,15 @@
             </div>
             <div style="text-align: center">
                 <span>操作者</span><br/>
-                <b><user-link :user="i.user_id" /></b>
+                <b>
+                    <user-link v-if="i.user_id" :user="i.user_id" />
+                    <span v-else>系统</span>
+                </b>
             </div>
-            <div class="role">执行身份<br />{{i.role}}</div>
+            <div class="role">执行身份<br />
+                <template v-if="i.role">{{i.role}}</template>
+                <template v-else>系统</template>
+            </div>
             <div class="time1" v-html="toMonth(i.time)"></div>
         </div>
     </div>

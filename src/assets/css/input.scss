@@ -21,6 +21,7 @@ input.ic-input[type=email], input.ic-input[type=url], input.ic-input[type=tel], 
 
 input.ic-input[type=radio]:active {
     color: $primary;
+    transition: all .2s ease;
 }
 
 textarea.ic-input {

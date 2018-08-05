@@ -7,7 +7,7 @@
         <router-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="item.nickname">
             <template v-if="!useSlot">
                 <template>{{item.nickname || '错误的值'}}</template>
-                <span v-if="goto">[转到]</span>
+                <span v-if="goto">🔗</span>
             </template>
             <slot v-else />
         </router-link>
@@ -19,7 +19,7 @@
         <router-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="item.name">
             <template v-if="!useSlot">
                 <template>{{item.name || '错误的值'}}</template>
-                <span v-if="goto">[转到]</span>
+                <span v-if="goto">📮</span> <!--💬-->
             </template>
             <slot v-else />
         </router-link>
@@ -31,7 +31,7 @@
         <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="item.title">
             <template v-if="!useSlot">
                 <template>{{item.title || '错误的值'}}</template>
-                <span v-if="goto">[转到]</span>
+                <span v-if="goto">📝</span>
             </template>
             <slot v-else />
         </router-link>

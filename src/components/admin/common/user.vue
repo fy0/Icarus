@@ -4,8 +4,8 @@
     <h3 class="ic-header">用户管理</h3>
 
     <div class="search-box">
-        <input v-model.trim="searchTxt" @keyup.enter="doSearch()" placeholder="搜索 用户名/uid/邮箱" />
-        <mu-raised-button @click="doSearch()" label="搜索" class="search-btn" primary/>
+        <input type="text" class="ic-input" v-model.trim="searchTxt" @keyup.enter="doSearch()" placeholder="搜索 用户名/uid/邮箱" />
+        <span @click="doSearch()" class="ic-btn primary search-btn">搜索</span>
     </div>
     <div>
         <ul class="ic-collection" v-if="page.items">
@@ -49,18 +49,12 @@
 
 .search-box > input {
     width: 45%;
-    height: 45px;
-    padding: 10px 10px;
-    background: #FFFFFF;
     border-radius: 2px;
     border: 1px solid #ddd;
-    font-size: 1.3rem;
     box-sizing: border-box;
-    transition: all .2s ease;
 }
 
 .search-box > .search-btn {
-    height: 45px;
     margin-left: 10px;
 }
 </style>

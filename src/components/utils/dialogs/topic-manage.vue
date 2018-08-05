@@ -1,111 +1,111 @@
 <template>
-    <ic-dialog v-model="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
-        <div v-if="stage == 1">
-            <div class="manage-form-item">
-                <span class="label">
-                    <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id, asAdmin: true} }">编辑文章</router-link>
+<ic-dialog v-model="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
+    <div v-if="stage == 1">
+        <div class="manage-form-item">
+            <span class="label">
+                <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id, asAdmin: true} }">编辑文章</router-link>
+            </span>
+            <div class="right">
+            </div>
+        </div>
+        <div class="manage-form-item">
+            <span class="label">置顶级别</span>
+            <div class="right">
+                <span style="margin-right: 10px" v-for="i in [0, 1, 2, 3, 4, 5]" :key="i">
+                    <label :for="'radio-sticky-'+i">
+                        <input class="ic-input" type="radio" name="sticky" :value="i" :id="'radio-sticky-'+i" v-model="vSticky" />
+                        <span>{{i}}</span>
+                    </label>
                 </span>
-                <div class="right">
-                </div>
-            </div>
-            <div class="manage-form-item">
-                <span class="label">置顶级别</span>
-                <div class="right">
-                    <span style="margin-right: 10px" v-for="i in [0, 1, 2, 3, 4, 5]" :key="i">
-                        <label :for="'radio-sticky-'+i">
-                            <input class="ic-input" type="radio" name="sticky" :value="i" :id="'radio-sticky-'+i" v-model="vSticky" />
-                            <span>{{i}}</span>
-                        </label>
-                    </span>
-                </div>
-            </div>
-            <div class="manage-form-item">
-                <span class="label">提升下沉</span>
-                <div class="right" style="display: flex; align-items: center;">
-                    <input class="ic-input primary" style="width:100%" v-model="vWeight" :step="1" :min="-100" :max="100" type="range" />
-                    <span style="min-width: 40px; text-align: center">{{vWeight}}</span>
-                </div>
-            </div>
-            <div class="manage-form-item">
-                <span class="label">文章评分</span>
-                <div class="right" style="display: flex; align-items: center;">
-                    <input class="ic-input primary" style="width:100%" v-model="vCredit" :step="1" :min="-100" :max="100" type="range" />
-                    <span style="min-width: 40px; text-align: center">{{vCredit}}</span>
-                </div>
-            </div>
-            <div class="manage-form-item">
-                <span class="label">声望奖励</span>
-                <div class="right" style="display: flex; align-items: center;">
-                    <input class="ic-input primary" style="width:100%" v-model="vReputation" :step="1" :min="-100" :max="100" type="range" />
-                    <span style="min-width: 40px; text-align: center">{{vReputation}}</span>
-                </div>
-            </div>
-            <div class="manage-form-item">
-                <span class="label">状态</span>
-                <div class="right">
-                    <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
-                        <label :for="'radio-state-'+i">
-                            <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="vState" />
-                            <span>{{i}}</span>
-                        </label>
-                    </span>
-                </div>
-            </div>
-            <div class="manage-form-item">
-                <span class="label">优秀</span>
-                <div class="right">
-                    <input class="ic-input" type="checkbox" v-model="vAwesome"/>
-                </div>
             </div>
         </div>
+        <div class="manage-form-item">
+            <span class="label">提升下沉</span>
+            <div class="right" style="display: flex; align-items: center;">
+                <input class="ic-input primary" style="width:100%" v-model="vWeight" :step="1" :min="-100" :max="100" type="range" />
+                <span style="min-width: 40px; text-align: center">{{vWeight}}</span>
+            </div>
+        </div>
+        <div class="manage-form-item">
+            <span class="label">文章评分</span>
+            <div class="right" style="display: flex; align-items: center;">
+                <input class="ic-input primary" style="width:100%" v-model="vCredit" :step="1" :min="-100" :max="100" type="range" />
+                <span style="min-width: 40px; text-align: center">{{vCredit}}</span>
+            </div>
+        </div>
+        <div class="manage-form-item">
+            <span class="label">声望奖励</span>
+            <div class="right" style="display: flex; align-items: center;">
+                <input class="ic-input primary" style="width:100%" v-model="vReputation" :step="1" :min="-100" :max="100" type="range" />
+                <span style="min-width: 40px; text-align: center">{{vReputation}}</span>
+            </div>
+        </div>
+        <div class="manage-form-item">
+            <span class="label">状态</span>
+            <div class="right">
+                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
+                    <label :for="'radio-state-'+i">
+                        <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="vState" />
+                        <span>{{i}}</span>
+                    </label>
+                </span>
+            </div>
+        </div>
+        <div class="manage-form-item">
+            <span class="label">优秀</span>
+            <div class="right">
+                <input class="ic-input" type="checkbox" v-model="vAwesome"/>
+            </div>
+        </div>
+    </div>
+    <div v-else>
+        <span v-if="Object.keys(changed) == 0">无任何改动</span>
         <div v-else>
-            <span v-if="Object.keys(changed) == 0">无任何改动</span>
-            <div v-else>
-                <div class="manage-form-item" v-if="changed.vSticky">
-                    <span class="label">文章置顶</span>
-                    <div class="right">
-                    <div class="right"><span class="hl">{{changed.vSticky[0]}}</span> -> <span class="hl">{{changed.vSticky[1]}}</span></div>
-                    </div>
-                </div>
-                <div class="manage-form-item" v-if="changed.vWeight">
-                    <span class="label">提升下沉</span>
-                    <div class="right"><span class="hl">{{changed.vWeight[0]}}</span> -> <span class="hl">{{changed.vWeight[1]}}</span></div>
-                </div>
-                <div class="manage-form-item" v-if="changed.vCredit">
-                    <span class="label">文章评分</span>
-                    <div class="right"><span class="hl">{{changed.vCredit[1]}}</span></div>
-                </div>
-                <div class="manage-form-item" v-if="changed.vState">
-                    <span class="label">文章状态</span>
-                    <div class="right">
-                        <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[0]]}}</span>
-                        <span> -> </span>
-                        <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[1]]}}</span>
-                    </div>
-                </div>
-                <div class="manage-form-item" v-if="changed.vReputation">
-                    <span class="label">声望奖励</span>
-                    <div class="right"><span class="hl">{{changed.vReputation[1]}}</span></div>
-                </div>
-                <div class="manage-form-item" v-if="changed.vAwesome">
-                    <span class="label">精华文章</span>
-                    <div class="right"><span class="hl">{{changed.vAwesome[0]}}</span> -> <span class="hl">{{changed.vAwesome[1]}}</span></div>
-                </div>
-
-                <div style="margin-top: 10px" v-if="stage == 3">
-                    <b v-if="currentApply == -1">完成</b>
-                    <b v-else>正在应用改动 - <span>{{currentApply+1}}</span></b>
-                    <mu-linear-progress mode="determinate" :value="applyValue"/>
+            <div class="manage-form-item" v-if="changed.vSticky">
+                <span class="label">文章置顶</span>
+                <div class="right">
+                <div class="right"><span class="hl">{{changed.vSticky[0]}}</span> -> <span class="hl">{{changed.vSticky[1]}}</span></div>
                 </div>
             </div>
-        </div>
+            <div class="manage-form-item" v-if="changed.vWeight">
+                <span class="label">提升下沉</span>
+                <div class="right"><span class="hl">{{changed.vWeight[0]}}</span> -> <span class="hl">{{changed.vWeight[1]}}</span></div>
+            </div>
+            <div class="manage-form-item" v-if="changed.vCredit">
+                <span class="label">文章评分</span>
+                <div class="right"><span class="hl">{{changed.vCredit[1]}}</span></div>
+            </div>
+            <div class="manage-form-item" v-if="changed.vState">
+                <span class="label">文章状态</span>
+                <div class="right">
+                    <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[0]]}}</span>
+                    <span> -> </span>
+                    <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[1]]}}</span>
+                </div>
+            </div>
+            <div class="manage-form-item" v-if="changed.vReputation">
+                <span class="label">声望奖励</span>
+                <div class="right"><span class="hl">{{changed.vReputation[1]}}</span></div>
+            </div>
+            <div class="manage-form-item" v-if="changed.vAwesome">
+                <span class="label">精华文章</span>
+                <div class="right"><span class="hl">{{changed.vAwesome[0]}}</span> -> <span class="hl">{{changed.vAwesome[1]}}</span></div>
+            </div>
 
-        <div class="bottom">
-            <span class="ic-btn primary" v-if="stage <= 2" @click="next">确定</span>
-            <span class="ic-btn secondary" v-if="stage <= 2" @click="close">取消</span>
-            <span class="ic-btn primary" v-if="stage === 4" @click="close">完成</span>
+            <div style="margin-top: 10px" v-if="stage == 3">
+                <b v-if="currentApply == -1">完成</b>
+                <b v-else>正在应用改动 - <span>{{currentApply+1}}</span></b>
+                <mu-linear-progress mode="determinate" :value="applyValue"/>
+            </div>
         </div>
-    </ic-dialog>
+    </div>
+
+    <div class="bottom">
+        <span class="ic-btn primary" v-if="stage <= 2" @click="next">确定</span>
+        <span class="ic-btn secondary" v-if="stage <= 2" @click="close">取消</span>
+        <span class="ic-btn primary" v-if="stage === 4" @click="close">完成</span>
+    </div>
+</ic-dialog>
 </template>
 
 <style lang="scss" scoped>
