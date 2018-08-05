@@ -4,9 +4,9 @@
     @touchstart="dragStart" @touchmove="dragMove" @touchend="dragEnd"
     v-show="false"
 >
-    <mu-raised-button @click="hello" label="测试面板" primary/>
-    <mu-raised-button @click="chat_test" label="chat.test" primary/>
-    <mu-raised-button :key="i[0]" v-for="i in state.test.items" @click="i[1]" :label="i[0]" primary/>
+    <span class="ic-btn primary" @click="hello">测试面板</span>
+    <span class="ic-btn primary" @click="chat_test">chat.test</span>
+    <span class="ic-btn primary" :key="i[0]" v-for="i in state.test.items" @click="i[1]">{{i[0]}}</span>
 </div>
 </template>
 

@@ -5,7 +5,6 @@
 
     <div class="search-box" v-if="false">
         <input v-model="searchTxt" />
-        <mu-raised-button @click="doSearch()" label="搜索" class="search-btn" primary/>
     </div>
     <div v-if="topics && topics.items && topics.items.length">
         <ul class="ic-collection">

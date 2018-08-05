@@ -24,7 +24,7 @@
                 <input type="text" name="verify" id="verify" v-model="info.verify">
             </check-row>
             <check-row style="display: flex;align-items: center;" :check="info.agreeLicense">
-                <mu-checkbox v-model="info.agreeLicense"/>
+                <input class="ic-input" type="checkbox" v-model="info.agreeLicense"/>
                 <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click.stop="dialogLicense = true">用户许可协议</a></span>
             </check-row>
             <div class="ic-form-row">

@@ -7,6 +7,10 @@
     transition: background .15s;
     border: $btn-border-width solid transparent;
     cursor: pointer;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    text-align: center;
 
     &.disabled {
         color: rgba(0, 0, 0, 0.3);

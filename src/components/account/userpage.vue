@@ -15,8 +15,8 @@
             <ic-tabs v-model="activeTab">
                 <ic-tab value="tabTopic" title="主题" />
                 <ic-tab value="tabComment" title="评论"/>
-                <mu-tab value="tab3" v-if="false" title="收藏"/>
-                <mu-tab value="tab4" v-if="false" title="关注"/>
+                <ic-tab value="tab3" v-if="false" title="收藏"/>
+                <ic-tab value="tab4" v-if="false" title="关注"/>
             </ic-tabs>
 
             <div class="tab" v-if="activeTab === 'tabTopic'">
@@ -70,20 +70,6 @@
 .userpage > .right {
     flex: 8 0 0;
     padding: 0 40px;
-}
-
-.api-view-tabs {
-    width: 40%;
-    background-color: transparent;
-    color: rgba(0, 0, 0, 0.87);
-}
-
-.api-view-tabs .mu-tab-link {
-    color: rgba(0, 0, 0, 0.54);
-}
-
-.api-view-tabs .mu-tab-active {
-    color: #7e57c2;
 }
 
 .tab {

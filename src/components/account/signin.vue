@@ -5,14 +5,14 @@
         <form class="ic-form">
             <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
                 <label for="email">邮箱</label>
-                <input type="email" name="email" id="email" v-model="info.email">
+                <input class="ic-input" type="email" name="email" id="email" v-model="info.email">
             </check-row>
             <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
                 <label for="password">密码</label>
-                <input type="password" name="password" id="password" v-model="info.password">
+                <input class="ic-input" type="password" name="password" id="password" v-model="info.password">
             </check-row>
             <div class="ic-form-row">
-                <input class="ic-btn success" type="submit" @click.prevent="login" name="" value="登 录">
+                <div class="ic-btn success" @click.prevent="login">登 录</div>
             </div>
             <div class="ic-form-row">
                 <router-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</router-link>
@@ -34,6 +34,11 @@
 </template>
 
 <style scoped>
+.title {
+    color: #444;
+    margin-bottom: 20px;
+}
+
 .three-auth {
     display: flex;
     flex-direction: column;
@@ -68,10 +73,6 @@
 
 .lost-poasswrod {
     color: #aaa;
-}
-
-.title {
-    color: #444;
 }
 
 .box {

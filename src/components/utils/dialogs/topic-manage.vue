@@ -95,7 +95,7 @@
             <div style="margin-top: 10px" v-if="stage == 3">
                 <b v-if="currentApply == -1">完成</b>
                 <b v-else>正在应用改动 - <span>{{currentApply+1}}</span></b>
-                <mu-linear-progress mode="determinate" :value="applyValue"/>
+                <ic-progress :show-percent="true" :classes="'striped animated'" :value="applyValue"/>
             </div>
         </div>
     </div>

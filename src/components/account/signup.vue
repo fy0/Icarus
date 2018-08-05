@@ -5,26 +5,26 @@
         <form class="ic-form">
             <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
                 <label for="email">邮箱</label>
-                <input type="email" name="email" id="email" v-model="info.email">
+                <input class="ic-input" type="email" name="email" id="email" v-model="info.email">
             </check-row>
             <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
                 <label for="nickname">昵称</label>
-                <input type="text" name="nickname" id="nickname" v-model="info.nickname">
+                <input class="ic-input" type="text" name="nickname" id="nickname" v-model="info.nickname">
             </check-row>
             <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
                 <label for="password">密码</label>
-                <input type="password" name="password" id="password" v-model="info.password">
+                <input class="ic-input" type="password" name="password" id="password" v-model="info.password">
             </check-row>
             <check-row :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
                 <label for="password2">重复密码</label>
-                <input type="password" name="password2" id="password2" v-model="info.password2">
+                <input class="ic-input" type="password" name="password2" id="password2" v-model="info.password2">
             </check-row>
             <check-row :results="formErrors.verify" v-if="0">
                 <label for="verify">验证码</label>
-                <input type="text" name="verify" id="verify" v-model="info.verify">
+                <input class="ic-input" type="text" name="verify" id="verify" v-model="info.verify">
             </check-row>
             <check-row style="display: flex;align-items: center;" :check="info.agreeLicense">
-                <mu-checkbox v-model="info.agreeLicense"/>
+                <input class="ic-input" type="checkbox" v-model="info.agreeLicense" style="min-width: 30px"/>
                 <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click.stop="dialogLicense = true">用户许可协议</a></span>
             </check-row>
             <div class="ic-form-row">
@@ -33,19 +33,32 @@
         </form>
     </div>
 
-    <mu-dialog :open="dialogLicense" title="用户许可协议">
+    <ic-dialog v-model="dialogLicense" title="用户许可协议">
         <div>
             <span>协议正文</span>
         </div>
-        <mu-flat-button label="确定" slot="actions" primary @click="dialogLicense = false"/>
-    </mu-dialog>
+        <div class="bottom">
+            <span class="ic-btn primary" @click="dialogLicense = false">确定</span>
+        </div>
+    </ic-dialog>
 
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.bottom {
+    text-align: right;
+
+    .ic-btn {
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-left: 10px;
+    }
+}
+
 .title {
     color: #444;
+    margin-bottom: 20px;
 }
 
 .box {

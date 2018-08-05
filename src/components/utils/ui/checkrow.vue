@@ -13,8 +13,8 @@
 <style scoped>
 .tip {
     color: red;
-    font-size: .75em;
-    margin-top: 3px;
+    font-size: 12px;
+    margin-top: -2px;
 }
 
 .flex {

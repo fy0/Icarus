@@ -2,18 +2,20 @@
 <div class="ic-container" v-if="topic.user_id">
     <div v-title>{{ topic.title }} - {{topic.board_id.name}} - {{state.config.title}}</div>
 
-    <mu-breadcrumb class="nav">
-        <mu-breadcrumb-item href="#">
+    <div class="nav">
+        <span>
             <router-link :to="{ name: 'forum' }">社区</router-link>
-        </mu-breadcrumb-item>
-        <mu-breadcrumb-item href="#">
+        </span>
+        <span class="item-separator">/</span>
+        <span>
             <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
-        </mu-breadcrumb-item>
-        <mu-breadcrumb-item>
+        </span>
+        <span class="item-separator">/</span>
+        <span>
             <span>{{topic.title}}</span>
             <span v-if="topic.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
-        </mu-breadcrumb-item>
-    </mu-breadcrumb>
+        </span>
+    </div>
 
     <div class="ic-hidden ic-xs" style="display: flex;align-items: center;">
         <user-link style="display: flex; padding: 10px 0;" class="user-link" :nickname="false" :user="topic.user_id">
@@ -113,6 +115,11 @@
 </style>
 
 <style scoped>
+.item-separator {
+    margin: 0 8px;
+    color: #d7dde4;
+}
+
 .topic-manage > .group {
     display: flex;
 }

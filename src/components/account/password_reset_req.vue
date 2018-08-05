@@ -5,12 +5,12 @@
         <form class="ic-form">
             <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
                 <label for="email">注册邮箱</label>
-                <input type="email" name="email" id="email" v-model="info.email">
+                <input class="ic-input" type="email" name="email" id="email" v-model="info.email">
             </check-row>
 
             <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
                 <label for="nickname">用户昵称</label>
-                <input type="text" name="nickname" id="nickname" v-model="info.nickname">
+                <input class="ic-input" type="text" name="nickname" id="nickname" v-model="info.nickname">
             </check-row>
 
             <div class="ic-form-row">
@@ -32,6 +32,11 @@
 </template>
 
 <style scoped>
+.title {
+    color: #444;
+    margin-bottom: 20px;
+}
+
 .lost-poasswrod {
     color: #aaa;
 }
