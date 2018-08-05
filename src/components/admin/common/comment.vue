@@ -5,7 +5,7 @@
 
     <div v-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
     <div v-else class="comment-box">
-        <div v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="comment">
+        <div v-for="i in page.items" :key="i.id" :id="i.id" class="comment">
             <avatar :user="i.user_id" class="avatar"></avatar>
             <div class="info">
                 <div>

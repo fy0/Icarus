@@ -1,0 +1,66 @@
+<template>
+<div class="ic-progress">
+    <!-- striped animated -->
+    <div class="ic-progress-bar" :class="classes" role="progressbar" :style="barStyle">
+        <template>{{text}}</template>
+        <template v-if="text && showPercent"> - </template>
+        <template v-if="showPercent">{{percent}}%</template>
+    </div>
+</div>
+</template>
+
+<style lang="scss" scoped>
+
+</style>
+
+<script>
+import state from '@/state.js'
+
+export default {
+    props: {
+        text: {
+            type: String,
+            default: ''
+        },
+        value: {
+            type: Number,
+            default: 0
+        },
+        // min: {
+        //     type: Number,
+        //     default: 0
+        // },
+        max: {
+            type: Number,
+            default: 100
+        },
+        showPercent: {
+            type: Boolean,
+            default: false
+        },
+        classes: {
+            type: String,
+            default: 'primary'
+        }
+    },
+    data () {
+        return {
+            state,
+            percent: 0
+        }
+    },
+    computed: {
+        barStyle: function () {
+            let percent = this.value / this.max
+            this.percent = (percent * 100).toFixed(0)
+            return {
+                'width': `${percent * 100}%`
+            }
+        }
+    },
+    created: function () {
+    },
+    methods: {
+    }
+}
+</script>

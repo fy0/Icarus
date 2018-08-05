@@ -1,0 +1,49 @@
+
+.ic-progress {
+    display: flex;
+    height: $progress-height;
+    overflow: hidden; // force rounded corners by cropping it
+    font-size: $progress-font-size;
+    background-color: $progress-bg;
+    // @include border-radius($progress-border-radius);
+    // @include box-shadow($progress-box-shadow);
+}
+
+.ic-progress-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: $progress-bar-color;
+    text-align: center;
+    white-space: nowrap;
+    background-color: $progress-bar-bg;
+    // @include transition($progress-bar-transition);
+}
+
+@mixin gradient-striped($color: rgba($white, .15), $angle: 45deg) {
+    background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
+}
+
+.ic-progress-bar.striped {
+    @include gradient-striped();
+    background-size: $progress-height $progress-height;
+}
+
+@keyframes progress-bar-stripes {
+    from { background-position: $progress-height 0; }
+    to { background-position: 0 0; }
+}
+
+.ic-progress-bar.animated {
+    animation: progress-bar-stripes $progress-bar-animation-timing;
+}
+
+@mixin progress-variant($background) {
+    background-color: $background;
+}
+
+@each $color, $value in $theme-colors {
+    .ic-progress-bar.#{$color} {
+        @include progress-variant($value);
+    }
+}

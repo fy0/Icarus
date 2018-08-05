@@ -48,7 +48,7 @@
 }
 
 .search-box > input {
-    width: 45%;
+    width: 40%;
     border-radius: 2px;
     border: 1px solid #ddd;
     box-sizing: border-box;
