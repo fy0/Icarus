@@ -1,9 +1,9 @@
 <template>
-<ic-dialog :show="state.dialog.userSetAvatar" :show-button-area="false" :on-close="close" :allow-outside-close="false">
+<ic-dialog title="设置头像" v-model="state.dialog.userSetAvatar" :show-button-area="false" :on-close="close" :allow-outside-close="false">
     <div class="content">
         <template v-if="loading">
             <div class="user-set-avatar-loading">
-                <line-scale-pulse-out-loader :size="'50px'"/>
+                <line-scale-pulse-out-loader :color="'#5599F9'" :size="'50px'"/>
                 <span>应用中 ...</span>
             </div>
         </template>
@@ -44,11 +44,11 @@
                     </div>
                 </div>
                 <div class="right">
-                    <div class="preview-item rect">
+                    <div class="preview-item rect" style="margin-left: 100px;">
                         <img :src="imageResult" />
                         <span class="text">预览</span>
                     </div>
-                    <div class="preview-item circle">
+                    <div class="preview-item circle" style="margin-right: 100px;">
                         <img :src="imageResult" />
                         <span class="text">预览</span>
                     </div>
@@ -119,7 +119,7 @@
 }
 
 .content {
-    width: 580px;
+    // width: 580px;
     height: 295px;
     display: flex;
     flex-direction: column;
@@ -142,7 +142,7 @@
         }
 
         .right {
-            margin: 0 0 0 80px;
+            // margin: 0 0 0 80px;
             flex: 1 0 0%;
             display: flex;
             justify-content: space-between;
