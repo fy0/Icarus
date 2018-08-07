@@ -146,7 +146,7 @@ router.beforeEach(async function (to, from, next) {
                     toUrl = '/'
                 } else {
                     if (state.misc.extra.daily_reward) {
-                        $.message_success(`每日登陆，获得积分 ${state.misc.extra.daily_reward['credit']} 点`, 5000)
+                        $.message_success(`每日登陆，获得经验 ${state.misc.extra.daily_reward['exp']} 点`, 5000)
                     }
 
                     Vue.set(state, 'user', ret.data)

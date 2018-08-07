@@ -19,6 +19,7 @@ class MANAGE_OPERATION(StateObject):
     USER_GROUP_CHANGE = 103
     USER_CREDIT_CHANGE = 104
     USER_REPUTATION_CHANGE = 105
+    USER_EXP_CHANGE = 106
 
     BOARD_NEW = 200
     BOARD_CHANGE = 201
@@ -115,6 +116,22 @@ class ManageLog(BaseModel):
     @classmethod
     def add_by_reputation_changed_sys(cls, changed_user, note=None, *, value=None):
         return cls.add_by_reputation_changed(None, changed_user, note, value=value)
+
+    @classmethod
+    def add_by_exp_changed(cls, view, changed_user, note=None, *, value=None):
+        if view:
+            user_id = view.current_user.id
+            role = view.current_role
+        else:
+            user_id = None
+            role = None
+
+        return cls.new(user_id, role, POST_TYPES.USER, changed_user.id, changed_user.id,
+                       MANAGE_OPERATION.USER_EXP_CHANGE, value, note=note)
+
+    @classmethod
+    def add_by_exp_changed_sys(cls, changed_user, note=None, *, value=None):
+        return cls.add_by_exp_changed(None, changed_user, note, value=value)
 
     @classmethod
     def add_by_post_changed(cls, view, key, operation, related_type, values, old_record, record, note=None,

@@ -37,6 +37,7 @@ visitor = Ability(None, {
         'location': (A.READ,),
 
         'email': (A.CREATE,),
+        'exp': (A.READ,),
         'credit': (A.READ,),
         'reputation': (A.READ,),
     },

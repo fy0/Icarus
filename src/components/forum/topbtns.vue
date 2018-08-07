@@ -6,7 +6,8 @@
         <router-link class="ic-btn borderless orange" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">最近话题</router-link>
     </div>
     <div v-if="state.user">
-        <span>声望: {{state.user.reputation}}</span>
+        <!-- <span>声望: {{state.user.reputation}}</span> -->
+        <span style="margin-right: 5px">经验值: {{state.user.exp}}</span>
         <span style="margin-right: 5px">积分: {{state.user.credit}}</span>
         <span class="ic-btn outline orange" @click="checkIn" v-if="!checkedIn">签到</span>
         <span class="ic-btn orange" v-else>今日已签 x{{state.user.check_in_his}}</span>        
@@ -54,7 +55,7 @@ export default {
             let ret = await api.user.checkIn()
             state.user['last_check_in_time'] = ret.data.time
             state.user['check_in_his'] = ret.data.check_in_his
-            $.message_success(`签到成功！获得声望 ${ret.data.reputation} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
+            $.message_success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
         },
         navActiveStrict: function (...names) {
             for (let name of names) {

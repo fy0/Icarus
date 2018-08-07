@@ -18,6 +18,7 @@ def work():
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "access_time" BIGINT NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "last_check_in_time" BIGINT NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "check_in_his" INT DEFAULT 0;')
+        db.execute_sql('ALTER TABLE "user" ADD COLUMN "exp" INT DEFAULT 0;')
 
         db.execute_sql('ALTER TABLE "user" RENAME "reg_time" TO "time";')
         db.execute_sql('ALTER TABLE "board" RENAME "creator_id" TO "user_id";')

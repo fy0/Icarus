@@ -38,7 +38,7 @@ class TestBaseView(UserMixin, BaseView):
             daily_reward = self.current_user.daily_access_reward()
             if daily_reward:
                 extra['daily_reward'] = {
-                    'credit': daily_reward
+                    'exp': daily_reward
                 }
 
         self.finish(RETCODE.SUCCESS, {

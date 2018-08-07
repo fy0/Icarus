@@ -53,7 +53,8 @@ class User(PostModel, BaseUser):
     phone = TextField(null=True, default=None)  # 大陆地区
     number = IntegerField(default=get_user_count_seq)  # 序号，第N个用户 sequence='user_count_seq'
     credit = IntegerField(default=0)  # 积分，会消费
-    reputation = IntegerField(default=0)  # 声望，不会消失
+    exp = IntegerField(default=0)  # 经验值，不会消失
+    reputation = IntegerField(default=0)  # 声望
 
     reset_key = BlobField(index=True, null=True, default=None)  # 重置密码所用key
 
@@ -204,16 +205,16 @@ class User(PostModel, BaseUser):
 
             # 签到加分
             credit = self.credit
-            reputation = self.reputation
+            exp = self.exp
             self.credit += 5
-            self.reputation += 5
+            self.exp += 5
             self.save()
             ManageLog.add_by_credit_changed_sys(self, note='每日签到', value=[credit, self.credit])
-            ManageLog.add_by_reputation_changed_sys(self, note='每日签到', value=[reputation, self.reputation])
+            ManageLog.add_by_exp_changed_sys(self, note='每日签到', value=[exp, self.exp])
 
             return {
                 'credit': 5,
-                'reputation': 5,
+                'exp': 5,
                 'time': self.last_check_in_time,
                 'check_in_his': self.check_in_his
             }
@@ -224,10 +225,10 @@ class User(PostModel, BaseUser):
         self.update_access_time()
 
         if old_time < get_today_start_timestamp():
-            credit = self.credit
-            self.credit += 5
+            exp = self.exp
+            self.exp += 5
             self.save()
-            ManageLog.add_by_credit_changed_sys(self, note='每日登录', value=[credit, self.credit])
+            ManageLog.add_by_exp_changed_sys(self, note='每日登录', value=[exp, self.exp])
             return 5
 
     @classmethod
