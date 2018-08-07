@@ -13,15 +13,10 @@ import 'qiniu-js'
 import 'animate.css'
 import 'nprogress/nprogress.css'
 import 'font-awesome/css/font-awesome.css'
-// muse-ui 包含 normalize.css
-// import MuseUI from 'muse-ui'
-// import 'muse-ui/dist/muse-ui.css'
 
 // social share
 import 'social-share.js/dist/js/social-share.min.js'
 import 'social-share.js/dist/css/share.min.css'
-
-// Vue.use(MuseUI)
 
 import 'vue-loaders/dist/vue-loaders.css'
 import * as VueLoaders from 'vue-loaders'
@@ -53,6 +48,7 @@ import Tab from './components/utils/ui/tab.vue'
 import Tabs from './components/utils/ui/tabs.vue'
 import Progress from './components/utils/ui/progress.vue'
 import Badge from './components/utils/ui/badge.vue'
+import GoTop from './components/utils/ui/gotop.vue'
 // import MsgBox from './components/utils/msgbox.vue'
 
 import DialogTopicManage from './components/utils/dialogs/topic-manage.vue'
@@ -76,6 +72,7 @@ Vue.component('ic-tab', Tab)
 Vue.component('ic-tabs', Tabs)
 Vue.component('ic-progress', Progress)
 Vue.component('ic-badge', Badge)
+Vue.component('ic-gotop', GoTop)
 
 Vue.component('ic-dialog', ICDialog)
 Vue.component('dialog-topic-manage', DialogTopicManage)

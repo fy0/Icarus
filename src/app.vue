@@ -5,8 +5,8 @@
     <loading v-if="state.loading" />
     <router-view v-show="!state.loading" class="main"></router-view>
     <my-footer class="footer"></my-footer>
-    <test-panel></test-panel>
-    <msg-box></msg-box>
+    <ic-gotop />
+    <msg-box />
 </div>
 </template>
 
