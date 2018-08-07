@@ -5,10 +5,18 @@
         <router-link class="ic-btn borderless orange" :to="{ name: 'forum' }" :class="navActiveStrict('forum')">板块列表</router-link>
         <router-link class="ic-btn borderless orange" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">最近话题</router-link>
     </div>
-    <div v-if="state.user">
+    <div v-if="state.user" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.reputation}}</span> -->
-        <span style="margin-right: 5px">经验值: {{state.user.exp}}</span>
-        <span style="margin-right: 5px">积分: {{state.user.credit}}</span>
+        <div class="char-info">
+            <div class="bar-area">
+                <span class="level">lv. 1</span>
+                <ic-progress :show-percent="false" class="expbar" v-model="state.user.exp" />
+            </div>
+            <div class="other">
+                <!-- <span style="margin-right: 5px">Exp {{state.user.exp}}</span> -->
+                <span style="margin-right: 5px">💰 {{state.user.credit}}</span>
+            </div>
+        </div>
         <span class="ic-btn outline orange" @click="checkIn" v-if="!checkedIn">签到</span>
         <span class="ic-btn orange" v-else>今日已签 x{{state.user.check_in_his}}</span>        
     </div>
@@ -16,6 +24,45 @@
 </template>
 
 <style lang="scss" scoped>
+.char-info {
+    display: inline-flex;
+    flex-direction: column;
+    margin-right: 5px;
+    min-width: 120px;
+    font-size: 12px;
+    line-height: 16px;
+
+    .bar-area {
+        flex: 1;
+        height: 16px;
+        display: flex;
+        align-items: center;
+
+        .level {
+            margin-right: 3px;
+        }
+
+        .expbar {
+            flex: 1;
+            max-height: 10px;
+            padding: 1px;
+            border: 1px solid $primary;
+            border-radius: 3px;
+            font-size: 5px !important;
+
+            .ic-progress-bar {
+                padding: 1px;
+                border-radius: 2px;
+            }
+        }
+    }
+
+    .other {
+        flex: 1;
+        margin-left: 24px;
+    }
+}
+
 /* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
 .ic-topbtns-box {
     display: flex;

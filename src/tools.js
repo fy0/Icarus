@@ -230,6 +230,33 @@ $.tpClear = function () {
     state.test.items = []
 }
 
+let fibMemo = {}
+let levelExp = []
+let levelAllExp = []
+
+function fib (num, memo) {
+    if (fibMemo[num]) return fibMemo[num]
+    if (num <= 1) return 1
+
+    fibMemo[num] = fib(num - 1, fibMemo) + fib(num - 2, fibMemo)
+    return fibMemo[num]
+}
+
+$.getLevelExp = function (level) {
+    if (levelExp.length < level) {
+        for (let i = levelExp.length; i <= level; i++) {
+            levelExp[i] = fib(i)
+            if (i > 0) {
+                levelAllExp[i] = levelAllExp[i - 1] + levelExp[i]
+            }
+        }
+    }
+    return {
+        'level': levelExp[level],
+        'all': levelAllExp[level]
+    }
+}
+
 $.regex = {
     id: /[a-fA-F0-9]+/,
     email: /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,
