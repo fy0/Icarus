@@ -1,10 +1,10 @@
 <template>
-<div class="ic-progress">
+<div class="ic-progress" @mouseover="mouseOver" @mouseout="mouseOut">
     <!-- striped animated -->
     <div class="ic-progress-bar" :class="classes" role="progressbar" :style="barStyle">
         <template>{{text}}</template>
-        <template v-if="text && showPercent"> - </template>
-        <template v-if="showPercent">{{percent}}%</template>
+        <template v-if="text && theShowPercent"> - </template>
+        <template v-if="theShowPercent">{{percent}}%</template>
     </div>
 </div>
 </template>
@@ -38,6 +38,10 @@ export default {
             type: Boolean,
             default: false
         },
+        showPercentWhenHover: {
+            type: Boolean,
+            default: false
+        },
         classes: {
             type: String,
             default: 'primary'
@@ -46,7 +50,8 @@ export default {
     data () {
         return {
             state,
-            percent: 0
+            percent: 0,
+            hover: false
         }
     },
     computed: {
@@ -56,11 +61,21 @@ export default {
             return {
                 'width': `${percent * 100}%`
             }
+        },
+        theShowPercent: function () {
+            if (this.showPercent) return this.showPercent
+            return this.showPercentWhenHover && this.hover
         }
     },
     created: function () {
     },
     methods: {
+        mouseOver: function () {
+            this.hover = true
+        },
+        mouseOut: function () {
+            this.hover = false
+        }
     }
 }
 </script>

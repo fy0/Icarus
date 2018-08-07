@@ -144,6 +144,7 @@ router.beforeEach(async function (to, from, next) {
                 } else {
                     if (state.misc.extra.daily_reward) {
                         $.message_success(`每日登陆，获得经验 ${state.misc.extra.daily_reward['exp']} 点`, 5000)
+                        ret.data.exp += state.misc.extra.daily_reward['exp']
                     }
 
                     Vue.set(state, 'user', ret.data)

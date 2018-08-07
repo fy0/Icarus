@@ -9,8 +9,8 @@
         <!-- <span>声望: {{state.user.reputation}}</span> -->
         <div class="char-info">
             <div class="bar-area">
-                <span class="level">lv. 1</span>
-                <ic-progress :show-percent="false" class="expbar" v-model="state.user.exp" />
+                <span class="level">lv. {{levelInfo.level}}</span>
+                <ic-progress :show-percent-when-hover="true" class="expbar" v-model="levelInfo.cur" :title="`${levelInfo.cur}/${levelInfo.exp.level}`" :max="levelInfo.exp.level"/>
             </div>
             <div class="other">
                 <!-- <span style="margin-right: 5px">Exp {{state.user.exp}}</span> -->
@@ -93,6 +93,9 @@ export default {
         }
     },
     computed: {
+        levelInfo: function () {
+            return $.getLevelByExp(this.state.user.exp)
+        },
         checkedIn: function () {
             return state.user && state.user['last_check_in_time'] >= state.misc.extra.midnight_time
         }
@@ -102,6 +105,8 @@ export default {
             let ret = await api.user.checkIn()
             state.user['last_check_in_time'] = ret.data.time
             state.user['check_in_his'] = ret.data.check_in_his
+            state.user.exp += ret.data.exp
+            state.user.credit += ret.data.credit
             $.message_success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
         },
         navActiveStrict: function (...names) {
