@@ -21,6 +21,15 @@
                 <ic-time :timestamp="i.time" />
                 <div>{{i.data.comment.brief}}</div>
             </div>
+            <div slot="content" v-else-if="i.type === NOTIF_TYPE.BE_MENTIONED">
+                {{i}}
+                <!-- <user-link :user="i.data.comment.user" />
+                <span>在文章</span>
+                <router-link :title="i.data.post.title" :to="{ name: 'forum_topic', params: {id: i.data.post.id} }">《{{i.data.post.title}}》</router-link>
+                <span>中回复了你的评论</span>
+                <ic-time :timestamp="i.time" />
+                <div>{{i.data.comment.brief}}</div> -->
+            </div>
             <div slot="content" v-else>
                 {{i}}
             </div>

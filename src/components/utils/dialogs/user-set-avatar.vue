@@ -511,6 +511,10 @@ export default {
                         this.close()
                     }
                 })
+            } else {
+                $.message_error('操作失败！可能是网络原因或帐户权限不够。')
+                this.loading = false
+                this.close()
             }
         }
     }

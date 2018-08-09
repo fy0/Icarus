@@ -155,21 +155,25 @@ router.beforeEach(async function (to, from, next) {
         }
     }
 
-    if (!state.user) {
-        if (to.name === 'setting') {
-            state.loading = 0
-            nprogress.done()
-            toUrl = '/'
-        }
-    } else {
-        if (to.name === 'account_signin' || to.name === 'account_signup') {
-            state.loading = 0
-            nprogress.done()
-            toUrl = '/'
-        }
-    }
-
     if (to.name) {
+        if (!state.user) {
+            if (to.name.startsWith('setting_')) {
+                state.loading = 0
+                nprogress.done()
+                toUrl = '/404'
+            } else if (to.name === 'account_notif') {
+                state.loading = 0
+                nprogress.done()
+                toUrl = '/404'
+            }
+        } else {
+            if (to.name === 'account_signin' || to.name === 'account_signup') {
+                state.loading = 0
+                nprogress.done()
+                toUrl = '/'
+            }
+        }
+
         if (to.name.startsWith('admin_')) {
             if (!(state.user && state.misc && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
                 state.loading = 0
