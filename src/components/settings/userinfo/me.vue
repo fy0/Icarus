@@ -60,9 +60,9 @@
         </div>
         <div class="right">
             <div class="setting-item">
-                <div class="line box-avatar" @click="state.dialog.userSetAvatar = true" >
+                <div class="line box-avatar" @click="(atLeastUser) ? state.dialog.userSetAvatar = true : null" >
                     <avatar :is-link="false" :user="state.user" :size="200" class="avatar"></avatar>
-                    <button class="ic-btn primary btn-upload" style="margin-top: 10px">点此上传新头像</button>
+                    <button v-if="atLeastUser" class="ic-btn primary btn-upload" style="margin-top: 10px">点此上传新头像</button>
                 </div>
             </div>
 
@@ -70,6 +70,7 @@
                 <span class="label">用户组</span>
                 <div class="line">
                     <span>{{state.misc.USER_GROUP_TXT[user.group]}}</span>
+                    <a href="javascript:void(0)" v-if="user.group === state.misc.USER_GROUP.INACTIVE" @click="resendActivationMail">重发激活邮件</a>
                 </div>
             </div>
 
@@ -175,6 +176,12 @@ export default {
             }
             return this.userSave
         },
+        atLeastUser: function () {
+            if (this.state.user) {
+                let g = this.state.user.group
+                return g && g > this.state.misc.USER_GROUP.INACTIVE
+            }
+        },
         changed: function () {
             let data = $.objDiff(this.userSave, state.user)
             return Object.keys(data).length
@@ -186,6 +193,10 @@ export default {
             // let ret = await api.topic.get({
             //     id: params.id,
             // })
+        },
+        resendActivationMail: async function () {
+            let ret = await api.user.resendActivationMail()
+            console.log(111, ret)
         },
         updateInfo: async function () {
             if (this.updating) return

@@ -173,6 +173,17 @@ class UserView(UserMixin, PeeweeView):
         data = self.current_user.check_in()
         self.finish(RETCODE.SUCCESS, data)
 
+    @route.interface('POST')
+    async def resend_activation_mail(self):
+        if config.EMAIL_ACTIVATION_ENABLE:
+            if self.current_user and self.current_user.group == USER_GROUP.INACTIVE:
+                await mail.send_register_activation(self.current_user)
+                self.finish(RETCODE.SUCCESS)
+            else:
+                self.finish(RETCODE.PERMISSION_DENIED)
+        else:
+            self.finish(RETCODE.FAILED)
+
     @route.interface('GET')
     async def activation(self):
         user = User.check_active(self.params['uid'], self.params['code'])

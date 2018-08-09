@@ -56,6 +56,7 @@ class TestBaseView(UserMixin, BaseView):
 
             'USER_GROUP': USER_GROUP.to_dict(),
             'USER_GROUP_TXT': USER_GROUP.txt,
+            'USER_GROUP_TO_ROLE': USER_GROUP.GROUP_TO_ROLE,
 
             'NOTIF_TYPE': NOTIF_TYPE.to_dict(),
 

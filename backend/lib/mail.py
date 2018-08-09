@@ -1,6 +1,8 @@
 import asyncio
 import aiosmtplib
 from email.mime.text import MIMEText
+from email.header import Header
+from email.utils import formataddr
 import async_timeout
 import config
 
@@ -42,8 +44,9 @@ async def try_reconnect():
 async def send(to, title, content):
     if not curloop: return
     if not await try_reconnect(): return
+    # smtp: aiosmtplib.SMTP
     message = MIMEText(content, 'html', 'utf-8')
-    message['From'] = '%s <%s>' % (config.EMAIL_SENDER, config.EMAIL_USERNAME)
+    message['From'] = formataddr((Header(config.EMAIL_SENDER, 'utf-8').encode(), config.EMAIL_USERNAME))
     message['To'] = to
     message['Subject'] = title
     return await smtp.send_message(message)
@@ -74,6 +77,8 @@ async def send_register_activation(user):
 {config.SITE_NAME} 管理团队<br/>
 {config.SITE_URL}<br/>
 '''
+
+    return await send(f'{user.nickname} <{user.email}>', f'[{config.SITE_NAME}] Email 地址验证', content)
 
 
 async def send_password_reset(user):

@@ -23,6 +23,13 @@ class USER_GROUP(StateObject):
     SUPERUSER = 90
     ADMIN = 100
 
+    GROUP_TO_ROLE = {
+        BAN: 'ban',
+        INACTIVE: 'inactive_user',
+        NORMAL: 'user',
+        SUPERUSER: 'superuser',
+        ADMIN: 'admin'
+    }
     txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', SUPERUSER: '超级用户', ADMIN: '管理'}
 
 
@@ -141,13 +148,13 @@ class User(PostModel, BaseUser):
 
         if len(code) == 24:
             # 时间为最近3天
-            ts = int.from_bytes(binascii.unhexlify(code[16:]), 'little')
+            ts = int.from_bytes(code[16:], 'little')
             if time.time() - ts < 3 * 24 * 60 * 60:
                 try:
                     u = cls.get(cls.time == ts,
                                 cls.id == uid,
                                 cls.group == USER_GROUP.INACTIVE,
-                                cls.salt == binascii.unhexlify(code[:16]))
+                                cls.salt == code[:16])
                     u.group = USER_GROUP.NORMAL
                     u.save()
                     return u

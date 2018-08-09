@@ -57,7 +57,7 @@ export default {
         atLeastUser: function () {
             if (this.state.user) {
                 let g = this.state.user.group
-                return g && g > 40
+                return g && g > this.state.misc.USER_GROUP.INACTIVE
             }
         }
     }

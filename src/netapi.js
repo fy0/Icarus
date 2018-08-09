@@ -147,8 +147,12 @@ class UserViewRequest extends SlimViewRequest {
     }
 
     // 申请重置密码
-    async RequestPasswordReset (nickname, email) {
+    async requestPasswordReset (nickname, email) {
         return npost(`${this.urlPrefix}/request_password_reset`, null, {nickname, email})
+    }
+
+    async resendActivationMail () {
+        return npost(`${this.urlPrefix}/resend_activation_mail`, null, {})
     }
 
     // 验证重置密码
