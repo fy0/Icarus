@@ -11,9 +11,10 @@ import config
 from lib.utils import get_today_start_timestamp
 from model._post import PostModel
 from model.log_manage import ManageLog
+from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID
 from slim.base.user import BaseUser
-from slim.utils import StateObject
-from model import BaseModel, MyTimestampField, CITextField, db, SerialField
+from slim.utils import StateObject, to_hex, to_bin
+from model import BaseModel, MyTimestampField, CITextField, db
 
 
 class USER_GROUP(StateObject):
@@ -133,28 +134,21 @@ class User(PostModel, BaseUser):
         except DoesNotExist:
             return None
 
-    def get_activation_code(self):
-        raw = self.salt.tobytes() + self.time.to_bytes(8, 'little')  # len == 16 + 8 == 24
-        return str(binascii.hexlify(raw), 'utf-8')
+    def get_activation_code(self) -> str:
+        code = to_hex(os.urandom(8))
+        redis.set(RK_USER_ACTCODE_BY_USER_ID % self.id, code, ex=3 * 24 * 60 * 60)
+        return code
 
     @classmethod
     def check_active(cls, uid, code):
         if not code: return
-        try:
-            uid = binascii.unhexlify(uid)
-            code = binascii.unhexlify(code)
-        except:
-            return
+        if isinstance(uid, str): uid = to_bin(uid)
 
-        if len(code) == 24:
-            # 时间为最近3天
-            ts = int.from_bytes(code[16:], 'little')
-            if time.time() - ts < 3 * 24 * 60 * 60:
+        if len(code) == 16:
+            code_val = bytes(code, 'utf-8')
+            if redis.get(RK_USER_ACTCODE_BY_USER_ID % uid) == code_val:
                 try:
-                    u = cls.get(cls.time == ts,
-                                cls.id == uid,
-                                cls.group == USER_GROUP.INACTIVE,
-                                cls.salt == code[:16])
+                    u = cls.get(cls.id == uid, cls.group == USER_GROUP.INACTIVE)
                     u.group = USER_GROUP.NORMAL
                     u.save()
                     return u
@@ -203,7 +197,6 @@ class User(PostModel, BaseUser):
         if self.last_check_in_time < last_midnight:
             self.last_check_in_time = int(time.time())
             # 三天内有签到，连击
-            print(old_time, last_midnight - 3 * 24 * 60 * 60)
             if old_time > last_midnight - 3 * 24 * 60 * 60:
                 self.check_in_his += 1
             else:

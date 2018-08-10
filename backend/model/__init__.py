@@ -25,7 +25,7 @@ asyncpg_init(config.DATABASE_URI)
 import peewee
 from playhouse.db_url import connect
 from playhouse.shortcuts import model_to_dict
-# from model.redis import redis
+from model.redis import redis
 
 
 db = connect(config.DATABASE_URI)

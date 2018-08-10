@@ -17,8 +17,8 @@ DEBUG = logging.DEBUG
 DATABASE_URI = 'postgresql://postgres@localhost/icarus'  # 必填
 COOKIE_SECRET = b"6aOO5ZC55LiN5pWj6ZW/5oGo77yM6Iqx5p+T5LiN6YCP5Lmh5oSB44CC"  # 必填，务必修改默认值
 
-REDIS_HOST = 'localhost'  # 现阶段暂未使用
-REDIS_PORT = 6378
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
 
 ##########################################
 # 可选配置 - 用户昵称、邮箱约束
