@@ -11,7 +11,7 @@ import config
 from lib.utils import get_today_start_timestamp
 from model._post import PostModel
 from model.log_manage import ManageLog
-from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID
+from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID
 from slim.base.user import BaseUser
 from slim.utils import StateObject, to_hex, to_bin
 from model import BaseModel, MyTimestampField, CITextField, db
@@ -134,8 +134,8 @@ class User(PostModel, BaseUser):
         except DoesNotExist:
             return None
 
-    def get_activation_code(self) -> str:
-        code = to_hex(os.urandom(8))
+    def get_activation_code(self) -> bytes:
+        code = os.urandom(8)
         redis.set(RK_USER_ACTCODE_BY_USER_ID % self.id, code, ex=3 * 24 * 60 * 60)
         return code
 
@@ -143,36 +143,38 @@ class User(PostModel, BaseUser):
     def check_active(cls, uid, code):
         if not code: return
         if isinstance(uid, str): uid = to_bin(uid)
+        if isinstance(code, str): code = to_bin(code)
 
-        if len(code) == 16:
-            code_val = bytes(code, 'utf-8')
-            if redis.get(RK_USER_ACTCODE_BY_USER_ID % uid) == code_val:
+        if len(code) == 8:
+            rkey = RK_USER_ACTCODE_BY_USER_ID % uid
+            if redis.get(rkey) == code:
                 try:
                     u = cls.get(cls.id == uid, cls.group == USER_GROUP.INACTIVE)
                     u.group = USER_GROUP.NORMAL
                     u.save()
+                    redis.delete(rkey)
                     return u
                 except cls.DoesNotExist:
                     pass
 
-    @staticmethod
-    def gen_reset_key():
-        return os.urandom(16) + int(time.time()).to_bytes(8, 'little')  # len == 16 + 8 == 24
+    def gen_reset_key(self) -> bytes:
+        # len == 16 + 8 == 24
+        code = os.urandom(16) + int(time.time()).to_bytes(8, 'little')
+        redis.set(RK_USER_RESET_KEY_BY_USER_ID % self.id, code, ex=12 * 60 * 60)
+        return code
 
     @classmethod
     def check_reset(cls, uid, code) -> Union['User', None]:
         if not code: return
-        try:
-            uid = binascii.unhexlify(uid)
-            code = binascii.unhexlify(code)
-        except: return
+        if isinstance(uid, str): uid = to_bin(uid)
+        if isinstance(code, str): code = to_bin(code)
 
         if len(code) == 24:
-            # 时间为最近12小时
-            ts = int.from_bytes(code[16:], 'little')
-            if time.time() - ts < 12 * 60 * 60:
+            rkey = RK_USER_RESET_KEY_BY_USER_ID % uid
+            if redis.get(rkey) == code:
                 try:
-                    u = cls.get(cls.id == uid, cls.reset_key == code)
+                    u = cls.get(cls.id == uid)
+                    redis.delete(rkey)
                     return u
                 except cls.DoesNotExist:
                     pass

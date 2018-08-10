@@ -4,6 +4,8 @@ from email.mime.text import MIMEText
 from email.header import Header
 from email.utils import formataddr
 import async_timeout
+from slim.utils import to_hex
+
 import config
 
 smtp = None
@@ -53,7 +55,7 @@ async def send(to, title, content):
 
 
 async def send_register_activation(user):
-    act_code = user.get_activation_code()
+    act_code = to_hex(user.get_activation_code())
     act_url = f'{config.SITE_URL}/account/activation?uid={user.id.hex()}&code={act_code}'
 
     content = f'''Email 地址验证<br/><br/>

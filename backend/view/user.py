@@ -83,7 +83,7 @@ def nickname_check(form, field):
             raise ValidationError(text)
 
     if config.USER_NICKNAME_CHECK_FUNC and not config.USER_NICKNAME_CHECK_FUNC(name):
-        raise ValidationError('昵称被占用')
+        raise ValidationError('昵称被保留')
 
 
 class SignupForm(SigninForm):
@@ -104,7 +104,7 @@ class ResetPasswordForm(ValidateForm):
     nickname = StringField('昵称', validators=[
         va.required(),
         va.Length(min(config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN), config.USER_NICKNAME_FOR_REG_MAX),
-        nickname_check
+        # nickname_check  # 发生了新旧可用昵称不同，然后找回密码出现了“昵称被占用”的情况
     ])
 
 
