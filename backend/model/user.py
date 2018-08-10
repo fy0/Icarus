@@ -11,7 +11,8 @@ import config
 from lib.utils import get_today_start_timestamp
 from model._post import PostModel
 from model.log_manage import ManageLog
-from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID
+from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID, \
+    RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID, RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID
 from slim.base.user import BaseUser
 from slim.utils import StateObject, to_hex, to_bin
 from model import BaseModel, MyTimestampField, CITextField, db
@@ -134,13 +135,38 @@ class User(PostModel, BaseUser):
         except DoesNotExist:
             return None
 
-    def get_activation_code(self) -> bytes:
+    def can_request_actcode(self):
+        """
+        是否能申请帐户激活码（用于发送激活邮件）
+        :return:
+        """
+        if self.group != USER_GROUP.INACTIVE:
+            return
+        val = redis.get(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id)
+        if val is None:
+            return True
+        if time.time() - int(val) > config.USER_ACTIVATION_REQUEST_INTERVAL:
+            return True
+
+    def gen_activation_code(self) -> bytes:
+        """
+        生成一个账户激活码
+        :return:
+        """
+        t = int(time.time())
         code = os.urandom(8)
-        redis.set(RK_USER_ACTCODE_BY_USER_ID % self.id, code, ex=3 * 24 * 60 * 60)
+        redis.set(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id, t)
+        redis.set(RK_USER_ACTCODE_BY_USER_ID % self.id, code, ex=config.USER_ACTCODE_EXPIRE)
         return code
 
     @classmethod
-    def check_active(cls, uid, code):
+    def check_actcode(cls, uid, code):
+        """
+        检查账户激活码是否可用，若可用，激活账户
+        :param uid:
+        :param code:
+        :return:
+        """
         if not code: return
         if isinstance(uid, str): uid = to_bin(uid)
         if isinstance(code, str): code = to_bin(code)
@@ -157,14 +183,37 @@ class User(PostModel, BaseUser):
                 except cls.DoesNotExist:
                     pass
 
+    def can_request_reset_password(self):
+        """
+        是否能申请重置密码
+        :return:
+        """
+        val = redis.get(RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID % self.id)
+        if val is None:
+            return True
+        if time.time() - int(val) > config.USER_RESET_PASSWORD_CODE_EXPIRE:
+            return True
+
     def gen_reset_key(self) -> bytes:
+        """
+        生成一个重置密码key
+        :return:
+        """
         # len == 16 + 8 == 24
-        code = os.urandom(16) + int(time.time()).to_bytes(8, 'little')
-        redis.set(RK_USER_RESET_KEY_BY_USER_ID % self.id, code, ex=12 * 60 * 60)
+        t = int(time.time())
+        code = os.urandom(16) + t.to_bytes(8, 'little')
+        redis.set(RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID % self.id, t, ex=config.USER_RESET_PASSWORD_REQUST_INTERVAL)
+        redis.set(RK_USER_RESET_KEY_BY_USER_ID % self.id, code, ex=config.USER_RESET_PASSWORD_CODE_EXPIRE)
         return code
 
     @classmethod
-    def check_reset(cls, uid, code) -> Union['User', None]:
+    def check_reset_key(cls, uid, code) -> Union['User', None]:
+        """
+        检查uid与code这一组密码重置密钥是否有效
+        :param uid:
+        :param code:
+        :return:
+        """
         if not code: return
         if isinstance(uid, str): uid = to_bin(uid)
         if isinstance(code, str): code = to_bin(code)
@@ -199,7 +248,7 @@ class User(PostModel, BaseUser):
         if self.last_check_in_time < last_midnight:
             self.last_check_in_time = int(time.time())
             # 三天内有签到，连击
-            if old_time > last_midnight - 3 * 24 * 60 * 60:
+            if old_time > last_midnight - config.USER_CHECKIN_COUNTER_INTERVAL:
                 self.check_in_his += 1
             else:
                 self.check_in_his = 1

@@ -48,6 +48,18 @@ USER_PASSWORD_MIN = 6
 USER_PASSWORD_MAX = 128
 
 ##########################################
+# 可选 - 用户配置
+##########################################
+
+USER_RESET_PASSWORD_REQUST_INTERVAL = 30 * 60  # 申请重置密码间隔，默认30分钟
+USER_RESET_PASSWORD_CODE_EXPIRE = 12 * 60 * 60  # 重置密码代码有效期，默认12小时
+
+USER_ACTIVATION_REQUEST_INTERVAL = 30 * 60  # 申请激活间隔，默认30分钟
+USER_ACTCODE_EXPIRE = 3 * 24 * 60 * 60  # 用户激活代码有效期，默认3天
+
+USER_CHECKIN_COUNTER_INTERVAL = 3 * 24 * 60 * 60  # 签到连击间隔，默认3天
+
+##########################################
 # 可选 - 主题标题与正文限制
 ##########################################
 
@@ -67,7 +79,6 @@ EMAIL_PORT = 465
 EMAIL_USE_TLS = True
 EMAIL_USERNAME = 'user'
 EMAIL_PASSWORD = 'pasword'
-
 
 ##########################################
 # 可选 - 文件上传
