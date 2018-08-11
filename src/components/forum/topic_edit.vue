@@ -43,12 +43,6 @@
     align-items: center;
 }
 
-.edit-page-title > h3 {
-}
-
-.right-top-btn {
-}
-
 .ic-form-row {
     margin-bottom: 10px;
 }
@@ -118,7 +112,7 @@ export default {
             mdeConfig: {
                 spellChecker: false,
                 autoDownloadFontAwesome: false,
-                placeholder: '这里填写内容，支持 Markdown 格式。\n支持图片上传，可通过拖拽或粘贴进行上传，大小限制5MB，不支持GIF',
+                placeholder: '这里填写内容，支持 Markdown 格式。\n支持图片上传（GIF除外），可通过拖拽或粘贴进行上传，大小限制5MB。',
                 autosave: {
                     enabled: false,
                     uniqueId: 'topic-post-content'

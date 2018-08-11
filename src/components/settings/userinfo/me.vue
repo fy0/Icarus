@@ -196,7 +196,11 @@ export default {
         },
         resendActivationMail: async function () {
             let ret = await api.user.resendActivationMail()
-            console.log(111, ret)
+            if (ret.code === api.retcode.SUCCESS) {
+                $.message_success('激活邮件发送成功！请检查邮箱。')
+            } else {
+                $.message_error('发送失败，可能是网络不稳定。此外每30分钟只能发送一次。')
+            }
         },
         updateInfo: async function () {
             if (this.updating) return

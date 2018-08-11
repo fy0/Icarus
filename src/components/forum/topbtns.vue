@@ -13,7 +13,7 @@
                 <ic-progress :show-percent-when-hover="true" class="expbar" v-model="levelInfo.cur" :title="`${levelInfo.cur}/${levelInfo.exp.level}`" :max="levelInfo.exp.level"/>
             </div>
             <div class="other">
-                <!-- <span style="margin-right: 5px">Exp {{state.user.exp}}</span> -->
+                <span style="margin-right: 5px">⭐ {{state.user.exp}}</span>
                 <span style="margin-right: 5px">💰 {{state.user.credit}}</span>
             </div>
         </div>

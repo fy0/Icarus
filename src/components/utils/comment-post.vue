@@ -14,9 +14,10 @@
             <div class="ic-paper round ic-z1 not-signin-content">评论已关闭</div>
         </div>
         <div class="right-box content" v-else>
-            <div class="ic-paper round" :class="[editing ? 'ic-z3' : 'ic-z1']">
-                <textarea id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur" class="commentArea" rows="5" placeholder="" v-model="commentInfo.content"></textarea>
-            </div>
+            <textarea :class="[editing ? 'ic-z3' : 'ic-z1']" id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur" 
+                class="ic-input ic-paper round" rows="5" v-model="commentInfo.content"
+                :placeholder="'此处填写评论内容。\n可使用 markdown 语法。\n请理性讨论，友善发言，共同维护社区秩序。'">
+            </textarea>
             <div style="display: flex; justify-content: space-between;" class="postBtnBox">
                 <div v-if="!replyTo"></div>
                 <div style="align-items: center; display: flex;" v-else>
@@ -67,10 +68,7 @@
     margin-top: 1px;
 }
 
-.commentArea {
-    resize: none;
-    border: none;
-    outline:none;
+#ic-comment-editor {
     width: 100%;
 }
 

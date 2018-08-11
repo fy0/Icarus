@@ -87,10 +87,6 @@
     flex: 1 0 0%;
     padding: 0 10px 0 20px;
 }
-
-#ic-comment-editor {
-    padding: 0 5px;
-}
 </style>
 
 <script>

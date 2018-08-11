@@ -3,13 +3,13 @@
     <div v-title>{{state.config.title}}</div>
     <top-btns></top-btns>
     <div id="board-list" v-if="boardInfo.items && boardInfo.items.length">
-        <div class="board-item-box" v-if="!i.parent_id" :key= "i.id" v-for="(i, _) in boardInfo.items">
+        <div class="board-item-box" v-if="!i.parent_id" :key= "i.id" v-for="i in boardInfo.items">
             <router-link :to="{ name: 'forum_board', params: {id: i.id} }" class="board-item">
                 <div class="title">
                     <h2><router-link :to="{ name: 'forum_board', params: {id: i.id} }">{{i.name}}</router-link></h2>
                     <div class="sub-boards" v-if="subBoards[i.id]" style="padding-top: 3px">
                         <span>-</span>
-                        <template v-for="(j, _) in subBoards[i.id]">
+                        <template v-for="j in subBoards[i.id]">
                             <router-link :key="j.id" :to="{ name: 'forum_board', params: {id: j.id} }" class="item" style="margin-right: 10px">{{j.name}}</router-link>
                         </template>
                     </div>

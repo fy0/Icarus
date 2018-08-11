@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container">
-    <span>用户个人提醒：评论、回复、关注、@、收藏、赞、私信、系统通知</span>
+    <h3 class="ic-header-no-line">用户提醒</h3>    
     <ic-timeline v-if="page.items">
         <ic-timeline-item v-for="i in page.items" :key="i.id">
             <span slot="time">
@@ -35,6 +35,7 @@
             </div>
         </ic-timeline-item>
     </ic-timeline>
+    <div v-else class="empty">尚未有任何提醒</div>
     <paginator :page-info='page' :route-name='"account_notif"' :link-method="'query'" />
 </div>
 </template>
@@ -81,7 +82,10 @@ export default {
                     state.unread -= ret2.data
                 }
             } else {
-                $.message_by_code(ret.code)
+                if (ret.code === api.retcode.NOT_FOUND) {
+                } else {
+                    $.message_by_code(ret.code)
+                }
             }
             this.state.loadingDec(this.$route, key)
         }

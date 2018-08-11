@@ -1,7 +1,7 @@
 
 input.ic-input[type=number], input.ic-input[type=search], input.ic-input[type=text], input.ic-input[type=password], input.ic-input[type=datetime],
 input.ic-input[type=datetime-local], input.ic-input[type=date], input.ic-input[type=month], input.ic-input[type=time], input.ic-input[type=week],
-input.ic-input[type=email], input.ic-input[type=url], input.ic-input[type=tel], input.ic-input[type=color], .ic-input select, .ic-input textarea, .ic-form > .ic-form-row-field {
+input.ic-input[type=email], input.ic-input[type=url], input.ic-input[type=tel], input.ic-input[type=color], .ic-input select, textarea.ic-input, .ic-form > .ic-form-row-field {
     border-color: $gray-300;
     background-color: $white;
     border: 1px solid $gray-400;
@@ -26,6 +26,7 @@ input.ic-input[type=radio]:active {
 
 textarea.ic-input {
     resize: none;
+    padding: 10px 10px;
 }
 
 .ic-form-row > label {
@@ -67,7 +68,6 @@ input.ic-input[type=range] {
     margin: 0 auto;
     width: 180px;
     height: 8px;
-    vertical-align: top;
     background: transparent;
     appearance: none;
     cursor: pointer;

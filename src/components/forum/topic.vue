@@ -41,7 +41,7 @@
 
                 <div style="display: flex; align-items: center;">
                     <span>分享：</span>
-                    <div ref="share" class="share-component" data-disabled="douban,tencent,linkedin,diandian,google,qq"></div>
+                    <div ref="share" class="share-component" data-disabled="douban,tencent,linkedin,diandian,google,qq,facebook,twitter"></div>
                 </div>
 
                 <p class="ic-hr"></p>
