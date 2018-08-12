@@ -303,9 +303,10 @@ export default {
             }).then(async (result) => {
                 if (result.value) {
                     let ret = await api.user.signout()
-                    if (ret.code === api.retcode.SUCCESS) {
+                    if (ret.code === api.retcode.SUCCESS || ret.code === api.retcode.FAILED) {
                         $.message_success('登出成功')
                         Vue.delete(state, 'user')
+                        state.reset()
                         this.$router.replace('/')
                     }
                 }

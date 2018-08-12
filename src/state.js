@@ -45,6 +45,11 @@ let state = {
     },
     unread: 0,
     unreadAlerted: false,
+    reset: () => {
+        state.unread = 0
+        state.unreadAlerted = false
+        state.user = null
+    },
     user: null,
     loading: 1,
     loadingGetKey,

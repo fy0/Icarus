@@ -224,8 +224,11 @@ class UserView(UserMixin, PeeweeView):
 
     @route.interface('POST')
     async def signout(self):
-        self.teardown_user_key()
-        self.finish(RETCODE.SUCCESS)
+        if self.current_user:
+            self.teardown_user_key()
+            self.finish(RETCODE.SUCCESS)
+        else:
+            self.finish(RETCODE.FAILED)
 
     @route.interface('POST')
     async def signin(self):

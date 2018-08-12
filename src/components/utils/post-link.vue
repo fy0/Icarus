@@ -6,7 +6,7 @@
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="item.nickname">
             <template v-if="!useSlot">
-                <template>{{item.nickname || '错误的值'}}</template>
+                <template>{{text(item.nickname) || '错误的值'}}</template>
                 <span v-if="goto">🔗</span>
             </template>
             <slot v-else />
@@ -18,7 +18,7 @@
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="item.name">
             <template v-if="!useSlot">
-                <template>{{item.name || '错误的值'}}</template>
+                <template>{{text(item.name) || '错误的值'}}</template>
                 <span v-if="goto">📮</span> <!--💬-->
             </template>
             <slot v-else />
@@ -30,7 +30,7 @@
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="item.title">
             <template v-if="!useSlot">
-                <template>{{item.title || '错误的值'}}</template>
+                <template>{{text(item.title) || '错误的值'}}</template>
                 <span v-if="goto">📝</span>
             </template>
             <slot v-else />
@@ -41,7 +41,7 @@
     <template v-else-if="type === state.misc.POST_TYPES.COMMENT">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
         <template v-if="!useSlot">
-            <span class="limited-title">“{{item.content}}”</span>
+            <span class="limited-title">“{{text(item.content)}}”</span>
         </template>
         <slot v-else />
     </template>
@@ -81,6 +81,9 @@ export default {
         typeBold: {
             default: false
         },
+        textLimit: {
+            default: 0
+        },
         goto: {
             default: false
         },
@@ -89,6 +92,13 @@ export default {
         }
     },
     methods: {
+        text: function (txt) {
+            if (this.textLimit > 0) {
+                let suffix = this.textLimit >= txt.length ? '' : '…'
+                return txt.slice(0, this.textLimit) + suffix
+            }
+            return txt
+        }
     }
 }
 </script>

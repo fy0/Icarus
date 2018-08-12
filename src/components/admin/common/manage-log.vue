@@ -9,7 +9,7 @@
             <avatar :system="i.user_id === null" :user="i.user_id" class="avatar"></avatar>
             <div class="info">
                 <div>
-                    <post-link :goto="true" :show-type="true" :type-bold="true" :type="i.related_type" :item="postsOfComments[i.related_id]"/>
+                    <post-link :text-limit="20" :goto="true" :show-type="true" :type-bold="true" :type="i.related_type" :item="postsOfComments[i.related_id]"/>
                     <span>被进行了以下操作：</span>
                 </div>
                 <div>
@@ -77,7 +77,7 @@
 
 .comment > .info {
     display: flex;
-    flex: 1 0 auto;
+    flex: 1 0 0;
     flex-direction: column;
     padding: 0 20px;
 }

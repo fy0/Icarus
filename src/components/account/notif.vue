@@ -89,9 +89,11 @@ export default {
                     }
                 }
 
-                let topics = await api.topic.list({'id.in': JSON.stringify(new Array(...new Set(topicIdSet)))}, 1)
-                for (let t of topics.data.items) {
-                    this.posts[t.id] = t
+                if (topicIdSet.size > 0) {
+                    let topics = await api.topic.list({'id.in': JSON.stringify(new Array(...new Set(topicIdSet)))}, 1)
+                    for (let t of topics.data.items) {
+                        this.posts[t.id] = t
+                    }
                 }
 
                 this.page = ret.data

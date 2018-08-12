@@ -33,10 +33,11 @@
                     <p>登陆后可见正文</p>
                 </div>
                 <div class="content" v-else v-html="marked(topic.content || '')"></div>
-                <div v-if="mlog && mlog.items" class="mlog-area">
-                    <div v-for="i in mlog.items" :key="i.id">
-                        <user-link :user="i.user_id" /> 对此主题进行了{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}操作
+                <div v-if="mlog && mlog.items" class="post-manage-log">
+                    <div class="post-manage-log-item" v-for="i in mlog.items.slice(0, 5)" :key="i.id">
+                        <span>🛠️<user-link :user="i.user_id" /> 对此主题进行了<b>{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" /></span>
                     </div>
+                    <div v-if="mlog.items.length > 5">...</div>
                 </div>
 
                 <div style="display: flex; align-items: center;">
@@ -114,7 +115,14 @@
 }
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
+.post-manage-log {
+    padding: 5px 0;
+    .post-manage-log-item {
+        color: $gray-500;
+    }
+}
+
 .item-separator {
     margin: 0 8px;
     color: #d7dde4;
