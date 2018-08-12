@@ -22,7 +22,7 @@ import SettingSecurityOAuth from '@/components/settings/security/oauth.vue'
 import Forum from '@/components/forum/forum.vue'
 import ForumRecent from '@/components/forum/recent.vue'
 import ForumBoard from '@/components/forum/board.vue'
-import ForumTopcEdit from '@/components/forum/topic_edit.vue'
+import ForumTopcEdit from '@/components/forum/topic-edit.vue'
 import ForumTopic from '@/components/forum/topic.vue'
 
 import Admin from '@/components/admin/admin.vue'

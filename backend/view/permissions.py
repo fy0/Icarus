@@ -167,6 +167,7 @@ super_user = Ability('superuser', {
         'weight': A.ALL,
         'color': (A.READ, A.WRITE, A.CREATE),
         'state': A.ALL,
+        'visible': A.ALL,
         'category': A.ALL,
         'user_id': (A.READ, A.CREATE),
         'parent_id': A.ALL
