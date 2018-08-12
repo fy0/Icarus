@@ -37,21 +37,21 @@
                 <div class="setting-item">
                     <span class="label">URL</span>
                     <div class="line">
-                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.url" />
+                        <input type="text" class="ic-input commentArea" rows="5" placeholder="" v-model="user.url" />
                     </div>
                 </div>
 
                 <div class="setting-item">
                     <span class="label">所在地</span>
                     <div class="line">
-                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.location" />
+                        <input type="text" class="ic-input commentArea" rows="5" placeholder="" v-model="user.location" />
                     </div>
                 </div>
 
                 <div class="setting-item" v-if="false">
                     <span class="label">手机</span>
                     <div class="line">
-                        <input class="ic-input commentArea" rows="5" placeholder="" v-model="user.phone" />
+                        <input type="text" class="ic-input commentArea" rows="5" placeholder="" v-model="user.phone" />
                     </div>
                 </div>
 

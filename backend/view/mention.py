@@ -12,6 +12,9 @@ def check_content_mention(content):
     def do_mentions(sender_id, related_type, related_id, data):
         items = []
         t = int(time.time())
+        if not receive_users:
+            return
+
         for i in receive_users.values():
             i: User
             items.append({

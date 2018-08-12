@@ -134,7 +134,6 @@
 
 .sub-board-item {
     margin-left: 5px;
-    margin-bottom: 5px;
 }
 
 .sub-board-item:not(:last-child)::after {
