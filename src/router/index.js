@@ -30,7 +30,7 @@ import AdminForumBoard from '@/components/admin/forum/board.vue'
 import AdminForumTopic from '@/components/admin/forum/topic.vue'
 import AdminCommonUser from '@/components/admin/common/user.vue'
 import AdminCommonComment from '@/components/admin/common/comment.vue'
-import AdminCommonLogAdmin from '@/components/admin/common/log_admin.vue'
+import AdminCommonManageLog from '@/components/admin/common/manage-log.vue'
 
 import About from '@/components/about.vue'
 import NotFoundComponent from '@/components/404.vue'
@@ -200,9 +200,9 @@ export default new Router({
         },
         // 管理 - 综合 - 评论
         {
-            path: '/admin/common/log/admin/:page(\\d+)?/:name(.+)?',
-            name: 'admin_common_log_admin',
-            component: AdminCommonLogAdmin
+            path: '/admin/common/log/manage/:page(\\d+)?/:name(.+)?',
+            name: 'admin_common_manage_log',
+            component: AdminCommonManageLog
         },
 
         {

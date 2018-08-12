@@ -44,6 +44,7 @@ let state = {
         userSetAvatarData: null
     },
     unread: 0,
+    unreadAlerted: false,
     user: null,
     loading: 1,
     loadingGetKey,

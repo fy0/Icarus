@@ -20,7 +20,8 @@
                 </div>
                 <div class="content" v-html="marked(i.content || '')"></div>
                 <div>
-                    <i class="mdi-icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setCommentManage(i)"></i>
+                    <span>状态:</span>
+                    <i v-if="false" class="mdi-icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setCommentManage(i)"></i>
                     <template v-for="(v, k) in state.misc.POST_STATE_TXT">
                         <a v-if="i.state != k" class="state" :key="k" href="javascript:void(0)" @click="changeState(i, k)">{{v}}</a>
                         <b v-else :key="k" class="state">{{v}}</b>

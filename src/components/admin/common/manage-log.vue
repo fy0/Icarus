@@ -18,21 +18,22 @@
                 </div>
                 <ic-time class="time" :timestamp="i.time" />
             </div>
-            <div style="text-align: center">
-                <span>操作者</span><br/>
+            <div class="manager">
+                <span>操作者</span>
                 <b>
                     <user-link v-if="i.user_id" :user="i.user_id" />
                     <span v-else>系统</span>
                 </b>
             </div>
-            <div class="role">执行身份<br />
+            <div class="role">
+                <span>执行身份</span>
                 <template v-if="i.role">{{i.role}}</template>
                 <template v-else>系统</template>
             </div>
             <div class="time1" v-html="toMonth(i.time)"></div>
         </div>
     </div>
-    <paginator :page-info='page' :route-name='"admin_common_log_admin"' />
+    <paginator :page-info='page' :route-name='"admin_common_manage_log"' />
 </admin-base>
 </template>
 
@@ -47,8 +48,18 @@
     padding-right: 20px;
 }
 
-.role {
+.manager {
+    display: flex;
+    flex-direction: column;
     text-align: center;
+    align-self: center;
+}
+
+.role {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-self: center;
     padding: 0 20px;
 }
 
