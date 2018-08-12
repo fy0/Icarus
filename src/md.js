@@ -50,11 +50,14 @@ renderer.code = function (code, lang, escaped) {
         '\n</code></pre>\n'
 }
 
-marked.setOptions({
+let myOpt = {
     renderer: renderer,
     gfm: true,
+    tables: true,
     breaks: true,
     sanitize: true,
+    smartLists: true,
+    smartypants: true,
     langPrefix: 'language-',
     highlight: function (code, lang) {
         if (lang) {
@@ -64,9 +67,10 @@ marked.setOptions({
             }
         }
     }
-})
+}
 
 let myMarked = function (text, options, callback) {
+    marked.setOptions(myOpt)
     let html = marked(text, options, callback)
     return $.atConvert(html)
 }

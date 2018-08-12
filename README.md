@@ -85,6 +85,10 @@ GRANT ALL ON DATABASE icarus TO icarus;
 ALTER USER icarus WITH PASSWORD 'IcaruStest123';
 ```
 
+### 4. Redis
+
+一般直接使用包管理器安装就可以了。
+
 
 ## 后端篇
 

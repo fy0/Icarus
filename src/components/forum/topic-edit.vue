@@ -72,6 +72,10 @@
     border-bottom-color: #FF6060 !important;
 }
 
+.editor-preview img {
+    width: 100%;
+}
+
 .multiselect__tags {
     border: 1px solid #ddd !important;
 }

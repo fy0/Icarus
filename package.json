@@ -16,7 +16,7 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "font-awesome": "^4.7.0",
-    "marked": "^0.3.6",
+    "marked": "^0.4.0",
     "murmurhash": "^0.0.2",
     "normalize.css": "^7.0.0",
     "nprogress": "^0.2.0",
