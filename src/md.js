@@ -25,9 +25,10 @@ import 'prismjs/components/prism-sql.js'
 import 'prismjs/components/prism-nginx.js'
 
 import baseSimpleMDE from 'simplemde/src/js/simplemde.js'
+// import 'codemirror/src/codemirror.js'
 // import 'simplemde/src/css/simplemde.css'
 import 'simplemde/dist/simplemde.min.css'
-import 'codemirror/src/codemirror.js'
+// import baseSimpleMDE from 'simplemde/dist/simplemde.min.js'
 
 let renderer = new baseMarked.Renderer()
 

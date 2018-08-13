@@ -102,6 +102,7 @@ export default {
             loading: false,
             boardList: [],
             boardInfo: {},
+            save: {},
 
             topicInfo: {
                 title: '',
@@ -164,12 +165,13 @@ export default {
             let topicId
             if (this.loading) return
             this.loading = true
-            let topicInfo = {
+
+            let topicInfo = $.objDiff({
                 'title': this.topicInfo.title,
                 'board_id': this.topicInfo.board_id,
                 'content': this.topicInfo.content,
                 'returning': true
-            }
+            }, this.save)
 
             if (this.is_edit) {
                 if (this.asAdmin) {
@@ -227,6 +229,8 @@ export default {
                 /* eslint-disable no-control-regex */
                 ret.data.content = ret.data.content.replace(/\x01(.+?)\x01/g, '@$1')
                 this.topicInfo = ret.data
+                this.save = _.clone(ret.data)
+                this.save.board_id = this.save.board_id.id
             }
 
             this.boardList = []
