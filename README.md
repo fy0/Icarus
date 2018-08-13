@@ -4,6 +4,8 @@
 
 # ![](misc/screenshot.png)
 
+[更多截图](SCREENSHOT.md)
+
 
 ## 如何部署
 

@@ -8,6 +8,7 @@ from model.notif import UserNotifRecord
 
 def work():
     try:
+        db.execute_sql('DROP TABLE statistic24h;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "visible" INTEGER NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "user_id" BYTEA NULL DEFAULT NULL;')
         db.execute_sql('ALTER TABLE "user" ADD COLUMN "reset_key" BYTEA NULL DEFAULT NULL;')
@@ -28,14 +29,13 @@ def work():
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "upvote_count" INTEGER DEFAULT 0;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "downvote_count" INTEGER DEFAULT 0;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "thank_count" INTEGER DEFAULT 0;')
-        db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "thank_count" INTEGER DEFAULT 0;')
+        db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "vote_weight" BIGINT DEFAULT 0;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "bookmarked_users" BYTEA[] NULL;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "upvoted_users" BYTEA[] NULL;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "downvoted_users" BYTEA[] NULL;')
         db.execute_sql('ALTER TABLE "statistic" ADD COLUMN "thanked_users" BYTEA[] NULL;')
-
-        db.execute_sql('ALTER TABLE "manage_log" ADD COLUMN "related_user_id" BYTEA NULL;')
-    except:
+    except Exception as e:
+        print(e)
         print('failed')
         db.rollback()
 
