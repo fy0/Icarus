@@ -174,7 +174,7 @@
 </style>
 
 <script>
-import marked from '@/md.js'
+import {marked} from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/forum.css'

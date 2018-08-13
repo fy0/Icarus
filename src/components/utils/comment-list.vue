@@ -90,7 +90,7 @@
 </style>
 
 <script>
-import marked from '@/md.js'
+import {marked} from '@/md.js'
 import api from '@/netapi.js'
 import CommentPost from '../utils/comment-post.vue'
 

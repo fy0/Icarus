@@ -16,7 +16,7 @@
             <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
         <check-row :multi="true">
-            <markdown-editor ref="editor" :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
+            <markdown-editor ref="editor" :sanitize="false" :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
         </check-row>
         <div class="ic-form-row">
             <button class="ic-btn primary" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
@@ -92,6 +92,7 @@ import state from '@/state.js'
 import nprogress from 'nprogress/nprogress.js'
 import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
+// import marked from '@/md.js'
 
 export default {
     data () {

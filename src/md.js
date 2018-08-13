@@ -1,4 +1,4 @@
-import marked from 'marked'
+import baseMarked from 'marked'
 import Prism from 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'
 
@@ -24,7 +24,13 @@ import 'prismjs/components/prism-python.js'
 import 'prismjs/components/prism-sql.js'
 import 'prismjs/components/prism-nginx.js'
 
-let renderer = new marked.Renderer()
+// import baseSimpleMDE from 'simplemde/src/js/simplemde.js'
+import 'simplemde/src/js/codemirror/tablist.js'
+// import 'simplemde/src/css/simplemde.css'
+import 'simplemde/dist/simplemde.min.css'
+import 'codemirror/src/codemirror.js'
+
+let renderer = new baseMarked.Renderer()
 
 renderer.code = function (code, lang, escaped) {
     if (this.options.highlight) {
@@ -69,10 +75,9 @@ let myOpt = {
     }
 }
 
-let myMarked = function (text, options, callback) {
-    marked.setOptions(myOpt)
-    let html = marked(text, options, callback)
+export function marked (text, options, callback) {
+    // 文章编辑页面的simplemde会覆盖掉marked的设置
+    baseMarked.setOptions(myOpt)
+    let html = baseMarked(text, options, callback)
     return $.atConvert(html)
 }
-
-export default myMarked
