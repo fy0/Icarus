@@ -24,8 +24,7 @@ import 'prismjs/components/prism-python.js'
 import 'prismjs/components/prism-sql.js'
 import 'prismjs/components/prism-nginx.js'
 
-// import baseSimpleMDE from 'simplemde/src/js/simplemde.js'
-import 'simplemde/src/js/codemirror/tablist.js'
+import baseSimpleMDE from 'simplemde/src/js/simplemde.js'
 // import 'simplemde/src/css/simplemde.css'
 import 'simplemde/dist/simplemde.min.css'
 import 'codemirror/src/codemirror.js'
@@ -81,3 +80,5 @@ export function marked (text, options, callback) {
     let html = baseMarked(text, options, callback)
     return $.atConvert(html)
 }
+
+export const SimpleMDE = baseSimpleMDE
