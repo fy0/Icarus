@@ -25,10 +25,6 @@ export default {
             type: Boolean,
             default: false
         },
-        sanitize: {
-            type: Boolean,
-            default: false
-        },
         configs: {
             type: Object,
             default () {

@@ -74,6 +74,10 @@ let myOpt = {
     }
 }
 
+baseSimpleMDE.prototype.markdown = function (text) {
+    return marked(text)
+}
+
 export function marked (text, options, callback) {
     // 文章编辑页面的simplemde会覆盖掉marked的设置
     baseMarked.setOptions(myOpt)
