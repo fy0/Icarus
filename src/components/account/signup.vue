@@ -161,10 +161,14 @@ export default {
                     let userinfo = ret.data
                     if (ret.code === 0) {
                         api.saveAccessToken(userinfo['access_token'])
-                        ret = await api.user.get({id: ret.data.id}, 'user')
+                        ret = await api.user.get({id: ret.data.id}, 'inactive_user')
                         Vue.set(state, 'user', ret.data)
                         $.notifLoopOn()
-                        $.message_by_code(ret.code)
+                        if (ret.code === api.retcode.SUCCESS) {
+                            $.message_success('注册成功！请在邮箱查收激活邮件完成注册。')
+                        } else {
+                            $.message_by_code(ret.code)
+                        }
                     } else {
                         $.message_error('注册失败！可能账号或昵称已经被注册')
                     }
