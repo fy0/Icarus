@@ -2,9 +2,31 @@
 
 > A opensource forum project write with python3 and vue.js
 
-# ![](misc/screenshot.png)
+![](misc/screenshot.png)
 
 [更多截图](SCREENSHOT.md)
+
+
+## 特性
+
+* 用户的注册、登录、邮件激活、邮件找回密码
+
+* 论坛板块的创建和管理
+
+* 主题的发表、编辑与管理
+
+* 设置个人信息，上传头像
+
+* @功能
+
+* 提醒系统
+
+* 每日签到
+
+* 管理后台
+
+* 管理日志
+
 
 
 ## 如何部署
