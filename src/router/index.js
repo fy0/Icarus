@@ -19,7 +19,7 @@ import SettingUserinfoPrivacy from '@/components/settings/userinfo/privacy.vue'
 import SettingSecurityPassword from '@/components/settings/security/password.vue'
 import SettingSecurityOAuth from '@/components/settings/security/oauth.vue'
 
-import Forum from '@/components/forum/forum.vue'
+import ForumBoards from '@/components/forum/boards.vue'
 import ForumRecent from '@/components/forum/recent.vue'
 import ForumBoard from '@/components/forum/board.vue'
 import ForumTopcEdit from '@/components/forum/topic-edit.vue'
@@ -96,12 +96,19 @@ export default new Router({
         {
             path: '/',
             name: 'forum',
-            component: Forum
+            redirect: { name: 'forum_recent' }
+        },
+        // 论坛 - 板块列表
+        {
+            path: '/forum/boards',
+            name: 'forum_boards',
+            component: ForumBoards
         },
         // 论坛 - 最近发布
         {
             path: '/recent',
             name: 'forum_recent',
+            // alias: '/',
             component: ForumRecent
         },
         // 论坛 - 板块页面

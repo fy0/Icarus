@@ -203,6 +203,7 @@ def permissions_add_all(permission):
 # user
 
 def func(ability, user, query: 'SQLQueryInfo'):
+    # 如果查询的是自己，附带更多信息
     for i in query.conditions.find('id'):
         if i[1] == SQL_OP.EQ and i[2] == user.id.hex():
             query.select.add('email')

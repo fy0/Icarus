@@ -2,8 +2,8 @@
 <div class="ic-topbtns-box">
     <div class="ic-topbtns">
         <router-link class="ic-btn primary" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
-        <router-link class="ic-btn borderless orange" :to="{ name: 'forum' }" :class="navActiveStrict('forum')">板块列表</router-link>
         <router-link class="ic-btn borderless orange" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">最近话题</router-link>
+        <router-link class="ic-btn borderless orange" :to="{ name: 'forum_boards' }" :class="navActiveStrict('forum_boards')">板块列表</router-link>
     </div>
     <div v-if="state.user" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.reputation}}</span> -->
