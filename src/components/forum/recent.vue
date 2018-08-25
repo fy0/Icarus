@@ -19,7 +19,7 @@
                         </span>
                     </h2>
                     <p>
-                        <router-link :to="{ name: 'account_userpage', params: {id: i.user_id.id} }">{{i.user_id.nickname}}</router-link>
+                        <user-link :user="i.user_id.user_id" />
                         <span> 发布于 <ic-time :timestamp="i.time" /></span>
                     </p>
                 </div>

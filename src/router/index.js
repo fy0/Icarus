@@ -40,6 +40,13 @@ Vue.use(Router)
 export default new Router({
     mode: 'history',
     routes: [
+        // 主页面
+        {
+            path: '/',
+            name: 'index',
+            redirect: { name: 'forum' }
+        },
+
         // 用户 - 登录
         {
             path: '/account/signin',
@@ -92,7 +99,7 @@ export default new Router({
             component: AccountNotif
         },
 
-        // 主页面
+        // 论坛 - 主页面
         {
             path: '/',
             name: 'forum',

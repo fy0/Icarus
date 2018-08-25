@@ -1,7 +1,8 @@
 <template>
 <header class="ic-nav">
     <div class="ic-container ic-navbtns">
-        <a class="ic-brand-heading" href="/">Icarus</a>
+        <router-link :to="{name: 'index'}" class="ic-brand-heading" @dbclick="flagClick">{{config.title}}</router-link>
+        <!-- <a class="ic-brand-heading" href="/">Icarus</a> -->
 
         <a href="#" @click="navmenuToggle" :class="showNavmenuBtn ? 'x' : ''" class="ic-xs ic-hidden" id="navmenu-toggle-icon">
             <s class="bar"></s>
@@ -250,6 +251,7 @@
 import Vue from 'vue'
 import Media from 'vue-media'
 import state from '@/state.js'
+import config from '@/config.js'
 import api from '@/netapi.js'
 import swal from 'sweetalert2'
 
@@ -258,6 +260,7 @@ export default {
     data () {
         return {
             state,
+            config,
             m: $.media,
             isXs: true,
             showNavmenuBtn: false
@@ -271,6 +274,9 @@ export default {
     mounted: function () {
     },
     methods: {
+        flagClick: function () {
+            console.log(11111)
+        },
         navmenuToggle: function () {
             this.showNavmenuBtn = !this.showNavmenuBtn
         },
