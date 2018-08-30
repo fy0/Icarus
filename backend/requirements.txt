@@ -9,4 +9,4 @@ aiosmtplib
 aioauth-client
 async_timeout
 qiniu
-redis
+aioredis

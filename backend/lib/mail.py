@@ -55,7 +55,7 @@ async def send(to, title, content):
 
 
 async def send_register_activation(user):
-    act_code = to_hex(user.gen_activation_code())
+    act_code = to_hex(await user.gen_activation_code())
     act_url = f'{config.SITE_URL}/account/activation?uid={user.id.hex()}&code={act_code}'
 
     content = f'''Email 地址验证<br/><br/>

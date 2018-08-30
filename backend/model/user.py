@@ -135,32 +135,34 @@ class User(PostModel, BaseUser):
         except DoesNotExist:
             return None
 
-    def can_request_actcode(self):
+    async def can_request_actcode(self):
         """
         是否能申请帐户激活码（用于发送激活邮件）
         :return:
         """
         if self.group != USER_GROUP.INACTIVE:
             return
-        val = redis.get(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id)
+        val = await redis.get(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id)
         if val is None:
             return True
         if time.time() - int(val) > config.USER_ACTIVATION_REQUEST_INTERVAL:
             return True
 
-    def gen_activation_code(self) -> bytes:
+    async def gen_activation_code(self) -> bytes:
         """
         生成一个账户激活码
         :return:
         """
         t = int(time.time())
         code = os.urandom(8)
-        redis.set(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id, t)
-        redis.set(RK_USER_ACTCODE_BY_USER_ID % self.id, code, ex=config.USER_ACTCODE_EXPIRE)
+        pipe = redis.pipeline()
+        pipe.set(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id, t)
+        pipe.set(RK_USER_ACTCODE_BY_USER_ID % self.id, code, expire=config.USER_ACTCODE_EXPIRE)
+        await pipe.execute()
         return code
 
     @classmethod
-    def check_actcode(cls, uid, code):
+    async def check_actcode(cls, uid, code):
         """
         检查账户激活码是否可用，若可用，激活账户
         :param uid:
@@ -173,22 +175,22 @@ class User(PostModel, BaseUser):
 
         if len(code) == 8:
             rkey = RK_USER_ACTCODE_BY_USER_ID % uid
-            if redis.get(rkey) == code:
+            if await redis.get(rkey) == code:
                 try:
                     u = cls.get(cls.id == uid, cls.group == USER_GROUP.INACTIVE)
                     u.group = USER_GROUP.NORMAL
                     u.save()
-                    redis.delete(rkey)
+                    await redis.delete(rkey)
                     return u
                 except cls.DoesNotExist:
                     pass
 
-    def can_request_reset_password(self):
+    async def can_request_reset_password(self):
         """
         是否能申请重置密码
         :return:
         """
-        val = redis.get(RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID % self.id)
+        val = await redis.get(RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID % self.id)
         if val is None:
             return True
         if time.time() - int(val) > config.USER_RESET_PASSWORD_CODE_EXPIRE:
@@ -202,12 +204,12 @@ class User(PostModel, BaseUser):
         # len == 16 + 8 == 24
         t = int(time.time())
         code = os.urandom(16) + t.to_bytes(8, 'little')
-        redis.set(RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID % self.id, t, ex=config.USER_RESET_PASSWORD_REQUST_INTERVAL)
-        redis.set(RK_USER_RESET_KEY_BY_USER_ID % self.id, code, ex=config.USER_RESET_PASSWORD_CODE_EXPIRE)
+        redis.set(RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID % self.id, t, expire=config.USER_RESET_PASSWORD_REQUST_INTERVAL)
+        redis.set(RK_USER_RESET_KEY_BY_USER_ID % self.id, code, expire=config.USER_RESET_PASSWORD_CODE_EXPIRE)
         return code
 
     @classmethod
-    def check_reset_key(cls, uid, code) -> Union['User', None]:
+    async def check_reset_key(cls, uid, code) -> Union['User', None]:
         """
         检查uid与code这一组密码重置密钥是否有效
         :param uid:
@@ -220,10 +222,10 @@ class User(PostModel, BaseUser):
 
         if len(code) == 24:
             rkey = RK_USER_RESET_KEY_BY_USER_ID % uid
-            if redis.get(rkey) == code:
+            if await redis.get(rkey) == code:
                 try:
                     u = cls.get(cls.id == uid)
-                    redis.delete(rkey)
+                    await redis.delete(rkey)
                     return u
                 except cls.DoesNotExist:
                     pass

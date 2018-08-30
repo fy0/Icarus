@@ -134,7 +134,7 @@ class UserView(UserMixin, PeeweeView):
             user = None
 
         if user:
-            if user.can_request_reset_password():
+            if await user.can_request_reset_password():
                 key = user.gen_reset_key()
                 user.reset_key = key
                 user.save()
@@ -158,7 +158,7 @@ class UserView(UserMixin, PeeweeView):
         if 'uid' not in post or 'code' not in post:
             return self.finish(RETCODE.FAILED)
 
-        user = User.check_reset_key(post['uid'], post['code'])
+        user = await User.check_reset_key(post['uid'], post['code'])
         if user:
             info = User.gen_password_and_salt(post['password'])
             user.password = info['password']
@@ -180,7 +180,7 @@ class UserView(UserMixin, PeeweeView):
     async def resend_activation_mail(self):
         if config.EMAIL_ACTIVATION_ENABLE:
             if self.current_user:
-                if self.current_user.can_request_actcode():
+                if await self.current_user.can_request_actcode():
                     await mail.send_register_activation(self.current_user)
                     self.finish(RETCODE.SUCCESS)
                 else:
@@ -192,7 +192,7 @@ class UserView(UserMixin, PeeweeView):
 
     @route.interface('GET')
     async def activation(self):
-        user = User.check_actcode(self.params['uid'], self.params['code'])
+        user = await User.check_actcode(self.params['uid'], self.params['code'])
         if user:
             self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
         else:
