@@ -282,8 +282,8 @@ export default {
 
             let retList = await api.topic.list({
                 board_id: params.id,
-                order: 'sticky_weight.desc,weight.desc,time.desc',
-                select: 'id, time, user_id, board_id, title, sticky_weight, state, awesome',
+                order: 'sticky_weight.desc,weight.desc,update_time.desc',
+                select: 'id, time, user_id, board_id, title, sticky_weight, state, awesome, update_time',
                 loadfk: {'parent_id': null, 'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             }, params.page, null, state.getRole('user'))
 

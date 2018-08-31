@@ -144,7 +144,7 @@ class TopicView(UserMixin, PeeweeView):
         if not config.POST_ID_GENERATOR == config.AutoGenerator:
             values['id'] = config.POST_ID_GENERATOR().digest()
         values['time'] = int(time.time())
-        values['weight'] = Topic.weight_gen()
+        values['weight'] = await Topic.weight_gen()
         values['update_time'] = int(time.time())
         values['content'], self.do_mentions = check_content_mention(values['content'])
 

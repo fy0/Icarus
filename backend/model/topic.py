@@ -1,6 +1,7 @@
 ﻿import time
 
 from model._post import POST_VISIBLE, POST_STATE, PostModel
+from model.redis import RK_TOPIC_WEIGHT_MAX, redis
 from slim.utils import StateObject
 from peewee import *
 from model import db, BaseModel, MyTimestampField
@@ -35,12 +36,17 @@ class Topic(PostModel):
         db_table = 'topic'
 
     @classmethod
-    def weight_gen(cls):
+    async def weight_redis_init(cls):
         cur = db.execute_sql('select max(weight)+1 from "topic"')
-        return cur.fetchone()[0] or 0
+        await redis.set(RK_TOPIC_WEIGHT_MAX, cur.fetchone()[0] or 0)
 
-    def weight_inc(self):
-        """ 提升一点排序权重 """
-        self.weight += 1
+    @classmethod
+    async def weight_gen(cls):
+        """ 提升一点权重上限"""
+        return int(await redis.incr(RK_TOPIC_WEIGHT_MAX))
+
+    async def weight_inc(self):
+        """ 提升一点排序权重，但不能高于最大权重 """
+        self.weight = min(self.weight + 1, int(await redis.get(RK_TOPIC_WEIGHT_MAX)))
         self.update_time = int(time.time())
         self.save()

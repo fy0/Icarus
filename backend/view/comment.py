@@ -88,7 +88,7 @@ class CommentView(UserMixin, PeeweeView):
 
         if relate_type == POST_TYPES.TOPIC:
             post: Topic
-            post.weight_inc()
+            await post.weight_inc()
 
     def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
         for record in records:

@@ -95,8 +95,10 @@ export default {
         fetchData: async function () {
             this.loading = true
             let retList = await api.topic.list({
-                order: 'weight.desc, update_time.desc', // sticky_weight.desc,weight.desc,
-                // order: 'time.desc', // sticky_weight.desc,weight.desc,
+                order: 'weight.desc, update_time.desc', // 权重降序（无视置顶权重<5的置顶） sticky_weight.desc, 
+                // order: 'time.desc',  // 发布时间
+                // order: 'update_time.desc', // 更新时间
+                // sticky_weight.desc
                 select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time',
                 loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             })
