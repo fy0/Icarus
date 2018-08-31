@@ -145,6 +145,7 @@ class TopicView(UserMixin, PeeweeView):
             values['id'] = config.POST_ID_GENERATOR().digest()
         values['time'] = int(time.time())
         values['weight'] = Topic.weight_gen()
+        values['update_time'] = int(time.time())
         values['content'], self.do_mentions = check_content_mention(values['content'])
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):

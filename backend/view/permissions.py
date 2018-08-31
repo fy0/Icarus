@@ -21,6 +21,7 @@ visitor = Ability(None, {
         'awesome': (A.READ,),
         'sticky_weight': (A.READ,),
         'weight': (A.READ,),
+        'update_time': (A.READ,),
     },
     'user': {
         'id': (A.QUERY, A.READ),

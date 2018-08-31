@@ -1,4 +1,6 @@
-﻿from model._post import POST_VISIBLE, POST_STATE, PostModel
+﻿import time
+
+from model._post import POST_VISIBLE, POST_STATE, PostModel
 from slim.utils import StateObject
 from peewee import *
 from model import db, BaseModel, MyTimestampField
@@ -24,7 +26,8 @@ class Topic(PostModel):
 
     awesome = IntegerField(default=0)  # 精华文章
     sticky_weight = IntegerField(index=True, default=0)  # 置顶权重
-    weight = IntegerField(index=True, default=0) # 排序权值，越大越靠前，默认权重与id相同
+    weight = IntegerField(index=True, default=0)  # 排序权值，越大越靠前，默认权重与id相同
+    update_time = BigIntegerField(index=True, null=True)  # 更新时间，即发布的时间或最后被回复的时间
 
     # object_type = OBJECT_TYPES.TOPIC
 
@@ -38,20 +41,6 @@ class Topic(PostModel):
 
     def weight_inc(self):
         """ 提升一点排序权重 """
-        try:
-            db.execute_sql("""
-                WITH
-                  t1 as (SELECT "id", "weight" FROM "topic" WHERE "id" = %s),
-                  t2 as (SELECT "t2"."id", "t2"."weight" FROM t1, "topic" AS t2
-                    WHERE "t2"."weight" > "t1".weight ORDER BY "weight" ASC LIMIT 1)
-                UPDATE "topic"
-                  set "weight" = (
-                    CASE WHEN "topic"."id" = "t1"."id"
-                      THEN "t2"."weight"
-                    ELSE "t1"."weight" END
-                  )
-                FROM t1, t2
-                WHERE "topic"."id" in ("t1"."id", "t2"."id");
-            """, (self.id,))
-        except DatabaseError:
-            pass
+        self.weight += 1
+        self.update_time = int(time.time())
+        self.save()

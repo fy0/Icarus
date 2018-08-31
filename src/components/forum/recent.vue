@@ -95,8 +95,9 @@ export default {
         fetchData: async function () {
             this.loading = true
             let retList = await api.topic.list({
-                order: 'time.desc', // sticky_weight.desc,weight.desc,
-                select: 'id, time, user_id, board_id, title, state, awesome',
+                order: 'weight.desc, update_time.desc', // sticky_weight.desc,weight.desc,
+                // order: 'time.desc', // sticky_weight.desc,weight.desc,
+                select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time',
                 loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             })
             if (retList.code === api.retcode.SUCCESS) {
