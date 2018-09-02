@@ -94,11 +94,19 @@ export default {
         },
         fetchData: async function () {
             this.loading = true
+            let query = this.$route.query
+            let order = 'weight.desc, update_time.desc' // 权重降序（希望以后能做到无视置顶权重<5的置顶）
+
+            if (query.type === '2') {
+                order = 'update_time.desc, time.desc' // 更新时间降序
+            }
+
+            if (query.type === '3') {
+                order = 'time.desc' // 发布时间降序
+            }
+
             let retList = await api.topic.list({
-                order: 'weight.desc, update_time.desc', // 权重降序（无视置顶权重<5的置顶） sticky_weight.desc, 
-                // order: 'time.desc',  // 发布时间
-                // order: 'update_time.desc', // 更新时间
-                // sticky_weight.desc
+                order: order,
                 select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time',
                 loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             })

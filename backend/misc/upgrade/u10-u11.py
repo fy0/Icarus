@@ -8,7 +8,7 @@ from model.notif import UserNotifRecord
 
 def work():
     try:
-        db.execute_sql('ALTER TABLE "user" ADD COLUMN "update_time" BIGINT NULL;')
+        db.execute_sql('ALTER TABLE "topic" ADD COLUMN "update_time" BIGINT NULL DEFAULT 0;')
     except Exception as e:
         print(e)
         print('failed')
