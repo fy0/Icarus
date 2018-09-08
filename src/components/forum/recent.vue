@@ -3,58 +3,66 @@
     <div v-title>最近话题 - {{state.config.title}}</div>
     <top-btns></top-btns>
     <loading v-if="loading"/>
-    <div v-else-if="topics.items && topics.items.length" id="board-list">
-        <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
-            <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                <div class="title" style="flex: 12 0 0%">
-                    <h2>
-                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
-                            <span>{{i.title}}</span>
-                            <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
-                        </router-link>
-                        <span class="icons">
-                            <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
-                            <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                            <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
-                        </span>
-                    </h2>
-                    <p>
-                        <user-link :user="i.user_id.user_id" />
-                        <span> 发布于 <ic-time :timestamp="i.time" /></span>
-                    </p>
-                </div>
-                <div class="detail ic-xs-hidden" style="flex: 12 0 0%">
-                    <div class="count-block" style="flex: 6 0 0;">
-                        <router-link tag="div" class="count" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">
-                            <p class="board">
-                                <router-link :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
-                            </p>
-                            <p class="txt">版块</p>
-                        </router-link>
-                        <div class="count">
-                            <p class="num">{{i.s.click_count}}</p>
-                            <p class="txt">点击</p>
-                        </div>
-                        <div class="count">
-                            <p class="num">{{i.s.comment_count}}</p>
-                            <p class="txt">回复</p>
-                        </div>
-                    </div>
-                    <div class="recent ic-xs-hidden ic-sm-hidden">
-                        <span class="line" :style="lineStyle(i.board_id)"></span>
-                        <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
-                            <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
-                            <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
-                        </div>
-                        <div class="post" v-else>○ ○ ○ ○ ○</div>
-                        <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
-                        <div v-else class="time">从未</div>
-                    </div>
-                </div>
-            </router-link>
+    <div v-else class="wrapper">
+        <div class="left-nav">
+            <div class="ul-subboards">
+                <router-link v-for="j in boardList" :key="j.id" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
+                    <div class="sign" :style="lineStyleBG(j)"></div>
+                    <span class="sub-board-item">{{j.name}}</span>
+                </router-link>
+            </div>
         </div>
+        <div class="right" v-if="topics.items && topics.items.length" id="board-list">
+            <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
+                <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
+                    <div class="title-recent" style="flex: 9 0 0%">
+                        <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
+                        <div class="right">
+                            <h2>
+                                <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                                    <span>{{i.title}}</span>
+                                    <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
+                                </router-link>
+                                <span class="icons">
+                                    <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
+                                    <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                                    <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
+                                </span>
+                            </h2>
+                            <p>
+                                <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
+                                <user-link :user="i.user_id" />
+                                <span> 发布于 <ic-time :timestamp="i.time" /></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="detail ic-xs-hidden" style="flex: 10 0 0%">
+                        <div class="count-block" style="flex: 4 0 0;">
+                            <div class="count">
+                                <p class="num">{{i.s.click_count}}</p>
+                                <p class="txt">点击</p>
+                            </div>
+                            <div class="count">
+                                <p class="num">{{i.s.comment_count}}</p>
+                                <p class="txt">回复</p>
+                            </div>
+                        </div>
+                        <div class="recent ic-xs-hidden ic-sm-hidden">
+                            <span class="line" :style="lineStyle(i.board_id)"></span>
+                            <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
+                                <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
+                                <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
+                            </div>
+                            <div class="post" v-else>○ ○ ○ ○ ○</div>
+                            <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
+                            <div v-else class="time">从未</div>
+                        </div>
+                    </div>
+                </router-link>
+            </div>
+        </div>
+        <div v-else>尚未有人发言……</div>
     </div>
-    <div v-else>尚未有人发言……</div>
     <dialog-topic-manage />
 </div>
 </template>
@@ -62,10 +70,58 @@
 <style scoped>
 </style>
 
+
+<style scoped lang="scss">
+.wrapper {
+    display: flex;
+
+    .left-nav {
+        flex: 5 0 0%;
+    }
+
+    .right {
+        flex: 19 0 0%;
+    }
+}
+
+.ul-subboards > .item {
+    display: flex;
+    align-items: center;
+    padding: 7px 0;
+    font-size: 14px;
+    font-weight: bolder;
+    color: $gray-600;
+}
+
+.board-badge {
+    padding: 8px;
+    background-color: $gray-400;
+    color: $light;
+}
+
+.ul-subboards > .item > .sign {
+    width: 1em;
+    height: 1em;
+    background-color: #000;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.ul-subboards {
+    margin: 0;
+    list-style: none;
+    padding: 0 20px 0 0;
+
+    .sub-board-item {
+        margin-left: 3px;
+    }
+}
+</style>
+
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
-import '@/assets/css/forum.css'
+import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
 
 export default {
@@ -74,6 +130,7 @@ export default {
             state,
             hoverId: null,
             loading: true,
+            boardList: [],
             topics: []
         }
     },
@@ -92,8 +149,23 @@ export default {
         lineStyle: function (board) {
             return $.lineStyle(board)
         },
+        lineStyleBG: function (board) {
+            return $.lineStyle(board, 'background-color')
+        },
         fetchData: async function () {
             this.loading = true
+
+            let boards = await api.board.list({
+                order: 'parent_id.asc,weight.desc,time.asc' // 权重从高到低，时间从先到后
+            })
+            if (boards.code === api.retcode.SUCCESS) {
+                let lst = []
+                for (let i of boards.data.items) {
+                    lst.push(i)
+                }
+                this.boardList = lst
+            }
+
             let query = this.$route.query
             let order = 'weight.desc, update_time.desc' // 权重降序（希望以后能做到无视置顶权重<5的置顶）
 

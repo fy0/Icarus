@@ -34,6 +34,43 @@
     position: relative;
 }
 
+.board-item > .title-recent {
+    display: flex;
+    flex-direction: row;    
+
+    .avatar {
+        align-self: center;
+    }
+}
+
+
+.board-item > .title-recent > .right {
+    align-self: center;
+
+    * {
+        margin: 0px;
+        flex: 1 0 0%;
+        font-weight: normal;
+        white-space: nowrap;
+        word-break: keep-all;
+        text-overflow: ellipsis;    
+        overflow: hidden;
+    }
+
+    h2 {
+        font-size: 1em;
+    }
+
+    .name {
+        font-size: 1em;
+    }
+
+    p {
+        font-size: 0.8em;
+        color: #777;
+    }
+}
+
 .board-item > .title > * {
     margin: 0px;
     flex: 1 0 0%;

@@ -177,7 +177,7 @@
 import {marked} from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
-import '@/assets/css/forum.css'
+import '@/assets/css/_forum.scss'
 import CommentList from '../utils/comment-list.vue'
 
 export default {

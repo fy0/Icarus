@@ -67,7 +67,7 @@
 import api from '@/netapi.js'
 import state from '@/state.js'
 import TopBtns from './topbtns.vue'
-import '@/assets/css/forum.css'
+import '@/assets/css/_forum.scss'
 
 export default {
     data () {

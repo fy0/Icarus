@@ -225,7 +225,7 @@ aside > .brief {
 import api from '@/netapi.js'
 import state from '@/state.js'
 import {marked} from '@/md.js'
-import '@/assets/css/forum.css'
+import '@/assets/css/_forum.scss'
 
 export default {
     data () {
