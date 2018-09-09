@@ -48,6 +48,7 @@
     border-radius: 4px;
     background-color: rgba(0, 0, 0, 0);
     font-size: calc(80%);
+    overflow: hidden;
 }
 </style>
 

@@ -1,18 +1,25 @@
 <template>
 <div class="ic-container forum-box">
     <div v-title>最近话题 - {{state.config.title}}</div>
-    <top-btns></top-btns>
     <loading v-if="loading"/>
     <div v-else class="wrapper">
         <div class="left-nav">
-            <div class="ul-subboards">
-                <router-link v-for="j in boardList" :key="j.id" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
-                    <div class="sign" :style="lineStyleBG(j)"></div>
-                    <span class="sub-board-item">{{j.name}}</span>
-                </router-link>
+            <div class="left-nav-box">
+                <router-link class="ic-btn primary post-new-topic" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
+                <div class="ul-subboards">
+                    <router-link :to="{ name: 'index'}" class="item" style="margin: 10px 0 10px 0">
+                        <div class="sign"></div>
+                        <span class="sub-board-item">全部主题</span>
+                    </router-link>
+                    <router-link v-for="j in boardList" :key="j.id" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
+                        <div class="sign" :style="lineStyleBG(j)"></div>
+                        <span class="sub-board-item">{{j.name}}</span>
+                    </router-link>
+                </div>
             </div>
         </div>
         <div class="right" v-if="topics.items && topics.items.length" id="board-list">
+            <top-btns></top-btns>
             <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                 <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
                     <div class="title-recent" style="flex: 9 0 0%">
@@ -30,7 +37,7 @@
                                 </span>
                             </h2>
                             <p>
-                                <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
+                                <router-link class="board-badge" :style="lineStyleBG(i.board_id)" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
                                 <user-link :user="i.user_id" />
                                 <span> 发布于 <ic-time :timestamp="i.time" /></span>
                             </p>
@@ -67,10 +74,6 @@
 </div>
 </template>
 
-<style scoped>
-</style>
-
-
 <style scoped lang="scss">
 .wrapper {
     display: flex;
@@ -95,8 +98,13 @@
 
 .board-badge {
     padding: 8px;
-    background-color: $gray-400;
     color: $light;
+    opacity: 0.6;
+    // background-color: $gray-400;
+
+    &:hover {
+        color: $light;
+    }
 }
 
 .ul-subboards > .item > .sign {
@@ -107,14 +115,24 @@
     flex-shrink: 0;
 }
 
+$left-nav-padding-right: 30px;
+
 .ul-subboards {
     margin: 0;
     list-style: none;
-    padding: 0 20px 0 0;
 
     .sub-board-item {
         margin-left: 3px;
     }
+}
+
+.left-nav-box {
+    padding: 0 $left-nav-padding-right 0 0;
+}
+
+.post-new-topic {
+    width: 100%;
+    display: block;
 }
 </style>
 
@@ -122,7 +140,7 @@
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/_forum.scss'
-import TopBtns from './topbtns.vue'
+import TopBtns from './topbtns2.vue'
 
 export default {
     data () {
@@ -132,6 +150,11 @@ export default {
             loading: true,
             boardList: [],
             topics: []
+        }
+    },
+    computed: {
+        postNewTopicStyle: function () {
+            ;
         }
     },
     methods: {
