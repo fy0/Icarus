@@ -1,8 +1,7 @@
 <template>
 <div class="ic-container forum-box">
     <div v-title>最近话题 - {{state.config.title}}</div>
-    <loading v-if="loading"/>
-    <div v-else class="wrapper">
+    <div class="wrapper">
         <div class="left-nav">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
@@ -19,59 +18,63 @@
                 </div>
             </div>
         </div>
-        <div class="right" v-if="topics.items && topics.items.length" id="board-list">
+        <div class="right" id="board-list">
             <top-btns></top-btns>
-            <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
-                <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                    <div class="title-recent" style="flex: 10 0 0%">
-                        <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
-                        <div class="right">
-                            <h2>
-                                <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
-                                    <span>{{i.title}}</span>
-                                    <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
-                                </router-link>
-                                <span class="icons">
-                                    <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
-                                    <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                    <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
-                                </span>
-                            </h2>
-                            <p>
-                                <router-link class="board-badge" :style="lineStyleBG(i.board_id)" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
-                                <user-link :user="i.user_id" />
-                                <span> 发布于 <ic-time :timestamp="i.time" /></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
-                        <div class="count-block" style="flex: 4 0 0;">
-                            <div class="count">
-                                <p class="num">{{i.s.click_count}}</p>
-                                <p class="txt">点击</p>
-                            </div>
-                            <div class="count">
-                                <p class="num">{{i.s.comment_count}}</p>
-                                <p class="txt">回复</p>
+            <loading v-if="loading"/>
+            <div style="flex: 1 0 0%" v-else-if="topics && topics.items.length">
+                <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
+                    <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
+                        <div class="title-recent" style="flex: 10 0 0%">
+                            <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
+                            <div class="right">
+                                <h2>
+                                    <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                                        <span>{{i.title}}</span>
+                                        <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
+                                    </router-link>
+                                    <span class="icons">
+                                        <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
+                                        <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                                        <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
+                                    </span>
+                                </h2>
+                                <p>
+                                    <router-link class="board-badge" :style="lineStyleBG(i.board_id)" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
+                                    <user-link :user="i.user_id" />
+                                    <span> 发布于 <ic-time :timestamp="i.time" /></span>
+                                </p>
                             </div>
                         </div>
-                        <div class="recent ic-xs-hidden ic-sm-hidden" style="flex: 5 0 0;">
-                            <span class="line" :style="lineStyle(i.board_id)"></span>
-                            <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
-                                <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
-                                <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
+                        <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
+                            <div class="count-block" style="flex: 4 0 0;">
+                                <div class="count">
+                                    <p class="num">{{i.s.click_count}}</p>
+                                    <p class="txt">点击</p>
+                                </div>
+                                <div class="count">
+                                    <p class="num">{{i.s.comment_count}}</p>
+                                    <p class="txt">回复</p>
+                                </div>
                             </div>
-                            <div class="post" v-else>○ ○ ○ ○ ○</div>
-                            <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
-                            <div v-else class="time">从未</div>
+                            <div class="recent ic-xs-hidden ic-sm-hidden" style="flex: 5 0 0;">
+                                <span class="line" :style="lineStyle(i.board_id)"></span>
+                                <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
+                                    <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
+                                    <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
+                                </div>
+                                <div class="post" v-else>○ ○ ○ ○ ○</div>
+                                <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
+                                <div v-else class="time">从未</div>
+                            </div>
                         </div>
-                    </div>
-                </router-link>
+                    </router-link>
+                </div>
+                <paginator v-if="isBoard" :page-info='topics' :route-name='"forum_board"' />
+                <paginator v-else :page-info='topics' :route-name='"forum_main"' />
             </div>
-        </div>
-        <div class="right" v-else>
-            <top-btns></top-btns>
-            <div>尚未有人发言……</div>
+            <div style="flex: 1 0 0%" v-else>
+                <div style="margin-left: 10px;">尚未有人发言……</div>
+            </div>
         </div>
     </div>
     <dialog-topic-manage />
@@ -145,6 +148,21 @@ import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns2.vue'
+import nprogress from 'nprogress/nprogress.js'
+
+let pageOneHack = function (to, from, next) {
+    // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
+    // 但似乎由于 nprogress 的存在，显得有点僵硬
+    if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
+        if (from.name === 'index') {
+            state.loading = 0
+            nprogress.done()
+            return next(false)
+        }
+        return next({name: 'index'})
+    }
+    next()
+}
 
 export default {
     data () {
@@ -153,12 +171,15 @@ export default {
             hoverId: null,
             loading: true,
             boardList: [],
-            topics: []
+            topics: null
         }
     },
     computed: {
         postNewTopicStyle: function () {
             ;
+        },
+        isBoard: function () {
+            return this.$route.name === 'forum_board'
         }
     },
     methods: {
@@ -183,13 +204,14 @@ export default {
             this.loading = true
             let baseQuery = {}
             let params = this.$route.params
+            let page = 1
 
             // 具体板块
             if (this.$route.name === 'forum_board') {
-                baseQuery['id'] = params.id
-                console.log(baseQuery, params)
-            } else {
-                ;
+                baseQuery['board_id'] = params.id
+                page = params.page
+            } else if (this.$route.name === 'forum_main') {
+                page = params.page
             }
 
             let boards = await api.board.list({
@@ -218,19 +240,31 @@ export default {
                 order: order,
                 select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time',
                 loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
-            }))
+            }), page)
             if (retList.code === api.retcode.SUCCESS) {
                 this.topics = retList.data
                 this.loading = false
                 return
+            } else {
+                this.topics = null
             }
 
-            $.message_by_code(retList.code)
+            // $.message_by_code(retList.code)
             this.loading = false
         }
     },
+    beforeRouteEnter (to, from, next) {
+        return pageOneHack(to, from, next)
+    },
+    beforeRouteUpdate (to, from, next) {
+        return pageOneHack(to, from, next)
+    },
     created () {
         this.fetchData()
+    },
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        '$route': 'fetchData'
     },
     components: {
         TopBtns

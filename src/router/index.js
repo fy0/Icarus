@@ -20,7 +20,7 @@ import SettingSecurityPassword from '@/components/settings/security/password.vue
 import SettingSecurityOAuth from '@/components/settings/security/oauth.vue'
 
 import ForumBoards from '@/components/forum/boards.vue'
-import ForumRecent from '@/components/forum/recent.vue'
+import ForumMain from '@/components/forum/recent.vue'
 // import ForumBoard from '@/components/forum/board.vue'
 import ForumTopcEdit from '@/components/forum/topic-edit.vue'
 import ForumTopic from '@/components/forum/topic.vue'
@@ -44,7 +44,7 @@ export default new Router({
         {
             path: '/',
             name: 'index',
-            redirect: { name: 'forum' }
+            component: ForumMain
         },
 
         // 用户 - 登录
@@ -101,9 +101,9 @@ export default new Router({
 
         // 论坛 - 主页面
         {
-            path: '/',
+            path: '/forum',
             name: 'forum',
-            redirect: { name: 'forum_recent' }
+            redirect: { name: 'forum_main', params: {page: 1} }
         },
         // 论坛 - 板块列表
         {
@@ -111,18 +111,17 @@ export default new Router({
             name: 'forum_boards',
             component: ForumBoards
         },
-        // 论坛 - 最近发布
+        // 论坛 - 主面板
         {
-            path: '/recent',
-            name: 'forum_recent',
-            // alias: '/',
-            component: ForumRecent
+            path: '/r/:page(\\d+)',
+            name: 'forum_main',
+            component: ForumMain
         },
-        // 论坛 - 板块页面
+        // 论坛 - 主面板 - 板块页面
         {
             path: '/board/:id([a-fA-F0-9]+)/:page(\\d+)?/:name(.+)?',
             name: 'forum_board',
-            component: ForumRecent
+            component: ForumMain
         },
         // 论坛 - 主题新建
         {

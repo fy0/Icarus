@@ -1,7 +1,7 @@
 <template>
 <div class="ic-topbtns-box">
     <div class="ic-topbtns">
-        <router-link class="ic-btn smoke" :to="{ name: 'forum_recent' }" :class="navActiveStrict('forum_recent')">权重排序</router-link>
+        <router-link class="ic-btn smoke" :to="{ name: 'forum_main', params: {page: 1} }" :class="navActiveStrict('forum_main')">权重排序</router-link>
     </div>
     <div v-if="state.user" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.reputation}}</span> -->
