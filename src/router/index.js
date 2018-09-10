@@ -21,7 +21,7 @@ import SettingSecurityOAuth from '@/components/settings/security/oauth.vue'
 
 import ForumBoards from '@/components/forum/boards.vue'
 import ForumRecent from '@/components/forum/recent.vue'
-import ForumBoard from '@/components/forum/board.vue'
+// import ForumBoard from '@/components/forum/board.vue'
 import ForumTopcEdit from '@/components/forum/topic-edit.vue'
 import ForumTopic from '@/components/forum/topic.vue'
 
@@ -122,7 +122,7 @@ export default new Router({
         {
             path: '/board/:id([a-fA-F0-9]+)/:page(\\d+)?/:name(.+)?',
             name: 'forum_board',
-            component: ForumBoard
+            component: ForumRecent
         },
         // 论坛 - 主题新建
         {

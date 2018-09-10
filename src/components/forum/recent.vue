@@ -5,6 +5,7 @@
     <div v-else class="wrapper">
         <div class="left-nav">
             <div class="left-nav-box">
+                <!-- <span class="post-new-topic">板块列表</span> -->
                 <router-link class="ic-btn primary post-new-topic" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
                 <div class="ul-subboards">
                     <router-link :to="{ name: 'index'}" class="item" style="margin: 10px 0 10px 0">
@@ -22,7 +23,7 @@
             <top-btns></top-btns>
             <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                 <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                    <div class="title-recent" style="flex: 9 0 0%">
+                    <div class="title-recent" style="flex: 10 0 0%">
                         <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
                         <div class="right">
                             <h2>
@@ -43,7 +44,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="detail ic-xs-hidden" style="flex: 10 0 0%">
+                    <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
                         <div class="count-block" style="flex: 4 0 0;">
                             <div class="count">
                                 <p class="num">{{i.s.click_count}}</p>
@@ -54,7 +55,7 @@
                                 <p class="txt">回复</p>
                             </div>
                         </div>
-                        <div class="recent ic-xs-hidden ic-sm-hidden">
+                        <div class="recent ic-xs-hidden ic-sm-hidden" style="flex: 5 0 0;">
                             <span class="line" :style="lineStyle(i.board_id)"></span>
                             <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
                                 <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
@@ -68,7 +69,10 @@
                 </router-link>
             </div>
         </div>
-        <div v-else>尚未有人发言……</div>
+        <div class="right" v-else>
+            <top-btns></top-btns>
+            <div>尚未有人发言……</div>
+        </div>
     </div>
     <dialog-topic-manage />
 </div>
@@ -177,6 +181,16 @@ export default {
         },
         fetchData: async function () {
             this.loading = true
+            let baseQuery = {}
+            let params = this.$route.params
+
+            // 具体板块
+            if (this.$route.name === 'forum_board') {
+                baseQuery['id'] = params.id
+                console.log(baseQuery, params)
+            } else {
+                ;
+            }
 
             let boards = await api.board.list({
                 order: 'parent_id.asc,weight.desc,time.asc' // 权重从高到低，时间从先到后
@@ -200,11 +214,11 @@ export default {
                 order = 'time.desc' // 发布时间降序
             }
 
-            let retList = await api.topic.list({
+            let retList = await api.topic.list(Object.assign(baseQuery, {
                 order: order,
                 select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time',
                 loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
-            })
+            }))
             if (retList.code === api.retcode.SUCCESS) {
                 this.topics = retList.data
                 this.loading = false
