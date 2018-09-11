@@ -7,13 +7,13 @@
                 <!-- <span class="post-new-topic">板块列表</span> -->
                 <router-link class="ic-btn primary post-new-topic" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
                 <div class="ul-subboards">
-                    <router-link :to="{ name: 'index'}" class="item" style="margin: 10px 0 10px 0">
+                    <router-link :to="{ name: 'index'}" class="item" :class="{'showAll': !isBoard}" style="margin: 10px 0 10px 0">
                         <div class="sign"></div>
                         <span class="sub-board-item">全部主题</span>
                     </router-link>
                     <router-link v-for="j in boardList" :key="j.id" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
                         <div class="sign" :style="lineStyleBG(j)"></div>
-                        <span class="sub-board-item">{{j.name}}</span>
+                        <span class="sub-board-item" :style="boardNavStyle(j)">{{j.name}}</span>
                     </router-link>
                 </div>
             </div>
@@ -100,7 +100,12 @@
     padding: 7px 0;
     font-size: 14px;
     font-weight: bolder;
-    color: $gray-600;
+    color: lighten($gray-600, 10%);
+
+    &.showAll {
+        font-weight: bold;
+        color: $primary;
+    }
 }
 
 .board-badge {
@@ -187,6 +192,16 @@ export default {
         isAdmin: function () {
             return $.isAdmin()
         },
+        boardNavStyle: function (board) {
+            if (this.isBoard) {
+                let boardId = this.$route.params.id
+                if (boardId === board.id) {
+                    let style = this.lineStyle(board, 'color')
+                    style['font-weight'] = 'bold'
+                    return style
+                }
+            }
+        },
         setTopicManage: function (topic) {
             state.dialog.topicManageData = topic
             state.dialog.topicManage = true
@@ -194,8 +209,8 @@ export default {
         itemHover: function (id) {
             this.hoverId = id
         },
-        lineStyle: function (board) {
-            return $.lineStyle(board)
+        lineStyle: function (board, key = 'border-left-color') {
+            return $.lineStyle(board, key)
         },
         lineStyleBG: function (board) {
             return $.lineStyle(board, 'background-color')
