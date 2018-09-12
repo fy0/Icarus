@@ -119,7 +119,7 @@ export default new Router({
         },
         // 论坛 - 主面板 - 板块页面
         {
-            path: '/board/:id([a-fA-F0-9]+)/:page(\\d+)?/:name(.+)?',
+            path: '/b/:id([a-fA-F0-9]+)/:page(\\d+)?/:name(.+)?',
             name: 'forum_board',
             component: ForumMain
         },

@@ -12,7 +12,7 @@
         <transition name="custom" :enter-active-class="isXs ? 'animated fadeInRight':''">
             <div class="menu-lists" v-show="showNavmenuBtn">
                 <ul class="menu-list center">
-                    <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum')">
+                    <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum', 'index')">
                         <a>社区</a>
                     </router-link>
                     <li class="menu-item" v-if="false && isAdmin"><a href="#">文档</a></li>

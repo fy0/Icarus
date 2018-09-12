@@ -29,6 +29,11 @@ a:hover {
     color: $link-hover-color;
 }
 
+// firefox: 去除焦点虚线框
+a:focus {
+    outline: none;
+}
+
 // Elevations
 
 .ic-z0 {

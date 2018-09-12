@@ -239,8 +239,10 @@ export default {
         let key = state.loadingGetKey(this.$route)
         this.state.loadingInc(this.$route, key)
         await this.fetchData()
-        window.socialShare(this.$refs.share, {
-            title: `${this.topic.title} - ${state.config.title}`
+        this.$nextTick(() => {
+            window.socialShare(this.$refs.share, {
+                title: `${this.topic.title} - ${state.config.title}`
+            })
         })
         this.state.loadingDec(this.$route, key)
     },
