@@ -5,7 +5,7 @@
         <div class="left-nav">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
-                <router-link class="ic-btn primary post-new-topic" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new' }">发表主题</router-link>
+                <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
                 <div class="ul-subboards">
                     <router-link :to="{ name: 'index'}" class="item" :class="{'showAll': !isBoard}" style="margin: 10px 0 10px 0">
                         <div class="sign"></div>
@@ -176,15 +176,30 @@ export default {
             hoverId: null,
             loading: true,
             boardList: [],
-            topics: null
+            boardInfoMap: {},
+            topics: null,
+            mouseOverPostNewBtn: false
         }
     },
     computed: {
         postNewTopicStyle: function () {
-            ;
+            let board = this.boardInfoMap[this.boardId]
+            if (board) {
+                let style = this.lineStyle(board, 'background-color')
+                if (this.mouseOverPostNewBtn) {
+                    // darken 10%
+                    style['background-color'] = '#000'
+                }
+                return style
+            }
         },
         isBoard: function () {
             return this.$route.name === 'forum_board'
+        },
+        boardId: function () {
+            if (this.isBoard) {
+                return this.$route.params.id
+            }
         }
     },
     methods: {
@@ -234,7 +249,9 @@ export default {
             })
             if (boards.code === api.retcode.SUCCESS) {
                 let lst = []
+                this.boardInfoMap = {}
                 for (let i of boards.data.items) {
+                    this.boardInfoMap[i.id] = i
                     lst.push(i)
                 }
                 this.boardList = lst
