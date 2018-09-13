@@ -16,6 +16,7 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "codemirror": "^5.39.2",
+    "color": "^3.0.0",
     "font-awesome": "^4.7.0",
     "marked": "^0.4.0",
     "murmurhash": "^0.0.2",

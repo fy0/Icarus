@@ -1,19 +1,18 @@
 <template>
 <div class="ic-container forum-box">
-    <div v-title>最近话题 - {{state.config.title}}</div>
     <div class="wrapper">
         <div class="left-nav">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
                 <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
-                <div class="ul-subboards">
+                <div class="ul-boards">
                     <router-link :to="{ name: 'index'}" class="item" :class="{'showAll': !isBoard}" style="margin: 10px 0 10px 0">
                         <div class="sign"></div>
-                        <span class="sub-board-item">全部主题</span>
+                        <span class="title">全部主题</span>
                     </router-link>
-                    <router-link v-for="j in boardList" :key="j.id" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
-                        <div class="sign" :style="lineStyleBG(j)"></div>
-                        <span class="sub-board-item" :style="boardNavStyle(j)">{{j.name}}</span>
+                    <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
+                        <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j)"></div>
+                        <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
                     </router-link>
                 </div>
             </div>
@@ -22,6 +21,13 @@
             <top-btns></top-btns>
             <loading v-if="loading"/>
             <div style="flex: 1 0 0%" v-else-if="topics && topics.items.length">
+                <!-- 放在这是为了让标题正确刷新，毕竟这部分DOM总会在发生变化时重构 -->
+                <template v-if="isBoard">
+                    <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
+                    <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
+                </template>
+                <div v-else v-title>全部主题 - {{state.config.title}}</div>
+
                 <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                     <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
                         <div class="title-recent" style="flex: 10 0 0%">
@@ -94,20 +100,6 @@
     }
 }
 
-.ul-subboards > .item {
-    display: flex;
-    align-items: center;
-    padding: 7px 0;
-    font-size: 14px;
-    font-weight: bolder;
-    color: lighten($gray-600, 10%);
-
-    &.showAll {
-        font-weight: bold;
-        color: $primary;
-    }
-}
-
 .board-badge {
     padding: 8px;
     color: $light;
@@ -119,24 +111,42 @@
     }
 }
 
-.ul-subboards > .item > .sign {
-    width: 1em;
-    height: 1em;
-    background-color: #000;
-    border-radius: 3px;
-    flex-shrink: 0;
-}
-
-$left-nav-padding-right: 30px;
-
-.ul-subboards {
+.ul-boards {
     margin: 0;
     list-style: none;
 
-    .sub-board-item {
-        margin-left: 3px;
+    .item {
+        display: flex;
+        align-items: center;
+        padding: 7px 0;
+        font-size: 14px;
+        font-weight: bolder;
+        color: lighten($gray-600, 10%);
+
+        &.subboard {
+            padding-left: 16px;
+        }
+
+        &.showAll {
+            font-weight: bold;
+            color: $primary;
+        }
+
+        .sign {
+            width: 1em;
+            height: 1em;
+            background-color: #000;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .title {
+            margin-left: 3px;
+        }
     }
 }
+
+$left-nav-padding-right: 30px;
 
 .left-nav-box {
     padding: 0 $left-nav-padding-right 0 0;
@@ -154,6 +164,7 @@ import state from '@/state.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns2.vue'
 import nprogress from 'nprogress/nprogress.js'
+import Color from 'color'
 
 let pageOneHack = function (to, from, next) {
     // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
@@ -187,8 +198,9 @@ export default {
             if (board) {
                 let style = this.lineStyle(board, 'background-color')
                 if (this.mouseOverPostNewBtn) {
-                    // darken 10%
-                    style['background-color'] = '#000'
+                    // darken 10% when hover
+                    let color = Color(style['background-color'])
+                    style['background-color'] = color.darken(0.1).string()
                 }
                 return style
             }
@@ -196,10 +208,39 @@ export default {
         isBoard: function () {
             return this.$route.name === 'forum_board'
         },
+        board: function () {
+            let bid = this.boardId
+            if (bid) return this.boardInfoMap[bid]
+        },
         boardId: function () {
             if (this.isBoard) {
                 return this.$route.params.id
             }
+        },
+        dymBoardList: function () {
+            let lst = []
+            let curBoardId = this.boardId
+            let chain = this.getBoardChain(curBoardId)
+            let topBoardId = chain[chain.length - 1]
+
+            let pushSubBoards = (i, chainIndex) => {
+                let topId = chain[--chainIndex]
+                for (let j of i.subboards) {
+                    lst.push(j)
+                    if (j.id === topId) {
+                        pushSubBoards(j, chainIndex)
+                    }
+                }
+            }
+
+            for (let i of this.boardList) {
+                lst.push(i)
+
+                if (i.id === topBoardId) {
+                    pushSubBoards(i, chain.length - 1)
+                }
+            }
+            return lst
         }
     },
     methods: {
@@ -207,10 +248,31 @@ export default {
         isAdmin: function () {
             return $.isAdmin()
         },
+        getBoardChain: function (curBoardId) {
+            let lst = [curBoardId]
+            if (!curBoardId) return lst
+            if (!Object.keys(this.boardInfoMap).length) return lst
+            while (true) {
+                let pid = this.boardInfoMap[curBoardId].parent_id
+                if (!pid) break
+                lst.push(pid)
+                curBoardId = pid
+            }
+            return lst
+        },
+        boardNavTitle: function (board) {
+            if (board.parent_id) {
+                let chain = this.getBoardChain(board.id)
+                let prefix = _.times(chain.length - 2, () => '>').join('')
+                return `${prefix} ${board.name}`
+            }
+            return board.name
+        },
         boardNavStyle: function (board) {
             if (this.isBoard) {
                 let boardId = this.$route.params.id
-                if (boardId === board.id) {
+                let chain = this.getBoardChain(boardId)
+                if (chain.indexOf(board.id) !== -1) {
                     let style = this.lineStyle(board, 'color')
                     style['font-weight'] = 'bold'
                     return style
@@ -245,14 +307,21 @@ export default {
             }
 
             let boards = await api.board.list({
-                order: 'parent_id.asc,weight.desc,time.asc' // 权重从高到低，时间从先到后
+                order: 'parent_id.desc,weight.desc,time.asc' // 权重从高到低，时间从先到后
             })
             if (boards.code === api.retcode.SUCCESS) {
                 let lst = []
                 this.boardInfoMap = {}
                 for (let i of boards.data.items) {
+                    i.subboards = []
+                    for (let j of boards.data.items) {
+                        if (j.parent_id === i.id) i.subboards.push(j)
+                    }
+
                     this.boardInfoMap[i.id] = i
-                    lst.push(i)
+                    if (!i.parent_id) {
+                        lst.push(i)
+                    }
                 }
                 this.boardList = lst
             }
