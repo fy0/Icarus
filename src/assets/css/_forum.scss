@@ -41,6 +41,15 @@
     .avatar {
         align-self: center;
     }
+
+    .append-icons {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        color: rgb(102, 102, 102);
+        /* 第一项一度为 0，忘记当时的想法了 */
+        padding: 10px 10px 10px 10px;
+    }
 }
 
 
@@ -59,6 +68,8 @@
 
     h2 {
         font-size: 1em;
+        // 注：由于不明原因，带图标时比不带高1px，因此强行统一成更高的那个
+        min-height: 29.8px;
     }
 
     .name {

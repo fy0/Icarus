@@ -50,6 +50,9 @@
                                     <span> 发布于 <ic-time :timestamp="i.time" /></span>
                                 </p>
                             </div>
+                            <div class="append-icons">
+                                <i v-if="i.sticky_weight" class="mdi-icarus icon-pin" title="置顶" />
+                            </div>
                         </div>
                         <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
                             <div class="count-block" style="flex: 4 0 0;">
@@ -299,10 +302,11 @@ export default {
             let page = 1
 
             // 具体板块
-            if (this.$route.name === 'forum_board') {
+            if (this.isBoard) {
                 baseQuery['board_id'] = params.id
                 page = params.page
-            } else if (this.$route.name === 'forum_main') {
+            } else {
+                baseQuery['sticky_weight.ne'] = 5
                 page = params.page
             }
 
@@ -327,7 +331,7 @@ export default {
             }
 
             let query = this.$route.query
-            let order = 'weight.desc, update_time.desc' // 权重降序（希望以后能做到无视置顶权重<5的置顶）
+            let order = 'weight.desc, update_time.desc' // 权重降序
 
             if (query.type === '2') {
                 order = 'update_time.desc, time.desc' // 更新时间降序
@@ -337,12 +341,30 @@ export default {
                 order = 'time.desc' // 发布时间降序
             }
 
+            if (this.isBoard) {
+                // 在板块模式下加入当前板块的置顶
+                order = 'sticky_weight.desc, ' + order
+            }
+
             let retList = await api.topic.list(Object.assign(baseQuery, {
                 order: order,
-                select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time',
+                select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
                 loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             }), page)
             if (retList.code === api.retcode.SUCCESS) {
+                if (!this.isBoard && (!page || page === 1)) {
+                    // 首页
+                    let retStickyTopics = await api.topic.list({
+                        sticky_weight: 5, // 全局置顶项
+                        order: order,
+                        select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
+                        loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                    })
+                    if (retStickyTopics.code === api.retcode.SUCCESS) {
+                        retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
+                    }
+                }
+
                 this.topics = retList.data
                 this.loading = false
                 return
