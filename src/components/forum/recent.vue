@@ -11,7 +11,7 @@
                         <span class="title">全部主题</span>
                     </router-link>
                     <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
-                        <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j)"></div>
+                        <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                         <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
                     </router-link>
                 </div>
@@ -45,7 +45,7 @@
                                     </span>
                                 </h2>
                                 <p>
-                                    <router-link class="board-badge" :style="lineStyleBG(i.board_id)" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link>
+                                    <router-link class="board-badge" :style="lineStyleBG(i.board_id)" :to="{ name: 'forum_board', params: {id: i.board_id} }">{{getBoardInfo(i.board_id).name}}</router-link>
                                     <user-link :user="i.user_id" />
                                     <span> 发布于 <ic-time :timestamp="i.time" /></span>
                                 </p>
@@ -167,7 +167,6 @@ import state from '@/state.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns2.vue'
 import nprogress from 'nprogress/nprogress.js'
-import Color from 'color'
 
 let pageOneHack = function (to, from, next) {
     // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
@@ -194,16 +193,16 @@ export default {
         }
     },
     computed: {
-        postNewTopicStyle: async function () {
-            let board = await $.getBoardInfoById(this.boardId)
-            if (board) {
-                let style = this.lineStyle(board, 'background-color')
+        postNewTopicStyle: function () {
+            let exInfo = $.getBoardExInfoById(this.boardId)
+            if (this.isBoard && (!this.state.boards.loaded)) {
+                return {'background-color': '#777'}
+            }
+            if (exInfo) {
                 if (this.mouseOverPostNewBtn) {
-                    // darken 10% when hover
-                    let color = Color(style['background-color'])
-                    style['background-color'] = color.darken(0.1).string()
+                    return {'background-color': exInfo.colorHover}
                 }
-                return style
+                return {'background-color': exInfo.color}
             }
         },
         isBoard: function () {
@@ -211,22 +210,23 @@ export default {
         },
         board: function () {
             let bid = this.boardId
-            if (bid) return this.boardInfoMap[bid]
+            if (bid) return $.getBoardInfoById(bid)
         },
         boardId: function () {
             if (this.isBoard) {
                 return this.$route.params.id
             }
         },
-        dymBoardList: async function () {
+        dymBoardList: function () {
             let lst = []
             let curBoardId = this.boardId
-            let chain = await $.getBoardChainById(curBoardId)
+            let chain = $.getBoardChainById(curBoardId)
             let topBoardId = chain[chain.length - 1]
 
             let pushSubBoards = (i, chainIndex) => {
                 let topId = chain[--chainIndex]
-                for (let j of $.getBoardExInfoById(i.id).subboards) {
+                // $.getBoardExInfoById(i.id)
+                for (let j of this.state.boards.exInfoMap[i.id].subboards) {
                     lst.push(j)
                     if (j.id === topId) {
                         pushSubBoards(j, chainIndex)
@@ -241,6 +241,7 @@ export default {
                     pushSubBoards(i, chain.length - 1)
                 }
             }
+
             return lst
         }
     },
@@ -249,22 +250,24 @@ export default {
         isAdmin: function () {
             return $.isAdmin()
         },
-        boardNavTitle: async function (board) {
+        boardNavTitle: function (board) {
             if (board.parent_id) {
-                let chain = await $.getBoardChainById(board.id)
+                let chain = $.getBoardChainById(board.id)
                 let prefix = _.times(chain.length - 2, () => '>').join('')
                 return `${prefix} ${board.name}`
             }
             return board.name
         },
-        boardNavStyle: async function (board) {
+        boardNavStyle: function (board) {
             if (this.isBoard) {
                 let boardId = this.$route.params.id
-                let chain = await $.getBoardChainById(boardId)
+                let chain = $.getBoardChainById(boardId)
                 if (chain.indexOf(board.id) !== -1) {
-                    let style = this.lineStyle(board, 'color')
-                    style['font-weight'] = 'bold'
-                    return style
+                    let exInfo = $.getBoardExInfoById(board.id)
+                    return {
+                        'color': exInfo.color,
+                        'font-weight': 'bold'
+                    }
                 }
             }
         },
@@ -275,11 +278,14 @@ export default {
         itemHover: function (id) {
             this.hoverId = id
         },
-        lineStyle: function (board, key = 'border-left-color') {
-            return $.lineStyle(board, key)
+        lineStyle: function (boardId, key = 'border-left-color') {
+            return $.lineStyleById(boardId, key)
         },
-        lineStyleBG: function (board) {
-            return $.lineStyle(board, 'background-color')
+        lineStyleBG: function (boardId) {
+            return $.lineStyleById(boardId, 'background-color')
+        },
+        getBoardInfo: function (boardId) {
+            return $.getBoardInfoById(boardId)
         },
         fetchData: async function () {
             this.loading = true
@@ -318,7 +324,7 @@ export default {
             let retList = await api.topic.list(Object.assign(baseQuery, {
                 order: order,
                 select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
             }), page)
             if (retList.code === api.retcode.SUCCESS) {
                 if (!this.isBoard && (!page || page === 1)) {
@@ -327,7 +333,7 @@ export default {
                         sticky_weight: 5, // 全局置顶项
                         order: order,
                         select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                        loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                        loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
                     })
                     if (retStickyTopics.code === api.retcode.SUCCESS) {
                         retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)

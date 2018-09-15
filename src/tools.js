@@ -175,6 +175,14 @@ $.lineStyle = function (board, key = 'border-left-color') {
     return { [key]: $.boardColor(board) }
 }
 
+$.lineStyleById = function (boardId, key = 'border-left-color') {
+    let exInfo = $.getBoardExInfoById(boardId)
+    if (exInfo) {
+        return { [key]: exInfo.color }
+    }
+    return {}
+}
+
 $.message = function (type, text, timeout = 3000) {
     // type: default, secondary, success, warning, error
     let convert = {
@@ -302,12 +310,9 @@ $.atConvert2 = function (text) {
     return text.replace(/\x01([a-zA-Z0-9]+)-(.+?)\x01/g, '@$2')
 }
 
-$.getBoardChainById = async function (curBoardId, forceRefresh = false) {
+$.getBoardChainById = function (curBoardId, forceRefresh = false) {
     // 获取当前板块的所有父节点（包括自己）
     if (!state.boards.loaded) {
-        await $.getBoardsInfo()
-        let exi = state.boards.exInfoMap[curBoardId]
-        if (exi) return exi.chain
         return []
     }
     if (!forceRefresh) {
@@ -328,13 +333,14 @@ $.getBoardChainById = async function (curBoardId, forceRefresh = false) {
     return lst
 }
 
-$.getBoardInfoById = async function (id) {
-    if (!state.boards.loaded) await $.getBoardsInfo()
+$.getBoardInfoById = function (id) {
+    // 因为要在 computed 中使用，所以不能为 async
+    // if (!state.boards.loaded) await $.getBoardsInfo()
     return state.boards.infoMap[id]
 }
 
-$.getBoardExInfoById = async function (id) {
-    if (!state.boards.loaded) await $.getBoardsInfo()
+$.getBoardExInfoById = function (id) {
+    // if (!state.boards.loaded) await $.getBoardsInfo()
     return state.boards.exInfoMap[id]
 }
 
@@ -360,13 +366,15 @@ $.getBoardsInfo = async function (forceRefresh = false) {
             }
 
             let color = $.boardColor(i)
-            state.boards.exInfoMap[i.id] = {
+            Vue.set(state.boards.exInfoMap, i.id, {
                 'subboards': subboards,
                 'color': color,
+                // darken 10% when hover
                 'colorHover': Color(color).darken(0.1).string()
-            }
+            })
         }
 
+        // Vue.set(state.boards, 'lst', lst)
         state.boards.lst = lst
         state.boards.rawLst = boards.data.items
         state.boards.infoMap = infoMap
