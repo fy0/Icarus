@@ -108,7 +108,6 @@ router.beforeEach(async function (to, from, next) {
     let toUrl = null
     state.loading = 1
     nprogress.start()
-    $.tpClear()
 
     // 重置对话框
     state.dialog.topicManage = null
