@@ -298,7 +298,16 @@ export default {
 
             // 具体板块
             if (this.isBoard) {
-                baseQuery['board_id'] = params.id
+                // 若是要求包含子板块内容
+                if (localStorage.getItem('sbt')) {
+                    let lst = [params.id]
+                    for (let i of $.getBoardExInfoById(params.id).subboardsAll) {
+                        lst.push(i.id)
+                    }
+                    baseQuery['board_id.in'] = JSON.stringify(lst)
+                } else {
+                    baseQuery['board_id'] = params.id
+                }
                 page = params.page
             } else {
                 baseQuery['sticky_weight.ne'] = 5

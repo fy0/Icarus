@@ -2,6 +2,10 @@
 <div class="ic-topbtns-box">
     <div class="ic-topbtns">
         <router-link class="ic-btn smoke" :to="{ name: 'forum_main', params: {page: 1} }" :class="navActiveStrict('forum_main')">权重排序</router-link>
+        <label>
+            <input type="checkbox" v-model="withSubBoardsTopic"/>
+            <span>包含子板块内容</span>
+        </label>
     </div>
     <div v-if="state.user" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.reputation}}</span> -->
@@ -98,8 +102,35 @@ export default {
     data () {
         return {
             state,
+            ready: false,
+            withSubBoardsTopic: false,
             showCheckedHits1: false,
             showCheckedHits2: false
+        }
+    },
+    created: function () {
+        if (localStorage.getItem('sbt')) {
+            this.withSubBoardsTopic = true
+        }
+        this.$nextTick(() => {
+            this.ready = true
+        })
+    },
+    watch: {
+        'withSubBoardsTopic': function (newVal, oldVal) {
+            if (this.ready) {
+                localStorage.removeItem('sbt', newVal)
+                if (this.withSubBoardsTopic) localStorage.setItem('sbt', newVal)
+
+                let newQuery = _.clone(this.$route.query)
+                newQuery.sbt = Math.ceil(Math.random() * 10000000)
+                this.$router.replace({
+                    name: this.$route.name,
+                    params: this.$route.params,
+                    query: newQuery
+                })
+            }
+            // router.push({ path: 'register', query: { plan: 'private' }})
         }
     },
     computed: {

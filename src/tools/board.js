@@ -88,6 +88,7 @@ $.getBoardsInfo = async function (forceRefresh = false) {
             let color = $.boardColor(i)
             state.boards.exInfoMap[i.id] = {
                 'subboards': subboards,
+                'subboardsAll': [],
                 'color': color,
                 // darken 10% when hover
                 'colorHover': Color(color).darken(0.1).string()
@@ -100,7 +101,17 @@ $.getBoardsInfo = async function (forceRefresh = false) {
 
         state.boards.loaded = true
         for (let i of boards.data.items) {
-            state.boards.exInfoMap[i.id].chain = $.getBoardChainById(i.id, true)
+            let exInfo = state.boards.exInfoMap[i.id]
+            // 构造 subboardsAll
+            let func = (subboards) => {
+                for (let j of subboards) {
+                    exInfo.subboardsAll.push(j)
+                    func(state.boards.exInfoMap[j.id].subboards)
+                }
+            }
+            func(exInfo.subboards)
+            // 构造 chain
+            exInfo.chain = $.getBoardChainById(i.id, true)
         }
     }
 }
