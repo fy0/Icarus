@@ -15,13 +15,23 @@
                 <span style="margin-right: 5px">💰 {{state.user.credit}}</span>
             </div>
         </div>
-        <span class="ic-btn outline orange" @click="checkIn" v-if="!checkedIn">签到</span>
-        <span class="ic-btn orange" v-else>今日已签 x{{state.user.check_in_his}}</span>        
+        <span class="ic-btn outline orange checkin" @click="checkIn" v-if="!checkedIn">签到</span>
+        <span class="ic-btn outline success checkin" v-else 
+            @mousedown="showCheckedHits1 = !showCheckedHits1" @mouseover="showCheckedHits2 = true" @mouseout="showCheckedHits2 = false"
+            >{{checkedInText}}</span>
     </div>
 </div>
 </template>
 
 <style lang="scss" scoped>
+.ic-btn.checkin {
+    min-width: 58px;
+    max-width: 58px;
+    white-space: nowrap;
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .char-info {
     display: inline-flex;
     flex-direction: column;
@@ -87,7 +97,9 @@ import api from '@/netapi.js'
 export default {
     data () {
         return {
-            state
+            state,
+            showCheckedHits1: false,
+            showCheckedHits2: false
         }
     },
     computed: {
@@ -96,6 +108,12 @@ export default {
         },
         checkedIn: function () {
             return state.user && state.user['last_check_in_time'] >= state.misc.extra.midnight_time
+        },
+        checkedInText: function () {
+            if (this.showCheckedHits1 || this.showCheckedHits2) {
+                return `x ${state.user.check_in_his}`
+            }
+            return '已签'
         }
     },
     methods: {
