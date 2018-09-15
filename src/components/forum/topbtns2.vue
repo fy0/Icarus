@@ -16,7 +16,7 @@
             </div>
         </div>
         <span class="ic-btn outline orange checkin" @click="checkIn" v-if="!checkedIn">签到</span>
-        <span class="ic-btn outline success checkin" v-else 
+        <span class="ic-btn outline secondary checkin" v-else 
             @mousedown="showCheckedHits1 = !showCheckedHits1" @mouseover="showCheckedHits2 = true" @mouseout="showCheckedHits2 = false"
             >{{checkedInText}}</span>
     </div>

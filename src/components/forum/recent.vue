@@ -189,15 +189,13 @@ export default {
             state,
             hoverId: null,
             loading: true,
-            boardList: [],
-            boardInfoMap: {},
             topics: null,
             mouseOverPostNewBtn: false
         }
     },
     computed: {
-        postNewTopicStyle: function () {
-            let board = this.boardInfoMap[this.boardId]
+        postNewTopicStyle: async function () {
+            let board = await $.getBoardInfoById(this.boardId)
             if (board) {
                 let style = this.lineStyle(board, 'background-color')
                 if (this.mouseOverPostNewBtn) {
@@ -220,15 +218,15 @@ export default {
                 return this.$route.params.id
             }
         },
-        dymBoardList: function () {
+        dymBoardList: async function () {
             let lst = []
             let curBoardId = this.boardId
-            let chain = this.getBoardChain(curBoardId)
+            let chain = await $.getBoardChainById(curBoardId)
             let topBoardId = chain[chain.length - 1]
 
             let pushSubBoards = (i, chainIndex) => {
                 let topId = chain[--chainIndex]
-                for (let j of i.subboards) {
+                for (let j of $.getBoardExInfoById(i.id).subboards) {
                     lst.push(j)
                     if (j.id === topId) {
                         pushSubBoards(j, chainIndex)
@@ -236,7 +234,7 @@ export default {
                 }
             }
 
-            for (let i of this.boardList) {
+            for (let i of this.state.boards.lst) {
                 lst.push(i)
 
                 if (i.id === topBoardId) {
@@ -251,30 +249,18 @@ export default {
         isAdmin: function () {
             return $.isAdmin()
         },
-        getBoardChain: function (curBoardId) {
-            let lst = [curBoardId]
-            if (!curBoardId) return lst
-            if (!Object.keys(this.boardInfoMap).length) return lst
-            while (true) {
-                let pid = this.boardInfoMap[curBoardId].parent_id
-                if (!pid) break
-                lst.push(pid)
-                curBoardId = pid
-            }
-            return lst
-        },
-        boardNavTitle: function (board) {
+        boardNavTitle: async function (board) {
             if (board.parent_id) {
-                let chain = this.getBoardChain(board.id)
+                let chain = await $.getBoardChainById(board.id)
                 let prefix = _.times(chain.length - 2, () => '>').join('')
                 return `${prefix} ${board.name}`
             }
             return board.name
         },
-        boardNavStyle: function (board) {
+        boardNavStyle: async function (board) {
             if (this.isBoard) {
                 let boardId = this.$route.params.id
-                let chain = this.getBoardChain(boardId)
+                let chain = await $.getBoardChainById(boardId)
                 if (chain.indexOf(board.id) !== -1) {
                     let style = this.lineStyle(board, 'color')
                     style['font-weight'] = 'bold'
@@ -301,6 +287,9 @@ export default {
             let params = this.$route.params
             let page = 1
 
+            // 获取全局板块信息
+            await $.getBoardsInfo()
+
             // 具体板块
             if (this.isBoard) {
                 baseQuery['board_id'] = params.id
@@ -308,26 +297,6 @@ export default {
             } else {
                 baseQuery['sticky_weight.ne'] = 5
                 page = params.page
-            }
-
-            let boards = await api.board.list({
-                order: 'parent_id.desc,weight.desc,time.asc' // 权重从高到低，时间从先到后
-            })
-            if (boards.code === api.retcode.SUCCESS) {
-                let lst = []
-                this.boardInfoMap = {}
-                for (let i of boards.data.items) {
-                    i.subboards = []
-                    for (let j of boards.data.items) {
-                        if (j.parent_id === i.id) i.subboards.push(j)
-                    }
-
-                    this.boardInfoMap[i.id] = i
-                    if (!i.parent_id) {
-                        lst.push(i)
-                    }
-                }
-                this.boardList = lst
             }
 
             let query = this.$route.query

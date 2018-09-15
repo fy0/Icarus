@@ -43,6 +43,13 @@ let state = {
         userSetAvatar: false,
         userSetAvatarData: null
     },
+    boards: { // 板块信息
+        loaded: false,
+        lst: [], // 带层级的折叠列表
+        rawLst: [], // 不带层级的平铺列表
+        infoMap: {}, // 从服务器获取的信息
+        exInfoMap: {} // 自行计算总结的信息
+    },
     unread: 0,
     unreadAlerted: false,
     reset: () => {
