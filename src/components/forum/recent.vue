@@ -6,11 +6,16 @@
                 <!-- <span class="post-new-topic">板块列表</span> -->
                 <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
                 <div class="ul-boards">
-                    <router-link :to="{ name: 'index'}" class="item" :class="{'showAll': !isBoard}" style="margin: 10px 0 10px 0">
+                    <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 10px">
                         <div class="sign"></div>
                         <span class="title">全部主题</span>
                     </router-link>
-                    <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id} }">
+                    <label v-if="isBoard" class="with-subboard-topic">
+                        <input type="checkbox" v-model="withSubBoardTopic"/>
+                        <span>包含子板块内容</span>
+                    </label>
+                    <div style="margin-bottom: 3px;"></div>
+                    <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
                         <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                         <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
                     </router-link>
@@ -159,6 +164,14 @@ $left-nav-padding-right: 30px;
     width: 100%;
     display: block;
 }
+
+.with-subboard-topic {
+    display:block;
+    font-size: 14px;
+    user-select: none;
+    margin-bottom: 7px;
+    color: $gray-600;
+}
 </style>
 
 <script>
@@ -177,7 +190,7 @@ let pageOneHack = function (to, from, next) {
             nprogress.done()
             return next(false)
         }
-        return next({name: 'index'})
+        return next({name: 'index', query: to.query})
     }
     next()
 }
@@ -189,6 +202,8 @@ export default {
             hoverId: null,
             loading: true,
             topics: null,
+            withSubBoardTopic: false,
+            withSubBoardTopicOptionReady: false,
             mouseOverPostNewBtn: false
         }
     },
@@ -293,6 +308,14 @@ export default {
             let params = this.$route.params
             let page = 1
 
+            // 包含子板块内容
+            if (localStorage.getItem('sbt')) {
+                this.withSubBoardTopic = true
+            }
+            this.$nextTick(() => {
+                this.withSubBoardTopicOptionReady = true
+            })
+
             // 获取全局板块信息
             await $.getBoardsInfo()
 
@@ -317,12 +340,20 @@ export default {
             let query = this.$route.query
             let order = 'weight.desc, update_time.desc' // 权重降序
 
-            if (query.type === '2') {
-                order = 'update_time.desc, time.desc' // 更新时间降序
+            if (query.type === '2' || query.type === 2) {
+                // 最近更新：更新时间降序
+                order = 'update_time.desc, time.desc'
             }
 
-            if (query.type === '3') {
-                order = 'time.desc' // 发布时间降序
+            if (query.type === '3' || query.type === 3) {
+                // 最近发布：发布时间降序
+                order = 'time.desc'
+            }
+
+            if (query.type === '4' || query.type === 4) {
+                // 最近回复：回复时间排序
+                // 好吧，这个好像暂时还实现不了
+                order = 'update_time.desc, time.desc'
             }
 
             if (this.isBoard) {
@@ -330,11 +361,11 @@ export default {
                 order = 'sticky_weight.desc, ' + order
             }
 
-            let retList = await api.topic.list(Object.assign(baseQuery, {
+            let retList = await api.topic.list(Object.assign({
                 order: order,
                 select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
                 loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
-            }), page)
+            }, baseQuery), page)
             if (retList.code === api.retcode.SUCCESS) {
                 if (!this.isBoard && (!page || page === 1)) {
                     // 首页
@@ -371,7 +402,14 @@ export default {
     },
     watch: {
         // 如果路由有变化，会再次执行该方法
-        '$route': 'fetchData'
+        '$route': 'fetchData',
+        'withSubBoardTopic': async function (newVal, oldVal) {
+            if (this.withSubBoardTopicOptionReady) {
+                localStorage.removeItem('sbt', newVal)
+                if (newVal) localStorage.setItem('sbt', 1)
+                await this.fetchData()
+            }
+        }
     },
     components: {
         TopBtns

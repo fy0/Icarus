@@ -1,11 +1,12 @@
 <template>
 <div class="ic-topbtns-box">
     <div class="ic-topbtns">
-        <router-link class="ic-btn smoke" :to="{ name: 'forum_main', params: {page: 1} }" :class="navActiveStrict('forum_main')">权重排序</router-link>
-        <label>
-            <input type="checkbox" v-model="withSubBoardsTopic"/>
-            <span>包含子板块内容</span>
-        </label>
+        <div>
+            <button class="ic-btn smoke btn-order" @blur="showOrderMenu = false" @click="showOrderMenu = !showOrderMenu">{{orders[0][1]}}</button>
+            <div v-if="showOrderMenu" class="order-menu">
+                <button class="ic-btn smoke" @mousedown="changeOrderType(i[0])" v-for="i in orders.slice(1)" :key="i[0]">{{i[1]}}</button>
+            </div>
+        </div>
     </div>
     <div v-if="state.user" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.reputation}}</span> -->
@@ -92,6 +93,28 @@
         }
     }
 }
+
+.btn-order {
+    &::after {
+        content: "\203A";
+        position: absolute;
+        transform: rotate(90deg);
+        margin-left: 9px;
+        font-size: 24px;
+    }
+    padding-right: 20px;
+}
+
+.order-menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+
+    * {
+        padding-right: 20px;
+    }
+}
 </style>
 
 <script>
@@ -102,38 +125,23 @@ export default {
     data () {
         return {
             state,
-            ready: false,
             withSubBoardsTopic: false,
+            showOrderMenu: false,
             showCheckedHits1: false,
             showCheckedHits2: false
         }
     },
-    created: function () {
-        if (localStorage.getItem('sbt')) {
-            this.withSubBoardsTopic = true
-        }
-        this.$nextTick(() => {
-            this.ready = true
-        })
-    },
-    watch: {
-        'withSubBoardsTopic': function (newVal, oldVal) {
-            if (this.ready) {
-                localStorage.removeItem('sbt', newVal)
-                if (this.withSubBoardsTopic) localStorage.setItem('sbt', newVal)
-
-                let newQuery = _.clone(this.$route.query)
-                newQuery.sbt = Math.ceil(Math.random() * 10000000)
-                this.$router.replace({
-                    name: this.$route.name,
-                    params: this.$route.params,
-                    query: newQuery
-                })
-            }
-            // router.push({ path: 'register', query: { plan: 'private' }})
-        }
-    },
     computed: {
+        orders: function () {
+            let query = this.$route.query
+            let names = ['权重降序', '最近更新', '最近发布']
+            let func = (order) => [order, names[order - 1]]
+            switch (query.type) {
+            case '2': case 2: return _.map([2, 1, 3], func)
+            case '3': case 3: return _.map([3, 1, 2], func)
+            default: return _.map([1, 2, 3], func)
+            }
+        },
         levelInfo: function () {
             return $.getLevelByExp(this.state.user.exp)
         },
@@ -148,6 +156,15 @@ export default {
         }
     },
     methods: {
+        changeOrderType: function (type) {
+            let newQuery = _.clone(this.$route.query)
+            newQuery.type = type
+            this.$router.replace({
+                name: this.$route.name,
+                params: this.$route.params,
+                query: newQuery
+            })
+        },
         checkIn: async function () {
             let ret = await api.user.checkIn()
             state.user['last_check_in_time'] = ret.data.time

@@ -118,12 +118,18 @@ export default {
     },
     methods: {
         toInfo: function (page) {
-            return {
+            let info = {
                 name: this.routeName,
                 [this.linkMethod]: {
                     [this.pageKey]: page
                 }
             }
+            if (this.linkMethod === 'query') {
+                _.assign(info.query, this.$route.query)
+            } else {
+                info.query = this.$route.query
+            }
+            return info
         }
     }
 }
