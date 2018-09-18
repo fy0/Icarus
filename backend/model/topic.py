@@ -28,7 +28,8 @@ class Topic(PostModel):
     awesome = IntegerField(default=0)  # 精华文章
     sticky_weight = IntegerField(index=True, default=0)  # 置顶权重
     weight = IntegerField(index=True, default=0)  # 排序权值，越大越靠前，默认权重与id相同
-    update_time = BigIntegerField(index=True, null=True, default=0)  # 更新时间，即发布的时间或最后被回复的时间
+    update_time = BigIntegerField(index=True, null=True, default=None)  # 更新时间，即发布的时间或最后被回复的时间
+    # comment_time = BigIntegerField(index=True, null=True, default=None)  # 更新时间，即发布的时间或最后被回复的时间
 
     # object_type = OBJECT_TYPES.TOPIC
 
@@ -50,3 +51,9 @@ class Topic(PostModel):
         self.weight = min(self.weight + 1, int(await redis.get(RK_TOPIC_WEIGHT_MAX)))
         self.update_time = int(time.time())
         self.save()
+
+    '''
+    async def comment_update(self):
+        self.comment_time = int(time.time())
+        self.save()
+    '''

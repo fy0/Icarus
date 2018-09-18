@@ -134,7 +134,7 @@ export default {
     computed: {
         orders: function () {
             let query = this.$route.query
-            let names = ['权重降序', '最近更新', '最近发布']
+            let names = ['默认排序', '更新时间', '发布时间']
             let func = (order) => [order, names[order - 1]]
             switch (query.type) {
             case '2': case 2: return _.map([2, 1, 3], func)

@@ -275,14 +275,21 @@ export default {
         },
         boardNavStyle: function (board) {
             if (this.isBoard) {
-                let boardId = this.$route.params.id
-                let chain = $.getBoardChainById(boardId)
+                let chain = $.getBoardChainById(this.boardId)
                 if (chain.indexOf(board.id) !== -1) {
                     let exInfo = $.getBoardExInfoById(board.id)
                     return {
                         'color': exInfo.color,
                         'font-weight': 'bold'
                     }
+                }
+
+                // 如果上一级被选中且开启了“包含子版块内容”
+                if (this.withSubBoardTopic && board.parent_id === this.boardId) {
+                    // let exInfo = $.getBoardExInfoById(board.id)
+                    // return {'color': exInfo.color}
+                    // 本来是各种颜色，但是花花绿绿怪怪的，改成一个色
+                    return {'color': 'rgb(126, 140, 201)'}
                 }
             }
         },
