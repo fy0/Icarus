@@ -1,6 +1,16 @@
 <template>
+<div>
+    
+                <div v-if="isBoard" class="ic-paper board-header" :style="lineStyleBG(board.id)" style="margin-bottom: 30px; margin-top: -15px; width: 100%">
+                    <div class="left">
+                        <h3 class="name">{{ board.name }}</h3>
+                        <div class="brief">{{ board.brief }}</div>
+                    </div>
+                </div>
+
 <div class="ic-container forum-box">
     <div class="wrapper">
+        
         <div class="left-nav">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
@@ -93,6 +103,7 @@
     </div>
     <dialog-topic-manage />
 </div>
+</div>
 </template>
 
 <style scoped lang="scss">
@@ -171,6 +182,15 @@ $left-nav-padding-right: 30px;
     user-select: none;
     margin-bottom: 7px;
     color: $gray-600;
+}
+
+.board-header {
+    background: #1f8dd6;
+    padding: 2em 1em;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    text-align: center;
 }
 </style>
 
