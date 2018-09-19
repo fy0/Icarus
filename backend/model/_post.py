@@ -13,12 +13,11 @@ from model import BaseModel, MyTimestampField
 
 class POST_STATE(StateObject):
     DEL = 0
-    INACTIVE = 10 # 未激活
     APPLY = 20  # 等待发布审核
     CLOSE = 30  # 禁止回复
     NORMAL = 50
 
-    txt = {DEL: "删除", INACTIVE: '未激活', APPLY: '待审核', CLOSE: "关闭", NORMAL: "正常"}
+    txt = {DEL: "删除", APPLY: '待审核', CLOSE: "关闭", NORMAL: "正常"}
 
 
 class POST_VISIBLE(StateObject):

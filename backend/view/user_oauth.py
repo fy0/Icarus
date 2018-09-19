@@ -70,7 +70,7 @@ class UserOAuthView(UserMixin, PeeweeView):
                                                   'login_id': account.login_id, 'platform': account.platform})
             else:
                 ins = [{'login_id': response['id'], 'time': time.time(), 'platform': 'github',
-                        'state': POST_STATE.INACTIVE}]
+                        'state': POST_STATE.APPLY}]
                 if not isinstance(config.LONG_ID_GENERATOR, config.AutoGenerator):
                     ins[0]['id'] = config.LONG_ID_GENERATOR().to_bin()
 
@@ -94,7 +94,7 @@ class UserOAuthView(UserMixin, PeeweeView):
             print('keyerror')
 
         if account:
-            if post['state'] == str(POST_STATE.INACTIVE):
+            if post['state'] == str(POST_STATE.APPLY):
                 # 该post['id']是user表中的id
                 post_user_id = to_bin(post['id'])
                 UserOAuth.update(user_id=post_user_id, state=POST_STATE.NORMAL).where(

@@ -9,7 +9,7 @@ from typing import Union
 from peewee import *
 import config
 from lib.utils import get_today_start_timestamp
-from model._post import PostModel
+from model._post import PostModel, POST_STATE
 from model.log_manage import ManageLog
 from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID, \
     RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID, RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID
@@ -51,7 +51,7 @@ class User(PostModel, BaseUser):
     location = TextField(null=True)  # 所在地
 
     # level = IntegerField(index=True)  # 用户级别
-    group = IntegerField(index=True)  # 用户权限组
+    group = IntegerField(index=True, default=USER_GROUP.NORMAL)  # 用户权限组
 
     key = BlobField(index=True, null=True)
     key_time = MyTimestampField()  # 最后登录时间
@@ -86,6 +86,8 @@ class User(PostModel, BaseUser):
     @property
     def roles(self):
         ret = [None]
+        if self.state == POST_STATE.DEL:
+            return ret
         if self.group >= USER_GROUP.ADMIN:
             ret.append('admin')
         if self.group >= USER_GROUP.SUPERUSER:

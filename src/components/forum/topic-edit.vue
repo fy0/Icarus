@@ -107,6 +107,7 @@ export default {
             topicInfo: {
                 title: '',
                 board: null,
+                board_id: null,
                 content: ''
             },
 

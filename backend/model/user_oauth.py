@@ -8,7 +8,6 @@ from model import BaseModel, MyTimestampField, CITextField, db, SerialField, use
 
 
 class UserOAuth(LongIdPostModel):
-
     # 表字段
     login_id = IntegerField(null=False)  # 平台用户的id
     platform = TextField(null=True)  # 平台  各平台用户id可能会一样，只能作为对应平台的唯一标识。
