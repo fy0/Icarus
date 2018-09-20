@@ -1,12 +1,12 @@
 <template>
 <div>
 
-                <div v-if="isBoard" class="ic-paper board-header" :style="lineStyleBG(board.id)" style="margin-bottom: 30px; margin-top: -15px; width: 100%">
-                    <div class="left">
-                        <h3 class="name">{{ board.name }}</h3>
-                        <div class="brief">{{ board.brief }}</div>
-                    </div>
-                </div>
+<div v-if="false" class="ic-paper board-header" :style="lineStyleBG(board.id)" style="margin-bottom: 30px; margin-top: -15px; width: 100%">
+    <div class="left">
+        <h3 class="name">{{ board.name }}</h3>
+        <div class="brief">{{ board.brief }}</div>
+    </div>
+</div>
 
 <div class="ic-container forum-box">
     <div class="wrapper">
@@ -16,7 +16,7 @@
                 <!-- <span class="post-new-topic">板块列表</span> -->
                 <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
                 <div class="ul-boards">
-                    <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 10px">
+                    <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
                         <div class="sign"></div>
                         <span class="title">全部主题</span>
                     </router-link>
@@ -73,11 +73,17 @@
                                         <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
                                     </span>
                                 </h2>
-                                <p class="topic-info" style="margin-left: 0px">
+                                <div v-if="false" style="display: flex; align-items: center; color: #777; font-size: 14px;">
+                                    <user-link class="author" :user="i.user_id" style="margin-right: 10px" />
+                                    <span class="time"><ic-time :timestamp="i.time" /></span>
+                                </div>
+                                <p class="topic-info" style="margin-left: 0px; display: flex; align-items: center;">
                                     <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
                                         <div :style="lineStyleBG(i.board_id)" class="sign"></div>
                                         <span>{{getBoardInfo(i.board_id).name}}</span>
                                     </router-link>
+                                    <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
+                                    <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
                                     <div v-if="false" style="display: flex; align-items: center; font-size: 14px">
                                         <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
                                         <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
@@ -89,7 +95,7 @@
                             </div>
                         </div>
                         <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
-                            <div class="count-block" style="flex: 4 0 0%;">
+                            <div class="count-block" style="flex: 4 0 0%;" v-if="false">
                                 <div style="color: #777; font-size: 14px;">
                                     <div v-if="true" style="display: flex; align-items: center; justify-content: center;">
                                         <user-link class="author" :user="i.user_id" style="margin-right: 10px" />
@@ -102,7 +108,7 @@
                                     <div>{{i.s.click_count}}点击 / {{i.s.comment_count}} 回复</div>
                                 </div>
                             </div>
-                            <div class="count-block" style="flex: 4 0 0%;" v-if="false">
+                            <div class="count-block" style="flex: 4 0 0%;">
                                 <div class="count">
                                     <p class="num">{{i.s.click_count}}</p>
                                     <p class="txt">点击</p>
@@ -120,7 +126,7 @@
                                 </div>
                                 <div class="post" v-else>无回复</div>
                                 <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
-                                <div v-else class="time">从未</div>
+                                <div v-else class="time">N/A</div>
                             </div>
                         </div>
                     </router-link>
@@ -184,6 +190,9 @@
     }
 }
 
+$left-nav-padding-right: 30px;
+$left-nav-sign-padding: 5px;
+
 .ul-boards {
     margin: 0;
     list-style: none;
@@ -214,12 +223,10 @@
         }
 
         .title {
-            margin-left: 3px;
+            margin-left: $left-nav-sign-padding;
         }
     }
 }
-
-$left-nav-padding-right: 30px;
 
 .left-nav-box {
     padding: 0 $left-nav-padding-right 0 0;
@@ -231,11 +238,16 @@ $left-nav-padding-right: 30px;
 }
 
 .with-subboard-topic {
-    display:block;
+    display: flex;
+    align-items: center;
     font-size: 14px;
     user-select: none;
     margin-bottom: 7px;
     color: $gray-600;
+
+    span {
+        margin-left: $left-nav-sign-padding;
+    }
 }
 
 .board-header {

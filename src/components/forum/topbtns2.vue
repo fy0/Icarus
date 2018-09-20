@@ -2,11 +2,12 @@
 <div class="ic-topbtns-box">
     <div class="ic-topbtns">
         <div>
-            <button class="ic-btn smoke btn-order" @blur="showOrderMenu = false" @click="showOrderMenu = !showOrderMenu">{{orders[0][1]}}</button>
-            <div v-if="showOrderMenu" class="order-menu">
-                <button class="ic-btn smoke" @mousedown="changeOrderType(i[0])" v-for="i in orders.slice(1)" :key="i[0]">{{i[1]}}</button>
+            <button class="ic-btn smoke outline btn-order" @blur="showOrderMenu = false" @click="showOrderMenu = !showOrderMenu">{{orders[0][1]}}</button>
+            <div v-show="showOrderMenu" class="order-menu">
+                <button class="ic-btn smoke outline option" @mousedown="changeOrderType(i[0])" v-for="i in orders.slice(1)" :key="i[0]">{{i[1]}}</button>
             </div>
         </div>
+        <div class="brief" title="板块简介" v-if="board">{{board.brief}}</div>
     </div>
     <div v-if="state.user" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.reputation}}</span> -->
@@ -29,6 +30,18 @@
 </template>
 
 <style lang="scss" scoped>
+.brief {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 20px;
+    flex: 1 0 0%;
+    word-break: break-all;
+    // 会无限撑开上级，无法给出合适的宽度，因此使用替代的多行方案
+    // max-width: 515px;
+    // white-space: nowrap;
+    color: $gray-600;
+}
+
 .ic-btn.checkin {
     min-width: 58px;
     max-width: 58px;
@@ -87,6 +100,8 @@
 
     .ic-topbtns {
         display: flex;
+        align-items: center;
+
         > a {
             display: block;
             margin-right: 6px;
@@ -102,6 +117,7 @@
         margin-left: 9px;
         font-size: 24px;
     }
+    border-width: 0.5px;
     padding-right: 20px;
 }
 
@@ -113,6 +129,18 @@
 
     * {
         padding-right: 20px;
+    }
+    
+    .ic-btn.outline.option {
+        border-width: 0.5px;
+    }
+
+    .ic-btn.outline.option:not(:hover) {
+        background-color: $light !important;
+    }
+
+    .ic-btn.outline.option:not(:first-child) {
+        border-top: none;
     }
 }
 </style>
@@ -174,6 +202,7 @@ export default {
             state.user['check_in_his'] = ret.data.check_in_his
             state.user.exp += ret.data.exp
             state.user.credit += ret.data.credit
+            this.showCheckedHits2 = true
             $.message_success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
         },
         navActiveStrict: function (...names) {
