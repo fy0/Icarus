@@ -1,6 +1,6 @@
 <template>
 <div>
-    
+
                 <div v-if="isBoard" class="ic-paper board-header" :style="lineStyleBG(board.id)" style="margin-bottom: 30px; margin-top: -15px; width: 100%">
                     <div class="left">
                         <h3 class="name">{{ board.name }}</h3>
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="right" id="board-list">
-            <top-btns></top-btns>
+            <top-btns :board="board"></top-btns>
             <loading v-if="loading"/>
             <div style="flex: 1 0 0%" v-else-if="topics && topics.items.length">
                 <!-- 放在这是为了让标题正确刷新，毕竟这部分DOM总会在发生变化时重构 -->
@@ -43,12 +43,26 @@
                 </template>
                 <div v-else v-title>全部主题 - {{state.config.title}}</div>
 
+                <div style="display: flex; margin-left: 10px" v-if="false">
+                    <span style="flex: 10 0 0%">标题</span>
+                    <span style="flex: 4 0 0%; text-align: center; display: flex">
+                        <span style="flex: 2 0 0%">点击</span>
+                        <span style="flex: 2 0 0%">回复</span>
+                    </span>
+                    <span style="flex: 5 0 0%; text-align: right;">最新回复</span>
+                </div>
+
                 <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                     <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
                         <div class="title-recent" style="flex: 10 0 0%">
                             <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
+                            <div style="font-size: 10px" v-if="false">
+                                <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
+                                <div><user-link class="author" :user="i.user_id" /></div>
+                                <span class="time"><ic-time :timestamp="i.time" /></span>
+                            </div>
                             <div class="right">
-                                <h2>
+                                <h2 style="display:flex;align-items: center;">
                                     <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                         <span>{{i.title}}</span>
                                         <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
@@ -59,10 +73,15 @@
                                         <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
                                     </span>
                                 </h2>
-                                <p>
-                                    <router-link class="board-badge" :style="lineStyleBG(i.board_id)" :to="{ name: 'forum_board', params: {id: i.board_id} }">{{getBoardInfo(i.board_id).name}}</router-link>
-                                    <user-link :user="i.user_id" />
-                                    <span> 发布于 <ic-time :timestamp="i.time" /></span>
+                                <p class="topic-info" style="margin-left: 0px">
+                                    <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
+                                        <div :style="lineStyleBG(i.board_id)" class="sign"></div>
+                                        <span>{{getBoardInfo(i.board_id).name}}</span>
+                                    </router-link>
+                                    <div v-if="false" style="display: flex; align-items: center; font-size: 14px">
+                                        <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
+                                        <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
+                                    </div>
                                 </p>
                             </div>
                             <div class="append-icons">
@@ -70,7 +89,20 @@
                             </div>
                         </div>
                         <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
-                            <div class="count-block" style="flex: 4 0 0;">
+                            <div class="count-block" style="flex: 4 0 0%;">
+                                <div style="color: #777; font-size: 14px;">
+                                    <div v-if="true" style="display: flex; align-items: center; justify-content: center;">
+                                        <user-link class="author" :user="i.user_id" style="margin-right: 10px" />
+                                        <span class="time"><ic-time :timestamp="i.time" /></span>
+                                    </div>
+                                    <router-link v-if="false" class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
+                                        <div :style="lineStyleBG(i.board_id)" class="sign"></div>
+                                        <span>{{getBoardInfo(i.board_id).name}}</span>
+                                    </router-link>                                    
+                                    <div>{{i.s.click_count}}点击 / {{i.s.comment_count}} 回复</div>
+                                </div>
+                            </div>
+                            <div class="count-block" style="flex: 4 0 0%;" v-if="false">
                                 <div class="count">
                                     <p class="num">{{i.s.click_count}}</p>
                                     <p class="txt">点击</p>
@@ -80,13 +112,13 @@
                                     <p class="txt">回复</p>
                                 </div>
                             </div>
-                            <div class="recent ic-xs-hidden ic-sm-hidden" style="flex: 5 0 0;">
+                            <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0;">
                                 <span class="line" :style="lineStyle(i.board_id)"></span>
                                 <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
-                                    <strong><user-link :user="i.s.last_comment_id.user_id" /></strong>
+                                    <strong>@<user-link :user="i.s.last_comment_id.user_id" />:</strong>
                                     <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
                                 </div>
-                                <div class="post" v-else>○ ○ ○ ○ ○</div>
+                                <div class="post" v-else>无回复</div>
                                 <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
                                 <div v-else class="time">从未</div>
                             </div>
@@ -119,14 +151,36 @@
     }
 }
 
-.board-badge {
-    padding: 8px;
-    color: $light;
-    opacity: 0.6;
-    // background-color: $gray-400;
+.topic-info {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-end;
+    justify-content: flex-start;
+    justify-items: flex-end;
 
-    &:hover {
-        color: $light;
+    .author {
+        margin-right: 20px;
+    }
+
+    .board-badge {
+        color: $dark;
+        opacity: 0.6;
+        // background-color: $gray-400;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 10px;
+        font-size: 14px;
+
+        .sign {
+            width: 10px;
+            height: 10px;
+            // border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        &:hover {
+            color: $dark;
+        }
     }
 }
 

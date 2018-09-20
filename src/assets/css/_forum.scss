@@ -36,7 +36,9 @@
 
 .board-item > .title-recent {
     display: flex;
-    flex-direction: row;    
+    flex-direction: row;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     .avatar {
         align-self: center;
@@ -57,7 +59,6 @@
 
     * {
         margin: 0px;
-        flex: 1 0 0%;
         font-weight: normal;
         white-space: nowrap;
         word-break: keep-all;
@@ -66,9 +67,13 @@
     }
 
     h2 {
-        font-size: 1em;
+        font-size: 18px;
         // 注：由于不明原因，带图标时比不带高1px，因此强行统一成更高的那个
         min-height: 29.8px;
+
+        a {
+            color: $gray-700;
+        }
     }
 
     .name {
@@ -144,6 +149,7 @@
     border-left: 4px solid #ccc;
     height: 85%;
     padding-left: 0;
+    opacity: 0.6;
 }
 
 .board-item > .detail > .recent {
