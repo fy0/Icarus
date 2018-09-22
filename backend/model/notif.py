@@ -10,6 +10,8 @@ UserNotifLastInfo 记录了多个用户最后的时间点，与用户是一对�
 """
 
 import time
+from typing import Dict
+
 from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 import config
@@ -216,14 +218,20 @@ class Notification(BaseModel):
         if cooldown and (time.time() - r.update_time < cooldown):
             return
 
-        def pack_notif(i):
+        def pack_notif(i: Dict):
             i.update({
                 'id': config.LONG_ID_GENERATOR().to_bin()
             })
+            # 注意，insert_many 要求所有列一致，因此不能出现有的数据独有a列，有的数据独有b列
+            # 要都有才行，因此全部进行默认填充
+            i.setdefault('related_type', None)
+            i.setdefault('related_id', None)
+            i.setdefault('brief', None)
+            i.setdefault('data', None)
             return i
 
         newlst = r.get_notifications(True)
-        newlst.sort(key = lambda x: x['time'], reverse=True)
+        newlst.sort(key=lambda x: x['time'], reverse=True)
         newlst = list(map(pack_notif, newlst))
 
         if newlst:
