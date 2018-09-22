@@ -5,7 +5,7 @@ from typing import Dict, Type, List
 
 from lib import mail
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.notif import UserNotifRecord
+from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
 from model.statistic import statistic_new
 from slim.base.sqlquery import SQLValuesToWrite
@@ -313,6 +313,6 @@ class UserView(UserMixin, PeeweeView):
 
         # 添加统计记录
         statistic_new(POST_TYPES.USER, record['id'])
-        UserNotifRecord.new(record['id'])
+        UserNotifLastInfo.new(record['id'])
 
         record['access_token'] = self._key

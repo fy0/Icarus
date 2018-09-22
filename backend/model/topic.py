@@ -57,3 +57,6 @@ class Topic(PostModel):
         self.comment_time = int(time.time())
         self.save()
     '''
+
+    def get_title(self):
+        return self.title

@@ -301,3 +301,6 @@ class User(PostModel, BaseUser):
 
     def __repr__(self):
         return '<User id:%x nickname:%r>' % (int.from_bytes(self.id.tobytes(), 'big'), self.nickname)
+
+    def get_title(self):
+        return self.nickname

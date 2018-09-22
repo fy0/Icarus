@@ -9,7 +9,15 @@ from model.user import User
 def check_content_mention(content):
     ncontent, matched, mentioned_users = at_replace(content, User.find_by_nicknames)
 
-    def do_mentions(sender_id, related_type, related_id, data):
+    def do_mentions(sender_id, loc_title, location, related, data=None):
+        """
+        :param sender_id:
+        :param loc_title: 地点标题
+        :param location: [post_type, post_id] 形式，指向事件发生的主要地点，例如文章中的评论里@，主要地点是文章
+        :param related: [post_type, post_id] 形式，指向事件发生的准确地点，例如文章中的评论里@，主要地点是评论
+        :param data:
+        :return:
+        """
         items = []
         t = int(time.time())
 
@@ -22,8 +30,14 @@ def check_content_mention(content):
                 'user_id': sender_id,
                 'time': t,
                 'who': i.id,
-                'related_id': related_id,
-                'related_type': related_type,
+
+                'loc_post_type': location[0],
+                'loc_post_id': location[1],
+                'loc_post_title': loc_title,
+
+                'related_type': related[0],
+                'related_id': related[1],
+
                 'data': data,
             })
 

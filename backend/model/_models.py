@@ -6,7 +6,7 @@ from model.follow import Follow
 from model.comment import Comment
 from model.log_manage import ManageLog
 from model.mention import Mention
-from model.notif import Notification, UserNotifRecord
+from model.notif import Notification, UserNotifLastInfo
 from model.statistic import Statistic, Statistic24h
 from model.test import Test
 from model.topic import Topic
@@ -63,7 +63,7 @@ except peewee.ProgrammingError:
 
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiItem, WikiArticle, WikiHistory,
-                  Notification, UserNotifRecord,
+                  Notification, UserNotifLastInfo,
                   UserOAuth,
                   Upload,
                   ManageLog,

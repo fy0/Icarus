@@ -1,9 +1,20 @@
+"""
+提醒系统
+
+这个文件在决定引入 redis 之前写就，所以目前为止是只与SQL数据库相关的
+Notification 这个类直接对应用户的提醒界面数据，用户与 Notification 对象是一对多的
+UserNotifLastInfo 记录了多个用户最后的时间点，与用户是一对一的
+
+提醒记录不主动写入，只当有必要的时候（例如用户上线后）才进行获取，以节省资源。
+而方式就是通过 UserNotifLastInfo 中的数据去查询对应的表，并生成 Notification 记录
+"""
+
 import time
 from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 import config
 from model import BaseModel, MyTimestampField, db
-from model._post import POST_STATE
+from model._post import POST_STATE, POST_TYPES
 from model.user import User
 from slim import json_ex_dumps
 from slim.utils import StateObject
@@ -24,6 +35,7 @@ class NOTIF_TYPE(StateObject):
 
 
 def fetch_notif_of_comment(user_id, last_comment_id=b'\x00'):
+    # TODO: 仅支持文章的抓取
     # 某某 评论了你的文章 某某某： XXXXXX
     # 这个暂时不折叠了，全部显示在提醒中
     cur = db.execute_sql('''
@@ -40,24 +52,24 @@ def fetch_notif_of_comment(user_id, last_comment_id=b'\x00'):
         return {
             'type': NOTIF_TYPE.BE_COMMENTED,
             'time': i[0],
-            'post': {
-                'id': i[2],
-                'type': i[3],
-                'title': i[5]
-            },
-            'comment': {
-                'id': i[1],
-                'brief': i[6],
-                'user': {
-                    'id': i[4],
-                    'nickname': i[7]
-                }
-            }
+
+            'loc_post_type': i[3],
+            'loc_post_id': i[2],
+            'loc_post_title': i[5],
+
+            'sender_ids': (i[4],),
+            'receiver_id': user_id,
+
+            'related_type': POST_TYPES.COMMENT,
+            'related_id': i[1],
+
+            'brief': i[6],
         }
     return map(wrap, cur.fetchall())
 
 
 def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
+    # TODO: 还是仅支持文章
     # 某某 在文章 某某某 中回复了你的评论： XXXXXX
     # c2 是 user_id 的原评论，c 是回复评论的评论
     cur = db.execute_sql('''
@@ -75,19 +87,18 @@ def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
         return {
             'type': NOTIF_TYPE.BE_REPLIED,
             'time': i[0],
-            'post': {
-                'id': i[2],
-                'type': i[3],
-                'title': i[5]
-            },
-            'comment': {
-                'id': i[1],
-                'brief': i[6],
-                'user': {
-                    'id': i[4],
-                    'nickname': i[7]
-                }
-            }
+
+            'loc_post_type': i[3],
+            'loc_post_id': i[2],
+            'loc_post_title': i[5],
+
+            'sender_ids': (i[4],),
+            'receiver_id': user_id,
+
+            'related_type': POST_TYPES.COMMENT,
+            'related_id': i[1],
+
+            'brief': i[6]
         }
     return map(wrap, cur.fetchall())
 
@@ -96,50 +107,38 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
     # 某某 在文章 某某某 中@了你： XXXXXX
     # c2 是 user_id 的原评论，c 是回复评论的评论
     from .mention import Mention
-    item_lst = Mention.select().where(Mention.who == user_id, Mention.id > last_mention_id)
+    item_lst = Mention.select().where(Mention.who == user_id, Mention.id > last_mention_id).order_by(Mention.id.desc())
+    # lst = [[m.related_type, m.related_id] for m in item_lst]
+    # title_map = POST_TYPES.get_post_title_by_list(*lst)
 
-    # 懒得写sql查询了
-    user_ids = []
-    id2user = {}
-    for m in item_lst:
-        user_ids.append(m.user_id)
-    for u in User.select().where(User.id.in_(user_ids)):
-        id2user[u.id] = u
-
-    def get_nickname(uid):
-        if uid == 0: return '系统'
-        u: User = id2user.get(uid, None)
-        if u is None: return
-        return u.nickname
-
-    def wrap(i: Mention):
+    def wrap(mt: Mention):
         return {
             'type': NOTIF_TYPE.BE_MENTIONED,
-            'time': i.time,
-            'mention': {
-                'id': i.id,
-                'user': {
-                    'id': i.user_id,
-                    'nickname': get_nickname(i.user_id)
-                },
-                'related_id': i.related_id,
-                'related_type': i.related_type,
-                'data': i.data,
-            }
+            'time': mt.time,
+
+            'loc_post_type': mt.loc_post_type,
+            'loc_post_id': mt.loc_post_id,
+            'loc_post_title': mt.loc_post_title,
+
+            'sender_ids': (mt.user_id,),
+            'receiver_id': user_id,
+
+            'related_type': POST_TYPES.MENTION,
+            'related_id': mt.id,
         }
     return map(wrap, item_lst)
 
 
-class UserNotifRecord(BaseModel):
+class UserNotifLastInfo(BaseModel):
     id = BlobField(primary_key=True)  # user_id
-    last_comment_id = BlobField(default=b'\x00')
-    last_reply_id = BlobField(default=b'\x00')
-    last_follow_id = BlobField(default=b'\x00')
-    last_mention_id = BlobField(default=b'\x00')
-    last_bookmark_id = BlobField(default=b'\x00')
-    last_like_id = BlobField(default=b'\x00')
-    last_pm_id = BlobField(default=b'\x00')
-    last_sysmsg_id = BlobField(default=b'\x00')
+    last_be_commented_id = BlobField(default=b'\x00')
+    last_be_replied_id = BlobField(default=b'\x00')
+    last_be_followed_id = BlobField(default=b'\x00')
+    last_be_mentioned_id = BlobField(default=b'\x00')
+    last_be_bookmarked_id = BlobField(default=b'\x00')
+    last_be_liked_id = BlobField(default=b'\x00')
+    last_be_sent_pm_id = BlobField(default=b'\x00')
+    last_received_sysmsg_id = BlobField(default=b'\x00')
     update_time = MyTimestampField(index=True)
 
     @classmethod
@@ -151,34 +150,44 @@ class UserNotifRecord(BaseModel):
 
     def get_notifications(self, update_last=False):
         lst = []
-        l1 = tuple(fetch_notif_of_comment(self.id, self.last_comment_id))
-        l2 = tuple(fetch_notif_of_reply(self.id, self.last_reply_id))
-        l3 = tuple(fetch_notif_of_metion(self.id, self.last_mention_id))
+        l1 = tuple(fetch_notif_of_comment(self.id, self.last_be_commented_id))
+        l2 = tuple(fetch_notif_of_reply(self.id, self.last_be_replied_id))
+        l3 = tuple(fetch_notif_of_metion(self.id, self.last_be_mentioned_id))
         lst.extend(l1)
         lst.extend(l2)
         lst.extend(l3)
-        # lst.sort(key = lambda x: x['time'], reverse=True)
 
         if update_last:
-            if l1: self.last_comment_id = l1[0]['comment']['id']
-            if l2: self.last_reply_id = l2[0]['comment']['id']
-            if l3: self.last_mention_id = l3[0]['mention']['id']
+            if l1: self.last_be_commented_id = l1[0]['related_id']
+            if l2: self.last_be_replied_id = l2[0]['related_id']
+            if l3: self.last_be_mentioned_id = l3[0]['related_id']
             self.update_time = int(time.time())
             self.save()
 
         return lst
 
     class Meta:
-        db_table = 'user_notif_record'
+        db_table = 'user_notif_last_info'
 
 
 class Notification(BaseModel):
     id = BlobField(primary_key=True)
-    sender_ids = ArrayField(BlobField)
-    receiver_id = BlobField(index=True)
-    type = IntegerField(index=True)
-    time = MyTimestampField(index=True)  # 发布时间
-    data = BinaryJSONField(dumps=json_ex_dumps)
+    type = IntegerField(index=True)  # 行为
+    time = MyTimestampField(index=True)  # 行为发生时间
+
+    loc_post_type = IntegerField()  # 地点，类型
+    loc_post_id = BlobField()  # 地点
+    loc_post_title = TextField(null=True)  # 地点标题
+
+    sender_ids = ArrayField(BlobField)  # 人物，行为方
+    receiver_id = BlobField(index=True)  # 人物，被动方
+
+    related_type = IntegerField(null=True)  # 可选，关联类型
+    related_id = BlobField(null=True)  # 可选，关联ID。例如A在B帖回复C，人物是A和C，地点是B，关联是这个回复的ID
+
+    brief = TextField(null=True)  # 一小段预览，可有可无
+
+    data = BinaryJSONField(dumps=json_ex_dumps, null=True)  # 附加数据
     is_read = BooleanField(default=False)
 
     @classmethod
@@ -198,44 +207,32 @@ class Notification(BaseModel):
     @classmethod
     def refresh(cls, user_id, cooldown = config.NOTIF_FETCH_COOLDOWN):
         new = []
-        r: UserNotifRecord = UserNotifRecord.get_by_pk(user_id)
+        r: UserNotifLastInfo = UserNotifLastInfo.get_by_pk(user_id)
         if not r: return
         if cooldown and (time.time() - r.update_time < cooldown):
             return
 
-        def pack_notif(i, sender_ids):
-            # 看得出来初始设计是想要一定程度上合并同类消息，还没来得及搞，先这样吧
-            return {
-                'id': config.LONG_ID_GENERATOR().to_bin(),
-                'sender_ids': sender_ids,
-                'receiver_id': user_id,
-                'type': i['type'],
-                'time': i['time'],
-                'data': i,
-            }
+        def pack_notif(i):
+            i.update({
+                'id': config.LONG_ID_GENERATOR().to_bin()
+            })
+            return i
 
-        for i in r.get_notifications(True):
-            if i['type'] == NOTIF_TYPE.BE_COMMENTED:
-                sender_ids = (i['comment']['user']['id'],)
-                new.append(pack_notif(i, sender_ids))
-            elif i['type'] == NOTIF_TYPE.BE_REPLIED:
-                sender_ids = (i['comment']['user']['id'],)
-                new.append(pack_notif(i, sender_ids))
-            elif i['type'] == NOTIF_TYPE.BE_MENTIONED:
-                sender_ids = (i['mention']['user']['id'],)
-                new.append(pack_notif(i, sender_ids))
+        newlst = r.get_notifications(True)
+        newlst.sort(key = lambda x: x['time'], reverse=True)
+        newlst = list(map(pack_notif, newlst))
 
-        if new:
-            cls.insert_many(new).execute()
-        return len(new)
+        if newlst:
+            cls.insert_many(newlst).execute()
+        return len(newlst)
 
     class Meta:
-        db_table = 'notif'
+        db_table = 'notif2'
 
 
 if __name__ == '__main__':
     u: User = User.select().where(User.nickname == '折影').get()
-    r: UserNotifRecord = UserNotifRecord.get_by_pk(u.id)
+    r: UserNotifLastInfo = UserNotifLastInfo.get_by_pk(u.id)
     for i in r.get_notifications():
         print(i)
     print('------')

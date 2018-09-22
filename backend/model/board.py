@@ -26,3 +26,6 @@ class Board(PostModel):
 
     class Meta:
         db_table = 'board'
+
+    def get_title(self):
+        return self.name

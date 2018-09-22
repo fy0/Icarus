@@ -4,7 +4,7 @@ from model import db
 from model._post import POST_STATE
 from model.comment import Comment
 from model.user import User, USER_GROUP
-from model.notif import UserNotifRecord
+from model.notif import UserNotifLastInfo
 
 
 def work():

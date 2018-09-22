@@ -3,6 +3,8 @@
 """
 一些通用类的定义
 """
+from abc import abstractmethod
+from typing import Dict, Type
 
 from peewee import *
 from config import POST_ID_GENERATOR
@@ -37,8 +39,34 @@ class POST_TYPES(StateObject):
     TOPIC   = 30
     WIKI    = 40
     COMMENT = 50
+    MENTION = 60
 
-    txt = {NONE: "???", USER:"用户", BOARD: '板块', TOPIC: '主题', WIKI: '百科', COMMENT: '评论'}
+    txt = {NONE: "???", USER:"用户", BOARD: '板块', TOPIC: '主题', WIKI: '百科', COMMENT: '评论', MENTION: '召唤'}
+
+    @classmethod
+    def get_model(cls, related_type) -> Type['PostModel']:
+        from model.user import User
+        from model.topic import Topic
+        from model.comment import Comment
+        from model.board import Board
+        from model.wiki import WikiItem
+        from model.mention import Mention
+
+        if isinstance(related_type, str):
+            related_type = int(related_type)
+
+        if related_type == POST_TYPES.USER:
+            return User
+        elif related_type == POST_TYPES.TOPIC:
+            return Topic
+        elif related_type == POST_TYPES.COMMENT:
+            return Comment
+        elif related_type == POST_TYPES.BOARD:
+            return Board
+        elif related_type == POST_TYPES.MENTION:
+            return Mention
+        elif related_type == POST_TYPES.WIKI:
+            return WikiItem
 
     @classmethod
     def get_post(cls, related_type, related_id):
@@ -49,18 +77,37 @@ class POST_TYPES(StateObject):
         if type(related_id) == POST_ID_GENERATOR:
             related_id = related_id.to_bin()
 
-        if type(related_type) == str:
-            related_type = int(related_type)
+        m = cls.get_model(related_type)
+        r = m.get_by_pk(related_id)
+        if r: return r
 
-        if related_type == POST_TYPES.USER:
-            u = User.get_by_pk(related_id)
-            if u: return u
-        elif related_type == POST_TYPES.TOPIC:
-            t = Topic.get_by_pk(related_id)
-            if t: return t
-        elif related_type == POST_TYPES.WIKI:
-            w = WikiItem.get_by_pk(related_id)
-            if w: return w
+    @classmethod
+    def get_post_title_by_list(cls, *lst) -> Dict[bytes, str]:
+        """
+        :param lst: [[related_type, related_id], ...]
+        :return:
+        """
+        ret = {}
+        info = {}
+        for related_type, related_id in lst:
+            info.setdefault(related_type, [])
+            info[related_type].append(related_id)
+
+        for related_type, id_lst in info:
+            m = cls.get_model(related_type)
+            # 减少取值，优化性能
+            fields = []
+            if getattr(m, 'name', None):
+                fields.append(getattr(m, 'name'))
+            if getattr(m, 'title', None):
+                fields.append(getattr(m, 'title'))
+            if getattr(m, 'nickname', None):
+                fields.append(getattr(m, 'nickname'))
+            # 执行查询
+            for i in m.select(*fields).where(m.id.in_(id_lst)):
+                ret[i.id] = i.get_title()
+
+        return ret
 
 
 class PostModel(BaseModel):
@@ -70,6 +117,17 @@ class PostModel(BaseModel):
     time = MyTimestampField(index=True)  # 发布时间
     user_id = BlobField(index=True, null=True, default=None)  # 发布用户，对 user 表来说是推荐者，对 board 来说是创建者
 
+    @abstractmethod
+    def get_title(self):
+        pass
+
 
 class LongIdPostModel(PostModel):
     id = BlobField(primary_key=True)
+
+    def get_title(self):
+        """
+        大部分情况下 LongIdPostModel 都没有标题
+        :return:
+        """
+        return None

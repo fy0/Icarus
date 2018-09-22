@@ -97,12 +97,11 @@ class CommentView(UserMixin, PeeweeView):
             Comment.update(post_number=post_number).where(Comment.id == record['id']).execute()
 
             if self.do_mentions:
-                self.do_mentions(record['user_id'], POST_TYPES.COMMENT, record['id'], {
-                    'comment_info': {
-                        'related_type': record['related_type'],
-                        'related_id': record['related_id'],
-                    }
-                })
+                # 创建提醒
+                loc = [record['related_type'], record['related_id']]
+                loc_title = POST_TYPES.get_post_title_by_list(loc)[record['related_id']]
+                related = [POST_TYPES.COMMENT, record['id']]
+                self.do_mentions(record['user_id'], loc_title, loc, related)
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord],
                      records: List[DataRecord]):

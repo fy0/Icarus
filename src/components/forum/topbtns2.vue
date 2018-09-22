@@ -118,7 +118,7 @@
         font-size: 24px;
     }
     border-width: 0.5px;
-    padding-right: 20px;
+    padding-right: 24px;
 }
 
 .order-menu {
@@ -128,7 +128,7 @@
     z-index: 1;
 
     * {
-        padding-right: 20px;
+        padding-right: 24px;
     }
     
     .ic-btn.outline.option {
