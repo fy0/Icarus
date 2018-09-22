@@ -6,36 +6,34 @@
             <span slot="time">
                 <ic-time :timestamp="i.time"/>
             </span>
-            <div class="notif-content" slot="content" v-if="i.type === NOTIF_TYPE.BE_COMMENTED">
-                <user-link :user="i.data.comment.user" />
-                <span>评论了你的</span>
-                <span>文章</span>
-                <router-link :title="i.data.post.title" :to="{ name: 'forum_topic', params: {id: i.data.post.id} }">{{i.data.post.title}}</router-link>
-                <div>{{atConvert(i.data.comment.brief)}}</div>
-            </div>
-            <div class="notif-content" slot="content" v-else-if="i.type === NOTIF_TYPE.BE_REPLIED">
-                <user-link :user="i.data.comment.user" />
-                <span>在文章</span>
-                <router-link :title="i.data.post.title" :to="{ name: 'forum_topic', params: {id: i.data.post.id} }">{{i.data.post.title}}</router-link>
-                <span>中回复了你的评论</span>
-                <ic-time :timestamp="i.time" />
-                <div>{{atConvert(i.data.comment.brief)}}</div>
-            </div>
-            <div class="notif-content" slot="content" v-else-if="i.type === NOTIF_TYPE.BE_MENTIONED">
-                <template v-if="i.data.mention.related_type === POST_TYPES.COMMENT">
-                    <user-link :user="i.data.mention.user" /> 在
-                    <post-link :goto="false" :show-type="true" :type="POST_TYPES.TOPIC" :item="posts[i.data.mention.data.comment_info.related_id]"/>
-                    <span>的评论中提到了你</span>
+            <div class="notif-content" slot="content">
+                <!-- 某人，使动者 -->
+                <user-link :user="posts[i.sender_ids[0]]" />
+                <!-- 介词 + 定语 -->
+                <template v-if="i.type === NOTIF_TYPE.BE_COMMENTED">在你发表的</template>
+                <template v-else>在</template><template>{{typeName(i.loc_post_type)}}</template>
+                <!-- 某地 -->
+                <template>
+                    <post-link :goto="false" :show-type="false" :type="i.loc_post_type" :item="posts[i.loc_post_id]"/>
                 </template>
-                <template v-if="i.data.mention.related_type === POST_TYPES.TOPIC">
-                    <user-link :user="i.data.mention.user" />
-                    <span>在文章</span>
-                    <router-link :title="i.data.mention.data.title" :to="{ name: 'forum_topic', params: {id: i.data.mention.related_id} }">{{i.data.mention.data.title}}</router-link>
-                    <span>中提到了你</span>
+
+                <!-- 做了某事，与某某有关 -->
+                <template v-if="i.type === NOTIF_TYPE.BE_COMMENTED">
+                    <!-- 发表评论（结合上文，实际是对你发表） -->
+                    <template>下发表了{{typeName(i.related_type)}}</template>
                 </template>
-            </div>
-            <div class="notif-content" slot="content" v-else>
-                {{i}}
+                <template v-else-if="i.type === NOTIF_TYPE.BE_REPLIED">
+                    <!-- 回复（目前只能回复评论） -->
+                    <template>下回复了你的{{typeName(i.related_type)}}</template>
+                </template>
+                <template v-else-if="i.type === NOTIF_TYPE.BE_MENTIONED">
+                    <!-- 在某地的XX（如评论）中提到了你 -->
+                    <template v-if="i.related_type">的{{typeName(i.related_type)}}</template><template>中提到了你</template>
+                </template>
+                <div v-else>{{i}}</div>
+
+                <!-- 附加内容 -->
+                <div>{{atConvert(i.brief || '')}}</div>
             </div>
         </ic-timeline-item>
     </ic-timeline>
@@ -69,6 +67,9 @@ export default {
     },
     methods: {
         atConvert: $.atConvert2,
+        typeName: function (type) {
+            return this.state.misc.POST_TYPES_TXT[type]
+        },
         fetchData: async function () {
             let key = state.loadingGetKey(this.$route)
             this.state.loadingInc(this.$route, key)
@@ -81,17 +82,25 @@ export default {
             }, params.page)
 
             if (ret.code === api.retcode.SUCCESS) {
-                let topicIdSet = new Set()
+                let userIds = new Set()
+
                 for (let i of ret.data.items) {
-                    if (i.type === this.NOTIF_TYPE.BE_MENTIONED &&
-                        i.data.mention.related_type === this.POST_TYPES.COMMENT) {
-                        topicIdSet.add(i.data.mention.data.comment_info.related_id)
+                    this.posts[i.loc_post_id] = {
+                        'id': i.loc_post_id,
+                        'post_type': i.loc_post_type,
+                        'post_title': i.loc_post_title // 一个虚假的列，在post-link中高于其他声明
+                    }
+                    for (let uid of i.sender_ids) {
+                        userIds.add(uid)
                     }
                 }
 
-                if (topicIdSet.size > 0) {
-                    let topics = await api.topic.list({'id.in': JSON.stringify(new Array(...new Set(topicIdSet)))}, 1)
-                    for (let t of topics.data.items) {
+                if (userIds.size > 0) {
+                    let users = await api.user.list({
+                        'id.in': JSON.stringify(new Array(...userIds)),
+                        'select': 'id, nickname'
+                    }, 1)
+                    for (let t of users.data.items) {
                         this.posts[t.id] = t
                     }
                 }

@@ -1,5 +1,6 @@
+<!-- 仅需id和nickname -->
 <template>
-<router-link v-if="user &&nickname" :to="{ name: 'account_userpage', params: {id: user.id} }">{{user.nickname}}</router-link>
+<router-link v-if="user && nickname" :to="{ name: 'account_userpage', params: {id: user.id} }">{{user.nickname}}</router-link>
 <router-link v-else-if="user" :to="{ name: 'account_userpage', params: {id: user.id} }"><slot /></router-link>
 </template>
 

@@ -4,9 +4,9 @@
     <!-- 用户 -->
     <template v-if="type === state.misc.POST_TYPES.USER">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
-        <router-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="item.nickname">
+        <router-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="getPostTitle(item, 'nickname')">
             <template v-if="!useSlot">
-                <template>{{text(item.nickname) || '错误的值'}}</template>
+                <template>{{text(getPostTitle(item, 'nickname')) || '错误的值'}}</template>
                 <span v-if="goto">🔗</span>
             </template>
             <slot v-else />
@@ -16,9 +16,9 @@
     <!-- 板块 -->
     <template v-else-if="type === state.misc.POST_TYPES.BOARD">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
-        <router-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="item.name">
+        <router-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="getPostTitle(item, 'name')">
             <template v-if="!useSlot">
-                <template>{{text(item.name) || '错误的值'}}</template>
+                <template>{{text(getPostTitle(item, 'name')) || '错误的值'}}</template>
                 <span v-if="goto">📮</span> <!--💬-->
             </template>
             <slot v-else />
@@ -28,9 +28,9 @@
     <!-- 主题 -->
     <template v-else-if="type === state.misc.POST_TYPES.TOPIC">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
-        <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="item.title">
+        <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="getPostTitle(item, 'title')">
             <template v-if="!useSlot">
-                <template>{{text(item.title) || '错误的值'}}</template>
+                <template>{{text(getPostTitle(item, 'title')) || '错误的值'}}</template>
                 <span v-if="goto">📝</span>
             </template>
             <slot v-else />
@@ -92,6 +92,10 @@ export default {
         }
     },
     methods: {
+        getPostTitle: function (i, key) {
+            if (i['post_title']) return i['post_title']
+            return i[key]
+        },
         text: function (txt) {
             if (this.textLimit > 0) {
                 let suffix = this.textLimit >= txt.length ? '' : '…'

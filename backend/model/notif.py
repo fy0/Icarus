@@ -123,8 +123,12 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
             'sender_ids': (mt.user_id,),
             'receiver_id': user_id,
 
-            'related_type': POST_TYPES.MENTION,
-            'related_id': mt.id,
+            'related_type': mt.related_type,  # 提醒类型较为特殊
+            'related_id': mt.related_id,
+
+            'data': {
+                'mention_id': mt.id
+            }
         }
     return map(wrap, item_lst)
 
