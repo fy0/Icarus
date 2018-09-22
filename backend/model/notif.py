@@ -106,7 +106,7 @@ def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
 def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
     # 某某 在文章 某某某 中@了你： XXXXXX
     # c2 是 user_id 的原评论，c 是回复评论的评论
-    from .mention import Mention
+    from model.mention import Mention
     item_lst = Mention.select().where(Mention.who == user_id, Mention.id > last_mention_id).order_by(Mention.id.desc())
     # lst = [[m.related_type, m.related_id] for m in item_lst]
     # title_map = POST_TYPES.get_post_title_by_list(*lst)
@@ -177,17 +177,17 @@ class Notification(BaseModel):
 
     loc_post_type = IntegerField()  # 地点，类型
     loc_post_id = BlobField()  # 地点
-    loc_post_title = TextField(null=True)  # 地点标题
+    loc_post_title = TextField(null=True, default=None)  # 地点标题
 
     sender_ids = ArrayField(BlobField)  # 人物，行为方
     receiver_id = BlobField(index=True)  # 人物，被动方
 
-    related_type = IntegerField(null=True)  # 可选，关联类型
-    related_id = BlobField(null=True)  # 可选，关联ID。例如A在B帖回复C，人物是A和C，地点是B，关联是这个回复的ID
+    related_type = IntegerField(null=True, default=None)  # 可选，关联类型
+    related_id = BlobField(null=True, default=None)  # 可选，关联ID。例如A在B帖回复C，人物是A和C，地点是B，关联是这个回复的ID
 
-    brief = TextField(null=True)  # 一小段预览，可有可无
+    brief = TextField(null=True, default=None)  # 一小段预览，可有可无
 
-    data = BinaryJSONField(dumps=json_ex_dumps, null=True)  # 附加数据
+    data = BinaryJSONField(dumps=json_ex_dumps, null=True, default=None)  # 附加数据
     is_read = BooleanField(default=False)
 
     @classmethod
@@ -227,7 +227,7 @@ class Notification(BaseModel):
         return len(newlst)
 
     class Meta:
-        db_table = 'notif2'
+        db_table = 'notif'
 
 
 if __name__ == '__main__':

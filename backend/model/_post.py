@@ -93,10 +93,10 @@ class POST_TYPES(StateObject):
             info.setdefault(related_type, [])
             info[related_type].append(related_id)
 
-        for related_type, id_lst in info:
+        for related_type, id_lst in info.items():
             m = cls.get_model(related_type)
             # 减少取值，优化性能
-            fields = []
+            fields = [m._meta.primary_key]
             if getattr(m, 'name', None):
                 fields.append(getattr(m, 'name'))
             if getattr(m, 'title', None):
@@ -105,7 +105,7 @@ class POST_TYPES(StateObject):
                 fields.append(getattr(m, 'nickname'))
             # 执行查询
             for i in m.select(*fields).where(m.id.in_(id_lst)):
-                ret[i.id] = i.get_title()
+                ret[i.id.tobytes()] = i.get_title()
 
         return ret
 

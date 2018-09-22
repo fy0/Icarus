@@ -99,7 +99,8 @@ class CommentView(UserMixin, PeeweeView):
             if self.do_mentions:
                 # 创建提醒
                 loc = [record['related_type'], record['related_id']]
-                loc_title = POST_TYPES.get_post_title_by_list(loc)[record['related_id']]
+                # record['related_id']: memoryview
+                loc_title = POST_TYPES.get_post_title_by_list(loc)[record['related_id'].tobytes()]
                 related = [POST_TYPES.COMMENT, record['id']]
                 self.do_mentions(record['user_id'], loc_title, loc, related)
 

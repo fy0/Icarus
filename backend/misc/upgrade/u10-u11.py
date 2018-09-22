@@ -15,6 +15,17 @@ def work():
         print('failed')
         db.rollback()
 
+    # drop table "notif";
+    # drop table "mention";
+    # drop table "user_notif_record";
+
+    for i in User.select().execute():
+        try:
+            UserNotifLastInfo.create(id=i.id, update_time=int(time.time()))
+        except peewee.IntegrityError as e:
+            print(e)
+            db.rollback()
+
     # 之前的 INACTIVE
     # 放弃了这个设定，INACTIVE作为USER_GROUP没有问题
     # User.update(state=POST_STATE.INACTIVE, group=USER_GROUP.NORMAL).where(User.group == 40)

@@ -17,4 +17,4 @@ class Mention(LongIdPostModel):
     data = BinaryJSONField(dumps=json_ex_dumps, null=True)  # 附加数据，一般不需要了
 
     class Meta:
-        db_table = 'mention2'
+        db_table = 'mention'
