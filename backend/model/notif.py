@@ -62,6 +62,9 @@ def fetch_notif_of_comment(user_id, last_comment_id=b'\x00'):
             'sender_ids': (i[4],),
             'receiver_id': user_id,
 
+            'from_post_type': POST_TYPES.COMMENT,
+            'from_post_id': i[1],
+
             'related_type': POST_TYPES.COMMENT,
             'related_id': i[1],
 
@@ -97,6 +100,9 @@ def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
             'sender_ids': (i[4],),
             'receiver_id': user_id,
 
+            'from_post_type': POST_TYPES.COMMENT,
+            'from_post_id': i[1],
+
             'related_type': POST_TYPES.COMMENT,
             'related_id': i[1],
 
@@ -125,12 +131,11 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
             'sender_ids': (mt.user_id,),
             'receiver_id': user_id,
 
+            'from_post_type': POST_TYPES.MENTION,
+            'from_post_id': mt.id,
+
             'related_type': mt.related_type,  # 提醒类型较为特殊
             'related_id': mt.related_id,
-
-            'data': {
-                'mention_id': mt.id
-            }
         }
     return map(wrap, item_lst)
 
@@ -164,9 +169,9 @@ class UserNotifLastInfo(BaseModel):
         lst.extend(l3)
 
         if update_last:
-            if l1: self.last_be_commented_id = l1[0]['related_id']
-            if l2: self.last_be_replied_id = l2[0]['related_id']
-            if l3: self.last_be_mentioned_id = l3[0]['related_id']
+            if l1: self.last_be_commented_id = l1[0]['from_post_id']
+            if l2: self.last_be_replied_id = l2[0]['from_post_id']
+            if l3: self.last_be_mentioned_id = l3[0]['from_post_id']
             self.update_time = int(time.time())
             self.save()
 
@@ -187,6 +192,9 @@ class Notification(BaseModel):
 
     sender_ids = ArrayField(BlobField)  # 人物，行为方
     receiver_id = BlobField(index=True)  # 人物，被动方
+
+    from_post_type = IntegerField()  # 信息来源，例如A在B帖回复@C，来源是@创建的那个提醒对象，此时related指向那条回复
+    from_post_id = BlobField()
 
     related_type = IntegerField(null=True, default=None)  # 可选，关联类型
     related_id = BlobField(null=True, default=None)  # 可选，关联ID。例如A在B帖回复C，人物是A和C，地点是B，关联是这个回复的ID

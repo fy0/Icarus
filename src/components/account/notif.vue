@@ -33,7 +33,7 @@
                 <div v-else>{{i}}</div>
 
                 <!-- 附加内容 -->
-                <div>{{atConvert(i.brief || '')}}</div>
+                <div class="brief">{{atConvert(i.brief || '')}}</div>
             </div>
         </ic-timeline-item>
     </ic-timeline>
@@ -42,9 +42,14 @@
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .notif-content {
     margin-top: 10px;
+
+    .brief {
+        color: lighten($gray-600, 0.4);
+        margin-top: 10px;
+    }
 }
 </style>
 

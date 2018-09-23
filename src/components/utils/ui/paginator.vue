@@ -54,7 +54,6 @@
     padding-right: 13px;
     font-size: 16px;
     height: 32px;
-    line-height: 32px;
     border-radius: 2px;
 }
 
@@ -120,15 +119,17 @@ export default {
         toInfo: function (page) {
             let info = {
                 name: this.routeName,
-                [this.linkMethod]: {
-                    [this.pageKey]: page
-                }
+                query: {},
+                params: {}
             }
+
             if (this.linkMethod === 'query') {
                 _.assign(info.query, this.$route.query)
             } else {
                 info.query = this.$route.query
             }
+
+            info[this.linkMethod][this.pageKey] = page
             return info
         }
     }

@@ -20,6 +20,7 @@
                         <div class="sign"></div>
                         <span class="title">全部主题</span>
                     </router-link>
+
                     <label v-if="isBoard" class="with-subboard-topic">
                         <input type="checkbox" v-model="withSubBoardTopic"/>
                         <span>包含子板块内容</span>
@@ -118,7 +119,7 @@
                                     <p class="txt">回复</p>
                                 </div>
                             </div>
-                            <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0;">
+                            <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0%;">
                                 <span class="line" :style="lineStyle(i.board_id)"></span>
                                 <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
                                     <strong>@<user-link :user="i.s.last_comment_id.user_id" />:</strong>
@@ -149,11 +150,11 @@
     display: flex;
 
     .left-nav {
-        flex: 5 0 0%;
+        flex: 5 1 0%;
     }
 
     .right {
-        flex: 19 0 0%;
+        flex: 19 1 0%;
     }
 }
 
