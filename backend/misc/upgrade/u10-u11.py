@@ -7,6 +7,15 @@ from model.user import User, USER_GROUP
 from model.notif import UserNotifLastInfo
 
 
+def sql_execute(sql):
+    try:
+        db.execute_sql(sql)
+    except Exception as e:
+        print(e)
+        print('failed')
+        db.rollback()
+
+
 def work():
     try:
         db.execute_sql('ALTER TABLE "topic" ADD COLUMN "update_time" BIGINT NULL DEFAULT NULL ;')
@@ -15,9 +24,9 @@ def work():
         print('failed')
         db.rollback()
 
-    # drop table "notif";
-    # drop table "mention";
-    # drop table "user_notif_record";
+    sql_execute('drop table "notif";')
+    sql_execute('drop table "mention";')
+    sql_execute('drop table "user_notif_record";')
 
     for i in User.select().execute():
         try:
@@ -27,7 +36,7 @@ def work():
             db.rollback()
 
     # 之前的 INACTIVE
-    # 放弃了这个设定，INACTIVE作为USER_GROUP没有问题
+    # 放弃了这个设定，INACTIVE作为USER_GROUP也没有太大问题
     # User.update(state=POST_STATE.INACTIVE, group=USER_GROUP.NORMAL).where(User.group == 40)
 
 
