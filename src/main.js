@@ -29,7 +29,7 @@ import './tools.js'
 import state from './state.js'
 import api from './netapi.js'
 import ws from './ws.js'
-// import config from './config.js'
+import config from './config.js'
 
 import PageNotFound from './components/404.vue'
 import Redirecting from './components/utils/redirecting.vue'
@@ -90,18 +90,20 @@ Vue.directive('title', {
 Vue.config.productionTip = false
 nprogress.configure({showSpinner: false})
 
-ws.conn.callback['notif.refresh'] = (data) => {
-    if (data) {
-        if (!state.unreadAlerted) {
-            // $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
-            state.unreadAlerted = true
+if (config.ws.enable) {
+    ws.conn.callback['notif.refresh'] = (data) => {
+        if (data) {
+            if (!state.unreadAlerted) {
+                // $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
+                state.unreadAlerted = true
+            }
+            Vue.set(state, 'unread', data)
         }
-        Vue.set(state, 'unread', data)
     }
-}
 
-ws.conn.callback['user.online'] = (data) => {
-    Vue.set(state, 'userOnline', data)
+    ws.conn.callback['user.online'] = (data) => {
+        Vue.set(state, 'userOnline', data)
+    }
 }
 
 router.beforeEach(async function (to, from, next) {

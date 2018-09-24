@@ -102,9 +102,11 @@ class WebsocketConnection {
 }
 
 let conn = new WebsocketConnection()
-conn.connect(remote.WS_SERVER).then(() => {
-    console.log('websocket 已连接')
-})
+if (config.ws.enable) {
+    conn.connect(remote.WS_SERVER).then(() => {
+        console.log('websocket 已连接')
+    })
+}
 
 export default {
     conn

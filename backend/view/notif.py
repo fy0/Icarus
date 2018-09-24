@@ -55,6 +55,10 @@ class NotificationView(UserMixin, PeeweeView):
 
     @route.interface('POST')
     async def refresh(self):
+        """
+        由 misc/tick 替代，此方法弃用
+        :return:
+        """
         if self.current_user:
             r = self.model.refresh(self.current_user.id)
             c = self.model.count(self.current_user.id)

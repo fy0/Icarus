@@ -4,7 +4,7 @@ from aiohttp import web
 from app import app
 from lib.utils import get_today_start_timestamp
 from model.log_manage import MANAGE_OPERATION, ManageLog
-from model.notif import NOTIF_TYPE
+from model.notif import NOTIF_TYPE, Notification
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.user import USER_GROUP
@@ -28,7 +28,25 @@ class TestBaseView(UserMixin, BaseView):
     def interface(cls):
         cls.use('info', 'GET')
 
+    @route.interface('POST')
+    async def tick(self):
+        """
+        定时轮询
+        :return:
+        """
+        data = {}
+        if self.current_user:
+            user = self.current_user
+            r = Notification.refresh(user.id)
+            c = Notification.count(user.id)
+            data['notif_count'] = c
+        self.finish(RETCODE.SUCCESS, data)
+
     async def info(self):
+        """
+        一些后端信息，一般是首次打开页面时获得
+        :return:
+        """
         extra = {
             'midnight_time': get_today_start_timestamp()
         }

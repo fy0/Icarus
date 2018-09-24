@@ -6,6 +6,9 @@ let config = {
         WS_SERVER: `ws://${hostname}:9999/ws`,
         authMode: 'access_token' // access_token / access_token_in_params / cookie
     },
+    ws: {
+        enable: false
+    },
     title: 'Icarus'
 }
 
