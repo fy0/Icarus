@@ -1,3 +1,7 @@
+import time
+
+from slim.utils import to_bin
+
 import config
 from aiohttp import web
 
@@ -7,6 +11,7 @@ from model.log_manage import MANAGE_OPERATION, ManageLog
 from model.notif import NOTIF_TYPE, Notification
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
+from model.redis import RK_USER_ACTIVE_TIME_ZSET, redis, RK_USER_ANON_ACTIVE_TIME_ZSET
 from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
@@ -27,19 +32,47 @@ class TestBaseView(UserMixin, BaseView):
     @classmethod
     def interface(cls):
         cls.use('info', 'GET')
+        cls.use('tick', 'GET')
 
-    @route.interface('POST')
     async def tick(self):
         """
         定时轮询
         :return:
         """
         data = {}
+        now = int(time.time())
+
         if self.current_user:
             user = self.current_user
+            # 检查未读信息
             r = Notification.refresh(user.id)
             c = Notification.count(user.id)
             data['notif_count'] = c
+
+            # 更新在线时间
+            await redis.zadd(RK_USER_ACTIVE_TIME_ZSET, now, user.id.tobytes())
+        else:
+            # TODO: 后面再给auid加几个随机数
+            auid = self.params.get('auid', None)
+            if auid:
+                try:
+                    auid = config.LONG_ID_GENERATOR(auid)
+                    if not await redis.zscore(RK_USER_ANON_ACTIVE_TIME_ZSET, auid.to_bin()):
+                        auid = None
+                except TypeError:
+                    auid = None
+
+            if not auid:
+                new_id = config.LONG_ID_GENERATOR()
+                await redis.zadd(RK_USER_ANON_ACTIVE_TIME_ZSET, now, new_id.to_bin())
+                data['auid'] = new_id.to_hex()
+            else:
+                await redis.zadd(RK_USER_ANON_ACTIVE_TIME_ZSET, now, auid.to_bin())
+
+        offset = 30
+        data['online'] = await redis.zcount(RK_USER_ACTIVE_TIME_ZSET, min=now - offset) + \
+                         await redis.zcount(RK_USER_ANON_ACTIVE_TIME_ZSET, min=now - offset)
+
         self.finish(RETCODE.SUCCESS, data)
 
     async def info(self):

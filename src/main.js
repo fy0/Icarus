@@ -116,6 +116,8 @@ router.beforeEach(async function (to, from, next) {
 
     if (state.misc === undefined) {
         let ret = null
+
+        // 获取 misc 信息
         while (true) {
             try {
                 ret = await api.misc()
@@ -131,6 +133,7 @@ router.beforeEach(async function (to, from, next) {
             api.retinfo = ret.data.retinfo_cn
         }
 
+        // 若用户已登录，做一些额外处理
         if (!state.user) {
             let ret = await api.user.getUserId()
             if (ret.code !== api.retcode.SUCCESS) {
@@ -153,10 +156,12 @@ router.beforeEach(async function (to, from, next) {
 
                     Vue.set(state, 'user', ret.data)
                     Vue.set(state, 'initLoadDone', true)
-                    $.notifLoopOn()
                 }
             }
         }
+
+        // 开启周期数据
+        $.tickStart()
     }
 
     if (to.name) {

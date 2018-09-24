@@ -13,6 +13,9 @@ async def init(loop):
 
 # user
 
+RK_USER_ACTIVE_TIME_ZSET = b'ic_user_active_time_zset'  # 最近一次活跃时间
+RK_USER_ANON_ACTIVE_TIME_ZSET = b'ic_user_anon_active_time_zset'
+
 RK_USER_ACTCODE_BY_USER_ID = b'ic_user_actcode_by_user_id_%b'
 RK_USER_RESET_KEY_BY_USER_ID = b'ic_user_reset_key_by_user_id_%b'
 

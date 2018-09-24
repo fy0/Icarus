@@ -170,10 +170,6 @@ class NotifViewRequest extends SlimViewRequest {
         return nget(`${this.urlPrefix}/count`, null)
     }
 
-    async refresh () {
-        return npost(`${this.urlPrefix}/refresh`, null)
-    }
-
     async setRead () {
         return npost(`${this.urlPrefix}/set_read`, null)
     }
@@ -243,6 +239,11 @@ export default {
     /** 获取综合信息 */
     misc: async function () {
         return nget(`${remote.API_SERVER}/api/misc/info`)
+    },
+
+    /** 周期请求 */
+    tick: async function (auid) {
+        return nget(`${remote.API_SERVER}/api/misc/tick`, {auid})
     },
 
     user: new UserViewRequest('user'),

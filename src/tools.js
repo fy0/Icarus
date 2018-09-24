@@ -5,6 +5,7 @@ import './tools/misc.js'
 import './tools/time.js'
 import './tools/upload.js'
 import './tools/user.js'
+import './tools/tick.js'
 
 window.userPage = function (uid, nickname) {
     console.log(uid, nickname)
