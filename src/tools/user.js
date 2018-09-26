@@ -17,7 +17,7 @@ $.passwordHash = async function (password, iterations = 1e6) {
     const saltUint8 = enc.encode(salt)
 
     const params = { name: 'PBKDF2', hash: 'SHA-512', salt: saltUint8, iterations: iterations } // pbkdf2 params
-    const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, 512) // derive key
+    const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, 256) // derive key
 
     const keyArray = Array.from(new Uint8Array(keyBuffer)) // key as byte array
     const saltArray = Array.from(new Uint8Array(saltUint8)) // salt as byte array

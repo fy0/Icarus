@@ -300,11 +300,22 @@ class User(PostModel, BaseUser):
         except DoesNotExist:
             return False
 
-        m = hmac.new(u.salt.tobytes(), digestmod=config.PASSWORD_HASH_FUNC)
-        m.update(password_text.encode('utf-8'))
+        if config.USER_SECURE_AUTH_ENABLE:
+            dk = hashlib.pbkdf2_hmac(
+                config.PASSWORD_SECURE_HASH_FUNC_NAME,
+                password_text.encode('utf-8'),
+                u.salt.tobytes(),
+                config.PASSWORD_SECURE_HASH_ITERATIONS,
+            )
 
-        if u.password.tobytes() == m.digest():
-            return u
+            if u.password.tobytes() == dk:
+                return u
+        else:
+            m = hmac.new(u.salt.tobytes(), digestmod=config.PASSWORD_HASH_FUNC)
+            m.update(password_text.encode('utf-8'))
+
+            if u.password.tobytes() == m.digest():
+                return u
 
     def __repr__(self):
         return '<User id:%x nickname:%r>' % (int.from_bytes(self.id.tobytes(), 'big'), self.nickname)

@@ -173,11 +173,16 @@ class UserView(UserMixin, PeeweeView):
 
     @route.interface('POST')
     async def check_in(self):
-        data = self.current_user.check_in()
-        self.finish(RETCODE.SUCCESS, data)
+        """ 签到 """
+        if self.current_user:
+            data = self.current_user.check_in()
+            self.finish(RETCODE.SUCCESS, data)
+        else:
+            self.finish(RETCODE.FAILED)
 
     @route.interface('POST')
     async def resend_activation_mail(self):
+        """ 重发激活邮件 """
         if config.EMAIL_ACTIVATION_ENABLE:
             if self.current_user:
                 if await self.current_user.can_request_actcode():
@@ -192,6 +197,7 @@ class UserView(UserMixin, PeeweeView):
 
     @route.interface('GET')
     async def activation(self):
+        """ 通过激活码激活 """
         user = await User.check_actcode(self.params['uid'], self.params['code'])
         if user:
             self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
