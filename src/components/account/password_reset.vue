@@ -80,16 +80,18 @@ export default {
             },
             requesting: false,
             formErrors: {},
-            stage: 0
+            stage: 0,
+            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {
         checkPasswordText: function () {
-            return `应在 ${state.misc.PASSWORD_MIN}-${state.misc.PASSWORD_MAX} 个字符之间`
+            return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
         },
         checkPassword: function () {
-            if (this.info.password.length < state.misc.PASSWORD_MIN) return false
-            if (this.info.password.length > state.misc.PASSWORD_MAX) return false
+            if (this.info.password.length < this.passwordMin) return false
+            if (this.info.password.length > this.passwordMax) return false
             return true
         },
         checkPassword2: function () {
@@ -102,7 +104,7 @@ export default {
             this.requesting = true
             if (this.checkPassword && this.checkPassword2) {
                 let query = this.$route.query
-                let ret = await api.user.validatePasswordReset(query.uid, query.code, this.info.password)
+                let ret = await api.user.validatePasswordReset(query.uid, query.code, await $.passwordHash(this.info.password))
                 if (ret.code === api.retcode.SUCCESS) {
                     this.stage = 2
                     if (state.user && state.user.id === ret.data.id) {

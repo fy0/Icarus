@@ -123,7 +123,9 @@ export default {
                 password: ''
             },
             goLastPage: false,
-            formErrors: {}
+            formErrors: {},
+            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {
@@ -132,11 +134,11 @@ export default {
             return mail.test(this.info.email)
         },
         checkPasswordText: function () {
-            return `应在 ${state.misc.PASSWORD_MIN}-${state.misc.PASSWORD_MAX} 个字符之间`
+            return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
         },
         checkPassword: function () {
-            if (this.info.password.length < state.misc.PASSWORD_MIN) return false
-            if (this.info.password.length > state.misc.PASSWORD_MAX) return false
+            if (this.info.password.length < this.passwordMin) return false
+            if (this.info.password.length > this.passwordMax) return false
             return true
         }
     },
@@ -150,12 +152,15 @@ export default {
             let key = state.loadingGetKey(this.$route)
             if (this.checkEmail && this.checkPassword) {
                 this.state.loadingInc(this.$route, key)
-                let ret = await api.user.signin(this.info)
+                // 登录请求
+                let ret = await api.user.signin({
+                    email: this.info.email,
+                    password: await $.passwordHash(this.info.password)
+                })
                 if (ret.code === api.retcode.SUCCESS) {
                     ret = await api.user.get({id: ret.data.id}, 'inactive_user')
                     if (ret.code !== api.retcode.SUCCESS) return
                     Vue.set(state, 'user', ret.data) // 这样顶栏可以接到事件
-                    $.notifLoopOn()
 
                     if (this.goLastPage) {
                         this.state.loadingDec(this.$route, key)

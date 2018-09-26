@@ -1,11 +1,8 @@
-﻿import hmac
+﻿import hashlib
+import hmac
 import os
-import struct
 import time
-
-import binascii
 from typing import Union
-
 from peewee import *
 import config
 from lib.utils import get_today_start_timestamp
@@ -104,10 +101,20 @@ class User(PostModel, BaseUser):
 
     @classmethod
     def gen_password_and_salt(cls, password_text):
-        salt = os.urandom(16)
-        m = hmac.new(salt, digestmod=config.PASSWORD_HASH_FUNC)
-        m.update(password_text.encode('utf-8'))
-        return {'password': m.digest(), 'salt': salt}
+        if config.USER_SECURE_AUTH_ENABLE:
+            salt = os.urandom(32)
+            dk = hashlib.pbkdf2_hmac(
+                config.PASSWORD_SECURE_HASH_FUNC_NAME,
+                password_text.encode('utf-8'),
+                salt,
+                config.PASSWORD_SECURE_HASH_ITERATIONS,
+            )
+            return {'password': dk, 'salt': salt}
+        else:
+            salt = os.urandom(16)
+            m = hmac.new(salt, digestmod=config.PASSWORD_HASH_FUNC)
+            m.update(password_text.encode('utf-8'))
+            return {'password': m.digest(), 'salt': salt}
 
     @classmethod
     def gen_key(cls):

@@ -63,7 +63,9 @@ export default {
                 loginId: ''
             },
             dialogLicense: false,
-            formErrors: {}
+            formErrors: {},
+            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     mounted () {
@@ -81,11 +83,11 @@ export default {
     },
     computed: {
         checkPasswordText: function () {
-            return `应在 ${state.misc.PASSWORD_MIN}-${state.misc.PASSWORD_MAX} 个字符之间`
+            return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
         },
         checkPassword: function () {
-            if (this.info.password.length < state.misc.PASSWORD_MIN) return false
-            if (this.info.password.length > state.misc.PASSWORD_MAX) return false
+            if (this.info.password.length < this.passwordMin) return false
+            if (this.info.password.length > this.passwordMax) return false
             return true
         },
         checkPassword2: function () {
@@ -126,7 +128,7 @@ export default {
                         api.saveAccessToken(userinfo['access_token'])
                         ret = await api.user.get({id: ret.data.id}, 'user')
                         Vue.set(state, 'user', ret.data)
-                        $.notifLoopOn()
+
                         $.message_by_code(ret.code)
                         // 用户注册完之后顺便把对应内容发给 oauthUpdate 更新
                         this.info.id = userinfo.id

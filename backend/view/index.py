@@ -112,6 +112,9 @@ class TestBaseView(UserMixin, BaseView):
             'NOTIF_TYPE': NOTIF_TYPE.to_dict(),
 
             'BACKEND_CONFIG': {
+                'USER_SECURE_AUTH_ENABLE': config.USER_SECURE_AUTH_ENABLE,
+                'USER_SECURE_AUTH_FRONTEND_SALT': config.USER_SECURE_AUTH_FRONTEND_SALT,
+
                 'USER_NICKNAME_MIN': config.USER_NICKNAME_MIN,
                 'USER_NICKNAME_MAX': config.USER_NICKNAME_MAX,
                 'USER_NICKNAME_CN_FOR_REG_MIN': config.USER_NICKNAME_CN_FOR_REG_MIN,
@@ -127,18 +130,6 @@ class TestBaseView(UserMixin, BaseView):
                 'UPLOAD_STATIC_HOST': config.UPLOAD_STATIC_HOST,
                 'UPLOAD_QINIU_DEADLINE_OFFSET': config.UPLOAD_QINIU_DEADLINE_OFFSET,
             },
-
-            'NICKNAME_MIN': config.USER_NICKNAME_MIN,
-            'NICKNAME_MAX': config.USER_NICKNAME_MAX,
-            'NICKNAME_CN_FOR_REG_MIN': config.USER_NICKNAME_CN_FOR_REG_MIN,
-            'NICKNAME_FOR_REG_MIN': config.USER_NICKNAME_FOR_REG_MIN,
-            'NICKNAME_FOR_REG_MAX': config.USER_NICKNAME_FOR_REG_MAX,
-            'PASSWORD_MIN': config.USER_PASSWORD_MIN,
-            'PASSWORD_MAX': config.USER_PASSWORD_MAX,
-
-            'TOPIC_TITLE_LENGTH_MIN': config.TOPIC_TITLE_LENGTH_MIN,
-            'TOPIC_TITLE_LENGTH_MAX': config.TOPIC_TITLE_LENGTH_MAX,
-            'TOPIC_CONTENT_LENGTH_MAX': config.TOPIC_CONTENT_LENGTH_MAX,
 
             'retcode': RETCODE.to_dict(),
             'retinfo_cn': RETCODE.txt_cn,

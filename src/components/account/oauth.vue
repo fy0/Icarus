@@ -42,7 +42,6 @@ export default {
                 let uret = await api.user.get({id: ret.data.user_id}, 'inactive_user')
                 if (uret.code !== api.retcode.SUCCESS) return
                 Vue.set(state, 'user', uret.data) // 这样顶栏可以接到事件
-                $.notifLoopOn()
 
                 if (this.goLastPage) {
                     $.message_success('登录成功，正在回到前页……')

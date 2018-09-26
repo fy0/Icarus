@@ -37,19 +37,19 @@ class UserMixin(BaseAccessTokenUserMixin):
 class ChangePasswordForm(ValidateForm):
     old_password = StringField('密码', validators=[
         va.required(),
-        va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
+        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
     ])
 
     password = StringField('密码', validators=[
         va.required(),
-        va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
+        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
     ])
 
 
 class PasswordForm(ValidateForm):
     password = StringField('密码', validators=[
         va.required(),
-        va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
+        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
     ])
 
 
@@ -58,7 +58,7 @@ class SigninForm(ValidateForm):
 
     password = StringField('密码', validators=[
         va.required(),
-        va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
+        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
     ])
 
 

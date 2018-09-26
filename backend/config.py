@@ -20,6 +20,11 @@ COOKIE_SECRET = b"6aOO5ZC55LiN5pWj6ZW/5oGo77yM6Iqx5p+T5LiN6YCP5Lmh5oSB44CC"  # �
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
+# 为True时，密码将先在前端哈希后，在后端再次哈希与储存值比对。
+# 从1.0版升级后，如果开启这个选项，那么现有用户全部需要重置密码
+USER_SECURE_AUTH_ENABLE = True
+USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5Lq65LiN6K+G5ZCb'  # 前端盐，务必修改默认值
+
 ##########################################
 # 可选配置 - 用户昵称、邮箱约束
 ##########################################
@@ -27,6 +32,7 @@ USER_ALLOW_SIGNUP = True  # 开放注册
 
 CLIENT_ID = '1b5caadeac09427e7570'
 CLIENT_SECRET = 'ea478414584c80d57cd1c9475cd9be2c9625e65d'
+
 
 def _nickname_checker(username):
     # 被禁止的用户名，此函数仅为示例
@@ -112,6 +118,8 @@ class AutoGenerator:
 
 
 PASSWORD_HASH_FUNC = hashlib.sha256
+PASSWORD_SECURE_HASH_FUNC_NAME = 'sha512'
+PASSWORD_SECURE_HASH_ITERATIONS = 1_000_000
 SESSION_ID_GENERATOR = CustomID
 
 # 被数据库所使用的两个ID，短ID与长ID

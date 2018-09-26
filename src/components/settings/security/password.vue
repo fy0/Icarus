@@ -74,16 +74,18 @@ export default {
                 verify: ''
             },
             dialogLicense: false,
-            formErrors: {}
+            formErrors: {},
+            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {
         checkPasswordText: function () {
-            return `应在 ${state.misc.PASSWORD_MIN}-${state.misc.PASSWORD_MAX} 个字符之间`
+            return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
         },
         checkPassword: function () {
-            if (this.info.password.length < state.misc.PASSWORD_MIN) return false
-            if (this.info.password.length > state.misc.PASSWORD_MAX) return false
+            if (this.info.password.length < this.passwordMin) return false
+            if (this.info.password.length > this.passwordMax) return false
             return true
         },
         checkPassword2: function () {
@@ -93,7 +95,14 @@ export default {
     methods: {
         changePassword: async function () {
             if (this.checkPassword && this.checkPassword2) {
-                let ret = await api.user.changePassword(this.info)
+                // 提交修改请求
+                let info = _.clone(this.info)
+                info.password = await $.passwordHash(info.password)
+                info.password2 = await $.passwordHash(info.password2)
+                info.old_password = await $.passwordHash(info.old_password)
+                console.log(111, info)
+                let ret = await api.user.changePassword(info)
+
                 if (ret.code !== api.retcode.SUCCESS) {
                     this.formErrors = ret.data
                     $.message_error('修改密码失败')

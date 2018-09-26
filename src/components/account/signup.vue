@@ -113,16 +113,18 @@ export default {
                 returning: true // new 之后返回记录
             },
             dialogLicense: false,
-            formErrors: {}
+            formErrors: {},
+            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {
         checkPasswordText: function () {
-            return `应在 ${state.misc.PASSWORD_MIN}-${state.misc.PASSWORD_MAX} 个字符之间`
+            return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
         },
         checkPassword: function () {
-            if (this.info.password.length < state.misc.PASSWORD_MIN) return false
-            if (this.info.password.length > state.misc.PASSWORD_MAX) return false
+            if (this.info.password.length < this.passwordMin) return false
+            if (this.info.password.length > this.passwordMax) return false
             return true
         },
         checkPassword2: function () {
@@ -153,7 +155,11 @@ export default {
                 return
             }
             if (this.checkPassword && this.checkPassword2 && this.checkEmail && this.checkNickname) {
-                let ret = await api.user.new(this.info)
+                let info = _.clone(this.info)
+                info.password = await $.passwordHash(info.password)
+                info.password2 = await $.passwordHash(info.password2)
+                let ret = await api.user.new(info)
+
                 if (ret.code !== api.retcode.SUCCESS) {
                     this.formErrors = ret.data
                     $.message_by_code(ret.code)
@@ -163,7 +169,7 @@ export default {
                         api.saveAccessToken(userinfo['access_token'])
                         ret = await api.user.get({id: ret.data.id}, 'inactive_user')
                         Vue.set(state, 'user', ret.data)
-                        $.notifLoopOn()
+
                         if (ret.code === api.retcode.SUCCESS) {
                             $.message_success('注册成功！请在邮箱查收激活邮件完成注册。')
                         } else {
