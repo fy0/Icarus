@@ -17,13 +17,8 @@ def sql_execute(sql):
 
 
 def work():
-    try:
-        db.execute_sql('ALTER TABLE "topic" ADD COLUMN "update_time" BIGINT NULL DEFAULT NULL ;')
-    except Exception as e:
-        print(e)
-        print('failed')
-        db.rollback()
-
+    sql_execute('ALTER TABLE "topic" ADD COLUMN "update_time" BIGINT NULL DEFAULT NULL ;')
+    sql_execute('ALTER TABLE "user" ADD COLUMN "ip_registered" inet NULL DEFAULT NULL;')
     sql_execute('drop table "notif";')
     sql_execute('drop table "mention";')
     sql_execute('drop table "user_notif_record";')

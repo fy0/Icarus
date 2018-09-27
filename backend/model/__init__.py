@@ -32,11 +32,16 @@ db = connect(config.DATABASE_URI)
 
 
 class CITextField(peewee.TextField):
-    db_field = 'CITEXT'
+    field_type = 'CITEXT'
 
 
 class SerialField(peewee.IntegerField):
-    db_field = 'SERIAL'
+    field_type = 'SERIAL'
+
+
+class INETField(peewee.TextField):
+    # 临时解决方案，peewee 的 custom field 有点问题
+    field_type = 'inet'
 
 
 class MyTimestampField(peewee.BigIntegerField):

@@ -302,6 +302,10 @@ class UserView(UserMixin, PeeweeView):
         if 'state' not in values:
             values['state'] = POST_STATE.NORMAL
 
+        # 注册IP地址
+        ip_addr = self._request.transport.get_extra_info('peername')[0]
+        values['ip_registered'] = ip_addr
+
         values.update(User.gen_key())
         values['time'] = int(time.time())
         self._key = values['key']

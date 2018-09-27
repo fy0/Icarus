@@ -44,6 +44,7 @@ class TestBaseView(UserMixin, BaseView):
 
         if self.current_user:
             user = self.current_user
+
             # 检查未读信息
             r = Notification.refresh(user.id)
             c = Notification.count(user.id)

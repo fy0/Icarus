@@ -12,7 +12,7 @@ from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_
     RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID, RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID
 from slim.base.user import BaseUser
 from slim.utils import StateObject, to_hex, to_bin
-from model import BaseModel, MyTimestampField, CITextField, db
+from model import BaseModel, MyTimestampField, CITextField, db, INETField
 
 
 class USER_GROUP(StateObject):
@@ -61,6 +61,7 @@ class User(PostModel, BaseUser):
     credit = IntegerField(default=0)  # 积分，会消费
     exp = IntegerField(default=0)  # 经验值，不会消失
     reputation = IntegerField(default=0)  # 声望
+    ip_registered = INETField(default=None, null=True)  # 注册IP
 
     reset_key = BlobField(index=True, null=True, default=None)  # 重置密码所用key
 
