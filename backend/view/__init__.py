@@ -14,6 +14,12 @@ class ValidateForm(Form):
         locales = [locale.getdefaultlocale()[0]]
 
 
+async def get_fuzz_ip(view) -> str:
+    ip_addr = view._request.transport.get_extra_info('peername')[0]
+    # 数据脱敏，将IP地址最后一位填充为 .0
+    return ip_addr.rsplit('.', 1)[0] + '.0'
+
+
 async def get_ip(view) -> bytes:
     ip_addr = view._request.transport.get_extra_info('peername')[0]
     return ip_addr.encode('utf-8')

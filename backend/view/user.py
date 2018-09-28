@@ -16,7 +16,7 @@ from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin
 from slim.utils.jsdict import JsDict
-from view import route, ValidateForm, cooldown, same_user
+from view import route, ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, DataRecord
 from view.permissions import permissions_add_all
@@ -318,8 +318,7 @@ class UserView(UserMixin, PeeweeView):
             values['state'] = POST_STATE.NORMAL
 
         # 注册IP地址
-        ip_addr = self._request.transport.get_extra_info('peername')[0]
-        values['ip_registered'] = ip_addr
+        values['ip_registered'] = get_fuzz_ip(self)
 
         values.update(User.gen_key())
         values['time'] = int(time.time())
