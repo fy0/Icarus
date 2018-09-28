@@ -11,7 +11,7 @@ from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, dict_filter_inplace
-from view import route, ValidateForm
+from view import route, ValidateForm, cooldown, same_user
 from wtforms import validators as va, StringField, IntegerField
 
 from view.mention import check_content_mention
@@ -67,6 +67,11 @@ class TopicView(UserMixin, PeeweeView):
         if self.ret_val['code'] == RETCODE.SUCCESS:
             vals = getattr(self, '_val_bak', None)
             if vals: statistic_add_topic_click(*vals)
+
+    @cooldown(config.TOPIC_NEW_COOLDOWN_BY_IP, b'ic_cd_topic_new_%b')
+    @cooldown(config.TOPIC_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_topic_new_account_%b', unique_id_func=same_user)
+    async def new(self):
+        return await super().new()
 
     def after_read(self, records: List[DataRecord]):
         for i in records:

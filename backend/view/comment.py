@@ -14,7 +14,7 @@ from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin
-from view import route, ValidateForm
+from view import route, ValidateForm, cooldown, same_user
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 
 from view.mention import check_content_mention
@@ -35,6 +35,11 @@ class CommentView(UserMixin, PeeweeView):
     def permission_init(cls):
         permission: Permissions = cls.permission
         permissions_add_all(permission)
+
+    @cooldown(config.COMMENT_NEW_COOLDOWN_BY_IP, b'ic_cd_comment_new_%b')
+    @cooldown(config.COMMENT_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_comment_new_account_%b', unique_id_func=same_user)
+    async def new(self):
+        return await super().new()
 
     async def prepare(self):
         self.do_mentions = None

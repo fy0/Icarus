@@ -30,14 +30,6 @@ USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5
 ##########################################
 USER_ALLOW_SIGNUP = True  # 开放注册
 
-USER_SIGNIN_COOLDOWN_BY_IP = 10  # 单IP登录间隔时间
-USER_SIGNIN_COOLDOWN_BY_ACCOUNT = 10  # 帐户登录间隔时间
-USER_SIGNUP_COOLDOWN_BY_IP = 10 * 60  # 单IP注册间隔时间
-USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT = 2 * 60  # 帐户修改密码间隔时间
-USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP = 5 * 60  # 重置密码申请时间间隔
-USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_ACCOUNT = 5 * 60  # 重置密码申请时间间隔
-
-
 def _nickname_checker(username):
     # 被禁止的用户名，此函数仅为示例
     if username not in {'_icarus', }:
@@ -129,6 +121,22 @@ SESSION_ID_GENERATOR = CustomID
 # 被数据库所使用的两个ID，短ID与长ID
 POST_ID_GENERATOR = AutoGenerator  # 代表SQL自动生成
 LONG_ID_GENERATOR = CustomID
+
+##########################################
+# 可选 - 接口冷却时间
+##########################################
+
+USER_SIGNIN_COOLDOWN_BY_IP = 10  # 单IP登录间隔时间
+USER_SIGNIN_COOLDOWN_BY_ACCOUNT = 10  # 帐户登录间隔时间
+USER_SIGNUP_COOLDOWN_BY_IP = 10 * 60  # 单IP注册间隔时间
+USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT = 2 * 60  # 帐户修改密码间隔时间
+USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP = 5 * 60  # 重置密码申请时间间隔
+USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_ACCOUNT = 5 * 60  # 重置密码申请时间间隔
+
+TOPIC_NEW_COOLDOWN_BY_IP = 60  # IP发帖间隔：60s
+TOPIC_NEW_COOLDOWN_BY_ACCOUNT = 60  # 发帖间隔：60s
+COMMENT_NEW_COOLDOWN_BY_IP = 15  # 评论间隔：15s
+COMMENT_NEW_COOLDOWN_BY_ACCOUNT = 15  # 评论间隔：15s
 
 ##########################################
 # 可选 - 其他

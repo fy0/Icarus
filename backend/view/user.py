@@ -124,8 +124,8 @@ class UserView(UserMixin, PeeweeView):
         permissions_add_all(permission)
 
     @route.interface('POST')
-    @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_request_reset_password_%b')
-    @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP, b'ic_cd_user_request_reset_password_by_account_%b', unique_id_func=same_email_post)
+    @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP, b'ic_cd_user_request_reset_password_%b')
+    @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_request_reset_password_account_%b', unique_id_func=same_email_post)
     async def request_password_reset(self):
         """
         申请重置密码 / 忘记密码
@@ -220,7 +220,7 @@ class UserView(UserMixin, PeeweeView):
             self.finish(RETCODE.PERMISSION_DENIED)
 
     @route.interface('POST')
-    @cooldown(config.USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_change_password_%b', unique_id_func=same_user)
+    @cooldown(config.USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_change_password_account_%b', unique_id_func=same_user)
     async def change_password(self):
         if self.current_user:
             post = await self.post_data()
@@ -247,7 +247,7 @@ class UserView(UserMixin, PeeweeView):
 
     @route.interface('POST')
     @cooldown(config.USER_SIGNIN_COOLDOWN_BY_IP, b'ic_cd_user_signin_%b')
-    @cooldown(config.USER_SIGNIN_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_signin_by_account_%b', unique_id_func=same_email_post)
+    @cooldown(config.USER_SIGNIN_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_signin_account_%b', unique_id_func=same_email_post)
     async def signin(self):
         data = await self.post_data()
         form = SigninForm(**data)
