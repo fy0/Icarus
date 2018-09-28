@@ -4,7 +4,7 @@ $.isAdmin = function () {
     return (state.user) && (state.user.group >= state.misc.USER_GROUP.ADMIN)
 }
 
-$.passwordHash = async function (password, iterations = 1e6) {
+$.passwordHash = async function (password, iterations = 1e5) {
     if (!state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_ENABLE) {
         return password
     }

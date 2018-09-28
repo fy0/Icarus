@@ -1,10 +1,5 @@
 import time
-
-from slim.utils import to_bin
-
 import config
-from aiohttp import web
-
 from app import app
 from lib.utils import get_today_start_timestamp
 from model.log_manage import MANAGE_OPERATION, ManageLog

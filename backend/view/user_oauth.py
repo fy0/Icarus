@@ -25,8 +25,8 @@ class UserOAuthView(UserMixin, PeeweeView):
     model = UserOAuth
 
     github = GithubClient(
-        client_id=config.CLIENT_ID,
-        client_secret=config.CLIENT_SECRET
+        client_id='config.CLIENT_ID',
+        client_secret='config.CLIENT_SECRET'
     )
 
     @route.interface('GET')

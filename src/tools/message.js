@@ -41,6 +41,9 @@ $.message_error = function (text, timeout = 3000) {
 $.message_by_code = function (code, text = null, timeout = 3000) {
     text = text || state.misc.retinfo_cn[code]
     if (code === state.misc.retcode.SUCCESS) $.message_success(text, timeout)
+    // else if (code === state.misc.retcode.TOO_FREQUENT) {
+    // $.message_error(`${text}，尚需等待 ${ret.data} 秒`, timeout)
+    // }
     else $.message_error(text, timeout)
 }
 
@@ -53,6 +56,6 @@ $.message_by_form = function (code, data, alias, timeout = 6000) {
             }
         }
     } else {
-        $.message_by_code(code, timeout)
+        $.message_by_code(code, null, timeout)
     }
 }

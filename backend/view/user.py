@@ -16,7 +16,7 @@ from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin
 from slim.utils.jsdict import JsDict
-from view import route, ValidateForm
+from view import route, ValidateForm, cooldown, same_user
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, DataRecord
 from view.permissions import permissions_add_all
@@ -108,6 +108,12 @@ class ResetPasswordForm(ValidateForm):
     ])
 
 
+async def same_email_post(view):
+    post = await view.post_data()
+    if 'email' in post:
+        return post['email'].encode('utf-8')
+
+
 @route('user')
 class UserView(UserMixin, PeeweeView):
     model = User
@@ -118,6 +124,8 @@ class UserView(UserMixin, PeeweeView):
         permissions_add_all(permission)
 
     @route.interface('POST')
+    @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_request_reset_password_%b')
+    @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP, b'ic_cd_user_request_reset_password_by_account_%b', unique_id_func=same_email_post)
     async def request_password_reset(self):
         """
         申请重置密码 / 忘记密码
@@ -189,7 +197,7 @@ class UserView(UserMixin, PeeweeView):
                     await mail.send_register_activation(self.current_user)
                     self.finish(RETCODE.SUCCESS)
                 else:
-                    self.finish(RETCODE.FAILED)
+                    self.finish(RETCODE.TOO_FREQUENT)
             else:
                 self.finish(RETCODE.PERMISSION_DENIED)
         else:
@@ -212,6 +220,7 @@ class UserView(UserMixin, PeeweeView):
             self.finish(RETCODE.PERMISSION_DENIED)
 
     @route.interface('POST')
+    @cooldown(config.USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_change_password_%b', unique_id_func=same_user)
     async def change_password(self):
         if self.current_user:
             post = await self.post_data()
@@ -237,6 +246,8 @@ class UserView(UserMixin, PeeweeView):
             self.finish(RETCODE.FAILED)
 
     @route.interface('POST')
+    @cooldown(config.USER_SIGNIN_COOLDOWN_BY_IP, b'ic_cd_user_signin_%b')
+    @cooldown(config.USER_SIGNIN_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_signin_by_account_%b', unique_id_func=same_email_post)
     async def signin(self):
         data = await self.post_data()
         form = SigninForm(**data)
@@ -269,6 +280,10 @@ class UserView(UserMixin, PeeweeView):
             # 管理日志：重置密码
             ManageLog.add_by_post_changed(self, 'password', MOP.USER_PASSWORD_CHANGE, POST_TYPES.USER,
                                           values, old_record, record, value=None)
+
+    @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
+    async def new(self):
+        return await super().new()
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]
