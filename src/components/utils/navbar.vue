@@ -46,13 +46,13 @@
                     </li>
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
                         <a class="nav-icon" title="提醒">
-                            <i class="mdi-icarus icon-bell-ring" v-if="state.unread"></i>
+                            <i class="icarus icon-bell-ring" v-if="state.unread"></i>
                             <ic-badge v-if="state.unread" style="margin-left: 6px">{{state.unread}}</ic-badge>
-                            <i v-else class="mdi-icarus icon-bell"></i>
+                            <i v-else class="icarus icon-bell"></i>
                         </a>
                     </router-link>
                     <li class="menu-item">
-                        <a title="注销" href="javascript:void(0)" class="nav-icon" @click="signout"><i class="mdi-icarus icon-logout"></i></a>
+                        <a title="注销" href="javascript:void(0)" class="nav-icon" @click="signout"><i class="icarus icon-logout"></i></a>
                     </li>
                     <!-- <li class="menu-item"><a href="#" @click="signout">注销</a></li> -->
                 </ul>

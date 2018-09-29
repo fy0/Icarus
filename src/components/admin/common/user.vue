@@ -17,7 +17,7 @@
                         <span>注册于 <ic-time :ago="false" :timestamp="i.time" /></span> ·
                         <span>{{state.misc.USER_GROUP_TXT[i.group]}}</span> ·
                         <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
-                        <i class="mdi-icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setUserManage(i)"></i>
+                        <i class="icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setUserManage(i)"></i>
                     </div>
                     <div>
                         <a @click="userPasswordReset(i)" href="javascript:void(0);">密码重置</a>

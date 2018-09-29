@@ -1,3 +1,6 @@
+"""
+如果执行失败，请将此文件复制到backend目录再次执行。
+"""
 import time
 import peewee
 from model import db
@@ -23,6 +26,7 @@ def work():
     sql_execute('drop table "mention";')
     sql_execute('drop table "user_notif_record";')
 
+    db.create_tables([UserNotifLastInfo], safe=True)
     for i in User.select().execute():
         try:
             UserNotifLastInfo.create(id=i.id, update_time=int(time.time()))

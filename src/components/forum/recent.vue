@@ -44,15 +44,6 @@
                 </template>
                 <div v-else v-title>全部主题 - {{state.config.title}}</div>
 
-                <div style="display: flex; margin-left: 10px" v-if="false">
-                    <span style="flex: 10 0 0%">标题</span>
-                    <span style="flex: 4 0 0%; text-align: center; display: flex">
-                        <span style="flex: 2 0 0%">点击</span>
-                        <span style="flex: 2 0 0%">回复</span>
-                    </span>
-                    <span style="flex: 5 0 0%; text-align: right;">最新回复</span>
-                </div>
-
                 <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                     <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
                         <div class="title-recent" style="flex: 10 0 0%">
@@ -69,46 +60,26 @@
                                         <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
                                     </router-link>
                                     <span class="icons">
-                                        <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
-                                        <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                        <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
+                                        <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
+                                        <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                                        <i v-if="isAdmin() && i.id === hoverId" class="icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
                                     </span>
                                 </h2>
-                                <div v-if="false" style="display: flex; align-items: center; color: #777; font-size: 14px;">
-                                    <user-link class="author" :user="i.user_id" style="margin-right: 10px" />
-                                    <span class="time"><ic-time :timestamp="i.time" /></span>
-                                </div>
-                                <p class="topic-info" style="margin-left: 0px; display: flex; align-items: center;">
+
+                                <p class="topic-info" style="margin-left: 0px; display: flex; align-items: baseline;">
                                     <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
                                         <div :style="lineStyleBG(i.board_id)" class="sign"></div>
                                         <span>{{getBoardInfo(i.board_id).name}}</span>
                                     </router-link>
                                     <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
                                     <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
-                                    <div v-if="false" style="display: flex; align-items: center; font-size: 14px">
-                                        <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
-                                        <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
-                                    </div>
                                 </p>
                             </div>
                             <div class="append-icons">
-                                <i v-if="i.sticky_weight" class="mdi-icarus icon-pin" title="置顶" />
+                                <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                             </div>
                         </div>
                         <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
-                            <div class="count-block" style="flex: 4 0 0%;" v-if="false">
-                                <div style="color: #777; font-size: 14px;">
-                                    <div v-if="true" style="display: flex; align-items: center; justify-content: center;">
-                                        <user-link class="author" :user="i.user_id" style="margin-right: 10px" />
-                                        <span class="time"><ic-time :timestamp="i.time" /></span>
-                                    </div>
-                                    <router-link v-if="false" class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
-                                        <div :style="lineStyleBG(i.board_id)" class="sign"></div>
-                                        <span>{{getBoardInfo(i.board_id).name}}</span>
-                                    </router-link>                                    
-                                    <div>{{i.s.click_count}}点击 / {{i.s.comment_count}} 回复</div>
-                                </div>
-                            </div>
                             <div class="count-block" style="flex: 4 0 0%;">
                                 <div class="count">
                                     <p class="num">{{i.s.click_count}}</p>
@@ -122,7 +93,7 @@
                             <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0%;">
                                 <span class="line" :style="lineStyle(i.board_id)"></span>
                                 <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
-                                    <strong>@<user-link :user="i.s.last_comment_id.user_id" />:</strong>
+                                    <strong><i class="icon icarus icon-reply"></i><user-link :user="i.s.last_comment_id.user_id" />:</strong>
                                     <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
                                 </div>
                                 <div class="post" v-else>无回复</div>
@@ -188,6 +159,14 @@
         &:hover {
             color: $dark;
         }
+    }
+}
+
+.post {
+    .icon-reply {
+        font-size: 12px;
+        margin-right: 5px;
+        color: #777;
     }
 }
 

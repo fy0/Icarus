@@ -12,8 +12,8 @@
                 <router-link class="title" :class="i.state === state.misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                     <span>{{i.title}}</span>
                     <span class="icons">
-                        <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272"></i>
-                        <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                        <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272"></i>
+                        <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
                     </span>
                 </router-link>
                 <div class="info">
@@ -21,7 +21,7 @@
                     <user-link :user="i.user_id" /> ·
                     <ic-time :timestamp="i.time" /> ·
                     <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
-                    <i class="mdi-icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setTopicManage(i)"></i>
+                    <i class="icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setTopicManage(i)"></i>
                 </div>
             </li>
         </ul>

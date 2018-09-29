@@ -29,9 +29,9 @@
                                 <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
                             </router-link>
                             <span class="icons">
-                                <i v-if="i.awesome == 1" class="mdi-icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
-                                <i v-if="false" class="mdi-icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                <i v-if="isAdmin() && i.id === hoverId" class="mdi-icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
+                                <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
+                                <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                                <i v-if="isAdmin() && i.id === hoverId" class="icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
                             </span>
                         </h2>
                         <p class="info">
@@ -46,7 +46,7 @@
                             </span>
                         </p>
                         <div class="icons">
-                            <i v-if="i.sticky_weight" class="mdi-icarus icon-pin" title="置顶" />
+                            <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                         </div>
                     </div>
                     <div class="detail ic-xs-hidden" style="flex: 4 0 0%">

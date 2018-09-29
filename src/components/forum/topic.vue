@@ -81,7 +81,7 @@
                         <p>历史编辑次数 {{topic.edit_count}} 次</p>
                     </div>
                     <div class="topic-manage" v-if="isAdmin">
-                        <i class="mdi-icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
+                        <i class="icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
                     </div>
                 </div>
             </div>
