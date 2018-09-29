@@ -194,6 +194,9 @@ export default {
                 localStorage.setItem('topic-post-cache-clear', 1)
                 this.$router.push({name: 'forum_topic', params: { id: topicId }})
                 $.message_success(successText)
+            } else if (ret.code === api.retcode.INVALID_ROLE) {
+                $.message_error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
+                this.loading = false
             } else {
                 $.message_error(failedText)
                 // 注意：发布成功会跳转，故不做复位，失败则复位

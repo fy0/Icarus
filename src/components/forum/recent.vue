@@ -69,7 +69,7 @@
                                 <p class="topic-info" style="margin-left: 0px; display: flex; align-items: baseline;">
                                     <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
                                         <div :style="lineStyleBG(i.board_id)" class="sign"></div>
-                                        <span>{{getBoardInfo(i.board_id).name}}</span>
+                                        <span>{{boardBadgeTitleById(i.board_id)}}</span>
                                     </router-link>
                                     <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
                                     <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
@@ -330,6 +330,17 @@ export default {
         atConvert: $.atConvert2,
         isAdmin: function () {
             return $.isAdmin()
+        },
+        boardBadgeTitleById: function (id) {
+            let chain = $.getBoardChainById(id)
+            let ret = ''
+            if (chain.length > 1) chain = chain.slice(0, -1)
+            for (let i = chain.length - 1; i >= 0; i--) {
+                let board = this.getBoardInfo(chain[i])
+                ret += `${board.name}`
+                if (i !== 0) ret += '/'
+            }
+            return ret
         },
         boardNavTitle: function (board) {
             if (board.parent_id) {

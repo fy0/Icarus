@@ -99,6 +99,10 @@
     max-width: 100%;
 }
 
+.topic-box {
+    margin-top: 25px;
+}
+
 /* 列表靠左对齐：不行，这会毁灭多级列表，子级会失去相对父级的缩进 */
 /* .topic-box .article > .content ul {
     padding-left: 0;
@@ -116,6 +120,15 @@
 </style>
 
 <style lang="scss" scoped>
+.nav {
+    width: 75%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* word-break: break-all; */
+    white-space: nowrap;
+    font-size: 18px;
+}
+
 .post-manage-log {
     padding: 5px 0;
     .post-manage-log-item {
