@@ -318,7 +318,7 @@ class UserView(UserMixin, PeeweeView):
             values['state'] = POST_STATE.NORMAL
 
         # 注册IP地址
-        values['ip_registered'] = get_fuzz_ip(self)
+        values['ip_registered'] = await get_fuzz_ip(self)
 
         values.update(User.gen_key())
         values['time'] = int(time.time())
