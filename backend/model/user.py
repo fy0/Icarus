@@ -12,7 +12,7 @@ from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_
     RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID, RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID
 from slim.base.user import BaseUser
 from slim.utils import StateObject, to_hex, to_bin
-from model import BaseModel, MyTimestampField, CITextField, db, INETField
+from model import BaseModel, MyTimestampField, CITextField, db, INETField, SerialField
 
 
 class USER_GROUP(StateObject):
@@ -57,7 +57,7 @@ class User(PostModel, BaseUser):
     check_in_his = IntegerField(default=0)  # 连续签到天数
 
     phone = TextField(null=True, default=None)  # 大陆地区
-    number = IntegerField(default=get_user_count_seq)  # 序号，第N个用户 sequence='user_count_seq'
+    number = SerialField(sequence='user_count_seq')  # 序号，第N个用户 sequence='user_count_seq'
     credit = IntegerField(default=0)  # 积分，会消费
     exp = IntegerField(default=0)  # 经验值，不会消失
     reputation = IntegerField(default=0)  # 声望

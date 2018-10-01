@@ -1,3 +1,4 @@
+import misc.setup
 import asyncio
 from app import app
 from lib import mail, upload
