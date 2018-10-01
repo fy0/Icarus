@@ -11,14 +11,12 @@ from slim.utils import CustomID
 SITE_NAME = 'Icarus'  # 站点名称
 SITE_URL = 'http://localhost:8080'  # 必填，站点地址，末尾不要带 /
 
-HOST = '0.0.0.0'
+HOST = '127.0.0.1'
 PORT = 9999
-DEBUG = logging.DEBUG
+DEBUG_LEVEL = logging.DEBUG
 DATABASE_URI = 'postgresql://postgres@localhost/icarus'  # 必填
-COOKIE_SECRET = b"6aOO5ZC55LiN5pWj6ZW/5oGo77yM6Iqx5p+T5LiN6YCP5Lmh5oSB44CC"  # 必填，务必修改默认值
 
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
+REDIS_URI = 'redis://localhost:6379'
 
 # 为True时，密码将先在前端哈希后，在后端再次哈希与储存值比对。
 # 从1.0版升级后，如果开启这个选项，那么现有用户全部需要重置密码
@@ -83,7 +81,7 @@ EMAIL_USERNAME = 'user'
 EMAIL_PASSWORD = 'pasword'
 
 ##########################################
-# 可选 - 文件上传
+# 可选 - 文件上传（七牛配置）
 ##########################################
 
 UPLOAD_ENABLE = False
@@ -144,6 +142,13 @@ COMMENT_NEW_COOLDOWN_BY_ACCOUNT = 15  # 评论间隔：15s
 
 NOTIF_FETCH_COOLDOWN = 14
 MENTION_LIMIT_PER_POST = 20
+
+##########################################
+# 其它
+##########################################
+
+# 项目使用类 restful 方式进行通信，并未使用cookies，不用管这个值
+COOKIES_SECRET = b"6aOO5ZC55LiN5pWj6ZW/5oGo77yM6Iqx5p+T5LiN6YCP5Lmh5oSB44CC"
 
 ##########################################
 # 加载备用配置

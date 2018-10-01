@@ -32,10 +32,6 @@ class USER_GROUP(StateObject):
     txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', SUPERUSER: '超级用户', ADMIN: '管理'}
 
 
-def get_user_count_seq():
-    return db.execute_sql("select nextval('user_count_seq')").fetchone()[0]
-
-
 class User(PostModel, BaseUser):
     email = TextField(index=True, unique=True)
     nickname = CITextField(index=True, unique=True)  # CITextField

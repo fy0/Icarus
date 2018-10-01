@@ -141,12 +141,11 @@ ALTER USER icarus WITH PASSWORD 'IcaruStest123';
 
 ## 后端篇
 
-首先配置数据库连接：
-```bash
-cd Icarus/backend
-# 这里的 private.py 用于覆盖 config.py 的默认配置
-echo -e "DATABASE_URI = 'postgres://icarus:IcaruStest123@localhost/icarus'\n" > private.py
-```
+运行 backend 目录下的 `main.py`，初次运行会创建自动 `private.py` 并退出。
+
+这个文件里的内容会覆盖 `config.py` 中的配置。
+
+然后逐项对内容进行修改，使其符合你机器的实际情况即可。
 
 建议使用 pipenv 进行部署。
 

@@ -7,8 +7,7 @@ redis: aioredis.Redis = Reference()
 
 async def init(loop):
     from model.topic import Topic
-    address = 'redis://%s:%d' % (config.REDIS_HOST, config.REDIS_PORT)
-    redis._obj = await aioredis.create_redis(address, loop=loop, timeout=30)
+    redis._obj = await aioredis.create_redis(config.REDIS_URI, loop=loop, timeout=30)
     await Topic.weight_redis_init()
 
 # user
