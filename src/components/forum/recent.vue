@@ -35,79 +35,118 @@
         </div>
         <div class="right" id="board-list">
             <top-btns :board="board"></top-btns>
-            <loading v-if="loading"/>
-            <div style="flex: 1 0 0%" v-else-if="topics && topics.items.length">
-                <!-- 放在这是为了让标题正确刷新，毕竟这部分DOM总会在发生变化时重构 -->
-                <template v-if="isBoard">
-                    <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
-                    <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
+            <div style="flex: 1 0 0%;">
+                <template v-if="loading === true">
+                    <div class="board-item-box" v-for="i of placeholderCount" :key="i">
+                        <a class="board-item">
+                            <div class="title-recent" style="flex: 10 0 0%">
+                                <avatar style="margin-right: 10px;" :size="32" :placeholder="true" class="avatar"></avatar>
+                                <div class="right">
+                                    <h2 style="display:flex;">
+                                        <span class="placeholder-text f18"></span>
+                                    </h2>
+                                    <p class="topic-info" style="margin-left: 0px; width: 50%">
+                                        <span class="placeholder-text f14"></span>
+                                    </p>
+                                </div>
+                                <div class="append-icons"></div>
+                            </div>
+                            <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
+                                <div class="count-block" style="flex: 4 0 0%;">
+                                    <div class="count">
+                                        <p class="num"><span class="placeholder-text f16" style="width: 40%"></span></p>
+                                        <p class="txt"><span class="placeholder-text f12" style="width: 30%"></span></p>
+                                    </div>
+                                    <div class="count">
+                                        <p class="num"><span class="placeholder-text f16" style="width: 40%"></span></p>
+                                        <p class="txt"><span class="placeholder-text f12" style="width: 30%"></span></p>
+                                    </div>
+                                </div>
+                                <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0%;">
+                                    <span class="line" style="lineStyle(i.board_id)"></span>
+                                    <div class="post">
+                                        <span class="placeholder-text f12" style="width: 50%"></span>
+                                        <span class="placeholder-text f12"></span>
+                                        <span class="placeholder-text f12" style="width: 75%"></span>
+                                    </div>
+                                    <div class="time">N/A</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </template>
-                <div v-else v-title>全部主题 - {{state.config.title}}</div>
 
-                <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
-                    <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                        <div class="title-recent" style="flex: 10 0 0%">
-                            <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
-                            <div style="font-size: 10px" v-if="false">
+                <template v-else-if="topics && topics.items.length">
+                    <!-- 放在这是为了让标题正确刷新，毕竟这部分DOM总会在发生变化时重构 -->
+                    <template v-if="isBoard">
+                        <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
+                        <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
+                    </template>
+                    <div v-else v-title>全部主题 - {{state.config.title}}</div>
+
+                    <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
+                        <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
+                            <div class="title-recent" style="flex: 10 0 0%">
                                 <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
-                                <div><user-link class="author" :user="i.user_id" /></div>
-                                <span class="time"><ic-time :timestamp="i.time" /></span>
-                            </div>
-                            <div class="right">
-                                <h2 style="display:flex;align-items: center;">
-                                    <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
-                                        <span>{{i.title}}</span>
-                                        <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
-                                    </router-link>
-                                    <span class="icons">
-                                        <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
-                                        <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                        <i v-if="isAdmin() && i.id === hoverId" class="icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
-                                    </span>
-                                </h2>
+                                <div class="right">
+                                    <h2 style="display:flex;align-items: center;">
+                                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                                            <span>{{i.title}}</span>
+                                            <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
+                                        </router-link>
+                                        <span class="icons">
+                                            <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
+                                            <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                                            <i v-if="isAdmin() && i.id === hoverId" class="icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
+                                        </span>
+                                    </h2>
 
-                                <p class="topic-info" style="margin-left: 0px; display: flex; align-items: baseline;">
-                                    <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
-                                        <div :style="lineStyleBG(i.board_id)" class="sign"></div>
-                                        <span>{{boardBadgeTitleById(i.board_id)}}</span>
-                                    </router-link>
-                                    <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
-                                    <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
-                                </p>
-                            </div>
-                            <div class="append-icons">
-                                <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
-                            </div>
-                        </div>
-                        <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
-                            <div class="count-block" style="flex: 4 0 0%;">
-                                <div class="count">
-                                    <p class="num">{{i.s.click_count}}</p>
-                                    <p class="txt">点击</p>
+                                    <p class="topic-info" style="margin-left: 0px; display: flex; align-items: baseline;">
+                                        <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
+                                            <div :style="lineStyleBG(i.board_id)" class="sign"></div>
+                                            <span>{{boardBadgeTitleById(i.board_id)}}</span>
+                                        </router-link>
+                                        <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
+                                        <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
+                                    </p>
                                 </div>
-                                <div class="count">
-                                    <p class="num">{{i.s.comment_count}}</p>
-                                    <p class="txt">回复</p>
+                                <div class="append-icons">
+                                    <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                                 </div>
                             </div>
-                            <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0%;">
-                                <span class="line" :style="lineStyle(i.board_id)"></span>
-                                <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
-                                    <strong><i class="icon icarus icon-reply"></i><user-link :user="i.s.last_comment_id.user_id" />:</strong>
-                                    <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
+                            <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
+                                <div class="count-block" style="flex: 4 0 0%;">
+                                    <div class="count">
+                                        <p class="num">{{i.s.click_count}}</p>
+                                        <p class="txt">点击</p>
+                                    </div>
+                                    <div class="count">
+                                        <p class="num">{{i.s.comment_count}}</p>
+                                        <p class="txt">回复</p>
+                                    </div>
                                 </div>
-                                <div class="post" v-else>无回复</div>
-                                <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
-                                <div v-else class="time">N/A</div>
+                                <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0%;">
+                                    <span class="line" :style="lineStyle(i.board_id)"></span>
+                                    <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
+                                        <strong><i class="icon icarus icon-reply"></i><user-link :user="i.s.last_comment_id.user_id" />:</strong>
+                                        <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
+                                    </div>
+                                    <div class="post" v-else>无回复</div>
+                                    <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
+                                    <div v-else class="time">N/A</div>
+                                </div>
                             </div>
-                        </div>
-                    </router-link>
-                </div>
-                <paginator v-if="isBoard" :page-info='topics' :route-name='"forum_board"' />
-                <paginator v-else :page-info='topics' :route-name='"forum_main"' />
-            </div>
-            <div style="flex: 1 0 0%" v-else>
-                <div style="margin-left: 10px;">尚未有人发言……</div>
+                        </router-link>
+                    </div>
+                    <paginator v-if="isBoard" :page-info='topics' :route-name='"forum_board"' />
+                    <paginator v-else :page-info='topics' :route-name='"forum_main"' />
+                </template>
+
+                <template v-else>
+                    <div style="margin-left: 10px;">尚未有人发言……</div>
+                </template>
+
+                <!-- <div style="flex: 1 0 0%" v-if="(!loading) && (!(topics && topics.items.length))"> -->
             </div>
         </div>
     </div>
@@ -117,6 +156,17 @@
 </template>
 
 <style scoped lang="scss">
+.placeholder-text {
+    display: inline-block;
+    background-color: #e9e9e9;
+    width: 100%;
+
+    &.f12 { height: 12px; }
+    &.f14 { height: 14px; }
+    &.f16 { height: 16px; }
+    &.f18 { height: 18px; }
+}
+
 .wrapper {
     display: flex;
 
@@ -135,6 +185,7 @@
     align-content: flex-end;
     justify-content: flex-start;
     justify-items: flex-end;
+    font-size: 14px;
 
     .author {
         margin-right: 20px;
@@ -147,7 +198,6 @@
         display: inline-flex;
         align-items: center;
         margin-right: 10px;
-        font-size: 14px;
 
         .sign {
             width: 10px;
@@ -270,7 +320,8 @@ export default {
             topics: null,
             withSubBoardTopic: false,
             withSubBoardTopicOptionReady: false,
-            mouseOverPostNewBtn: false
+            mouseOverPostNewBtn: false,
+            placeholderCount: 20
         }
     },
     computed: {

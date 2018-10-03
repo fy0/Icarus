@@ -14,7 +14,8 @@
 }
 
 .board-item-box:hover {
-    background-color: #f3f6f9;
+    // background-color: #f3f6f9;
+    background-color: #e5effa;
     border-radius: 3px;
 }
 
@@ -59,7 +60,7 @@
 
     * {
         margin: 0px;
-        font-weight: normal;
+        font-weight: 500;
         // white-space: nowrap;
         // word-break: keep-all;
         text-overflow: ellipsis;    
