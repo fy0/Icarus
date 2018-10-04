@@ -22,9 +22,6 @@ module.exports = {
         loaderOptions: {
             sass: {
                 data: '@import "@/assets/css/base-ui.scss";'
-            },
-            css: {
-                data: '@import "@/assets/icons/iconfont";'
             }
         }
     }

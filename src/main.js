@@ -22,6 +22,7 @@ import 'social-share.js/dist/js/social-share.min.js'
 import 'social-share.js/dist/css/share.min.css'
 
 import './assets/css/base-ui.scss'
+import './assets/icons/iconfont.css'
 import './md.js'
 
 import state from './state.js'
@@ -89,7 +90,6 @@ Vue.directive('title', {
     }
 })
 
-Vue.config.productionTip = false
 nprogress.configure({ showSpinner: false })
 
 if (config.ws.enable) {

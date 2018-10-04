@@ -70,7 +70,7 @@
 
 .ic-nav {
     border-bottom: 1px solid #ddd;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     height: 50px;
 }
 

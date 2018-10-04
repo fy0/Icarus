@@ -72,6 +72,7 @@
 
 <script>
 import state from '@/state.js'
+import '@/assets/css/_manage.scss'
 
 export default {
     props: {

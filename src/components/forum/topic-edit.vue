@@ -59,13 +59,17 @@
 </style>
 
 <style>
+div.markdown-editor > div.editor-toolbar {
+    border-color: #ddd !important;
+}
+
 /* 这部分内容是动态生成的 因此写在scope中无效 */
 .ic-form > .ic-form-row.error > div.markdown-editor > div.editor-toolbar {
     opacity: 1; /* 上下颜色一致 */
     border-color: #FF6060 !important;
 }
 
-.ic-form > .ic-form-row.error > .markdown-editor > .cm-s-paper {
+.ic-form > .ic-form-row.error > .markdown-editor > .cm-s-easymde {
     border-left-color: #FF6060 !important;
     border-right-color: #FF6060 !important;
     border-bottom-color: #FF6060 !important;
