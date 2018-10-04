@@ -259,7 +259,6 @@ $i_h: 42px;
     }
 }
 
-
 // 减号
 .icon5 {
     left: 0;
@@ -301,7 +300,6 @@ $i_h: 42px;
         background-color: #fff;
     }
 }
-
 
 </style>
 
@@ -347,7 +345,7 @@ export default {
                 h: 0,
 
                 moving: false,
-                movePoint: {x: 0, y: 0}
+                movePoint: { x: 0, y: 0 }
             }
         }
     },

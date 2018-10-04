@@ -23,7 +23,7 @@
                     <!-- <span class="icon">QQ</span>
                     <span class="icon">微博</span>
                     <span class="icon">Github</span> -->
-                    <input class="icon" type="submit" name="" value="QQ">  
+                    <input class="icon" type="submit" name="" value="QQ">
                     <input class="icon" type="submit" name="" value="微博">
                     <input class="icon" type="submit" name="" value="github" @click.prevent="github_url">
                 </div>
@@ -158,7 +158,7 @@ export default {
                     password: await $.passwordHash(this.info.password)
                 })
                 if (ret.code === api.retcode.SUCCESS) {
-                    ret = await api.user.get({id: ret.data.id}, 'inactive_user')
+                    ret = await api.user.get({ id: ret.data.id }, 'inactive_user')
                     if (ret.code !== api.retcode.SUCCESS) return
                     Vue.set(state, 'user', ret.data) // 这样顶栏可以接到事件
 

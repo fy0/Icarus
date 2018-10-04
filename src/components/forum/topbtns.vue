@@ -18,7 +18,7 @@
             </div>
         </div>
         <span class="ic-btn outline orange" @click="checkIn" v-if="!checkedIn">签到</span>
-        <span class="ic-btn orange" v-else>今日已签 x{{state.user.check_in_his}}</span>        
+        <span class="ic-btn orange" v-else>今日已签 x{{state.user.check_in_his}}</span>
     </div>
 </div>
 </template>

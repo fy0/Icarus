@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container">
-    <h3 class="ic-header-no-line">用户提醒</h3>    
+    <h3 class="ic-header-no-line">用户提醒</h3>
     <ic-timeline v-if="page.items">
         <ic-timeline-item v-for="i in page.items" :key="i.id">
             <span slot="time">

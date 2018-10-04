@@ -88,17 +88,17 @@ export default {
         fetchData: async function () {
             let ret = await api.board.list({
                 order: 'weight.desc,time.asc', // 权重从高到低，时间从先到后
-                loadfk: {'id': [
+                loadfk: { 'id': [
                     {
                         'as': 's',
                         'loadfk': {
                             'last_comment_id': {
-                                'loadfk': {'user_id': null}
+                                'loadfk': { 'user_id': null }
                             }
                         }
                     },
-                    {'as': 's24h', 'table': 's24'}
-                ]}
+                    { 'as': 's24h', 'table': 's24' }
+                ] }
             })
 
             if (ret.code === api.retcode.SUCCESS) {

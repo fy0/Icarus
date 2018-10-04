@@ -50,16 +50,17 @@ export default {
     data () {
         return {
             state,
-            percent: 0,
             hover: false
         }
     },
     computed: {
-        barStyle: function () {
+        percent: function () {
             let percent = this.value / this.max
-            this.percent = (percent * 100).toFixed(0)
+            return (percent * 100).toFixed(0)
+        },
+        barStyle: function () {
             return {
-                'width': `${percent * 100}%`
+                'width': `${this.percent}%`
             }
         },
         theShowPercent: function () {

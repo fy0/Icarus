@@ -126,7 +126,7 @@ export default {
                     let userinfo = ret.data
                     if (ret.code === 0) {
                         api.saveAccessToken(userinfo['access_token'])
-                        ret = await api.user.get({id: ret.data.id}, 'user')
+                        ret = await api.user.get({ id: ret.data.id }, 'user')
                         Vue.set(state, 'user', ret.data)
 
                         $.message_by_code(ret.code)
@@ -143,7 +143,7 @@ export default {
                     } else {
                         $.message_error('注册失败！可能账号或昵称已经被注册')
                     }
-                    this.$router.push({name: 'forum', params: {}})
+                    this.$router.push({ name: 'forum', params: {} })
                 }
             } else {
                 $.message_error('请正确填写所有项目')

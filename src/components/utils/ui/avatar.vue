@@ -95,7 +95,7 @@ export default {
             } else {
                 return {
                     name: 'account_userpage',
-                    params: {id: this.user.id}
+                    params: { id: this.user.id }
                 }
             }
         },

@@ -84,7 +84,7 @@ export default {
     data () {
         return {
             state,
-            user: {name: ''},
+            user: { name: '' },
             save: {}
         }
     },
@@ -94,7 +94,7 @@ export default {
             if (data.state) data.state = Number(data.state)
             if (data.group) data.group = Number(data.group)
 
-            let ret = await api.user.set({id: this.user.id}, data, 'admin')
+            let ret = await api.user.set({ id: this.user.id }, data, 'admin')
             if (ret.code === 0) {
                 if (state.dialog.userManageData) {
                     _.assign(state.dialog.userManageData, data)
@@ -111,7 +111,7 @@ export default {
     watch: {
         'state.dialog.userManage': async function (val) {
             if (val) {
-                let info = await api.user.get({id: state.dialog.userManageData.id}, 'admin')
+                let info = await api.user.get({ id: state.dialog.userManageData.id }, 'admin')
                 if (info.code === api.retcode.SUCCESS) {
                     this.user = info.data
                     this.user.state = this.user.state.toString()

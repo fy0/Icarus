@@ -90,7 +90,7 @@
 </style>
 
 <script>
-import {marked} from '@/md.js'
+import { marked } from '@/md.js'
 import api from '@/netapi.js'
 import CommentPost from '../utils/comment-post.vue'
 
@@ -166,7 +166,7 @@ export default {
 
             let ret = await api.comment.list({
                 related_id: this.item.id,
-                loadfk: {user_id: null, reply_to_cmt_id: {loadfk: {'user_id': null}}}
+                loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } }
             }, thePage)
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data

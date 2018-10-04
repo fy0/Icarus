@@ -60,7 +60,7 @@
     border: 1px solid #a4a4a4;
     font-size: 1.3rem;
     box-sizing: border-box;
-    transition: all .2s ease;    
+    transition: all .2s ease;
 }
 
 .search-box > .search-btn {
@@ -68,7 +68,6 @@
     margin-left: 10px;
 }
 </style>
-
 
 <script>
 import api from '@/netapi.js'
@@ -93,7 +92,7 @@ export default {
             let retList = await api.topic.list({
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 // select: 'id, time, user_id, board_id, title, state',
-                loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                loadfk: { 'user_id': null, 'board_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
             }, params.page, null, 'admin')
             if (retList.code === api.retcode.SUCCESS) {
                 this.topics = retList.data

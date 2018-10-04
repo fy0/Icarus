@@ -22,7 +22,7 @@
             </div>
         </div>
         <span class="ic-btn outline orange checkin" @click="checkIn" v-if="!checkedIn">签到</span>
-        <span class="ic-btn outline secondary checkin" v-else 
+        <span class="ic-btn outline secondary checkin" v-else
             @mousedown="showCheckedHits1 = !showCheckedHits1" @mouseover="showCheckedHits2 = true" @mouseout="showCheckedHits2 = false"
             >{{checkedInText}}</span>
     </div>
@@ -130,7 +130,7 @@
     * {
         padding-right: 24px;
     }
-    
+
     .ic-btn.outline.option {
         border-width: 0.5px;
     }
@@ -168,9 +168,9 @@ export default {
             let names = ['默认排序', '更新时间', '发布时间']
             let func = (order) => [order, names[order - 1]]
             switch (query.type) {
-            case '2': case 2: return _.map([2, 1, 3], func)
-            case '3': case 3: return _.map([3, 1, 2], func)
-            default: return _.map([1, 2, 3], func)
+                case '2': case 2: return _.map([2, 1, 3], func)
+                case '3': case 3: return _.map([3, 1, 2], func)
+                default: return _.map([1, 2, 3], func)
             }
         },
         levelInfo: function () {

@@ -1,5 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 /* eslint-disable import/first */
 
 import Vue from 'vue'
@@ -8,23 +6,23 @@ import router from './router'
 import nprogress from 'nprogress/nprogress.js'
 
 import 'normalize.css'
-import 'lodash'
 import 'qiniu-js'
 import 'animate.css'
 import 'nprogress/nprogress.css'
 import 'font-awesome/css/font-awesome.css'
 
-// social share
-import 'social-share.js/dist/js/social-share.min.js'
-import 'social-share.js/dist/css/share.min.css'
+Vue.config.productionTip = false
 
 import 'vue-loaders/dist/vue-loaders.css'
 import * as VueLoaders from 'vue-loaders'
 Vue.use(VueLoaders)
 
+// social share
+import 'social-share.js/dist/js/social-share.min.js'
+import 'social-share.js/dist/css/share.min.css'
+
 import './assets/css/base-ui.scss'
 import './md.js'
-import './tools.js'
 
 import state from './state.js'
 import api from './netapi.js'
@@ -84,11 +82,15 @@ Vue.directive('title', {
     inserted: function (el, binding) {
         document.title = el.innerText
         el.remove()
+    },
+    update: function (el, binding) {
+        document.title = el.innerText
+        el.remove()
     }
 })
 
 Vue.config.productionTip = false
-nprogress.configure({showSpinner: false})
+nprogress.configure({ showSpinner: false })
 
 if (config.ws.enable) {
     ws.conn.callback['notif.refresh'] = (data) => {
@@ -140,7 +142,7 @@ router.beforeEach(async function (to, from, next) {
                 // 未登录，后续不必进行
                 Vue.set(state, 'initLoadDone', true)
             } else {
-                ret = await api.user.get({id: ret.data.id}, 'inactive_user')
+                ret = await api.user.get({ id: ret.data.id }, 'inactive_user')
                 if (ret.code !== api.retcode.SUCCESS) {
                     // 执行未成功
                     state.loading = 0
@@ -203,10 +205,7 @@ router.afterEach(async function (to, from, next) {
     // ga('send', 'pageview')
 })
 
-/* eslint-disable no-new */
 new Vue({
-    el: '#app',
     router,
-    template: '<App/>',
-    components: { App }
-})
+    render: h => h(App)
+}).$mount('#app')

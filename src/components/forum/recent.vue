@@ -8,9 +8,16 @@
     </div>
 </div>
 
+<!-- 刷新标题 -->
+<template v-if="isBoard">
+    <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
+    <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
+</template>
+<div v-else v-title>全部主题 - {{state.config.title}}</div>
+
 <div class="ic-container forum-box">
     <div class="wrapper">
-        
+
         <div class="left-nav">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
@@ -36,8 +43,8 @@
         <div class="right" id="board-list">
             <top-btns :board="board"></top-btns>
             <div style="flex: 1 0 0%;">
-                <template v-if="loading === true">
-                    <div class="board-item-box" v-for="i of placeholderCount" :key="i">
+                <template v-if="loading">
+                    <div class="board-item-box" v-for="i in placeholderCount" :key="i">
                         <a class="board-item">
                             <div class="title-recent" style="flex: 10 0 0%">
                                 <avatar style="margin-right: 10px;" :size="32" :placeholder="true" class="avatar"></avatar>
@@ -76,14 +83,7 @@
                     </div>
                 </template>
 
-                <template v-else-if="topics && topics.items.length">
-                    <!-- 放在这是为了让标题正确刷新，毕竟这部分DOM总会在发生变化时重构 -->
-                    <template v-if="isBoard">
-                        <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
-                        <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
-                    </template>
-                    <div v-else v-title>全部主题 - {{state.config.title}}</div>
-
+                <template v-else-if="topics.items.length">
                     <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                         <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
                             <div class="title-recent" style="flex: 10 0 0%">
@@ -306,7 +306,7 @@ let pageOneHack = function (to, from, next) {
             nprogress.done()
             return next(false)
         }
-        return next({name: 'index', query: to.query})
+        return next({ name: 'index', query: to.query })
     }
     next()
 }
@@ -317,7 +317,7 @@ export default {
             state,
             hoverId: null,
             loading: true,
-            topics: null,
+            topics: { items: [] },
             withSubBoardTopic: false,
             withSubBoardTopicOptionReady: false,
             mouseOverPostNewBtn: false,
@@ -328,13 +328,13 @@ export default {
         postNewTopicStyle: function () {
             let exInfo = $.getBoardExInfoById(this.boardId)
             if (this.isBoard && (!this.state.boards.loaded)) {
-                return {'background-color': '#777'}
+                return { 'background-color': '#777' }
             }
             if (exInfo) {
                 if (this.mouseOverPostNewBtn) {
-                    return {'background-color': exInfo.colorHover}
+                    return { 'background-color': exInfo.colorHover }
                 }
-                return {'background-color': exInfo.color}
+                return { 'background-color': exInfo.color }
             }
         },
         isBoard: function () {
@@ -417,7 +417,7 @@ export default {
                     // let exInfo = $.getBoardExInfoById(board.id)
                     // return {'color': exInfo.color}
                     // 本来是各种颜色，但是花花绿绿怪怪的，改成一个色
-                    return {'color': 'rgb(126, 140, 201)'}
+                    return { 'color': 'rgb(126, 140, 201)' }
                 }
             }
         },
@@ -438,6 +438,7 @@ export default {
             return $.getBoardInfoById(boardId)
         },
         fetchData: async function () {
+            this.$set(this, 'loading', true)
             this.loading = true
             let baseQuery = {}
             let params = this.$route.params
@@ -499,7 +500,7 @@ export default {
             let retList = await api.topic.list(Object.assign({
                 order: order,
                 select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
             }, baseQuery), page)
             if (retList.code === api.retcode.SUCCESS) {
                 if (!this.isBoard && (!page || page === 1)) {
@@ -508,7 +509,7 @@ export default {
                         sticky_weight: 5, // 全局置顶项
                         order: order,
                         select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                        loadfk: {'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                        loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
                     })
                     if (retStickyTopics.code === api.retcode.SUCCESS) {
                         retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
@@ -519,7 +520,7 @@ export default {
                 this.loading = false
                 return
             } else {
-                this.topics = null
+                this.topics = { items: [] }
             }
 
             // $.message_by_code(retList.code)

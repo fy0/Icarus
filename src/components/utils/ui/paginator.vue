@@ -18,14 +18,13 @@
         <router-link :to="toInfo(pageInfo.next_page)" class="slim">›</router-link>
     </li>
     <li v-else><a href="javascript:void(0);" class="disable slim">›</a></li>
-    
+
     <li v-if="pageInfo.last_page">
         <router-link :to="toInfo(pageInfo.last_page)" class="slim">»</router-link>
     </li>
 </ul>
 </div>
 </template>
-
 
 <style scoped>
 /* 分页 */
@@ -82,7 +81,6 @@
     color: #d3d6db;
 }
 </style>
-
 
 <script>
 /*

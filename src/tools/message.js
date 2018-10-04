@@ -11,7 +11,7 @@ $.message = function (type, text, timeout = 3000) {
         'warning': 'am-alert-warning',
         'error': 'am-alert-danger'
     }
-    let data = {type, text, class: convert[type], id: messageId++}
+    let data = { type, text, class: convert[type], id: messageId++ }
     state.msgs.push(data)
     _.delay(() => {
         state.msgs.splice(state.msgs.indexOf(data), 1)

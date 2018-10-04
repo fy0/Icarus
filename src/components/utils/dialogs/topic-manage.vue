@@ -146,7 +146,7 @@ export default {
     computed: {
         topic: function () {
             let ret = state.dialog.topicManageData
-            if (!ret) return {title: ''}
+            if (!ret) return { title: '' }
             return ret
         },
         changed: function () {
@@ -196,7 +196,7 @@ export default {
                 // 置顶
                 if (change.vSticky) {
                     updateOne()
-                    let ret = await api.topic.set({id: this.topic.id}, {'sticky_weight': change.vSticky[1]}, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, 'admin')
                     if (ret.code === 0) $.message_success('文章置顶设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -204,7 +204,7 @@ export default {
                 // 真正的提升下沉实现起来比较难，直接改变权重值吧
                 if (change.vWeight) {
                     updateOne()
-                    let ret = await api.topic.set({id: this.topic.id}, {'weight.incr': change.vWeight[1]}, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, 'admin')
                     if (ret.code === 0) $.message_success('提升/下沉设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -220,7 +220,7 @@ export default {
                 // 文章状态
                 if (change.vState) {
                     updateOne()
-                    let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, 'admin')
                     if (ret.code === 0) $.message_success('文章状态修改成功')
                     else $.message_by_code(ret.code)
                 }
@@ -236,7 +236,7 @@ export default {
                 // 优秀文章
                 if (change.vAwesome) {
                     updateOne()
-                    let ret = await api.topic.set({id: this.topic.id}, {awesome: change.vAwesome[1] ? 1 : 0}, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, 'admin')
                     if (ret.code === 0) $.message_success('优秀文章设置成功')
                     else $.message_by_code(ret.code)
                 }

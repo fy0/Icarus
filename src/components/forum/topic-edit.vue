@@ -25,7 +25,6 @@
 </div>
 </template>
 
-
 <style scoped>
 #form_topic input[name='title'] {
     padding: 6px 12px;
@@ -176,9 +175,9 @@ export default {
 
             if (this.is_edit) {
                 if (this.asAdmin) {
-                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'admin')
+                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'admin')
                 } else {
-                    ret = await api.topic.set({id: this.topicInfo.id}, topicInfo, 'user')
+                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'user')
                 }
                 successText = '编辑成功！已自动跳转至文章页面。'
                 failedText = ret.msg || '编辑失败！'
@@ -192,7 +191,7 @@ export default {
 
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
-                this.$router.push({name: 'forum_topic', params: { id: topicId }})
+                this.$router.push({ name: 'forum_topic', params: { id: topicId } })
                 $.message_success(successText)
             } else if (ret.code === api.retcode.INVALID_ROLE) {
                 $.message_error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
@@ -223,7 +222,7 @@ export default {
             if (this.is_edit) {
                 let ret = await api.topic.get({
                     id: params.id,
-                    loadfk: {user_id: null, board_id: null}
+                    loadfk: { user_id: null, board_id: null }
                 })
                 if (ret.code) {
                     $.message_error('抱歉，发生了错误')

@@ -110,7 +110,7 @@ export default {
             let retList = await api.topic.list({
                 user_id: uid,
                 order: 'time.desc',
-                loadfk: {'user_id': null, 'board_id': null}
+                loadfk: { 'user_id': null, 'board_id': null }
             })
             this.tabs.topic.topics = retList.data
         },

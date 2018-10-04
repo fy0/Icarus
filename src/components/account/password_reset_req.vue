@@ -17,7 +17,7 @@
                 <span></span>
                 <input class="ic-btn success" type="submit" @click.prevent="resetPassword" value="申请重置密码">
             </div>
-    
+
             <div class="ic-form-row">
                 <router-link class="lost-poasswrod" :to="{name: 'account_signin'}">返回登录</router-link>
             </div>

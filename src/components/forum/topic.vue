@@ -178,7 +178,7 @@
 .main > .article > h1 {
     font-size: 28px;
     line-height: 48px;
-    text-align: center;    
+    text-align: center;
 }
 
 .topic-box > .info {
@@ -187,7 +187,7 @@
 </style>
 
 <script>
-import {marked} from '@/md.js'
+import { marked } from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/_forum.scss'
@@ -200,7 +200,7 @@ export default {
             commentPage: 1,
             loading: true,
             POST_TYPES: state.misc.POST_TYPES,
-            topic: { board_id: {id: 1} },
+            topic: { board_id: { id: 1 } },
             mlog: null
         }
     },
@@ -217,14 +217,14 @@ export default {
             let params = this.$route.params
             let ret = await api.topic.get({
                 id: params.id,
-                loadfk: {user_id: null, board_id: null, last_edit_user_id: null, 'id': {'as': 's'}}
+                loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
             }, state.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {
                 let mlog = await api.logManage.list({
                     related_id: ret.data.id,
                     order: 'time.desc',
-                    loadfk: {'user_id': null}
+                    loadfk: { 'user_id': null }
                 })
                 if (mlog.code === api.retcode.SUCCESS) {
                     this.mlog = mlog.data

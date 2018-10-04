@@ -19,26 +19,17 @@ import SettingUserinfoPrivacy from '@/components/settings/userinfo/privacy.vue'
 import SettingSecurityPassword from '@/components/settings/security/password.vue'
 import SettingSecurityOAuth from '@/components/settings/security/oauth.vue'
 
-import ForumBoards from '@/components/forum/boards.vue'
+// import ForumBoards from '@/components/forum/boards.vue'
 import ForumMain from '@/components/forum/recent.vue'
-// import ForumBoard from '@/components/forum/board.vue'
-import ForumTopcEdit from '@/components/forum/topic-edit.vue'
 import ForumTopic from '@/components/forum/topic.vue'
 
-import Admin from '@/components/admin/admin.vue'
-import AdminForumBoard from '@/components/admin/forum/board.vue'
-import AdminForumTopic from '@/components/admin/forum/topic.vue'
-import AdminCommonUser from '@/components/admin/common/user.vue'
-import AdminCommonComment from '@/components/admin/common/comment.vue'
-import AdminCommonManageLog from '@/components/admin/common/manage-log.vue'
-
-import About from '@/components/about.vue'
 import NotFoundComponent from '@/components/404.vue'
 
 Vue.use(Router)
 
 export default new Router({
     mode: 'history',
+    base: process.env.BASE_URL,
     routes: [
         // 主页面
         {
@@ -103,14 +94,14 @@ export default new Router({
         {
             path: '/forum',
             name: 'forum',
-            redirect: { name: 'forum_main', params: {page: 1} }
+            redirect: { name: 'forum_main', params: { page: 1 } }
         },
         // 论坛 - 板块列表
-        {
-            path: '/forum/boards',
-            name: 'forum_boards',
-            component: ForumBoards
-        },
+        // {
+        //     path: '/forum/boards',
+        //     name: 'forum_boards',
+        //     component: ForumBoards
+        // },
         // 论坛 - 主面板
         {
             path: '/r/:page(\\d+)',
@@ -127,13 +118,13 @@ export default new Router({
         {
             path: '/topic/new',
             name: 'forum_topic_new',
-            component: ForumTopcEdit
+            component: () => import(/* webpackChunkName: "topic-edit" */ './components/forum/topic-edit.vue')
         },
         // 论坛 - 主题编辑
         {
             path: '/topic/edit/:id(\\S+)',
             name: 'forum_topic_edit',
-            component: ForumTopcEdit
+            component: () => import(/* webpackChunkName: "topic-edit" */ './components/forum/topic-edit.vue')
         },
         // 论坛 - 文章页面
         {
@@ -184,38 +175,38 @@ export default new Router({
         {
             path: '/admin',
             name: 'admin',
-            component: Admin
+            component: () => import(/* webpackChunkName: "admin" */ './components/admin/admin.vue')
         },
         // 管理 - 社区 - 板块
         {
             path: '/admin/forum/board',
             name: 'admin_forum_board',
-            component: AdminForumBoard
+            component: () => import(/* webpackChunkName: "admin" */ './components/admin/forum/board.vue')
         },
         // 管理 - 社区 - 文章
         {
             path: '/admin/forum/topic/:page(\\d+)?/:name(.+)?',
             name: 'admin_forum_topic',
-            component: AdminForumTopic
+            component: () => import(/* webpackChunkName: "admin" */ './components/admin/forum/topic.vue')
         },
 
         // 管理 - 综合 - 用户
         {
             path: '/admin/common/user/:page(\\d+)?/:name(.+)?',
             name: 'admin_common_user',
-            component: AdminCommonUser
+            component: () => import(/* webpackChunkName: "admin" */ './components/admin/common/user.vue')
         },
         // 管理 - 综合 - 评论
         {
             path: '/admin/common/comment/:page(\\d+)?/:name(.+)?',
             name: 'admin_common_comment',
-            component: AdminCommonComment
+            component: () => import(/* webpackChunkName: "admin" */ './components/admin/common/comment.vue')
         },
-        // 管理 - 综合 - 评论
+        // 管理 - 综合 - 管理日志
         {
             path: '/admin/common/log/manage/:page(\\d+)?/:name(.+)?',
             name: 'admin_common_manage_log',
-            component: AdminCommonManageLog
+            component: () => import(/* webpackChunkName: "admin" */ './components/admin/common/manage-log.vue')
         },
 
         {
@@ -227,7 +218,10 @@ export default new Router({
         {
             path: '/about',
             name: 'about',
-            component: About
+            // route level code-splitting
+            // this generates a separate chunk (about.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
+            component: () => import(/* webpackChunkName: "about" */ './components/about.vue')
         },
 
         // OAuth

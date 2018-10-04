@@ -172,7 +172,7 @@ export default {
     computed: {
         'user': function () {
             if (!this.userSave) {
-                this.userSave = _.clone(state.user)
+                this.$set(this, 'userSave', _.clone(state.user))
             }
             return this.userSave
         },
@@ -208,7 +208,7 @@ export default {
             this.updating = true
             let data = $.objDiff(this.userSave, state.user)
             delete data['avatar'] // 头像的更新是独立的参见BUG12
-            let ret = await api.user.set({id: state.user.id}, data, 'user')
+            let ret = await api.user.set({ id: state.user.id }, data, 'user')
             if (ret.code === api.retcode.SUCCESS) {
                 for (let [k, v] of Object.entries(data)) {
                     state.user[k] = v

@@ -1,5 +1,5 @@
 
-import 'whatwg-fetch'
+// import 'whatwg-fetch'
 import config from './config.js'
 
 let remote = config.remote
@@ -46,7 +46,7 @@ async function doRequest (url, method, params, data = null, role = null) {
         if (authMode === 'access_token') {
             reqParams.headers['AccessToken'] = token
         } else {
-            if (params === null) params = {AccessToken: token}
+            if (params === null) params = { AccessToken: token }
             else params['AccessToken'] = token
         }
     }
@@ -134,7 +134,7 @@ class UserViewRequest extends SlimViewRequest {
     }
 
     async activation (uid, code) {
-        return nget(`${this.urlPrefix}/activation`, {uid, code})
+        return nget(`${this.urlPrefix}/activation`, { uid, code })
     }
 
     async getUserId () {
@@ -142,13 +142,13 @@ class UserViewRequest extends SlimViewRequest {
     }
 
     /* eslint-disable camelcase */
-    async changePassword ({old_password, password}) {
-        return npost(`${this.urlPrefix}/change_password`, null, {old_password, password})
+    async changePassword ({ old_password, password }) {
+        return npost(`${this.urlPrefix}/change_password`, null, { old_password, password })
     }
 
     // 申请重置密码
     async requestPasswordReset (nickname, email) {
-        return npost(`${this.urlPrefix}/request_password_reset`, null, {nickname, email})
+        return npost(`${this.urlPrefix}/request_password_reset`, null, { nickname, email })
     }
 
     async resendActivationMail () {
@@ -157,7 +157,7 @@ class UserViewRequest extends SlimViewRequest {
 
     // 验证重置密码
     async validatePasswordReset (uid, code, password) {
-        return npost(`${this.urlPrefix}/validate_password_reset`, null, {uid, code, password})
+        return npost(`${this.urlPrefix}/validate_password_reset`, null, { uid, code, password })
     }
 
     async signout () {
@@ -205,7 +205,7 @@ class Oauth {
         return retcode.FAILED
     }
     async send (code) {
-        let ret = await nget(`${remote.API_SERVER}/api/user/oauth/get_user_data`, {'code': code})
+        let ret = await nget(`${remote.API_SERVER}/api/user/oauth/get_user_data`, { 'code': code })
         if (ret.code !== retcode.FAILED) {
             let oauthState = ret['data']['state']
             if (oauthState === 50) {
@@ -214,10 +214,10 @@ class Oauth {
                     return ret
                 }
             } else {
-                return {'code': -1, 'data': ret}
+                return { 'code': -1, 'data': ret }
             }
         } else {
-            return {'code': retcode.FAILED, 'data': null}
+            return { 'code': retcode.FAILED, 'data': null }
         }
     }
 }
@@ -243,7 +243,7 @@ export default {
 
     /** 周期请求 */
     tick: async function (auid) {
-        return nget(`${remote.API_SERVER}/api/misc/tick`, {auid})
+        return nget(`${remote.API_SERVER}/api/misc/tick`, { auid })
     },
 
     user: new UserViewRequest('user'),

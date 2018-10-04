@@ -65,7 +65,6 @@
 </header>
 </template>
 
-
 <style scoped>
 /* 横条 */
 
@@ -198,7 +197,7 @@
     #navmenu-toggle-icon.x .bar:first-child {
         transform: rotate(-45deg);
     }
-    
+
     .menu-lists {
         flex-direction: column;
         align-self: flex-start;
@@ -231,7 +230,7 @@
         padding: 0.4em 1.6em;
         height: 36px;
     }
-    
+
     .menu-item > a.user-link {
         padding: 0.4em 1.6em;
     }
@@ -245,7 +244,6 @@
     }
 }
 </style>
-
 
 <script>
 import Vue from 'vue'

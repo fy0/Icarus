@@ -39,7 +39,7 @@ export default {
             if (ret['code'] === api.retcode.SUCCESS) {
                 console.log('登陆成功')
 
-                let uret = await api.user.get({id: ret.data.user_id}, 'inactive_user')
+                let uret = await api.user.get({ id: ret.data.user_id }, 'inactive_user')
                 if (uret.code !== api.retcode.SUCCESS) return
                 Vue.set(state, 'user', uret.data) // 这样顶栏可以接到事件
 

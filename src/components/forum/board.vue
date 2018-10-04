@@ -35,8 +35,8 @@
                             </span>
                         </h2>
                         <p class="info">
-                            <user-link :user="i.user_id" />  •  
-                            <span> 发布于<ic-time :timestamp="i.time" /></span>  •  
+                            <user-link :user="i.user_id" />  •
+                            <span> 发布于<ic-time :timestamp="i.time" /></span>  •
                             <span>最后回复
                                 <span v-if="i.s.last_comment_id">
                                     <user-link :user="i.s.last_comment_id.user_id" />
@@ -224,7 +224,7 @@ aside > .brief {
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
-import {marked} from '@/md.js'
+import { marked } from '@/md.js'
 import '@/assets/css/_forum.scss'
 
 export default {
@@ -260,7 +260,7 @@ export default {
         fetchData: async function () {
             this.loading = true
             let params = this.$route.params
-            let ret = await api.board.get({id: params.id, 'loadfk': {'parent_id': null}})
+            let ret = await api.board.get({ id: params.id, 'loadfk': { 'parent_id': null } })
 
             if (ret.code) {
                 // $.message_by_code(ret.code)
@@ -284,7 +284,7 @@ export default {
                 board_id: params.id,
                 order: 'sticky_weight.desc,weight.desc,update_time.desc',
                 select: 'id, time, user_id, board_id, title, sticky_weight, state, awesome, update_time',
-                loadfk: {'parent_id': null, 'user_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                loadfk: { 'parent_id': null, 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
             }, params.page, null, state.getRole('user'))
 
             if (retList.code === api.retcode.SUCCESS) {
@@ -292,7 +292,7 @@ export default {
                 this.topics = retList.data
             } else if (retList.code === api.retcode.NOT_FOUND) {
                 this.board = ret.data
-                this.topics = {'items': []}
+                this.topics = { 'items': [] }
             }
             this.loading = false
         }

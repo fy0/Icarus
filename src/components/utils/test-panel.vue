@@ -87,7 +87,7 @@ export default {
         dragEnd: function (e) {
             if (this.drag) {
                 this.drag = null
-                localStorage.setItem('_test_panel', JSON.stringify({'t': this.top, 'r': this.right}))
+                localStorage.setItem('_test_panel', JSON.stringify({ 't': this.top, 'r': this.right }))
             }
         }
     }

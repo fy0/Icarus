@@ -14,7 +14,7 @@
             <div class="ic-paper round ic-z1 not-signin-content">评论已关闭</div>
         </div>
         <div class="right-box content" v-else>
-            <textarea :class="[editing ? 'ic-z3' : 'ic-z1']" id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur" 
+            <textarea :class="[editing ? 'ic-z3' : 'ic-z1']" id="ic-comment-editor" @focus="onEditorFocus" @blur="onEditorBlur"
                 class="ic-input ic-paper round" rows="5" v-model="commentInfo.content"
                 :placeholder="'此处填写评论内容。\n可使用 markdown 语法。\n请理性讨论，友善发言，共同维护社区秩序。'">
             </textarea>

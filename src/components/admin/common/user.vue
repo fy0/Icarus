@@ -59,7 +59,6 @@
 }
 </style>
 
-
 <script>
 import api from '@/netapi.js'
 import swal from 'sweetalert2'
@@ -78,21 +77,21 @@ export default {
         doSearch: async function () {
             let found = false
             if ($.regex.email.test(this.searchTxt)) {
-                let retList = await api.user.list({email: this.searchTxt}, 1, null, 'admin')
+                let retList = await api.user.list({ email: this.searchTxt }, 1, null, 'admin')
                 if (retList.code === api.retcode.SUCCESS) {
                     this.page = retList.data
                     found = true
                 }
             } else {
                 if ($.regex.nickname.test(this.searchTxt)) {
-                    let retList = await api.user.list({nickname: this.searchTxt}, 1, null, 'admin')
+                    let retList = await api.user.list({ nickname: this.searchTxt }, 1, null, 'admin')
                     if (retList.code === api.retcode.SUCCESS) {
                         this.page = retList.data
                         found = true
                     }
                 }
                 if ($.regex.id.test(this.searchTxt)) {
-                    let retList = await api.user.list({id: this.searchTxt}, 1, null, 'admin')
+                    let retList = await api.user.list({ id: this.searchTxt }, 1, null, 'admin')
                     if (retList.code === api.retcode.SUCCESS) {
                         if (found) {
                             this.page.items.push(retList.data.items[0])
@@ -124,7 +123,7 @@ export default {
                     if (password === '') {
                         swal.showValidationError('密码不能为空。')
                     }
-                    return api.user.set({id: user.id}, {password}, 'admin')
+                    return api.user.set({ id: user.id }, { password }, 'admin')
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -153,7 +152,7 @@ export default {
                 confirmButtonText: '确定，我要重置',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
-                    return api.user.set({id: user.id}, {'key': '1'}, 'admin')
+                    return api.user.set({ id: user.id }, { 'key': '1' }, 'admin')
                 }
             }).then((result) => {
                 if (result.value == null) return

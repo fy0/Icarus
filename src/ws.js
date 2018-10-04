@@ -81,7 +81,7 @@ class WebsocketConnection {
         let authMode = config.remote.authMode
         if ((authMode === 'access_token') || (authMode === 'access_token_in_params')) {
             let token = getAccessToken()
-            let ret = await this.execute('signin', {'access_token': token})
+            let ret = await this.execute('signin', { 'access_token': token })
             if (ret === 0) {
                 // 登录成功
             }
@@ -95,7 +95,7 @@ class WebsocketConnection {
     async execute (command, data, onProgress) {
         return new Promise((resolve, reject) => {
             let rid = (new ObjectId()).toString()
-            this.rid_callback[rid] = {func: onProgress, done: (data) => { resolve(data) }}
+            this.rid_callback[rid] = { func: onProgress, done: (data) => { resolve(data) } }
             this.socket.send(JSON.stringify([rid, command, data]))
         })
     }

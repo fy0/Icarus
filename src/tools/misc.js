@@ -43,11 +43,11 @@ $.objDiff = function (object, base) {
 }
 
 $.media = {
-    xs: {maxWidth: '35.5em'},
-    sm: {minWidth: '35.5em'},
-    md: {minWidth: '48em'},
-    lg: {minWidth: '64em'},
-    xl: {minWidth: '80em'}
+    xs: { maxWidth: '35.5em' },
+    sm: { minWidth: '35.5em' },
+    md: { minWidth: '48em' },
+    lg: { minWidth: '64em' },
+    xl: { minWidth: '80em' }
 }
 
 $.dataURItoBlob = function (dataURI) {
@@ -65,7 +65,7 @@ $.dataURItoBlob = function (dataURI) {
         ia[i] = byteString.charCodeAt(i)
     }
 
-    return new Blob([ab], {type: mimeString})
+    return new Blob([ab], { type: mimeString })
 }
 
 $.regex = {

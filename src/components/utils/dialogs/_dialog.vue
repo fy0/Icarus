@@ -27,7 +27,7 @@
     background-color: #fff;
     border-radius: 2px;
     font-size: 16px;
-    box-shadow: 0 19px 60px rgba(0,0,0,.298039), 0 15px 20px rgba(0,0,0,.219608);    
+    box-shadow: 0 19px 60px rgba(0,0,0,.298039), 0 15px 20px rgba(0,0,0,.219608);
 }
 
 .dialog-overlay {

@@ -70,7 +70,7 @@
 .comment {
     display: flex;
     flex-direction: row;
-    border-bottom: 1px solid #e0e0e0; 
+    border-bottom: 1px solid #e0e0e0;
     padding: 20px;
     justify-content: space-between;
 }
@@ -84,7 +84,7 @@
 </style>
 
 <script>
-import {marked} from '@/md.js'
+import { marked } from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import AdminBase from '../base/base.vue'
@@ -115,7 +115,7 @@ export default {
             //     id: params.id,
             // })
             let ret = await api.logManage.list({
-                loadfk: {user_id: null},
+                loadfk: { user_id: null },
                 order: 'time.desc'
             }, params.page, null, 'admin')
 
@@ -141,7 +141,7 @@ export default {
 
                 let doRequest = async (name, ids) => {
                     if (ids.length) {
-                        let retPost = await api[name].list({'id.in': JSON.stringify(ids)}, 1, null, 'admin')
+                        let retPost = await api[name].list({ 'id.in': JSON.stringify(ids) }, 1, null, 'admin')
                         for (let i of retPost.data.items) {
                             this.postsOfComments[i.id] = i
                         }

@@ -57,7 +57,7 @@
 .comment {
     display: flex;
     flex-direction: row;
-    border-bottom: 1px solid #e0e0e0; 
+    border-bottom: 1px solid #e0e0e0;
     padding: 20px;
     justify-content: space-between;
 }
@@ -71,7 +71,7 @@
 </style>
 
 <script>
-import {marked} from '@/md.js'
+import { marked } from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import AdminBase from '../base/base.vue'
@@ -94,7 +94,7 @@ export default {
         changeState: async function (item, val) {
             let oldVal = item.state
             item.state = val
-            let ret = await api.comment.set({id: item.id}, {state: val}, 'admin')
+            let ret = await api.comment.set({ id: item.id }, { state: val }, 'admin')
             if (ret.code !== api.retcode.SUCCESS) {
                 item.state = oldVal
             }
@@ -112,7 +112,7 @@ export default {
             //     id: params.id,
             // })
             let ret = await api.comment.list({
-                loadfk: {user_id: null, reply_to_cmt_id: {loadfk: {'user_id': null}}},
+                loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } },
                 order: 'time.desc'
             }, params.page, null, 'admin')
 
@@ -126,7 +126,7 @@ export default {
                 }
 
                 this.postsOfComments = {}
-                let retTopic = await api.topic.list({'id.in': JSON.stringify(topicIds)}, 1)
+                let retTopic = await api.topic.list({ 'id.in': JSON.stringify(topicIds) }, 1)
                 for (let i of retTopic.data.items) {
                     this.postsOfComments[i.id] = i
                 }

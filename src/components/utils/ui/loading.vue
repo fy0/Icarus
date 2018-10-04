@@ -23,7 +23,7 @@
     flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
 }
 
 .mu-circular-progress {

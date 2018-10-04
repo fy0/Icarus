@@ -10,7 +10,14 @@ license: https://github.com/F-loat/vue-simplemde/blob/master/LICENSE
 </template>
 
 <script>
-import {SimpleMDE} from '@/md.js'
+import { marked } from '@/md.js'
+
+import SimpleMDE from 'easymde/src/js/easymde.js'
+import 'easymde/dist/easymde.min.css'
+
+SimpleMDE.prototype.markdown = function (text) {
+    return marked(text)
+}
 
 export default {
     name: 'markdown-editor',

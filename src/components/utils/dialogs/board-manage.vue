@@ -114,7 +114,7 @@ export default {
             state,
             value: 1,
             save: {},
-            board: {name: ''},
+            board: { name: '' },
             boardList: [],
             boardsInfoDict: {}
         }
@@ -140,7 +140,7 @@ export default {
             }
 
             let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id'])
-            let ret = await api.board.set({id: this.board.id}, data, 'admin', keys)
+            let ret = await api.board.set({ id: this.board.id }, data, 'admin', keys)
 
             if (ret.code === 0) {
                 if (state.dialog.boardManageData) {
@@ -160,7 +160,7 @@ export default {
             if (val) {
                 let info = await api.board.get({
                     id: state.dialog.boardManageData.id,
-                    loadfk: {'user_id': null}
+                    loadfk: { 'user_id': null }
                 }, 'admin')
 
                 if (info.code === api.retcode.SUCCESS) {
