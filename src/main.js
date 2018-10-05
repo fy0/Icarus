@@ -73,6 +73,7 @@ import DialogUserManage from './components/dialogs/user-manage.vue'
 import DialogCommentManage from './components/dialogs/comment-manage.vue'
 import DialogUserSetAvatar from './components/dialogs/user-set-avatar.vue'
 import DialogUserInactiveWarn from './components/dialogs/user-inactive-warn.vue'
+import DialogUserSignout from './components/dialogs/user-signout.vue'
 
 Vue.component('ic-dialog', ICDialog)
 Vue.component('dialog-topic-manage', DialogTopicManage)
@@ -80,6 +81,7 @@ Vue.component('dialog-user-manage', DialogUserManage)
 Vue.component('dialog-comment-manage', DialogCommentManage)
 Vue.component('dialog-user-set-avatar', DialogUserSetAvatar)
 Vue.component('dialog-user-inactive-warn', DialogUserInactiveWarn)
+Vue.component('dialog-user-signout', DialogUserSignout)
 
 Vue.directive('title', {
     inserted: function (el, binding) {

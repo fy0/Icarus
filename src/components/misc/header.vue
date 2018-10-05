@@ -62,6 +62,7 @@
 
     <!--<media :query="m.xs" @media-enter="xsEnter" @media-leave="xsLeave"></media>-->
     <media :query="m.sm" @media-enter="xsLeave" @media-leave="xsEnter"></media>
+    <dialog-user-signout />
 </header>
 </template>
 
@@ -246,7 +247,6 @@
 </style>
 
 <script>
-import Vue from 'vue'
 import Media from 'vue-media'
 import state from '@/state.js'
 import config from '@/config.js'
@@ -295,26 +295,7 @@ export default {
             return 'flag'
         },
         signout: async function () {
-            swal({
-                title: '你确定要退出登录吗？',
-                text: '',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '是的，退出登录!',
-                cancelButtonText: '我不是我没有'
-            }).then(async (result) => {
-                if (result.value) {
-                    let ret = await api.user.signout()
-                    if (ret.code === api.retcode.SUCCESS || ret.code === api.retcode.FAILED) {
-                        $.message_success('登出成功')
-                        Vue.delete(state, 'user')
-                        state.reset()
-                        this.$router.replace('/')
-                    }
-                }
-            })
+            state.dialog.userSignout = true
         }
     },
     components: {

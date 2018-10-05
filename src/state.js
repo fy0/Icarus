@@ -46,7 +46,9 @@ let state = {
         userSetAvatar: false,
         userSetAvatarData: null,
         // 用户未邮件激活提示框
-        userInactive: false
+        userInactive: false,
+        // 用户登出确认
+        userSignout: false
     },
     boards: { // 板块信息
         loaded: false,
