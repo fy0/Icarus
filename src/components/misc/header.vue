@@ -250,7 +250,6 @@
 import Media from 'vue-media'
 import state from '@/state.js'
 import config from '@/config.js'
-import api from '@/netapi.js'
 
 export default {
     name: 'hello',
@@ -272,7 +271,7 @@ export default {
     },
     methods: {
         flagClick: function () {
-            console.log(11111)
+            ;
         },
         navmenuToggle: function () {
             this.showNavmenuBtn = !this.showNavmenuBtn

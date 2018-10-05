@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Tweezer from 'tweezer.js'
 
 let scroller = null

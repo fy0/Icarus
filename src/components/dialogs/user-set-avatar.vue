@@ -500,7 +500,7 @@ export default {
                 ob.subscribe({
                     complete: (res) => {
                         // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
-                        console.log('done', res)
+                        // console.log('done', res)
                         if (res.code === api.retcode.SUCCESS) {
                             state.user.avatar = res.data
                         }

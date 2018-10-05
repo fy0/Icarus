@@ -70,14 +70,13 @@ export default {
     },
     mounted () {
         let routerParams = this.$route.params.dataObj
-        console.log(routerParams)
         if (routerParams !== undefined) {
             if (routerParams['code'] === -1) {
                 this.info.state = routerParams['data']['data']['state']
                 this.info.oauthId = routerParams['data']['data']['oauth_id']
                 this.info.loginId = routerParams['data']['data']['login_id']
             } else {
-                console.log('OAUTH CHECK: code is error!')
+                // console.log('OAUTH CHECK: code is error!')
             }
         }
     },

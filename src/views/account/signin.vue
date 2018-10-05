@@ -187,7 +187,7 @@ export default {
             // 获取url，然后跳转
             let ghUrl = await api.Oauth.getUrl('github')
             window.open(ghUrl, '_blank')
-            console.log(ghUrl)
+            // console.log(ghUrl)
         }
     },
     components: {

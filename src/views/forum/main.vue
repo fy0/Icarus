@@ -108,7 +108,7 @@
                                             <span>{{boardBadgeTitleById(i.board_id)}}</span>
                                         </router-link>
                                         <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
-                                        <span class="time"><ic-time :timestamp="i.time" style="color: #777" /></span>
+                                        <span class="time"><ic-time :timestamp="i.edit_time || i.time" style="color: #777" /></span>
                                     </p>
                                 </div>
                                 <div class="append-icons">
@@ -401,7 +401,11 @@ export default {
         fetchData: async function () {
             this.$set(this, 'loading', true)
             this.loading = true
-            let baseQuery = {}
+            let baseQuery1 = {
+                select: 'id, time, edit_time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
+                loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
+            }
+            let baseQuery = _.cloneDeep(baseQuery1)
             let params = this.$route.params
             let page = 1
 
@@ -459,19 +463,15 @@ export default {
             }
 
             let retList = await api.topic.list(Object.assign({
-                order: order,
-                select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
+                order: order
             }, baseQuery), page)
             if (retList.code === api.retcode.SUCCESS) {
                 if (!this.isBoard && (!page || page === 1)) {
                     // 首页
-                    let retStickyTopics = await api.topic.list({
+                    let retStickyTopics = await api.topic.list(Object.assign({
                         sticky_weight: 5, // 全局置顶项
-                        order: order,
-                        select: 'id, time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                        loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
-                    })
+                        order: order
+                    }, baseQuery1))
                     if (retStickyTopics.code === api.retcode.SUCCESS) {
                         retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
                     }

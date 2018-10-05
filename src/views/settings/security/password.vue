@@ -100,7 +100,6 @@ export default {
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
                 info.old_password = await $.passwordHash(info.old_password)
-                console.log(111, info)
                 let ret = await api.user.changePassword(info)
 
                 if (ret.code !== api.retcode.SUCCESS) {

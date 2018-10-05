@@ -1,5 +1,6 @@
 import assign from 'lodash/assign'
 import clone from 'lodash/clone'
+import cloneDeep from 'lodash/cloneDeep'
 import concat from 'lodash/concat'
 import delay from 'lodash/delay'
 import debounce from 'lodash/debounce'
@@ -15,6 +16,7 @@ import isSet from 'lodash/isSet'
 export {
     assign,
     clone,
+    cloneDeep,
     concat,
     delay,
     debounce,
