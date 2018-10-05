@@ -251,7 +251,6 @@ import Media from 'vue-media'
 import state from '@/state.js'
 import config from '@/config.js'
 import api from '@/netapi.js'
-import swal from 'sweetalert2'
 
 export default {
     name: 'hello',

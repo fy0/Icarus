@@ -121,7 +121,7 @@
 
 <style lang="scss" scoped>
 .nav {
-    width: 75%;
+    width: 65%;
     overflow: hidden;
     text-overflow: ellipsis;
     /* word-break: break-all; */

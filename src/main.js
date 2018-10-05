@@ -87,6 +87,13 @@ Vue.directive('title', {
     inserted: function (el, binding) {
         document.title = el.innerText
         el.remove()
+    }
+})
+
+Vue.directive('title-dynamic', {
+    inserted: function (el, binding) {
+        document.title = el.innerText
+        el.remove()
     },
     update: function (el, binding) {
         document.title = el.innerText

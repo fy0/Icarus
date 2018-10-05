@@ -10,8 +10,8 @@
 
 <!-- 刷新标题 -->
 <template v-if="board">
-    <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
-    <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
+    <div v-title-dynamic v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
+    <div v-title-dynamic v-else>{{ board.name }} - {{state.config.title}}</div>
 </template>
 <div v-else v-title>全部主题 - {{state.config.title}}</div>
 

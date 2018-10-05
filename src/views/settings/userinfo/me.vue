@@ -70,7 +70,10 @@
                 <span class="label">用户组</span>
                 <div class="line">
                     <span>{{state.misc.USER_GROUP_TXT[user.group]}}</span>
-                    <a href="javascript:void(0)" v-if="state.isInactiveUser()" @click="resendActivationMail">重发激活邮件</a>
+                    <template v-if="state.isInactiveUser()">
+                        <a class="resend" v-if="sending">正在发送中 ...</a>
+                        <a class="resend" v-else href="javascript:void(0)" @click="resendActivationMail">重发激活邮件</a>
+                    </template>
                 </div>
             </div>
 
@@ -103,6 +106,10 @@
 <style scoped>
 .box-avatar {
     position: relative;
+}
+
+a.resend {
+    margin-left: 5px;
 }
 
 .box-avatar > .btn-upload {
@@ -164,6 +171,7 @@ export default {
     data () {
         return {
             state,
+            sending: false,
             userSave: null,
             updating: false,
             avatarUploadShow: false
@@ -195,12 +203,15 @@ export default {
             // })
         },
         resendActivationMail: async function () {
+            if (this.sending) return
+            this.sending = true
             let ret = await api.user.resendActivationMail()
             if (ret.code === api.retcode.SUCCESS) {
                 $.message_success('激活邮件发送成功！请检查邮箱。')
             } else {
                 $.message_error('发送失败，每30分钟只能发送一次。')
             }
+            this.sending = false
         },
         updateInfo: async function () {
             if (this.updating) return
