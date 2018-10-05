@@ -76,6 +76,7 @@ try:
 ALTER TABLE "board" ALTER COLUMN "id" SET DEFAULT int2bytea(nextval('id_gen_seq')::bigint);
 ALTER TABLE "topic" ALTER COLUMN "id" SET DEFAULT int2bytea(nextval('id_gen_seq')::bigint);
 ALTER TABLE "user" ALTER COLUMN "id" SET DEFAULT int2bytea(nextval('id_gen_seq')::bigint);
+ALTER TABLE "user" ALTER COLUMN "number" SET DEFAULT nextval('user_count_seq')::bigint;
     """)
 
 except peewee.ProgrammingError:

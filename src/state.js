@@ -42,6 +42,8 @@ let state = {
         // 评论管理
         commentManage: null,
         commentManageData: null,
+        // 新站点指引
+        siteNew: false,
         // 设置头像
         userSetAvatar: false,
         userSetAvatarData: null,

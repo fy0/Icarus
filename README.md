@@ -125,11 +125,8 @@ sudo apt-get install -y postgresql-10
 sudo su postgres
 createdb icarus
 createuser icarus
-psql icarus
+psql
 # 进入 PQ Shell
-CREATE EXTENSION IF NOT EXISTS hstore;
-CREATE EXTENSION IF NOT EXISTS citext;
-
 GRANT ALL ON DATABASE icarus TO icarus;
 ALTER USER icarus WITH PASSWORD 'IcaruStest123';
 ```

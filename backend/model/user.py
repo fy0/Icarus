@@ -53,7 +53,7 @@ class User(PostModel, BaseUser):
     check_in_his = IntegerField(default=0)  # 连续签到天数
 
     phone = TextField(null=True, default=None)  # 大陆地区
-    number = SerialField(sequence='user_count_seq')  # 序号，第N个用户 sequence='user_count_seq'
+    number = SerialField()  # 序号，第N个用户，注意这有个问题是不能写sequence='user_count_seq'，应该是peewee的bug
     credit = IntegerField(default=0)  # 积分，会消费
     exp = IntegerField(default=0)  # 经验值，不会消失
     reputation = IntegerField(default=0)  # 声望

@@ -151,6 +151,7 @@
             </div>
         </div>
     </div>
+    <dialog-site-new v-if="isNewSite" />
     <dialog-topic-manage />
     <dialog-user-inactive-warn />
 </div>
@@ -343,6 +344,11 @@ export default {
         isAdmin: function () {
             return $.isAdmin()
         },
+        isNewSite: function () {
+            if (!this.loading && this.state.boards.rawLst.length === 0) {
+                return true
+            }
+        },
         boardBadgeTitleById: function (id) {
             let chain = $.getBoardChainById(id)
             let ret = ''
@@ -419,6 +425,10 @@ export default {
 
             // 获取全局板块信息
             await $.getBoardsInfo()
+
+            if (this.isNewSite) {
+                state.dialog.siteNew = true
+            }
 
             // 具体板块
             if (this.isBoard) {

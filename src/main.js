@@ -71,6 +71,7 @@ Vue.component('ic-gotop', GoTop)
 import DialogTopicManage from './components/dialogs/topic-manage.vue'
 import DialogUserManage from './components/dialogs/user-manage.vue'
 import DialogCommentManage from './components/dialogs/comment-manage.vue'
+import DialogSiteNew from './components/dialogs/site-new.vue'
 import DialogUserSetAvatar from './components/dialogs/user-set-avatar.vue'
 import DialogUserInactiveWarn from './components/dialogs/user-inactive-warn.vue'
 import DialogUserSignout from './components/dialogs/user-signout.vue'
@@ -79,6 +80,7 @@ Vue.component('ic-dialog', ICDialog)
 Vue.component('dialog-topic-manage', DialogTopicManage)
 Vue.component('dialog-user-manage', DialogUserManage)
 Vue.component('dialog-comment-manage', DialogCommentManage)
+Vue.component('dialog-site-new', DialogSiteNew)
 Vue.component('dialog-user-set-avatar', DialogUserSetAvatar)
 Vue.component('dialog-user-inactive-warn', DialogUserInactiveWarn)
 Vue.component('dialog-user-signout', DialogUserSignout)
