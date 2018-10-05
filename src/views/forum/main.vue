@@ -287,6 +287,11 @@ export default {
         }
     },
     computed: {
+        isNewSite: function () {
+            if (this.state.boards.rawLst.length === 0) {
+                return true
+            }
+        },
         postNewTopicStyle: function () {
             let exInfo = $.getBoardExInfoById(this.boardId)
             if (this.isBoard && (!this.state.boards.loaded)) {
@@ -343,11 +348,6 @@ export default {
         atConvert: $.atConvert2,
         isAdmin: function () {
             return $.isAdmin()
-        },
-        isNewSite: function () {
-            if (!this.loading && this.state.boards.rawLst.length === 0) {
-                return true
-            }
         },
         boardBadgeTitleById: function (id) {
             let chain = $.getBoardChainById(id)

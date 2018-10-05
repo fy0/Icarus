@@ -332,7 +332,7 @@ class UserView(UserMixin, PeeweeView):
             u.save()
 
         # 发送注册邮件
-        if config.EMAIL_ACTIVATION_ENABLE:
+        if config.EMAIL_ACTIVATION_ENABLE and not record['number'] == 1:
             await mail.send_register_activation(record.val)
 
         # 添加统计记录

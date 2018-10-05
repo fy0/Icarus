@@ -126,7 +126,7 @@ export default {
                     this.boardsInfoDict[i.id] = i
                 }
             } else {
-                $.message_by_code(ret.code)
+                // $.message_by_code(ret.code)
             }
         }
     },
