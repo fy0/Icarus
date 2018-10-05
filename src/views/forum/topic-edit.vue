@@ -88,7 +88,7 @@ div.markdown-editor > div.editor-toolbar {
 import Prism from 'prismjs'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
-import markdownEditor from '../utils/markdown-editor.vue'
+import markdownEditor from '@/components/misc/markdown-editor.vue'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import nprogress from 'nprogress/nprogress.js'

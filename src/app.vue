@@ -24,10 +24,9 @@
 
 <script>
 import state from '@/state.js'
-import Navbar from '@/components/utils/navbar.vue'
-import MyFooter from '@/components/utils/footer.vue'
-import MsgBox from '@/components/utils/msgbox.vue'
-import TestPanel from '@/components/utils/test-panel.vue'
+import Navbar from '@/components/misc/header.vue'
+import MyFooter from '@/components/misc/footer.vue'
+import MsgBox from '@/components/misc/msgbox.vue'
 
 export default {
     name: 'app',
@@ -37,7 +36,6 @@ export default {
         }
     },
     components: {
-        TestPanel,
         Navbar,
         MyFooter,
         MsgBox

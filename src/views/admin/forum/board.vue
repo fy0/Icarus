@@ -87,7 +87,7 @@ table {
 import api from '@/netapi.js'
 import state from '@/state.js'
 import AdminBase from '../base/base.vue'
-import DialogBoardManage from '../../utils/dialogs/board-manage.vue'
+import DialogBoardManage from '@/components/dialogs/board-manage.vue'
 
 export default {
     data () {

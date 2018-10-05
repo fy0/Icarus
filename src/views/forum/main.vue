@@ -294,7 +294,7 @@ $left-nav-sign-padding: 5px;
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/_forum.scss'
-import TopBtns from './topbtns2.vue'
+import TopBtns from './topbtns.vue'
 import nprogress from 'nprogress/nprogress.js'
 
 let pageOneHack = function (to, from, next) {
