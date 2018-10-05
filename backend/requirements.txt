@@ -1,4 +1,4 @@
-slim
+slim>=0.3.12
 aiohttp>=3
 peewee
 asyncpg

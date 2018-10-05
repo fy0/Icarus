@@ -28,18 +28,21 @@ let state = {
     */
     config,
     msgs: [],
-    test: {
-        items: []
-    },
+    // 对话框开关
     dialog: {
+        // 主题管理
         topicManage: null,
         topicManageData: null,
+        // 板块管理
         boardManage: null,
         boardManageData: null,
+        // 用户管理
         userManage: null,
         userManageData: null,
+        // 评论管理
         commentManage: null,
         commentManageData: null,
+        // 设置头像
         userSetAvatar: false,
         userSetAvatarData: null,
         // 用户未邮件激活提示框
@@ -59,8 +62,12 @@ let state = {
         state.unreadAlerted = false
         state.user = null
     },
+    // 当前用户
     user: null,
+    // 正在加载标记
     loading: 1,
+    // 全局加载动画，应用于多重加载的情况，例如A页加载，计数器+1，A中有B组件，B再将计数器+1
+    // 这样计数器归零的时候不再显示加载动画
     loadingGetKey,
     loadingInc: (route, key) => {
         if (key === loadingGetKey(route)) state.loading++
@@ -68,6 +75,11 @@ let state = {
     loadingDec: (route, key) => {
         if (key === loadingGetKey(route)) state.loading--
     },
+    // 当前用户是否为未激活帐户
+    isInactiveUser: function () {
+        return state.getRole('user') === 'inactive_user'
+    },
+    // 获取用户角色（取当前最高的一个）
     getRole: (limit) => {
         let role = null
         let roles = [null, 'ban', 'inactive_user', 'user', 'superuser', 'admin']
@@ -88,7 +100,9 @@ let state = {
         if (iLimit === -1) return null
         return roles[(iCurrent > iLimit) ? iLimit : iCurrent]
     },
+    // 用户在线数量
     userOnline: '?',
+    // 初始加载完成
     initLoadDone: false,
     init: () => {
         ;

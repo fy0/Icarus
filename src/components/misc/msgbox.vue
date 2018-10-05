@@ -14,7 +14,7 @@
     bottom: 5%;
     color: #056ef0;
     width: 300px;
-    z-index: 100;
+    z-index: 200;
 }
 
 .tipbox > .item {

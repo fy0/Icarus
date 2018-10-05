@@ -10,6 +10,7 @@ from slim.utils import CustomID
 
 SITE_NAME = 'Icarus'  # 站点名称
 SITE_URL = 'http://localhost:8080'  # 必填，站点地址，末尾不要带 /
+SITE_CONTACT_EMAIL = 'manage@mail.com'  # 必填，管理员联系邮箱，用于用户回报站点错误
 
 HOST = '127.0.0.1'
 PORT = 9999

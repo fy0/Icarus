@@ -1,7 +1,7 @@
 <!-- 评论 -->
 <template>
 <div class="ic-comment-post" id="ic-comment-post">
-    <div class="ic-comment" v-if="isInactiveUser">
+    <div class="ic-comment" v-if="state.isInactiveUser()">
         <avatar :user="state.user" class="avatar"></avatar>
         <div class="right-box">
             <div class="ic-paper round ic-z1 not-signin-content">你的账号需要激活后才能发言，请检查邮箱</div>
@@ -103,11 +103,6 @@ export default {
                 related_type: null,
                 content: ''
             }
-        }
-    },
-    computed: {
-        isInactiveUser: function () {
-            return state.getRole('user') === 'inactive_user'
         }
     },
     created: function () {

@@ -9,7 +9,7 @@
 </div>
 
 <!-- 刷新标题 -->
-<template v-if="isBoard">
+<template v-if="board">
     <div v-title v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
     <div v-title v-else>{{ board.name }} - {{state.config.title}}</div>
 </template>
@@ -22,6 +22,7 @@
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
                 <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
+
                 <div class="ul-boards">
                     <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
                         <div class="sign"></div>
@@ -151,6 +152,7 @@
         </div>
     </div>
     <dialog-topic-manage />
+    <dialog-user-inactive-warn />
 </div>
 </div>
 </template>
@@ -491,6 +493,13 @@ export default {
     },
     beforeRouteUpdate (to, from, next) {
         return pageOneHack(to, from, next)
+    },
+    beforeRouteLeave (to, from, next) {
+        if (to.name === 'forum_topic_new' && this.state.isInactiveUser()) {
+            state.dialog.userInactive = true
+            return false
+        }
+        return next()
     },
     created () {
         this.fetchData()

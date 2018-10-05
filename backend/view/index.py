@@ -108,6 +108,8 @@ class TestBaseView(UserMixin, BaseView):
             'NOTIF_TYPE': NOTIF_TYPE.to_dict(),
 
             'BACKEND_CONFIG': {
+                'SITE_CONTACT_EMAIL': config.SITE_CONTACT_EMAIL,
+
                 'USER_SECURE_AUTH_ENABLE': config.USER_SECURE_AUTH_ENABLE,
                 'USER_SECURE_AUTH_FRONTEND_SALT': config.USER_SECURE_AUTH_FRONTEND_SALT,
 

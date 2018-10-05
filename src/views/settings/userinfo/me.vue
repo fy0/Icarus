@@ -70,7 +70,7 @@
                 <span class="label">用户组</span>
                 <div class="line">
                     <span>{{state.misc.USER_GROUP_TXT[user.group]}}</span>
-                    <a href="javascript:void(0)" v-if="user.group === state.misc.USER_GROUP.INACTIVE" @click="resendActivationMail">重发激活邮件</a>
+                    <a href="javascript:void(0)" v-if="state.isInactiveUser()" @click="resendActivationMail">重发激活邮件</a>
                 </div>
             </div>
 
@@ -199,7 +199,7 @@ export default {
             if (ret.code === api.retcode.SUCCESS) {
                 $.message_success('激活邮件发送成功！请检查邮箱。')
             } else {
-                $.message_error('发送失败，可能是网络不稳定。此外每30分钟只能发送一次。')
+                $.message_error('发送失败，每30分钟只能发送一次。')
             }
         },
         updateInfo: async function () {

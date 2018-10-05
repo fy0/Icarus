@@ -55,6 +55,8 @@ UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024
         "SITE_NAME = 'Icarus'",
         "# 站点地址，末尾不要带 /",
         "SITE_URL = 'http://localhost:8080'",
+        "# 管理员联系邮箱，用于用户回报站点错误",
+        "SITE_CONTACT_EMAIL = 'manage@mail.com'",
         "",
         "HOST = '127.0.0.1'",
         "PORT = 9999",

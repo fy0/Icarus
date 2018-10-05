@@ -52,7 +52,7 @@
     align-items: center;
     justify-content: center;
 
-    z-index: 999999;
+    z-index: 100;
     overflow-x: hidden;
 }
 
