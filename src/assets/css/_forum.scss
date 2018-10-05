@@ -1,12 +1,5 @@
 /* .forum-box {} */
 
-#board-list {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
 /* 版块单项 */
 
 .board-item-box {
@@ -24,165 +17,174 @@
     /* height: 4em; */
     margin: 0;
     min-height: 4em;
-}
 
-.board-item > .title {
-    flex: 14 0 auto;
-    display: flex;
-    flex-direction: column;    
-    flex-basis: 0%;
-    overflow: hidden;
-    position: relative;
-}
-
-.board-item > .title-recent {
-    display: flex;
-    flex-direction: row;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    .avatar {
-        align-self: center;
-    }
-
-    .append-icons {
-        margin-top: -22px;
+    > .title-recent {
         display: flex;
-        align-items: center;
-        color: #777;
-        padding: 10px 10px 10px 10px;
-    }
-}
-
-
-.board-item > .title-recent > .right {
-    align-self: center;
-
-    * {
-        margin: 0px;
-        font-weight: 500;
-        // white-space: nowrap;
-        // word-break: keep-all;
-        text-overflow: ellipsis;    
+        flex-direction: row;
         overflow: hidden;
-    }
+        text-overflow: ellipsis;
 
-    h2 {
-        font-size: 18px;
-        // 注：由于不明原因，带图标时比不带高1px，因此强行统一成更高的那个
-        min-height: 29.8px;
+        > .avatar {
+            align-self: center;
+        }
 
-        a {
-            color: $gray-700;
+        > .right {
+            align-self: center;
+            font-weight: 500;
+
+            > h2 {
+                margin: 0px;
+                font-weight: 500;
+                font-size: 18px;
+                // 注：由于不明原因，带图标时比不带高1px，因此强行统一成更高的那个
+                min-height: 29.8px;
+
+                > a {
+                    color: $gray-700;
+                }
+            }
+
+            > .topic-info {
+                font-size: 0.8em;
+                color: #777;
+
+                display: flex;
+                align-items: flex-start;
+                align-content: flex-end;
+                justify-content: flex-start;
+                justify-items: flex-end;
+                font-size: 14px;
+                margin: 0;
+
+                .author {
+                    margin-right: 20px;
+                }
+
+                .board-badge {
+                    color: $dark;
+                    opacity: 0.6;
+                    // background-color: $gray-400;
+                    display: inline-flex;
+                    align-items: center;
+                    margin-right: 10px;
+
+                    .sign {
+                        width: 10px;
+                        height: 10px;
+                        // border-radius: 50%;
+                        margin-right: 5px;
+                    }
+
+                    &:hover {
+                        color: $dark;
+                    }
+                }
+            }
+        }
+
+        > .append-icons {
+            margin-top: -22px;
+            display: flex;
+            align-items: center;
+            color: #777;
+            padding: 10px 10px 10px 10px;
         }
     }
+}
 
-    .name {
-        font-size: 1em;
+.count-block {
+    > div {
+        flex: 1 0 auto;
+        text-align: center;
+        width: 1%; /* 如果不加这个，flex 布局会超框，overflow无效 */
     }
 
-    p {
-        font-size: 0.8em;
-        color: #777;
+    > * > p {
+        margin: 0;
     }
-}
 
-.board-item > .title > * {
-    margin: 0px;
-    flex: 1 0 0%;
-    font-weight: normal;
-    white-space: nowrap;
-    word-break: keep-all;
-    text-overflow: ellipsis;    
-    overflow: hidden;
-}
+    .count {
+        > .num {
+            line-height: 32px; /* 与num保持一致 */
+            flex-basis: 0%;
+            color: #777;
+            font-weight: normal;
+        }
 
-.board-item > .title > h2 {
-    font-size: 1em;
-}
+        > .tip {
+            position: absolute;
+            font-size: .625em;
+            right: 15%;
+            top: .2em;
+            flex-basis: 0%;
+            font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
 
-.board-item > .title > .name {
-    font-size: 1em;
-}
-
-.board-item > .title > p {
-    font-size: 0.8em;
-    color: #777;
-}
-
-.board-item > .title > .sub-boards {
-    font-size: 0.8em;
-    display: block;
+        > .txt {
+            color: #777;
+            font-weight: 300;
+            font-size: .8em;
+            flex-basis: 0%;
+        }
+    }
 }
 
 .board-item .detail {
     display: flex;
     flex: 10 0 auto;
     flex-basis: 0%;
-}
 
-.board-item > .title > .icons {
-    position: absolute;
-    right: 0px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    color: rgb(102, 102, 102);
-    /* 第一项一度为 0，忘记当时的想法了 */
-    padding: 10px 10px 10px 10px;
-}
+    > .recent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        justify-content: space-between;
 
-/* 板块条目 - 最近发言 */
-.board-item > .detail > .recent {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+        text-align: left;
+        font-size: .75em;
+        flex: 6 0 auto;
+        flex-basis: 0%;
+        overflow: hidden;
+        position: relative;
 
-    text-align: left;
-    font-size: .75em;
-    flex: 6 0 auto;
-    flex-basis: 0%;
-    overflow: hidden;
-    position: relative;
-}
+        > .line {
+            border-left: 4px solid #ccc;
+            height: 85%;
+            padding-left: 0;
+            opacity: 0.6;
+        }
 
-.board-item > .detail > .recent > .line {
-    border-left: 4px solid #ccc;
-    height: 85%;
-    padding-left: 0;
-    opacity: 0.6;
-}
+        > .post {
+            flex: 1 0 0;
+            max-height: 100%;
+            overflow: hidden;
+            padding-left: 1.25em;
+            text-overflow: ellipse;
+            color: #777;
 
-.board-item > .detail > .recent {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
+            .icon-reply {
+                font-size: 12px;
+                margin-right: 5px;
+                color: #777;
+            }
 
-.board-item > .detail > .recent > .post {
-    flex: 1 0 0;
-    max-height: 100%;
-    overflow: hidden;
-    padding-left: 1.25em;
-    text-overflow: ellipse;
-    color: #777;
-}
+            > .post-content {
+                cursor: pointer;
+                max-height: 3.6em;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                display: -webkit-box;
+                text-overflow: ellipsis;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+        }
 
-.board-item > .detail > .recent > .post > .post-content {
-    cursor: pointer;
-    max-height: 3.6em;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: -webkit-box;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.board-item > .detail > .recent > .time {
-    padding: 0 1em;
-    color: #777;
+        > .time {
+            padding: 0 1em;
+            color: #777;
+        }
+    }
 }
 
 /* 板块条目 - 右侧横框计数部分 */
@@ -194,45 +196,4 @@
     flex: 4 0 0;
     flex-basis: 0%;
     overflow: hidden;
-}
-
-.board-item > .detail > .count-block > div {
-    flex: 1 0 auto;
-    text-align: center;
-    width: 1%; /* 如果不加这个，flex 布局会超框，overflow无效 */
-}
-
-.board-item > .detail > .count-block > * > p {
-    margin: 0;
-}
-
-.count-block > .count > .num {
-    line-height: 32px; /* 与num保持一致 */
-    flex-basis: 0%;
-    color: #777;
-    font-weight: normal;
-}
-
-.count-block > .count > .board {
-    line-height: 32px; /* 与num保持一致 */
-    word-break: keep-all;
-    overflow: hidden;
-    text-overflow: ellipsis;    
-    flex-basis: 0%;
-}
-
-.count-block > .count > .txt {
-    color: #777;
-    font-weight: 300;
-    font-size: .8em;
-    flex-basis: 0%;
-}
-
-.count-block > .count > .tip {
-    position: absolute;
-    font-size: .625em;
-    right: 15%;
-    top: .2em;
-    flex-basis: 0%;
-    font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
 }

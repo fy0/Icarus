@@ -179,47 +179,6 @@
     }
 }
 
-.topic-info {
-    display: flex;
-    align-items: flex-start;
-    align-content: flex-end;
-    justify-content: flex-start;
-    justify-items: flex-end;
-    font-size: 14px;
-
-    .author {
-        margin-right: 20px;
-    }
-
-    .board-badge {
-        color: $dark;
-        opacity: 0.6;
-        // background-color: $gray-400;
-        display: inline-flex;
-        align-items: center;
-        margin-right: 10px;
-
-        .sign {
-            width: 10px;
-            height: 10px;
-            // border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        &:hover {
-            color: $dark;
-        }
-    }
-}
-
-.post {
-    .icon-reply {
-        font-size: 12px;
-        margin-right: 5px;
-        color: #777;
-    }
-}
-
 $left-nav-padding-right: 30px;
 $left-nav-sign-padding: 5px;
 

@@ -41,7 +41,9 @@ let state = {
         commentManage: null,
         commentManageData: null,
         userSetAvatar: false,
-        userSetAvatarData: null
+        userSetAvatarData: null,
+        // 用户未邮件激活提示框
+        userInactive: false
     },
     boards: { // 板块信息
         loaded: false,
