@@ -1,6 +1,6 @@
-slim>=0.3.12
+slim>=0.3.13
 aiohttp>=3
-peewee
+peewee>=3
 asyncpg
 wtforms
 msgpack

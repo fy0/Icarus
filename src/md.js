@@ -50,6 +50,26 @@ renderer.code = function (code, lang, escaped) {
         '\n</code></pre>\n'
 }
 
+// 这是为了在 renderer 中获取 parser 实例继而获得当前 token 所做的 hack
+baseMarked.Parser.parse = function (src, options) {
+    let parser = new baseMarked.Parser(options)
+    parser.renderer.headingCount = undefined
+    parser.renderer._parser = parser
+    return parser.parse(src)
+}
+
+renderer.heading = function (text, level, rawtext) {
+    this.headingCount = this.headingCount ? this.headingCount + 1 : 1
+
+    if (this.options.headerIds) {
+        let pf = this.options.headerPrefix
+        return `<h${level} id="${pf}${this.headingCount}">${text}</h${level}>\n`
+    }
+
+    // ignore IDs
+    return '<h' + level + '>' + text + '</h' + level + '>\n'
+}
+
 let myOpt = {
     renderer: renderer,
     gfm: true,
@@ -58,6 +78,8 @@ let myOpt = {
     sanitize: true,
     smartLists: true,
     smartypants: true,
+    headerIds: true,
+    headerPrefix: 'til-', // topic index link
     langPrefix: 'language-',
     highlight: function (code, lang) {
         if (lang) {
@@ -78,5 +100,11 @@ export function marked (text, options, callback) {
 
 export function mdGetIndex (text, options) {
     const tokens = baseMarked.lexer(text, options)
-    console.log(tokens)
+    let headings = []
+    for (let t of tokens) {
+        if (t.type === 'heading') {
+            headings.push(t)
+        }
+    }
+    return headings
 }

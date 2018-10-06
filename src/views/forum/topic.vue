@@ -83,6 +83,12 @@
                     <div class="topic-manage" v-if="isAdmin">
                         <i class="icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
                     </div>
+
+                    <ul class="topic-index">
+                        <li v-for="(i, _) in topicIndex" :key="_" :class="`h${i.depth}`">
+                            <a :href="`#til-${_+1}`" @click.prevent="scrollTo(`til-${_+1}`)">{{i.text}}</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -184,6 +190,25 @@
 .topic-box > .info {
     flex: 6 0 0%;
 }
+
+.topic-index {
+    padding-left: 0;
+    list-style-position: inside;
+
+    li {
+        list-style: none;
+        font-weight: bolder;
+        margin-bottom: 10px;
+        margin-left: 2em;
+    }
+    .h1, .h2 { margin-left: 0; }
+    .h3, .h4 { margin-left: 1em; }
+    li.h2::before { content:"∎ "; }
+    li.h3::before { content:"> "; }
+    li.h4::before { content:"⎔ "; }
+    li.h5::before { content:"○ "; }
+    li.h6::before { content:"⋄ "; }
+}
 </style>
 
 <script>
@@ -201,6 +226,7 @@ export default {
             loading: true,
             POST_TYPES: state.misc.POST_TYPES,
             topic: { board_id: { id: 1 } },
+            topicIndex: [],
             mlog: null
         }
     },
@@ -209,6 +235,10 @@ export default {
     },
     methods: {
         marked,
+        scrollTo: function (id) {
+            let el = document.getElementById(id)
+            $.scrollTo(el)
+        },
         setTopicManage: function (topic) {
             state.dialog.topicManageData = topic
             state.dialog.topicManage = true
@@ -233,7 +263,7 @@ export default {
                 let pageNumber = this.$route.query.page
                 if (pageNumber) this.commentPage = parseInt(pageNumber)
                 this.topic = ret.data
-                mdGetIndex(ret.data.content)
+                this.topicIndex = mdGetIndex(ret.data.content)
             } else {
                 if (ret.code !== api.retcode.NOT_FOUND) {
                     $.message_by_code(ret.code)

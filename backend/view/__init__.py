@@ -5,6 +5,7 @@ from model.redis import redis
 from slim.base.view import BaseView
 from typing import Union
 from slim.retcode import RETCODE
+from ipaddress import IPv4Address, IPv6Address
 
 route = app.app.route
 
@@ -15,14 +16,19 @@ class ValidateForm(Form):
 
 
 async def get_fuzz_ip(view) -> str:
-    ip_addr = view._request.transport.get_extra_info('peername')[0]
-    # 数据脱敏，将IP地址最后一位填充为 .0
-    return ip_addr.rsplit('.', 1)[0] + '.0'
+    ip = await view.get_ip()
+
+    # 数据脱敏，将IP地址最后一位填充为 0
+    if isinstance(ip, IPv4Address):
+        return str(ip).rsplit('.', 1)[0] + '.0'
+    elif isinstance(ip, IPv6Address):
+        return str(ip).rsplit(':', 1)[0] + ':0'
+    else:
+        raise ValueError("unexpected ip address: %s", ip)
 
 
-async def get_ip(view) -> bytes:
-    ip_addr = view._request.transport.get_extra_info('peername')[0]
-    return ip_addr.encode('utf-8')
+async def get_ip(view: BaseView) -> bytes:
+    return (await view.get_ip()).packed
 
 
 async def same_user(view: BaseView) -> Union[bytes, None]:
