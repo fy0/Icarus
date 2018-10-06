@@ -79,17 +79,23 @@ class User(PostModel, BaseUser):
 
     @property
     def roles(self):
+        """
+        这里角色权限由低到高
+        :return:
+        """
         ret = [None]
         if self.state == POST_STATE.DEL:
             return ret
-        if self.group >= USER_GROUP.ADMIN:
-            ret.append('admin')
-        if self.group >= USER_GROUP.SUPERUSER:
-            ret.append('superuser')
-        if self.group >= USER_GROUP.NORMAL:
-            ret.append('user')
+        if self.group >= USER_GROUP.BAN:
+            ret.append('banned_user')
         if self.group >= USER_GROUP.INACTIVE:
             ret.append('inactive_user')
+        if self.group >= USER_GROUP.NORMAL:
+            ret.append('user')
+        if self.group >= USER_GROUP.SUPERUSER:
+            ret.append('superuser')
+        if self.group >= USER_GROUP.ADMIN:
+            ret.append('admin')
         return ret
 
     @classmethod

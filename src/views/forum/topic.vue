@@ -187,7 +187,7 @@
 </style>
 
 <script>
-import { marked } from '@/md.js'
+import { marked, mdGetIndex } from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/_forum.scss'
@@ -218,7 +218,7 @@ export default {
             let ret = await api.topic.get({
                 id: params.id,
                 loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
-            }, state.getRole('user'))
+            }, $.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {
                 let mlog = await api.logManage.list({
@@ -233,6 +233,7 @@ export default {
                 let pageNumber = this.$route.query.page
                 if (pageNumber) this.commentPage = parseInt(pageNumber)
                 this.topic = ret.data
+                mdGetIndex(ret.data.content)
             } else {
                 if (ret.code !== api.retcode.NOT_FOUND) {
                     $.message_by_code(ret.code)

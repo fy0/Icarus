@@ -66,7 +66,7 @@ export default {
 
             let ret = await api.upload.list({
                 'type_name.is': null
-            }, 1, null, state.getRole('user'))
+            }, 1, null, $.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data

@@ -18,7 +18,7 @@ from view import route, ValidateForm, cooldown, same_user
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 
 from view.mention import check_content_mention
-from view.permissions import permissions_add_all
+from permissions import permissions_add_all
 from view.user import UserMixin
 
 

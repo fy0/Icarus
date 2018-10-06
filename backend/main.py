@@ -14,9 +14,11 @@ if __name__ == '__main__':
     if config.EMAIL_ENABLE:
         asyncio.ensure_future(mail.init(loop), loop=loop)
 
-    asyncio.ensure_future(redis_init(loop), loop=loop)
+    co_redis = redis_init(loop)
+    asyncio.ensure_future(co_redis, loop=loop)
 
     if config.UPLOAD_ENABLE:
         upload.init()
 
+    asyncio.wait_for(co_redis, 10000, loop=loop)
     app.run(host=config.HOST, port=config.PORT)

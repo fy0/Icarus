@@ -30,7 +30,6 @@
 
 <script>
 import state from '@/state.js'
-import api from '@/netapi.js'
 
 export default {
     data () {

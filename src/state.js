@@ -81,28 +81,7 @@ let state = {
     },
     // 当前用户是否为未激活帐户
     isInactiveUser: function () {
-        return state.getRole('user') === 'inactive_user'
-    },
-    // 获取用户角色（取当前最高的一个）
-    getRole: (limit) => {
-        let role = null
-        let roles = [null, 'ban', 'inactive_user', 'user', 'superuser', 'admin']
-        let rolesMap = {
-            [state.misc.USER_GROUP.BAN]: 'ban',
-            [state.misc.USER_GROUP.INACTIVE]: 'inactive_user',
-            [state.misc.USER_GROUP.NORMAL]: 'user',
-            [state.misc.USER_GROUP.SUPERUSER]: 'superuser',
-            [state.misc.USER_GROUP.ADMIN]: 'admin'
-        }
-
-        if (state.user) {
-            role = rolesMap[state.user.group]
-        }
-
-        let iCurrent = roles.indexOf(role)
-        let iLimit = roles.indexOf(limit)
-        if (iLimit === -1) return null
-        return roles[(iCurrent > iLimit) ? iLimit : iCurrent]
+        return $.getRole('user') === 'inactive_user'
     },
     // 用户在线数量
     userOnline: '?',

@@ -75,3 +75,8 @@ export function marked (text, options, callback) {
     let html = baseMarked(text, options, callback)
     return $.atConvert(html)
 }
+
+export function mdGetIndex (text, options) {
+    const tokens = baseMarked.lexer(text, options)
+    console.log(tokens)
+}

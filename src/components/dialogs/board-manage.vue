@@ -139,7 +139,7 @@ export default {
                 return
             }
 
-            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id'])
+            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible'])
             let ret = await api.board.set({ id: this.board.id }, data, 'admin', keys)
 
             if (ret.code === 0) {

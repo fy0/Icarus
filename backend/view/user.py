@@ -19,7 +19,7 @@ from slim.utils.jsdict import JsDict
 from view import route, ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, DataRecord
-from view.permissions import permissions_add_all
+from permissions import permissions_add_all
 
 
 class UserMixin(BaseAccessTokenUserMixin):

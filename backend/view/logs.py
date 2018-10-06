@@ -2,7 +2,7 @@ from model.log_manage import ManageLog
 from slim.base.permission import Permissions
 from slim.support.peewee import PeeweeView
 from view import route
-from view.permissions import visitor, normal_user, super_user, admin
+from permissions import permissions_add_all
 
 
 @route('log/manage')
@@ -16,7 +16,4 @@ class LogManageView(PeeweeView):
     @classmethod
     def permission_init(cls):
         permission: Permissions = cls.permission
-        permission.add(visitor)
-        permission.add(normal_user)
-        permission.add(super_user)
-        permission.add(admin)
+        permissions_add_all(permission)

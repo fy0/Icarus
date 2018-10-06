@@ -7,7 +7,7 @@ from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import binhex
 from view import route
-from view.permissions import permissions_add_all
+from permissions import permissions_add_all
 from view.user import UserMixin
 
 
