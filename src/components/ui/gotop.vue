@@ -32,7 +32,7 @@ export default {
             showGoTop: false
         }
     },
-    mounted: async function () {
+    created: async function () {
         setInterval(() => {
             let el = document.documentElement
             this.showGoTop = el.scrollTop > 0

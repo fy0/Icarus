@@ -84,11 +84,14 @@
                         <i class="icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
                     </div>
 
-                    <ul class="topic-index">
-                        <li v-for="(i, _) in topicIndex" :key="_" :class="`h${i.depth}`">
-                            <a :href="`#til-${_+1}`" @click.prevent="scrollTo(`til-${_+1}`)">{{i.text}}</a>
-                        </li>
-                    </ul>
+                    <div class="topic-index-container" ref="index" :class="{'sticky': indexSticky}">
+                        <h2>目录</h2>
+                        <ul class="topic-index">
+                            <li v-for="(i, _) in topicIndex" :key="_">
+                                <a :class="[indexActive == _ ? 'active' : '', `h${i.depth}`]" :href="`#til-${_+1}`" @click.prevent.stop="scrollTo(`til-${_+1}`)">{{i.text}}</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,23 +194,49 @@
     flex: 6 0 0%;
 }
 
+.topic-index-container {
+    &.sticky {
+        position: fixed;
+        top: 0;
+    }
+
+    > h2 {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+}
+
 .topic-index {
+    font-size: 14px;
     padding-left: 0;
+    margin-top: 0;
     list-style-position: inside;
 
     li {
+        font-size: 14px;
         list-style: none;
         font-weight: bolder;
-        margin-bottom: 10px;
-        margin-left: 2em;
+        margin-bottom: 5px;
+        margin-left: 0;
+
+        a {
+            color: $gray-600;
+            margin-left: 3em;
+        }
+
+        a.active {
+            font-weight: bold;
+            color: $gray-700;
+        }
+
+        .h1, .h2 { margin-left: 1em; }
+        .h3, .h4 { margin-left: 2em; }
+        .h2::before { content:"∎ "; }
+        .h3::before { content:"> "; }
+        .h4::before { content:"⎔ "; }
+        .h5::before { content:"○ "; }
+        .h6::before { content:"⋄ "; }
     }
-    .h1, .h2 { margin-left: 0; }
-    .h3, .h4 { margin-left: 1em; }
-    li.h2::before { content:"∎ "; }
-    li.h3::before { content:"> "; }
-    li.h4::before { content:"⎔ "; }
-    li.h5::before { content:"○ "; }
-    li.h6::before { content:"⋄ "; }
 }
 </style>
 
@@ -227,6 +256,8 @@ export default {
             POST_TYPES: state.misc.POST_TYPES,
             topic: { board_id: { id: 1 } },
             topicIndex: [],
+            indexActive: -1,
+            indexSticky: false,
             mlog: null
         }
     },
@@ -287,7 +318,28 @@ export default {
             window.socialShare(this.$refs.share, {
                 title: `${this.topic.title} - ${state.config.title}`
             })
+
+            // 右侧目录跟随滚动
+            let elTop = 0
+            let loop = () => {
+                let el = this.$refs.index
+                if (!el) return
+                elTop = Math.max(el.offsetTop, elTop)
+                let scrollTop = document.documentElement.scrollTop
+                this.indexSticky = scrollTop > elTop
+
+                for (let i = 0; i < this.topicIndex.length; i++) {
+                    let el = document.getElementById(`til-${i + 1}`)
+                    if (el.offsetTop >= (scrollTop - 5)) {
+                        this.indexActive = i
+                        break
+                    }
+                }
+                setTimeout(loop, 100)
+            }
+            setTimeout(loop, 100)
         })
+
         this.state.loadingDec(this.$route, key)
     },
     mounted: function () {
