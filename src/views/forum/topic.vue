@@ -84,7 +84,7 @@
                         <i class="icarus icon-sword-cross" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
                     </div>
 
-                    <div class="topic-index-container" ref="index" :class="{'sticky': indexSticky}">
+                    <div v-if="topicIndex && topicIndex.length" class="topic-index-container" ref="index" :class="{'sticky': indexSticky}">
                         <h2>目录</h2>
                         <ul class="topic-index">
                             <li v-for="(i, _) in topicIndex" :key="_">

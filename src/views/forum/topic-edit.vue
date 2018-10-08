@@ -15,7 +15,7 @@
         <check-row :results="formErrors.board" :multi="true" v-if="(!is_edit) || asAdmin">
             <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
-        <check-row :multi="true">
+        <check-row :results="formErrors.content" :multi="true">
             <markdown-editor ref="editor" :configs="mdeConfig" v-model="topicInfo.content" rows="15" autofocus></markdown-editor>
         </check-row>
         <div class="ic-form-row">
@@ -25,7 +25,7 @@
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 #form_topic input[name='title'] {
     padding: 6px 12px;
     width: 100%;
@@ -33,6 +33,13 @@
     border-radius: 5px;
     box-shadow: none;
     border: 1px solid #e8e8e8;
+    outline: none;
+}
+
+.error {
+    #form_topic input[name='title'] {
+        border: 1px solid $danger;
+    }
 }
 
 .edit-page-title {
@@ -115,7 +122,8 @@ export default {
             },
 
             formErrors: {
-                title: []
+                title: [],
+                content: []
             },
 
             mdeConfig: {
@@ -179,7 +187,7 @@ export default {
 
             if (this.is_edit) {
                 if (this.asAdmin) {
-                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'admin')
+                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'superuser')
                 } else {
                     ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'user')
                 }
@@ -201,6 +209,9 @@ export default {
                 $.message_error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
                 this.loading = false
             } else {
+                if (ret.code === api.retcode.FAILED) {
+                    this.formErrors = ret.data
+                }
                 $.message_error(failedText)
                 // 注意：发布成功会跳转，故不做复位，失败则复位
                 this.loading = false
@@ -324,11 +335,13 @@ export default {
                     ob.subscribe({
                         complete: (ret) => {
                             // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
-                            console.log('done', ret)
+                            // console.log('done', ret)
                             if (ret.code === api.retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
                                 let url = `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
+                                let suffix = state.misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_TOPIC_STYLE
                                 let newTxt = `![](${url})`
+                                if (suffix) newTxt += `-${suffix}`
                                 let offset = newTxt.length - placeholder.length
                                 let cur = editor.getCursor()
                                 editor.setValue(editor.getValue().replace(placeholder, newTxt + '\n'))

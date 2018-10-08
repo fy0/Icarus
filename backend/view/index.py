@@ -127,6 +127,7 @@ class TestBaseView(UserMixin, BaseView):
 
                 'UPLOAD_STATIC_HOST': config.UPLOAD_STATIC_HOST,
                 'UPLOAD_QINIU_DEADLINE_OFFSET': config.UPLOAD_QINIU_DEADLINE_OFFSET,
+                'UPLOAD_QINIU_IMAGE_TOPIC_STYLE': config.UPLOAD_QINIU_IMAGE_TOPIC_STYLE
             },
 
             'retcode': RETCODE.to_dict(),
