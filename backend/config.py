@@ -19,9 +19,7 @@ DATABASE_URI = 'postgresql://postgres@localhost/icarus'  # 必填
 
 REDIS_URI = 'redis://localhost:6379'
 
-# 为True时，密码将先在前端哈希后，在后端再次哈希与储存值比对。
-# 从1.0版升级后，如果开启这个选项，那么现有用户全部需要重置密码
-USER_SECURE_AUTH_ENABLE = True
+# 密码将先在前端哈希后，在后端再次哈希与储存值比对，这是前端哈希用到的盐
 USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5Lq65LiN6K+G5ZCb'  # 前端盐，务必修改默认值
 
 ##########################################
@@ -97,7 +95,7 @@ UPLOAD_QINIU_CALLBACK_URL = 'PLACE_HOLDER'  # 开启时必填，七牛上传回�
 UPLOAD_FILE_SIZE_MIN = 100
 UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024
 
-UPLOAD_QINIU_IMAGE_TOPIC_STYLE = ''  # 文章页面图片所用的七牛图片样式
+UPLOAD_QINIU_IMAGE_STYLE_TOPIC = ''  # 文章页面图片所用的七牛图片样式
 
 ##########################################
 # 可选 - ID生成器配置

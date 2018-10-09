@@ -109,8 +109,6 @@ class TestBaseView(UserMixin, BaseView):
 
             'BACKEND_CONFIG': {
                 'SITE_CONTACT_EMAIL': config.SITE_CONTACT_EMAIL,
-
-                'USER_SECURE_AUTH_ENABLE': config.USER_SECURE_AUTH_ENABLE,
                 'USER_SECURE_AUTH_FRONTEND_SALT': config.USER_SECURE_AUTH_FRONTEND_SALT,
 
                 'USER_NICKNAME_MIN': config.USER_NICKNAME_MIN,
@@ -127,7 +125,7 @@ class TestBaseView(UserMixin, BaseView):
 
                 'UPLOAD_STATIC_HOST': config.UPLOAD_STATIC_HOST,
                 'UPLOAD_QINIU_DEADLINE_OFFSET': config.UPLOAD_QINIU_DEADLINE_OFFSET,
-                'UPLOAD_QINIU_IMAGE_TOPIC_STYLE': config.UPLOAD_QINIU_IMAGE_TOPIC_STYLE
+                'UPLOAD_QINIU_IMAGE_STYLE_TOPIC': config.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
             },
 
             'retcode': RETCODE.to_dict(),

@@ -122,6 +122,9 @@
     padding-left: 0;
     list-style-position: inside;
 } */
+.img-center {
+    text-align: center;
+}
 
 .topic-box .article > .content {
     min-height: 30vh;

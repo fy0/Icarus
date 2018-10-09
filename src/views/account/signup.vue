@@ -103,6 +103,7 @@ import state from '@/state.js'
 export default {
     data () {
         return {
+            state,
             info: {
                 email: '',
                 nickname: '',
@@ -154,7 +155,9 @@ export default {
             if (!this.info.agreeLicense) {
                 return
             }
+            let key = state.loadingGetKey(this.$route)
             if (this.checkPassword && this.checkPassword2 && this.checkEmail && this.checkNickname) {
+                this.state.loadingInc(this.$route, key)
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
@@ -180,6 +183,7 @@ export default {
                     }
                     this.$router.push({ name: 'forum', params: {} })
                 }
+                this.state.loadingDec(this.$route, key)
             } else {
                 $.message_error('请正确填写所有项目')
             }

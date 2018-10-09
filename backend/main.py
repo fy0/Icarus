@@ -20,5 +20,4 @@ if __name__ == '__main__':
     if config.UPLOAD_ENABLE:
         upload.init()
 
-    asyncio.wait_for(co_redis, 10000, loop=loop)
     app.run(host=config.HOST, port=config.PORT)

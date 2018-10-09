@@ -339,9 +339,9 @@ export default {
                             if (ret.code === api.retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
                                 let url = `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
-                                let suffix = state.misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_TOPIC_STYLE
+                                let suffix = state.misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
+                                if (suffix) url += `-${suffix}`
                                 let newTxt = `![](${url})`
-                                if (suffix) newTxt += `-${suffix}`
                                 let offset = newTxt.length - placeholder.length
                                 let cur = editor.getCursor()
                                 editor.setValue(editor.getValue().replace(placeholder, newTxt + '\n'))

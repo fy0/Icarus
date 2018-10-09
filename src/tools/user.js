@@ -27,10 +27,6 @@ $.getRole = function (limit) {
 }
 
 $.passwordHash = async function (password, iterations = 1e5) {
-    if (!state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_ENABLE) {
-        return password
-    }
-
     let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
     let crypto = window.crypto || window.msCrypto // for IE 11
     let enc = new TextEncoder()

@@ -86,6 +86,20 @@ def nickname_check(form, field):
         raise ValidationError('昵称被保留')
 
 
+class SigninByNicknameForm(ValidateForm):
+    # 注意，这里前端提交的字段仍是email，所以不用nickname而是email，并非笔误
+    # 同时不做长度检查也是有意的，因为某一时期注册的帐号，昵称长度可能会不符合后期的规则，但要可以登录
+    email = StringField('昵称', validators=[
+        va.required(),
+        nickname_check
+    ])
+
+    password = StringField('密码', validators=[
+        va.required(),
+        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
+    ])
+
+
 class SignupForm(SigninForm):
     nickname = StringField('昵称', validators=[
         va.required(),
@@ -228,7 +242,7 @@ class UserView(UserMixin, PeeweeView):
             if not form.validate():
                 return self.finish(RETCODE.FAILED, form.errors)
             u: User = self.current_user
-            if User.auth(u.email, post['old_password']):
+            if User.auth_by_mail(u.email, post['old_password']):
                 u.set_password(post['password'])
                 k = u.refresh_key()
                 self.finish(RETCODE.SUCCESS, k['key'])
@@ -250,11 +264,17 @@ class UserView(UserMixin, PeeweeView):
     @cooldown(config.USER_SIGNIN_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_signin_account_%b', unique_id_func=same_email_post)
     async def signin(self):
         data = await self.post_data()
-        form = SigninForm(**data)
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
 
-        u = User.auth(data['email'], data['password'])
+        form_email = SigninForm(**data)
+        form_nickname = SigninByNicknameForm(**data)
+
+        if form_email.validate():
+            u = User.auth_by_mail(data['email'], data['password'])
+        elif form_nickname.validate():
+            u = User.auth_by_nickname(data['email'], data['password'])
+        else:
+            return self.finish(RETCODE.FAILED, form_email.errors)
+
         if u:
             expires = 30 if 'remember' in data else None
             u.refresh_key()

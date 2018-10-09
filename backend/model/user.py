@@ -59,6 +59,12 @@ class User(PostModel, BaseUser):
     reputation = IntegerField(default=0)  # 声望
     ip_registered = INETField(default=None, null=True)  # 注册IP
 
+    # ref_github = TextField(null=True)
+    # ref_zhihu = TextField(null=True)
+    # ref_weibo = TextField(null=True)
+
+    phone_verified = BooleanField(default=False)  # 手机号已确认
+    change_nickname_chance = IntegerField(default=0)  # 改名机会数量
     reset_key = BlobField(index=True, null=True, default=None)  # 重置密码所用key
 
     class Meta:
@@ -104,20 +110,14 @@ class User(PostModel, BaseUser):
 
     @classmethod
     def gen_password_and_salt(cls, password_text):
-        if config.USER_SECURE_AUTH_ENABLE:
-            salt = os.urandom(32)
-            dk = hashlib.pbkdf2_hmac(
-                config.PASSWORD_SECURE_HASH_FUNC_NAME,
-                password_text.encode('utf-8'),
-                salt,
-                config.PASSWORD_SECURE_HASH_ITERATIONS,
-            )
-            return {'password': dk, 'salt': salt}
-        else:
-            salt = os.urandom(16)
-            m = hmac.new(salt, digestmod=config.PASSWORD_HASH_FUNC)
-            m.update(password_text.encode('utf-8'))
-            return {'password': m.digest(), 'salt': salt}
+        salt = os.urandom(32)
+        dk = hashlib.pbkdf2_hmac(
+            config.PASSWORD_SECURE_HASH_FUNC_NAME,
+            password_text.encode('utf-8'),
+            salt,
+            config.PASSWORD_SECURE_HASH_ITERATIONS,
+        )
+        return {'password': dk, 'salt': salt}
 
     @classmethod
     def gen_key(cls):
@@ -296,29 +296,33 @@ class User(PostModel, BaseUser):
             ManageLog.add_by_exp_changed_sys(self, note='每日登录', value=[exp, self.exp])
             return 5
 
+    def _auth_base(self, password_text):
+        """
+        已获取了用户对象，进行密码校验
+        :param password_text:
+        :return:
+        """
+        dk = hashlib.pbkdf2_hmac(
+            config.PASSWORD_SECURE_HASH_FUNC_NAME,
+            password_text.encode('utf-8'),
+            self.salt.tobytes(),
+            config.PASSWORD_SECURE_HASH_ITERATIONS,
+        )
+
+        if self.password.tobytes() == dk:
+            return self
+
     @classmethod
-    def auth(cls, email, password_text):
-        try:
-            u = cls.get(cls.email == email)
-        except DoesNotExist:
-            return False
+    def auth_by_mail(cls, email, password_text):
+        try: u = cls.get(cls.email == email)
+        except DoesNotExist: return False
+        return u._auth_base(password_text)
 
-        if config.USER_SECURE_AUTH_ENABLE:
-            dk = hashlib.pbkdf2_hmac(
-                config.PASSWORD_SECURE_HASH_FUNC_NAME,
-                password_text.encode('utf-8'),
-                u.salt.tobytes(),
-                config.PASSWORD_SECURE_HASH_ITERATIONS,
-            )
-
-            if u.password.tobytes() == dk:
-                return u
-        else:
-            m = hmac.new(u.salt.tobytes(), digestmod=config.PASSWORD_HASH_FUNC)
-            m.update(password_text.encode('utf-8'))
-
-            if u.password.tobytes() == m.digest():
-                return u
+    @classmethod
+    def auth_by_nickname(cls, nickname, password_text):
+        try: u = cls.get(cls.nickname == nickname)
+        except DoesNotExist: return False
+        return u._auth_base(password_text)
 
     def __repr__(self):
         return '<User id:%x nickname:%r>' % (int.from_bytes(self.id.tobytes(), 'big'), self.nickname)

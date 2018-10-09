@@ -4,7 +4,7 @@
         <h3 class="title">登录</h3>
         <form class="ic-form">
             <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
-                <label for="email">邮箱</label>
+                <label for="email">邮箱/昵称</label>
                 <input class="ic-input" type="email" name="email" id="email" v-model="info.email">
             </check-row>
             <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
@@ -130,8 +130,9 @@ export default {
     },
     computed: {
         checkEmail: function () {
-            let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
-            return mail.test(this.info.email)
+            // let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+            // return mail.test(this.info.email)
+            return true
         },
         checkPasswordText: function () {
             return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`

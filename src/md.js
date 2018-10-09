@@ -70,6 +70,19 @@ renderer.heading = function (text, level, rawtext) {
     return '<h' + level + '>' + text + '</h' + level + '>\n'
 }
 
+// 为了图片居中以及其他
+renderer.image = function (href, title, text) {
+    if (this.options.baseUrl && !baseMarked.originIndependentUrl.test(href)) {
+        href = baseMarked.resolveUrl(this.options.baseUrl, href)
+    }
+    let out = '<img src="' + href + '" alt="' + text + '"'
+    if (title) {
+        out += ' title="' + title + '"'
+    }
+    out += this.options.xhtml ? '/>' : '>'
+    return `<div class="img-center">${out}</div>`
+}
+
 let myOpt = {
     renderer: renderer,
     gfm: true,
