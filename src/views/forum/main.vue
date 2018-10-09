@@ -18,7 +18,7 @@
 <div class="ic-container forum-box">
     <div class="wrapper">
 
-        <div class="left-nav">
+        <div class="left-nav ic-xs-hidden">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
                 <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>

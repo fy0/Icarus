@@ -23,6 +23,7 @@ Vue.use(VueLoaders)
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import { faArrowUp, faArrowsAlt, faBold, faCode, faColumns, faEraser, faEye, faHeading, faImage, faItalic, faLink, faListOl, faListUl, faMinus, faQuestionCircle, faQuoteLeft, faStrikethrough, faTable, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faQuestionCircle as farQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 library.add(faArrowUp)
 library.add(faArrowsAlt)
@@ -43,6 +44,7 @@ library.add(faQuoteLeft)
 library.add(faStrikethrough)
 library.add(faTable)
 library.add(faUndo)
+library.add(farQuestionCircle)
 
 dom.watch()
 

@@ -1,6 +1,7 @@
 <template>
 <ic-dialog v-model="state.dialog.userSignout" :width="'500px'" :title="`退出登录`">
     <div class="main">
+        <i class="far fa-question-circle icon"></i>
         <div>你确定要退出登录吗？</div>
     </div>
     <div class="bottom">
@@ -14,6 +15,10 @@
 </template>
 
 <style lang="scss" scoped>
+.icon {
+    font-size: 74px;
+}
+
 .main {
     font-size: 1.5em;
     text-align: center;
