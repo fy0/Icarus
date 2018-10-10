@@ -83,6 +83,8 @@ let state = {
     isInactiveUser: function () {
         return $.getRole('user') === 'inactive_user'
     },
+    // 拖动手势所使用的一个实例
+    zt: null,
     // 用户在线数量
     userOnline: '?',
     // 初始加载完成

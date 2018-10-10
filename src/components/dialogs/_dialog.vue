@@ -13,6 +13,19 @@
 </div>
 </template>
 
+<style>
+.dialog-overlay {
+    background-color: #000;
+    opacity: 0.4;
+    animation-duration: 0.5s;
+    animation-name: showOverlay;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    position: fixed;
+}
+</style>
+
 <style scoped>
 .title {
     font-size: 22px;
@@ -28,17 +41,6 @@
     border-radius: 2px;
     font-size: 16px;
     box-shadow: 0 19px 60px rgba(0,0,0,.298039), 0 15px 20px rgba(0,0,0,.219608);
-}
-
-.dialog-overlay {
-    background-color: #000;
-    opacity: 0.4;
-    animation-duration: 0.5s;
-    animation-name: showOverlay;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    position: fixed;
 }
 
 .dialog-wrapper {

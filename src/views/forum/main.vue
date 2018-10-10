@@ -17,6 +17,37 @@
 
 <div class="ic-container forum-box">
     <div class="wrapper">
+        <div v-responsive.xs>
+            <!-- xs 时的边栏 -->
+            <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                <div v-if="showSlideMenu" class="dialog-overlay" @click="showSlideMenu = false"></div>
+            </transition>
+
+            <transition enter-active-class="animated slideInLeft faster" leave-active-class="animated slideOutLeft">
+                <div v-if="showSlideMenu" class="left-nav bs4-xs">
+                    <div class="left-nav-box">
+                        <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
+
+                        <div class="ul-boards">
+                            <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
+                                <div class="sign"></div>
+                                <span class="title">全部主题</span>
+                            </router-link>
+
+                            <label v-if="isBoard" class="with-subboard-topic">
+                                <input type="checkbox" v-model="withSubBoardTopic"/>
+                                <span>包含子板块内容</span>
+                            </label>
+                            <div style="margin-bottom: 3px;"></div>
+                            <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
+                                <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
+                                <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
 
         <div class="left-nav ic-xs-hidden">
             <div class="left-nav-box">
@@ -41,6 +72,7 @@
                 </div>
             </div>
         </div>
+
         <div class="right" id="board-list">
             <top-btns :board="board"></top-btns>
             <div style="flex: 1 0 0%;">
@@ -177,9 +209,26 @@
         flex: 5 1 0%;
     }
 
+    .left-nav.bs4-xs {
+        position: fixed;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: #fff;
+        z-index: 3;
+        padding-left: 15px;
+        padding-top: 30px;
+        width: 180px;
+    }
+
     .right {
         flex: 19 1 0%;
     }
+}
+
+.dialog-overlay {
+    top: 0;
+    z-index: 2;
 }
 
 $left-nav-padding-right: 30px;
@@ -257,6 +306,7 @@ import api from '@/netapi.js'
 import state from '@/state.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
+import ZingTouch from 'zingtouch'
 import nprogress from 'nprogress/nprogress.js'
 
 let pageOneHack = function (to, from, next) {
@@ -283,7 +333,9 @@ export default {
             withSubBoardTopic: false,
             withSubBoardTopicOptionReady: false,
             mouseOverPostNewBtn: false,
-            placeholderCount: 20
+            placeholderCount: 20,
+            // xs大小时的边栏
+            showSlideMenu: false
         }
     },
     computed: {
@@ -513,6 +565,23 @@ export default {
     },
     created () {
         this.fetchData()
+
+        this.$nextTick(() => {
+            state.zt = state.zt || new ZingTouch.Region(document.body, false, false)
+            let el = document.querySelector('.main')
+            state.zt.unbind(el, 'swipe')
+            state.zt.bind(el, 'swipe', (e) => {
+                let info = e.detail.data[0]
+                let d = info.currentDirection
+                if (d < 50 || d > 310) {
+                    // 向右滑动
+                    this.showSlideMenu = true
+                } else if (d > 130 && d < 230) {
+                    // 向左滑动
+                    this.showSlideMenu = false
+                }
+            }, false)
+        })
     },
     watch: {
         // 如果路由有变化，会再次执行该方法

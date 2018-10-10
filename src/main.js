@@ -13,16 +13,18 @@ import 'nprogress/nprogress.css'
 Vue.config.productionTip = false
 
 // 加载动画组件
-
 import 'vue-loaders/dist/vue-loaders.css'
 import * as VueLoaders from 'vue-loaders'
 Vue.use(VueLoaders)
+
+import responsive from 'vue-responsive'
+Vue.use(responsive)
 
 // fontawesome
 // P.S. faH1-HX 以及 faRepeat 现在都是 pro 才能用了
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
-import { faArrowUp, faArrowsAlt, faBold, faCode, faColumns, faEraser, faEye, faHeading, faImage, faItalic, faLink, faListOl, faListUl, faMinus, faQuestionCircle, faQuoteLeft, faStrikethrough, faTable, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faArrowsAlt, faBold, faCode, faColumns, faEraser, faEye, faHeading, faImage, faItalic, faLink, faListOl, faListUl, faMinus, faQuestionCircle, faQuoteLeft, faRedo, faStrikethrough, faTable, faUndo } from '@fortawesome/free-solid-svg-icons'
 import { faQuestionCircle as farQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 library.add(faArrowUp)
@@ -41,6 +43,7 @@ library.add(faListUl)
 library.add(faMinus)
 library.add(faQuestionCircle)
 library.add(faQuoteLeft)
+library.add(faRedo)
 library.add(faStrikethrough)
 library.add(faTable)
 library.add(faUndo)
