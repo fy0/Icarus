@@ -95,6 +95,12 @@ $yiq-contrasted-threshold:  150 !default;
 $yiq-text-dark:             $gray-900 !default;
 $yiq-text-light:            $white !default;
 
+// Disabled
+
+$common-disabled-opacity:   .65 !default;
+$common-disabled-color:     $gray-600 !default;
+$common-disabled-bg:        $gray-200 !default;
+
 // Others
 
 $main-background-color: #fafafa;

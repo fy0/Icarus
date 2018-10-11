@@ -7,7 +7,7 @@
                 <button class="ic-btn smoke outline option" @mousedown="changeOrderType(i[0])" v-for="i in orders.slice(1)" :key="i[0]">{{i[1]}}</button>
             </div>
         </div>
-        <div class="brief" title="板块简介" v-if="board">{{board.brief}}</div>
+        <div class="brief ic-xs-hidden ic-md-hidden" title="板块简介" v-if="board">{{board.brief}}</div>
     </div>
     <div v-if="state.user" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.reputation}}</span> -->

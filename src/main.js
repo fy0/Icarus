@@ -83,6 +83,7 @@ import Tabs from './components/ui/tabs.vue'
 import Progress from './components/ui/progress.vue'
 import Badge from './components/ui/badge.vue'
 import GoTop from './components/ui/gotop.vue'
+import CheckBox from './components/ui/checkbox.vue'
 // import MsgBox from './components/msgbox.vue'
 
 Vue.component('page-not-found', PageNotFound)
@@ -102,6 +103,7 @@ Vue.component('ic-tabs', Tabs)
 Vue.component('ic-progress', Progress)
 Vue.component('ic-badge', Badge)
 Vue.component('ic-gotop', GoTop)
+Vue.component('ic-checkbox', CheckBox)
 
 import DialogTopicManage from './components/dialogs/topic-manage.vue'
 import DialogUserManage from './components/dialogs/user-manage.vue'

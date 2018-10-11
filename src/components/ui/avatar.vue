@@ -37,6 +37,7 @@
 <style lang="scss">
 /* sa: simple avatar */
 .sa-avatar {
+    font-weight: normal;
     text-align: center;
     user-select: none;
     border-radius: 4px;

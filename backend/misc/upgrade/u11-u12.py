@@ -20,7 +20,6 @@ def sql_execute(sql):
 
 
 def work():
-    sql_execute('ALTER TABLE "user" ALTER COLUMN number TYPE SERIAL;')
     sql_execute('''ALTER TABLE "user" ALTER COLUMN number SET DEFAULT nextval('user_count_seq');''')
     sql_execute('ALTER TABLE "user" ADD phone_verified boolean DEFAULT FALSE NULL;')
     sql_execute('ALTER TABLE "user" ADD change_nickname_chance int DEFAULT 0 NULL;')
