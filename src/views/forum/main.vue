@@ -35,7 +35,7 @@
                             </router-link>
 
                             <label v-if="isBoard" class="with-subboard-topic">
-                                <ic-checkbox :size="18" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
+                                <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                             </label>
                             <div style="margin-bottom: 3px;"></div>
                             <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
@@ -60,7 +60,7 @@
                     </router-link>
 
                     <label v-if="isBoard" class="with-subboard-topic">
-                        <ic-checkbox :size="18" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
+                        <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                     </label>
                     <div style="margin-bottom: 3px;"></div>
                     <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
@@ -285,7 +285,7 @@ $left-nav-sign-padding: 5px;
     color: $gray-600;
 
     > .ic-checkbox {
-        margin-left: -2px;
+        width: 100%;
     }
 
     span {

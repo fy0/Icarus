@@ -44,8 +44,8 @@
             <span class="label">状态</span>
             <div class="right">
                 <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
-                    <label :for="'radio-state-'+i">
-                        <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="vState" />
+                    <label :for="'radio-state-'+j">
+                        <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+j" v-model="vState" />
                         <span>{{i}}</span>
                     </label>
                 </span>
@@ -54,7 +54,7 @@
         <div class="manage-form-item">
             <span class="label">优秀</span>
             <div class="right">
-                <ic-checkbox style="margin-left: -2px;" v-model="vAwesome" />
+                <ic-checkbox v-model="vAwesome" />
             </div>
         </div>
     </div>

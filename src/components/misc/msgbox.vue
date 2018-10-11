@@ -13,11 +13,9 @@
     left: 0;
     bottom: 5%;
     color: #056ef0;
-    width: 300px;
+    min-width: 300px;
+    width: 400px;
     z-index: 200;
-}
-
-.tipbox > .item {
 }
 </style>
 
