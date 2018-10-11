@@ -54,7 +54,7 @@
         <div class="manage-form-item">
             <span class="label">优秀</span>
             <div class="right">
-                <input class="ic-input" type="checkbox" v-model="vAwesome"/>
+                <ic-checkbox style="margin-left: -2px;" v-model="vAwesome" />
             </div>
         </div>
     </div>

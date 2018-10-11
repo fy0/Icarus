@@ -24,8 +24,9 @@
                 <input type="text" name="verify" id="verify" v-model="info.verify">
             </check-row>
             <check-row style="display: flex;align-items: center;" :check="info.agreeLicense">
-                <input class="ic-input" type="checkbox" v-model="info.agreeLicense"/>
-                <span style="flex-shrink: 0; cursor: pointer; user-select: none;" @click="info.agreeLicense = !info.agreeLicense">同意<a href="javascript:void(0)" @click.stop="dialogLicense = true">用户许可协议</a></span>
+                <ic-checkbox v-model="info.agreeLicense">
+                    <template>同意<a href="javascript:void(0)" @click.stop="dialogLicense = true">用户许可协议</a></template>
+                </ic-checkbox>
             </check-row>
             <div class="ic-form-row">
                 <input class="ic-btn green click" :class="{ disabled : !info.agreeLicense }" type="submit" @click.prevent="confirm" value="注 册" style="width: 100%">

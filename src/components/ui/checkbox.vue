@@ -55,7 +55,10 @@ export default {
             type: Boolean,
             default: false
         },
-        'size': 24
+        'size': {
+            type: Number,
+            default: 24
+        }
     },
     data () {
         return {

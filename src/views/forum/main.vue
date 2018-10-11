@@ -35,8 +35,7 @@
                             </router-link>
 
                             <label v-if="isBoard" class="with-subboard-topic">
-                                <input type="checkbox" v-model="withSubBoardTopic"/>
-                                <span>包含子板块内容</span>
+                                <ic-checkbox :size="18" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                             </label>
                             <div style="margin-bottom: 3px;"></div>
                             <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
@@ -61,8 +60,7 @@
                     </router-link>
 
                     <label v-if="isBoard" class="with-subboard-topic">
-                        <input type="checkbox" v-model="withSubBoardTopic"/>
-                        <span>包含子板块内容</span>
+                        <ic-checkbox :size="18" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                     </label>
                     <div style="margin-bottom: 3px;"></div>
                     <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
@@ -285,6 +283,10 @@ $left-nav-sign-padding: 5px;
     user-select: none;
     margin-bottom: 7px;
     color: $gray-600;
+
+    > .ic-checkbox {
+        margin-left: -2px;
+    }
 
     span {
         margin-left: $left-nav-sign-padding;
@@ -569,6 +571,7 @@ export default {
         this.$nextTick(() => {
             state.zt = state.zt || new ZingTouch.Region(document.body, false, false)
             let el = document.querySelector('.main')
+            if (!el) return
             state.zt.unbind(el, 'swipe')
             state.zt.bind(el, 'swipe', (e) => {
                 let info = e.detail.data[0]
