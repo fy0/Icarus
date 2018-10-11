@@ -186,6 +186,14 @@ export default {
             }, this.save)
 
             if (this.is_edit) {
+                if (Object.keys(topicInfo).length <= 1) {
+                    // 那个1是returning
+                    $.message_success('编辑成功！但编辑者并未进行任何改动。')
+                    this.$router.push({ name: 'forum_topic', params: { id: this.topicInfo.id } })
+                    this.loading = false
+                    return
+                }
+
                 if (this.asAdmin) {
                     ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'superuser')
                 } else {

@@ -1,0 +1,39 @@
+
+// 这是为了让图片等不将父元素撑开
+
+.article > .content * {
+    max-width: 100%;
+}
+
+.article > .content, .editor-preview {
+    min-height: 30vh;
+
+    .img-center {
+        text-align: center;
+    }
+
+    h1, h2, h3, h4, h5, h6 { line-height: 1.5em }
+    h1 { font-size: 24px; }
+    h2 { font-size: 22px; }
+    h3 { font-size: 20px; }
+    h4 { font-size: 18px; }
+    h5 { font-size: 16px; }
+    h6 { font-size: 14px; }
+}
+
+// 附带：编辑中的修正
+.editor-preview img {
+    width: auto;
+    max-width: 100%;
+}
+
+.cm-header {
+    line-height: 1.5em;
+
+    &.cm-header-1 { font-size: 24px !important; }
+    &.cm-header-2 { font-size: 22px !important; }
+    &.cm-header-3 { font-size: 20px !important; }
+    &.cm-header-4 { font-size: 18px !important; }
+    &.cm-header-5 { font-size: 16px !important; }
+    &.cm-header-6 { font-size: 14px !important; }
+}

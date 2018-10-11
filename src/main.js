@@ -58,6 +58,7 @@ import 'social-share.js/dist/css/share.min.css'
 
 import './assets/css/base-ui.scss'
 import './assets/icons/iconfont.css'
+import './assets/css/_text.scss'
 import './md.js'
 
 import state from './state.js'
