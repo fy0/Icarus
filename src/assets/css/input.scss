@@ -46,6 +46,10 @@ textarea.ic-input {
     border: 1px $gray-400 solid;
 }
 
+.ic-input[type='radio'] {
+    margin-right: 5px;
+}
+
 // range
 
 @mixin bs1 {

@@ -23,8 +23,8 @@
             <avatar :depth="0" :user="i.user_id" class="avatar"></avatar>
             <div class="content">
                 <div class="head">
-                    <span>#{{i.post_number || (page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
-                    <b><user-link :user="i.user_id" /></b>
+                    <span class="floor">#{{i.post_number || (page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
+                    <b class="name"><user-link :user="i.user_id" /></b>
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>
                         <b>
@@ -46,7 +46,7 @@
 </div>
 </template>
 
-<style>
+<style lang="scss">
 .post > .placeholder-text {
     display: inline-block;
     background-color: #e9e9e9;
@@ -86,6 +86,16 @@
 .ic-comment .content {
     flex: 1 0 0%;
     padding: 0 10px 0 20px;
+
+    .head {
+        .floor {
+            margin-right: 10px;
+        }
+
+        .name {
+            margin-right: 10px;
+        }
+    }
 }
 </style>
 
@@ -166,6 +176,7 @@ export default {
 
             let ret = await api.comment.list({
                 related_id: this.item.id,
+                order: 'id.asc',
                 loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } }
             }, thePage)
             if (ret.code === api.retcode.SUCCESS) {

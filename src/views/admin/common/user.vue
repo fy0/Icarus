@@ -20,7 +20,7 @@
                         <i class="icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setUserManage(i)"></i>
                     </div>
                     <div>
-                        <a @click="userPasswordReset(i)" href="javascript:void(0);">密码重置</a>
+                        <a @click="userPasswordReset(i)" href="javascript:void(0);" style="margin-right: 10px;">密码重置</a>
                         <a @click="userKeyReset(i)" href="javascript:void(0);">会话重置</a>
                     </div>
                 </div>
@@ -77,21 +77,21 @@ export default {
         doSearch: async function () {
             let found = false
             if ($.regex.email.test(this.searchTxt)) {
-                let retList = await api.user.list({ email: this.searchTxt }, 1, null, 'admin')
+                let retList = await api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, 'admin')
                 if (retList.code === api.retcode.SUCCESS) {
                     this.page = retList.data
                     found = true
                 }
             } else {
                 if ($.regex.nickname.test(this.searchTxt)) {
-                    let retList = await api.user.list({ nickname: this.searchTxt }, 1, null, 'admin')
+                    let retList = await api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, null, 'admin')
                     if (retList.code === api.retcode.SUCCESS) {
                         this.page = retList.data
                         found = true
                     }
                 }
                 if ($.regex.id.test(this.searchTxt)) {
-                    let retList = await api.user.list({ id: this.searchTxt }, 1, null, 'admin')
+                    let retList = await api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, null, 'admin')
                     if (retList.code === api.retcode.SUCCESS) {
                         if (found) {
                             this.page.items.push(retList.data.items[0])
@@ -174,9 +174,7 @@ export default {
         fetchData: async function () {
             let params = this.$route.params
             let retList = await api.user.list({
-                // order: 'sticky_weight.desc,weight.desc,time.desc',
-                // select: 'id, time, user_id, board_id, title, state',
-                // loadfk: {'user_id': null, 'board_id': null, 'id': {'as': 's', loadfk: {'last_comment_id': {'loadfk': {'user_id': null}}}}}
+                order: 'id.desc'
             }, params.page, null, 'admin')
             if (retList.code === api.retcode.SUCCESS) {
                 this.page = retList.data

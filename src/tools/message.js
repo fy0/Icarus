@@ -41,7 +41,7 @@ $.message_error = function (text, timeout = 3000) {
 $.message_by_code = function (code, data, text = null, timeout = 3000) {
     text = text || state.misc.retinfo_cn[code]
     if (code === state.misc.retcode.SUCCESS) $.message_success(text, timeout)
-    else if (code === state.misc.retcode.TOO_FREQUENT) {
+    else if (code === state.misc.retcode.TOO_FREQUENT && data) {
         $.message_error(`${text}，尚需等待 ${data} 秒`, timeout)
     } else $.message_error(text, timeout)
 }
