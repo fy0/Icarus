@@ -2,13 +2,13 @@
 <div class="ic-container" v-if="topic.user_id">
     <div v-title>{{ topic.title }} - {{topic.board_id.name}} - {{state.config.title}}</div>
 
-    <div class="nav">
+    <div class="nav ic-xs-hidden">
         <span>
             <router-link :to="{ name: 'forum' }">社区</router-link>
         </span>
         <span class="item-separator">/</span>
         <span>
-            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
+            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{textLimit(topic.board_id.name, 8)}}</router-link>
         </span>
         <span class="item-separator">/</span>
         <span>
@@ -17,12 +17,26 @@
         </span>
     </div>
 
-    <div class="ic-hidden ic-xs" style="display: flex;align-items: center;">
-        <user-link style="display: flex; padding: 10px 0;" class="user-link" :nickname="false" :user="topic.user_id">
-            <avatar style="margin-right: 10px;" :user="topic.user_id" :size="28" class="avatar"></avatar>
-            <span>{{topic.user_id.nickname}}</span>
-        </user-link>
-        <div style="margin-left: 10px">发布于 <ic-time :timestamp="topic.time" /></div>
+    <!-- 移动端使用独立的标题 -->
+    <div v-responsive.xs>
+        <span>
+            <router-link :to="{ name: 'forum' }">社区</router-link>
+        </span>
+        <span class="item-separator">/</span>
+        <span>
+            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
+        </span>
+
+        <h2>{{topic.title}}</h2>
+
+        <div style="display: flex; align-items: center; margin-left: -3px;">
+            <user-link style="display: flex; padding: 6px 0; align-items: center;" class="user-link" :nickname="false" :user="topic.user_id">
+                <avatar style="margin-right: 6px;" :user="topic.user_id" :size="28" class="avatar"></avatar>
+                <span>{{topic.user_id.nickname}}</span>
+            </user-link>
+            <div style="margin-left: 10px">发布于 <ic-time :timestamp="topic.time" /></div>
+        </div>
+
     </div>
 
     <div class="topic-box">
@@ -249,7 +263,8 @@ export default {
             topicIndex: [],
             indexActive: -1,
             indexSticky: false,
-            mlog: null
+            mlog: null,
+            textLimit: $.textLimit
         }
     },
     computed: {

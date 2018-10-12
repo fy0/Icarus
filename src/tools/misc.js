@@ -49,6 +49,11 @@ $.media = {
     xl: { minWidth: '80em' }
 }
 
+$.textLimit = (text, len) => {
+    if (text.length <= len) return text
+    return text.slice(0, len) + '…'
+}
+
 $.dataURItoBlob = function (dataURI) {
     // convert base64 to raw binary data held in a string
     // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this

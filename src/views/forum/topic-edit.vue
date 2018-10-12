@@ -167,7 +167,6 @@ export default {
         send: async function (e) {
             let ret
             let successText
-            let failedText
 
             if (!this.topicInfo.board_id) {
                 $.message_error('没有选择发布的板块，如果没有板块，请先在管理界面创建。')
@@ -200,12 +199,10 @@ export default {
                     ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'user')
                 }
                 successText = '编辑成功！已自动跳转至文章页面。'
-                failedText = ret.msg || '编辑失败！'
                 topicId = this.topicInfo.id
             } else {
                 ret = await api.topic.new(topicInfo, 'user')
                 successText = '发表成功！已自动跳转至文章页面。'
-                failedText = ret.msg || '新建失败！'
                 topicId = ret.data.id
             }
 
@@ -219,8 +216,11 @@ export default {
             } else {
                 if (ret.code === api.retcode.FAILED) {
                     this.formErrors = ret.data
+                    $.message_error('内容不符合要求，请根据输入框下方提示进行修改')
+                } else {
+                    this.formErrors = {}
+                    $.message_by_code(ret.code, ret.data)
                 }
-                $.message_error(failedText)
                 // 注意：发布成功会跳转，故不做复位，失败则复位
                 this.loading = false
             }

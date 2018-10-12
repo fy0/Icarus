@@ -135,9 +135,9 @@
                                     <p class="topic-info" style="margin-left: 0px; display: flex; align-items: baseline;">
                                         <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
                                             <div :style="lineStyleBG(i.board_id)" class="sign"></div>
-                                            <span>{{boardBadgeTitleById(i.board_id)}}</span>
+                                            <span class="limit l2 m4">{{boardBadgeTitleById(i.board_id)}}</span>
                                         </router-link>
-                                        <user-link class="author" :user="i.user_id" style="margin-right: 10px;" />
+                                        <user-link class="author limit l2 m4" :user="i.user_id" style="margin-right: 10px;" />
                                         <span class="time"><ic-time :timestamp="i.edit_time || i.time" style="color: #777" /></span>
                                     </p>
                                 </div>
