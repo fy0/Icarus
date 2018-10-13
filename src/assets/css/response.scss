@@ -22,13 +22,13 @@
     visibility: hidden;
 }
 
-/* < 568px */
+/* < 576px */
 @media screen and (lt-rbp(sm)) {
     .ic-xs-hidden {display: none !important; }
     .ic-xs { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
-/* > 568px */
+/* > 576px */
 @media screen and (gt-rbp(sm)) and (lt-rbp(md)) {
     .ic-sm-hidden { display: none !important; }
     .ic-sm { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }

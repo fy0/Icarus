@@ -102,6 +102,7 @@ import nprogress from 'nprogress/nprogress.js'
 import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
 // import marked from '@/md.js'
+import './topic-edit-fa.js'
 
 export default {
     data () {

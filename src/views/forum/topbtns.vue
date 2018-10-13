@@ -23,8 +23,8 @@
                 <ic-progress :show-percent-when-hover="true" class="expbar" v-model="levelInfo.cur" :title="`${levelInfo.cur}/${levelInfo.exp.level}`" :max="levelInfo.exp.level"/>
             </div>
             <div class="other">
-                <span style="margin-right: 5px">⭐ {{state.user.exp}}</span>
-                <span style="margin-right: 5px">💰 {{state.user.credit}}</span>
+                <span><i class="icarus icon-bulb"/> {{state.user.exp}}</span>
+                <span><i class="icarus icon-coin1"/> {{state.user.credit}}</span>
             </div>
         </div>
         <span class="ic-btn outline orange checkin" @click="checkIn" v-if="!checkedIn">签到</span>
@@ -92,6 +92,14 @@
     .other {
         flex: 1;
         margin-left: 24px;
+
+        > span {
+            margin-right: 5px;
+
+            > i {
+                font-size: 12px;
+            }
+        }
     }
 }
 
@@ -137,7 +145,7 @@
     flex-direction: column;
     z-index: 1;
 
-    * {
+    > * {
         padding-right: 24px;
     }
 
@@ -177,9 +185,9 @@ export default {
             let query = this.$route.query
             let names = [
                 // 图标稍后，这个只能使用 icon font
-                { icon: 'fa-fire', text: '默认排序' },
-                { icon: 'fa-replyd', text: '更新时间' },
-                { icon: 'fa-clock', text: '发布时间' }
+                { icon: 'icon-fire', text: '默认排序' },
+                { icon: 'icon-time', text: '更新时间' },
+                { icon: 'icon-time1', text: '发布时间' }
             ]
             let func = (order) => [order, names[order - 1]]
             switch (query.type) {
