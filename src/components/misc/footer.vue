@@ -9,7 +9,8 @@
 footer {
     width: 100%;
     margin-top: 15px;
-    padding: 1pc 10px 24px;
+    padding-top: 16px;
+    padding-bottom: 24px;
     border-top: 1px solid #eee;
     color: #999;
 }
