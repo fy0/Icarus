@@ -47,21 +47,6 @@
                 > a {
                     color: $gray-700;
                 }
-
-                > .icons {
-                    display: flex;
-                    flex-direction: column;
-                    min-width: 16px;
-
-                    > .awesome {
-                        color: #e57272;
-                    }
-
-                    > .manage {
-                        color: #71c1ef;
-                        cursor: pointer;
-                    }
-                }
             }
 
             > .topic-info {
@@ -118,6 +103,23 @@
             }
         }
 
+        > .icons {
+            display: flex;
+            flex-direction: column;
+            min-width: 16px;
+            justify-content: center;
+            // 注意，topic-info 栏的实际高度是 25px，22主要是考虑图标的特殊性和右侧对齐
+            margin-top: -22px;
+
+            > .awesome {
+                color: #e57272;
+            }
+
+            > .manage {
+                color: #71c1ef;
+                cursor: pointer;
+            }
+        }
         > .append-icons {
             margin-top: -22px;
             display: flex;

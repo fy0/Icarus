@@ -54,7 +54,8 @@ USER_RESET_PASSWORD_REQUST_INTERVAL = 30 * 60  # 申请重置密码间隔，默�
 USER_RESET_PASSWORD_CODE_EXPIRE = 12 * 60 * 60  # 重置密码代码有效期，默认12小时
 
 USER_ACTIVATION_REQUEST_INTERVAL = 30 * 60  # 申请激活间隔，默认30分钟
-USER_ACTCODE_EXPIRE = 3 * 24 * 60 * 60  # 用户激活代码有效期，默认3天
+USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL = 100  # 单个邮箱的激活码可检验的次数，防止穷举攻击
+USER_REG_CODE_EXPIRE = 3 * 24 * 60 * 60  # 用户激活代码有效期，默认3天
 
 USER_CHECKIN_COUNTER_INTERVAL = 3 * 24 * 60 * 60  # 签到连击间隔，默认3天
 

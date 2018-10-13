@@ -127,11 +127,6 @@
                                             <span>{{i.title}}</span>
                                             <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
                                         </router-link>
-                                        <span class="icons">
-                                            <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
-                                            <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                            <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage(i)"></i>
-                                        </span>
                                     </h2>
 
                                     <p class="topic-info">
@@ -143,6 +138,13 @@
                                         <span class="time"><ic-time :timestamp="i.edit_time || i.time"/></span>
                                     </p>
                                 </div>
+
+                                <span class="icons">
+                                    <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
+                                    <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
+                                    <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage(i)"></i>
+                                </span>
+
                                 <div class="append-icons">
                                     <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                                 </div>

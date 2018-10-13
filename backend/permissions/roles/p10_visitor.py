@@ -36,7 +36,7 @@ visitor = Ability(None, {
         'email': (A.CREATE,),
         'exp': (A.READ,),
         'credit': (A.READ,),
-        'reputation': (A.READ,),
+        'repute': (A.READ,),
     },
     'board': {
         'id': (A.QUERY, A.READ),

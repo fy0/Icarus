@@ -54,13 +54,13 @@ async def send(to, title, content):
     return await smtp.send_message(message)
 
 
-async def send_register_activation(user):
-    act_code = to_hex(await user.gen_activation_code())
-    act_url = f'{config.SITE_URL}/account/activation?uid={user.id.hex()}&code={act_code}'
+async def send_reg_code_email(email, code):
+    act_code = to_hex(code)
+    act_url = f'{config.SITE_URL}/account/signup_by_email?email={email}&code={act_code}'
 
     content = f'''Email 地址验证<br/><br/>
 
-您好，{user.nickname}。<br/>
+您好，初次见面。<br/>
 欢迎来到 {config.SITE_NAME} 社区。<br/><br/>
 
 您收到这封邮件，是由于在 {config.SITE_NAME} 进行了新用户注册，或用户修改 Email 使用了这个邮箱地址。<br/>
@@ -80,7 +80,7 @@ async def send_register_activation(user):
 {config.SITE_URL}<br/>
 '''
 
-    return await send(f'{user.nickname} <{user.email}>', f'[{config.SITE_NAME}] Email 地址验证', content)
+    return await send(f'行路人 <{email}>', f'[{config.SITE_NAME}] Email 地址验证', content)
 
 
 async def send_password_reset(user):

@@ -16,7 +16,7 @@
         <div class="brief ic-xs-hidden ic-md-hidden" title="板块简介" v-if="board">{{board.brief}}</div>
     </div>
     <div v-if="state.user" style="display: flex; align-items: center;">
-        <!-- <span>声望: {{state.user.reputation}}</span> -->
+        <!-- <span>声望: {{state.user.repute}}</span> -->
         <div class="char-info">
             <div class="bar-area">
                 <span class="level">lv. {{levelInfo.level}}</span>

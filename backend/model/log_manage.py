@@ -18,7 +18,7 @@ class MANAGE_OPERATION(StateObject):
     USER_KEY_RESET = 102
     USER_GROUP_CHANGE = 103
     USER_CREDIT_CHANGE = 104
-    USER_REPUTATION_CHANGE = 105
+    USER_REPUTE_CHANGE = 105
     USER_EXP_CHANGE = 106
 
     BOARD_NEW = 200
@@ -42,7 +42,7 @@ class MANAGE_OPERATION(StateObject):
         USER_KEY_RESET: "重置用户访问令牌",
         USER_GROUP_CHANGE: '修改用户组',
         USER_CREDIT_CHANGE: '积分变更',
-        USER_REPUTATION_CHANGE: "声望变更",
+        USER_REPUTE_CHANGE: "声望变更",
         USER_EXP_CHANGE: "经验值变更",
 
         BOARD_NEW: '新建板块',
@@ -103,7 +103,7 @@ class ManageLog(BaseModel):
         return cls.add_by_credit_changed(None, changed_user, note, value=value)
 
     @classmethod
-    def add_by_reputation_changed(cls, view, changed_user, note=None, *, value=None):
+    def add_by_repute_changed(cls, view, changed_user, note=None, *, value=None):
         if view:
             user_id = view.current_user.id
             role = view.current_role
@@ -112,11 +112,11 @@ class ManageLog(BaseModel):
             role = None
 
         return cls.new(user_id, role, POST_TYPES.USER, changed_user.id, changed_user.id,
-                       MANAGE_OPERATION.USER_REPUTATION_CHANGE, value, note=note)
+                       MANAGE_OPERATION.USER_REPUTE_CHANGE, value, note=note)
 
     @classmethod
-    def add_by_reputation_changed_sys(cls, changed_user, note=None, *, value=None):
-        return cls.add_by_reputation_changed(None, changed_user, note, value=value)
+    def add_by_repute_changed_sys(cls, changed_user, note=None, *, value=None):
+        return cls.add_by_repute_changed(None, changed_user, note, value=value)
 
     @classmethod
     def add_by_exp_changed(cls, view, changed_user, note=None, *, value=None):

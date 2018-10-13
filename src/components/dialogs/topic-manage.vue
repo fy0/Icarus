@@ -36,8 +36,8 @@
         <div class="manage-form-item">
             <span class="label">声望奖励</span>
             <div class="right" style="display: flex; align-items: center;">
-                <input class="ic-input primary" style="width:100%" v-model="vReputation" :step="1" :min="-100" :max="100" type="range" />
-                <span style="min-width: 40px; text-align: center">{{vReputation}}</span>
+                <input class="ic-input primary" style="width:100%" v-model="vRepute" :step="1" :min="-100" :max="100" type="range" />
+                <span style="min-width: 40px; text-align: center">{{vRepute}}</span>
             </div>
         </div>
         <div class="manage-form-item">
@@ -83,9 +83,9 @@
                     <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[1]]}}</span>
                 </div>
             </div>
-            <div class="manage-form-item" v-if="changed.vReputation">
+            <div class="manage-form-item" v-if="changed.vRepute">
                 <span class="label">声望奖励</span>
-                <div class="right"><span class="hl">{{changed.vReputation[1]}}</span></div>
+                <div class="right"><span class="hl">{{changed.vRepute[1]}}</span></div>
             </div>
             <div class="manage-form-item" v-if="changed.vAwesome">
                 <span class="label">精华文章</span>
@@ -136,7 +136,7 @@ export default {
             vWeight: 0,
             vCredit: 0,
             vState: '0',
-            vReputation: 0,
+            vRepute: 0,
             vAwesome: false,
             stage: 1,
             currentApply: 0,
@@ -169,8 +169,8 @@ export default {
                 change.vState = [topic.state, parseInt(this.vState)]
             }
             // 声望奖励
-            if (this.vReputation !== 0) {
-                change.vReputation = [0, this.vReputation]
+            if (this.vRepute !== 0) {
+                change.vRepute = [0, this.vRepute]
             }
             // 精华文章
             if (this.vAwesome !== Boolean(topic.awesome)) {
@@ -226,7 +226,7 @@ export default {
                 }
 
                 // 声望奖励
-                if (change.vReputation) {
+                if (change.vRepute) {
                     updateOne()
                     // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'admin')
                     // if (ret.code === 0) $.message_success('文章状态修改成功')

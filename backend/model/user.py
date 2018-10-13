@@ -9,7 +9,8 @@ from lib.utils import get_today_start_timestamp
 from model._post import PostModel, POST_STATE
 from model.log_manage import ManageLog
 from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID, \
-    RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID, RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID
+    RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID, RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID, RK_USER_REG_CODE_BY_EMAIL, \
+    RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL, RK_USER_REG_PASSWORD
 from slim.base.user import BaseUser
 from slim.utils import StateObject, to_hex, to_bin
 from model import BaseModel, MyTimestampField, CITextField, db, INETField, SerialField
@@ -33,7 +34,8 @@ class USER_GROUP(StateObject):
 
 
 class User(PostModel, BaseUser):
-    email = TextField(index=True, unique=True)
+    email = TextField(index=True, unique=True, null=True, default=None)
+    phone = TextField(index=True, unique=True, null=True, default=None)  # 大陆地区
     nickname = CITextField(index=True, unique=True)  # CITextField
     password = BlobField()
     salt = BlobField()  # auto
@@ -52,11 +54,10 @@ class User(PostModel, BaseUser):
     last_check_in_time = MyTimestampField(null=True, default=None)  # 上次签到时间
     check_in_his = IntegerField(default=0)  # 连续签到天数
 
-    phone = TextField(null=True, default=None)  # 大陆地区
     number = SerialField()  # 序号，第N个用户，注意这有个问题是不能写sequence='user_count_seq'，应该是peewee的bug
     credit = IntegerField(default=0)  # 积分，会消费
     exp = IntegerField(default=0)  # 经验值，不会消失
-    reputation = IntegerField(default=0)  # 声望
+    repute = IntegerField(default=0)  # 声望
     ip_registered = INETField(default=None, null=True)  # 注册IP
 
     # ref_github = TextField(null=True)
@@ -147,55 +148,48 @@ class User(PostModel, BaseUser):
         except DoesNotExist:
             return None
 
-    async def can_request_actcode(self):
-        """
-        是否能申请帐户激活码（用于发送激活邮件）
-        :return:
-        """
-        if self.group != USER_GROUP.INACTIVE:
-            return
-        val = await redis.get(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id)
-        if val is None:
-            return True
-        if time.time() - int(val) > config.USER_ACTIVATION_REQUEST_INTERVAL:
-            return True
-
-    async def gen_activation_code(self) -> bytes:
-        """
-        生成一个账户激活码
-        :return:
-        """
+    @classmethod
+    async def gen_reg_code_by_email(cls, email, password):
         t = int(time.time())
         code = os.urandom(8)
         pipe = redis.pipeline()
-        pipe.set(RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID % self.id, t)
-        pipe.set(RK_USER_ACTCODE_BY_USER_ID % self.id, code, expire=config.USER_ACTCODE_EXPIRE)
+        pipe.set(RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL % email,
+                 config.USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL,
+                 expire=config.USER_REG_CODE_EXPIRE)
+        pipe.set(RK_USER_REG_CODE_BY_EMAIL % email, code, expire=config.USER_REG_CODE_EXPIRE)
+        pipe.set(RK_USER_REG_PASSWORD % email, password, expire=config.USER_REG_CODE_EXPIRE)
         await pipe.execute()
         return code
 
     @classmethod
-    async def check_actcode(cls, uid, code):
+    async def check_reg_code_by_email(cls, email, code):
         """
-        检查账户激活码是否可用，若可用，激活账户
+        检查账户激活码是否可用
         :param uid:
         :param code:
         :return:
         """
         if not code: return
-        if isinstance(uid, str): uid = to_bin(uid)
         if isinstance(code, str): code = to_bin(code)
 
         if len(code) == 8:
-            rkey = RK_USER_ACTCODE_BY_USER_ID % uid
-            if await redis.get(rkey) == code:
-                try:
-                    u = cls.get(cls.id == uid, cls.group == USER_GROUP.INACTIVE)
-                    u.group = USER_GROUP.NORMAL
-                    u.save()
-                    await redis.delete(rkey)
-                    return u
-                except cls.DoesNotExist:
-                    pass
+            rk_code = RK_USER_REG_CODE_BY_EMAIL % email
+            rk_times = RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL % email
+            rk_pw = RK_USER_REG_PASSWORD % email
+
+            async def cleanup():
+                pipe = redis.pipeline()
+                pipe.delete(rk_code)
+                pipe.delete(rk_times)
+                pipe.delete(rk_pw)
+                await pipe.execute()
+
+            if await redis.get(rk_code) == code:
+                # 检查可用次数，decr的返回值是执行后的
+                if int(await redis.decr(rk_times)) <= 0:
+                    return await cleanup()
+                # 无问题，取出储存值
+                return (await redis.get(rk_pw)).decode('utf-8')
 
     async def can_request_reset_password(self):
         """

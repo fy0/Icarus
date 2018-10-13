@@ -1,3 +1,4 @@
+import os
 import re
 import time
 import config
@@ -20,6 +21,7 @@ from view import route, ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, DataRecord
 from permissions import permissions_add_all
+from view.user_validate_form import RequestSignupByEmailForm
 
 
 class UserMixin(BaseAccessTokenUserMixin):
@@ -100,7 +102,7 @@ class SigninByNicknameForm(ValidateForm):
     ])
 
 
-class SignupForm(SigninForm):
+class SignupFormLegacy(SigninForm):
     nickname = StringField('昵称', validators=[
         va.required(),
         va.Length(min(config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN), config.USER_NICKNAME_FOR_REG_MAX),
@@ -202,30 +204,6 @@ class UserView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
-    async def resend_activation_mail(self):
-        """ 重发激活邮件 """
-        if config.EMAIL_ACTIVATION_ENABLE:
-            if self.current_user:
-                if await self.current_user.can_request_actcode():
-                    await mail.send_register_activation(self.current_user)
-                    self.finish(RETCODE.SUCCESS)
-                else:
-                    self.finish(RETCODE.TOO_FREQUENT)
-            else:
-                self.finish(RETCODE.PERMISSION_DENIED)
-        else:
-            self.finish(RETCODE.FAILED)
-
-    @route.interface('GET')
-    async def activation(self):
-        """ 通过激活码激活 """
-        user = await User.check_actcode(self.params['uid'], self.params['code'])
-        if user:
-            self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
-        else:
-            self.finish(RETCODE.FAILED)
-
     @route.interface('GET')
     async def get_userid(self):
         if self.current_user:
@@ -303,7 +281,96 @@ class UserView(UserMixin, PeeweeView):
 
     @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
     async def new(self):
+        if config.EMAIL_ACTIVATION_ENABLE:
+            return self.finish(RETCODE.FAILED, '此接口未开放')
         return await super().new()
+
+    @route.interface('POST')
+    @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
+    async def request_signup_by_email(self):
+        """
+        提交邮件注册请求
+        :return:
+        """
+        if not config.USER_ALLOW_SIGNUP:
+            return self.finish(RETCODE.FAILED, '注册未开放')
+
+        # 发送注册邮件
+        if config.EMAIL_ACTIVATION_ENABLE:
+            data = await self.post_data()
+
+            form = RequestSignupByEmailForm(**data)
+            if not form.validate():
+                return self.finish(RETCODE.FAILED, form.errors)
+
+            email = form['email'].lower()
+            code = await User.gen_reg_code_by_email(email, form['password'])
+            await mail.send_reg_code_email(email, code)
+        else:
+            self.finish(RETCODE.FAILED, '此接口未开放')
+
+    @route.interface('GET')
+    async def check_reg_code_by_email(self):
+        """ 检查与邮件关联的激活码是否可用 """
+        pw = await User.check_reg_code_by_email(self.params['email'], self.params['code'])
+        self.finish(RETCODE.SUCCESS if pw else RETCODE.FAILED)
+
+    async def create_user(self, password, email=None, phone=None) -> User:
+        values = {}
+        if not config.POST_ID_GENERATOR == config.AutoGenerator:
+            uid = User.gen_id()
+            values['id'] = uid.to_bin()
+            values['nickname'] = '网友_' + uid.to_hex()
+        else:
+            values['nickname'] = '网友_' + to_hex(os.urandom(8))
+
+        if email:
+            values['email'] = email.lower()
+
+        if phone:
+            values['phone'] = phone
+
+        # 密码
+        ret = User.gen_password_and_salt(password)
+        values.update(ret)
+
+        values['group'] = USER_GROUP.NORMAL
+        values['state'] = POST_STATE.NORMAL
+
+        # 注册IP地址
+        values['ip_registered'] = await get_fuzz_ip(self)
+
+        # 生成 access_token
+        values.update(User.gen_key())
+        values['time'] = int(time.time())
+
+        u = User(**values)
+        u.save()
+
+        print(u.number)
+        if u.number == 1:
+            u.group = USER_GROUP.ADMIN
+            u.save()
+
+        # 添加统计记录
+        statistic_new(POST_TYPES.USER, u.id)
+        UserNotifLastInfo.new(u.id)
+
+        return u
+
+    @route.interface('POST')
+    async def signup_by_email(self):
+        """ 确认并创建账户 """
+        data = await self.post_data()
+        email = data['email'].lower()
+
+        pw = await User.check_reg_code_by_email(email, data['code'])
+        u = await self.create_user(pw, email=email)
+
+        if pw and u:
+            self.finish(RETCODE.SUCCESS, {'key': u.key, 'id': u.id})
+        else:
+            self.finish(RETCODE.FAILED)
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]
@@ -314,7 +381,7 @@ class UserView(UserMixin, PeeweeView):
         if not config.USER_ALLOW_SIGNUP:
             return self.finish(RETCODE.FAILED, '注册未开放')
 
-        form = SignupForm(**raw_post)
+        form = SignupFormLegacy(**raw_post)
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
 
@@ -328,11 +395,8 @@ class UserView(UserMixin, PeeweeView):
         values.update(ret)
 
         if 'group' not in values:
-            # 如果无权限，那此时即使带着 group 参数也被刷掉了，直接设为 normal
-            if config.EMAIL_ACTIVATION_ENABLE:
-                values['group'] = USER_GROUP.INACTIVE
-            else:
-                values['group'] = USER_GROUP.NORMAL
+            # 如果无权限，那此时即使带着 group 参数也被刷掉了，直接设为 normal 即可
+            values['group'] = USER_GROUP.NORMAL
 
         if 'state' not in values:
             values['state'] = POST_STATE.NORMAL
@@ -350,10 +414,6 @@ class UserView(UserMixin, PeeweeView):
             u = User.get(User.id == record['id'])
             u.group = USER_GROUP.ADMIN
             u.save()
-
-        # 发送注册邮件
-        if config.EMAIL_ACTIVATION_ENABLE and not record['number'] == 1:
-            await mail.send_register_activation(record.val)
 
         # 添加统计记录
         statistic_new(POST_TYPES.USER, record['id'])

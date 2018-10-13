@@ -24,6 +24,21 @@ def work():
     sql_execute('ALTER TABLE "user" ADD phone_verified boolean DEFAULT FALSE NULL;')
     sql_execute('ALTER TABLE "user" ADD change_nickname_chance int DEFAULT 0 NULL;')
 
+    sql_execute('ALTER TABLE "user" ALTER COLUMN email SET DEFAULT null ;')
+    sql_execute('ALTER TABLE "user" ALTER COLUMN email DROP NOT NULL;')
+
+    sql_execute('ALTER TABLE "user" ALTER COLUMN phone SET DEFAULT null ;')
+    sql_execute('CREATE UNIQUE INDEX user_phone_uindex ON "user" (phone);')
+    sql_execute('ALTER TABLE "user" ALTER COLUMN email SET DEFAULT null ;')
+    sql_execute('ALTER TABLE "user" ALTER COLUMN email DROP NOT NULL;')
+    sql_execute('ALTER TABLE "user" RENAME COLUMN reputation TO repute;')
+    sql_execute('CREATE INDEX user_phone ON "user" (phone);')
+
+    # 注册的激活机制改了，变通一下吧
+    for i in User.select().where(User.group == USER_GROUP.INACTIVE):
+        i.group = USER_GROUP.NORMAL
+        i.save()
+
 
 if __name__ == '__main__':
     work()
