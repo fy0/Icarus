@@ -130,7 +130,7 @@
                                         <span class="icons">
                                             <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
                                             <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                            <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-sword-cross animated rotateIn" title="管理" @click.prevent="setTopicManage(i)"></i>
+                                            <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage(i)"></i>
                                         </span>
                                     </h2>
 

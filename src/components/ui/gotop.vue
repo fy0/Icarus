@@ -1,6 +1,6 @@
 <template>
 <div class="gotop" @click="gotop" v-show="showGoTop">
-    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    <i class="icarus icon-arrow-up"></i>
 </div>
 </template>
 
@@ -18,7 +18,8 @@
     cursor: pointer;
 }
 
-.tipbox > .item {
+.gotop > i {
+    font-size: 24px;
 }
 </style>
 

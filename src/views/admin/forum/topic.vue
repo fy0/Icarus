@@ -21,7 +21,7 @@
                     <user-link :user="i.user_id" /> ·
                     <ic-time :timestamp="i.time" /> ·
                     <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
-                    <i class="icarus ic-topic-manage-icon icon-sword-cross" title="管理" @click="setTopicManage(i)"></i>
+                    <i class="ic-topic-manage-icon icarus icon-39" title="管理" @click="setTopicManage(i)"></i>
                 </div>
             </li>
         </ul>

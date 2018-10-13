@@ -2,9 +2,15 @@
 <div class="ic-topbtns-box">
     <div class="ic-topbtns">
         <div>
-            <button class="ic-btn smoke outline btn-order" @blur="showOrderMenu = false" @click="showOrderMenu = !showOrderMenu">{{orders[0][1]}}</button>
+            <button class="ic-btn smoke outline btn-order" @blur="showOrderMenu = false" @click="showOrderMenu = !showOrderMenu">
+                <i class="icon icarus" :class="orders[0][1].icon"></i>
+                <template>{{orders[0][1].text}}</template>
+            </button>
             <div v-show="showOrderMenu" class="order-menu">
-                <button class="ic-btn smoke outline option" @mousedown="changeOrderType(i[0])" v-for="i in orders.slice(1)" :key="i[0]">{{i[1]}}</button>
+                <button class="ic-btn smoke outline option" @mousedown="changeOrderType(i[0])" v-for="i in orders.slice(1)" :key="i[0]">
+                    <i class="icon icarus" :class="i[1].icon"></i>
+                    <template>{{i[1].text}}</template>
+                </button>
             </div>
         </div>
         <div class="brief ic-xs-hidden ic-md-hidden" title="板块简介" v-if="board">{{board.brief}}</div>
@@ -121,6 +127,10 @@
     padding-right: 24px;
 }
 
+.ic-btn > .icon {
+    margin-right: 10px;
+}
+
 .order-menu {
     position: absolute;
     display: flex;
@@ -165,7 +175,12 @@ export default {
     computed: {
         orders: function () {
             let query = this.$route.query
-            let names = ['默认排序', '更新时间', '发布时间']
+            let names = [
+                // 图标稍后，这个只能使用 icon font
+                { icon: 'fa-fire', text: '默认排序' },
+                { icon: 'fa-replyd', text: '更新时间' },
+                { icon: 'fa-clock', text: '发布时间' }
+            ]
             let func = (order) => [order, names[order - 1]]
             switch (query.type) {
                 case '2': case 2: return _.map([2, 1, 3], func)
