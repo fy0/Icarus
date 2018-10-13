@@ -127,3 +127,8 @@ $progress-bar-color:                $white !default;
 $progress-bar-bg:                   $primary !default;
 $progress-bar-animation-timing:     1s linear infinite !default;
 $progress-bar-transition:           width .6s ease !default;
+
+// 页面
+$page-padding:                          80px; // 实际上是 70 + 10
+$page-padding-small:                    10px; // 小于 lg 时，即 md 和以下
+$page-left-max-width:                   260px; // 左边栏最大宽度

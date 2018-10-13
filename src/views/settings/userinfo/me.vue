@@ -62,7 +62,7 @@
             <div class="setting-item">
                 <div class="line box-avatar" @click="(atLeastUser) ? state.dialog.userSetAvatar = true : null" >
                     <avatar :is-link="false" :user="state.user" :size="200" class="avatar"></avatar>
-                    <button v-if="atLeastUser" class="ic-btn primary btn-upload" style="margin-top: 10px">点此上传新头像</button>
+                    <button v-if="atLeastUser" class="ic-btn primary btn-upload" style="margin-top: 10px; max-width: 200px">点此上传新头像</button>
                 </div>
             </div>
 

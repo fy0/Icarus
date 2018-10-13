@@ -83,6 +83,22 @@
                         margin-right: 5px;
                     }
 
+                    .name {
+                        margin-right: 10px;
+                    }
+
+                    .name, .author {
+                        max-width: 5em;
+
+                        &.bs4-xl {
+                            max-width: 9em;
+                        }
+                    }
+
+                    .time {
+                        color: #777;
+                    }
+
                     &:hover {
                         color: $dark;
                     }

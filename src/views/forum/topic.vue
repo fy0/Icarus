@@ -8,11 +8,11 @@
         </span>
         <span class="item-separator">/</span>
         <span>
-            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{textLimit(topic.board_id.name, 8)}}</router-link>
+            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }" :title="topic.board_id.name">{{textLimit(topic.board_id.name, 8)}}</router-link>
         </span>
         <span class="item-separator">/</span>
         <span>
-            <span>{{topic.title}}</span>
+            <span :title="topic.title">{{topic.title}}</span>
             <span v-if="topic.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
         </span>
     </div>
@@ -171,12 +171,16 @@
     flex: 18 0 0%;
 }
 
-.info > .box {
-    padding: 0 20px;
-}
+.info {
+    max-width: $page-left-max-width;
 
-.info > .box > .other {
-    padding-top: 30px;
+    > .box {
+        padding: 0 20px;
+
+        > .other {
+            padding-top: 30px;
+        }
+    }
 }
 
 .other > .txt3 {

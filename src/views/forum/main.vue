@@ -135,10 +135,10 @@
                                     <p class="topic-info" style="margin-left: 0px; display: flex; align-items: baseline;">
                                         <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
                                             <div :style="lineStyleBG(i.board_id)" class="sign"></div>
-                                            <span class="limit l2 m4">{{boardBadgeTitleById(i.board_id)}}</span>
+                                            <span v-responsive.class class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
                                         </router-link>
-                                        <user-link class="author limit l2 m4" :user="i.user_id" style="margin-right: 10px;" />
-                                        <span class="time"><ic-time :timestamp="i.edit_time || i.time" style="color: #777" /></span>
+                                        <user-link v-responsive.class class="author limit l2" :user="i.user_id" />
+                                        <span class="time"><ic-time :timestamp="i.edit_time || i.time"/></span>
                                     </p>
                                 </div>
                                 <div class="append-icons">
@@ -205,6 +205,7 @@
 
     .left-nav {
         flex: 5 1 0%;
+        max-width: $page-left-max-width;
     }
 
     .left-nav.bs4-xs {

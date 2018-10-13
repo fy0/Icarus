@@ -11,13 +11,14 @@
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .admin-container {
     display: flex;
 }
 
 .admin-sidebar {
     flex: 1 0 0%;
+    max-width: $page-left-max-width;
 }
 
 .admin-main {
