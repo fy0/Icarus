@@ -74,23 +74,24 @@
         <div class="right" id="board-list">
             <top-btns :board="board"></top-btns>
             <div style="flex: 1 0 0%;">
+                <!-- 加载占位条目 -->
                 <template v-if="loading">
                     <div class="board-item-box" v-for="i in placeholderCount" :key="i">
                         <a class="board-item">
-                            <div class="title-recent" style="flex: 10 0 0%">
-                                <avatar style="margin-right: 10px;" :size="32" :placeholder="true" class="avatar"></avatar>
+                            <div class="title-recent">
+                                <avatar :size="32" :placeholder="true" class="avatar"></avatar>
                                 <div class="right">
-                                    <h2 style="display:flex;">
+                                    <h2>
                                         <span class="placeholder-text f18"></span>
                                     </h2>
-                                    <p class="topic-info" style="margin-left: 0px; width: 50%">
+                                    <p class="topic-info" style="width: 50%">
                                         <span class="placeholder-text f14"></span>
                                     </p>
                                 </div>
                                 <div class="append-icons"></div>
                             </div>
-                            <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
-                                <div class="count-block" style="flex: 4 0 0%;">
+                            <div class="detail ic-xs-hidden">
+                                <div class="count-block">
                                     <div class="count">
                                         <p class="num"><span class="placeholder-text f16" style="width: 40%"></span></p>
                                         <p class="txt"><span class="placeholder-text f12" style="width: 30%"></span></p>
@@ -100,8 +101,8 @@
                                         <p class="txt"><span class="placeholder-text f12" style="width: 30%"></span></p>
                                     </div>
                                 </div>
-                                <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0%;">
-                                    <span class="line" style="lineStyle(i.board_id)"></span>
+                                <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden">
+                                    <span class="line"></span>
                                     <div class="post">
                                         <span class="placeholder-text f12" style="width: 50%"></span>
                                         <span class="placeholder-text f12"></span>
@@ -114,25 +115,26 @@
                     </div>
                 </template>
 
+                <!-- 实际渲染条目 -->
                 <template v-else-if="topics.items.length">
                     <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
                         <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
-                            <div class="title-recent" style="flex: 10 0 0%">
-                                <avatar style="margin-right: 10px;" :user="i.user_id" :size="32" class="avatar"></avatar>
+                            <div class="title-recent">
+                                <avatar :user="i.user_id" :size="32" class="avatar" />
                                 <div class="right">
-                                    <h2 style="display:flex;align-items: center;">
+                                    <h2>
                                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                             <span>{{i.title}}</span>
                                             <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
                                         </router-link>
                                         <span class="icons">
-                                            <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272" @click.prevent></i>
+                                            <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
                                             <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                            <i v-if="isAdmin() && i.id === hoverId" class="icarus icon-sword-cross animated rotateIn" title="管理" style="color: #71c1ef; cursor: pointer" @click.prevent="setTopicManage(i)"></i>
+                                            <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-sword-cross animated rotateIn" title="管理" @click.prevent="setTopicManage(i)"></i>
                                         </span>
                                     </h2>
 
-                                    <p class="topic-info" style="margin-left: 0px; display: flex; align-items: baseline;">
+                                    <p class="topic-info">
                                         <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
                                             <div :style="lineStyleBG(i.board_id)" class="sign"></div>
                                             <span v-responsive.class class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
@@ -145,8 +147,8 @@
                                     <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                                 </div>
                             </div>
-                            <div class="detail ic-xs-hidden" style="flex: 9 0 0%">
-                                <div class="count-block" style="flex: 4 0 0%;">
+                            <div class="detail ic-xs-hidden">
+                                <div class="count-block">
                                     <div class="count">
                                         <p class="num">{{i.s.click_count}}</p>
                                         <p class="txt">点击</p>
@@ -156,7 +158,7 @@
                                         <p class="txt">回复</p>
                                     </div>
                                 </div>
-                                <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden" style="flex: 5 0 0%;">
+                                <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden">
                                     <span class="line" :style="lineStyle(i.board_id)"></span>
                                     <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
                                         <strong><i class="icon icarus icon-reply"></i><user-link :user="i.s.last_comment_id.user_id" />:</strong>
