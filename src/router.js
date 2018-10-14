@@ -3,11 +3,11 @@ import Router from 'vue-router'
 
 import AccountSignin from '@/views/account/signin.vue'
 import AccountSignup from '@/views/account/signup.vue'
+import AccountSignupByEmailDone from '@/views/account/signup_by_email_done.vue'
 import AccountUserPage from '@/views/account/userpage.vue'
 import AccountNotif from '@/views/account/notif.vue'
 import AccountOAuth from '@/views/account/oauth.vue'
 import AccountOAuthCheck from '@/views/account/oauth_check.vue'
-import AccountActivation from '@/views/account/activation.vue'
 import AccountPasswordReset from '@/views/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 
@@ -50,11 +50,11 @@ export default new Router({
             name: 'account_signup',
             component: AccountSignup
         },
-        // 用户 - 激活
+        // 用户 - 邮件激活
         {
-            path: '/account/activation',
-            name: 'account_activation',
-            component: AccountActivation
+            path: '/account/signup_by_email_done',
+            name: 'account_signup_by_email_done',
+            component: AccountSignupByEmailDone
         },
         // 用户 - 申请重置密码
         {

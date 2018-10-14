@@ -1,12 +1,15 @@
 <template>
-<account-signup-legacy v-if="useLegacy" />
-<div v-else class="ic-container box">
+<div class="ic-container box">
     <div class="login">
         <h3 class="title">注册</h3>
         <form class="ic-form">
             <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
                 <label for="email">邮箱</label>
                 <input class="ic-input" type="email" name="email" id="email" v-model="info.email">
+            </check-row>
+            <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
+                <label for="nickname">昵称</label>
+                <input class="ic-input" type="text" name="nickname" id="nickname" v-model="info.nickname">
             </check-row>
             <check-row :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
                 <label for="password">密码</label>
@@ -94,9 +97,9 @@
 </style>
 
 <script>
+import Vue from 'vue'
 import api from '@/netapi.js'
 import state from '@/state.js'
-import AccountSignupLegacy from '@/views/account/signup_legacy.vue'
 
 export default {
     data () {
@@ -104,6 +107,7 @@ export default {
             state,
             info: {
                 email: '',
+                nickname: '',
                 password: '',
                 password2: '',
                 verify: '',
@@ -117,9 +121,6 @@ export default {
         }
     },
     computed: {
-        useLegacy: function () {
-            return (!(state.misc.BACKEND_CONFIG.EMAIL_ACTIVATION_ENABLE))
-        },
         checkPasswordText: function () {
             return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
         },
@@ -131,14 +132,23 @@ export default {
         checkPassword2: function () {
             return this.info.password === this.info.password2
         },
+        checkNickname: function () {
+            if ((this.info.nickname < 2) || (this.info.nickname > 32)) return false
+            // 检查首字符，检查有无非法字符
+            if (!/^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$/.test(this.info.nickname)) {
+                return false
+            }
+            // 若长度大于4，直接许可
+            if (this.info.nickname.length >= 4) {
+                return true
+            }
+            // 长度小于4，检查其中汉字数量
+            let m = this.info.nickname.match(/[\u4e00-\u9fa5]/gi)
+            if (m && m.length >= 2) return true
+        },
         checkEmail: function () {
             let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
             return mail.test(this.info.email)
-        }
-    },
-    watch: {
-        'info.email': function () {
-            this.formErrors.email = undefined
         }
     },
     methods: {
@@ -147,22 +157,33 @@ export default {
                 return
             }
             let key = state.loadingGetKey(this.$route)
-            if (this.checkPassword && this.checkPassword2 && this.checkEmail) {
+            if (this.checkPassword && this.checkPassword2 && this.checkEmail && this.checkNickname) {
                 this.state.loadingInc(this.$route, key)
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
-                let ret = await api.user.requestSignupByEmail(info)
+                let ret = await api.user.new(info)
 
-                if (ret.code === api.retcode.SUCCESS) {
-                    $.message_success('注册成功！请在邮箱查收激活邮件完成注册。')
-                    this.$router.push({ name: 'forum', params: {} })
-                } else if (ret.code === api.retcode.INVALID_POSTDATA) {
+                if (ret.code !== api.retcode.SUCCESS) {
                     this.formErrors = ret.data
+                    $.message_by_code(ret.code)
                 } else {
-                    $.message_by_code(ret.code, ret.data)
-                }
+                    let userinfo = ret.data
+                    if (ret.code === 0) {
+                        api.saveAccessToken(userinfo['access_token'])
+                        ret = await api.user.get({ id: ret.data.id }, 'inactive_user')
+                        Vue.set(state, 'user', ret.data)
 
+                        if (ret.code === api.retcode.SUCCESS) {
+                            $.message_success('注册成功！')
+                        } else {
+                            $.message_by_code(ret.code)
+                        }
+                    } else {
+                        $.message_error('注册失败！可能账号或昵称已经被注册')
+                    }
+                    this.$router.push({ name: 'forum', params: {} })
+                }
                 this.state.loadingDec(this.$route, key)
             } else {
                 $.message_error('请正确填写所有项目')
@@ -170,7 +191,6 @@ export default {
         }
     },
     components: {
-        AccountSignupLegacy
     }
 }
 </script>

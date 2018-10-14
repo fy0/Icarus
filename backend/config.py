@@ -27,6 +27,7 @@ USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5
 ##########################################
 USER_ALLOW_SIGNUP = True  # 开放注册
 
+
 def _nickname_checker(username):
     # 被禁止的用户名，此函数仅为示例
     if username not in {'_icarus', }:
@@ -35,6 +36,7 @@ def _nickname_checker(username):
 
 USER_EMAIL_MAX = 128
 
+USER_NICKNAME_AUTO_PREFIX = '网友'
 USER_NICKNAME_MIN = 2
 USER_NICKNAME_MAX = 32
 

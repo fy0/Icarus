@@ -129,12 +129,18 @@ class UserViewRequest extends SlimViewRequest {
         return ret
     }
 
-    async checkIn () {
-        return npost(`${this.urlPrefix}/check_in`)
+    // 准备进行邮件注册
+    async requestSignupByEmail (data) {
+        return npost(`${this.urlPrefix}/request_signup_by_email`, null, data)
     }
 
-    async activation (uid, code) {
-        return nget(`${this.urlPrefix}/activation`, { uid, code })
+    // 拿到激活码，进行邮件注册
+    async signupByEmail (email, code) {
+        return npost(`${this.urlPrefix}/signup_by_email`, null, { email, code })
+    }
+
+    async checkIn () {
+        return npost(`${this.urlPrefix}/check_in`)
     }
 
     async getUserId () {

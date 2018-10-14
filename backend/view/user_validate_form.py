@@ -8,7 +8,7 @@ from wtforms import StringField, validators as va, ValidationError
 
 def email_exists_check(form, field):
     email = field.data
-    if list(User.select(User.id).where(User.email == email)):
+    if list(User.select().where(User.email == email)):
         raise ValidationError('此邮箱已注册')
     return True
 

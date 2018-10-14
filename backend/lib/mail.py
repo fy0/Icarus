@@ -56,7 +56,7 @@ async def send(to, title, content):
 
 async def send_reg_code_email(email, code):
     act_code = to_hex(code)
-    act_url = f'{config.SITE_URL}/account/signup_by_email?email={email}&code={act_code}'
+    act_url = f'{config.SITE_URL}/account/signup_by_email_done?email={email}&code={act_code}'
 
     content = f'''Email 地址验证<br/><br/>
 
@@ -72,7 +72,7 @@ async def send_reg_code_email(email, code):
 <a href="{act_url}" target="_blank">{act_url}</a><br/>
 （如果上面不是链接形式，请将该地址手工复制到浏览器地址栏中打开以完成验证）<br/><br/>
 
-考虑到安全问题，此链接在72个小时内有效。<br/>
+此链接在72个小时内有效。<br/>
 感谢您的访问，祝您使用愉快！<br/><br/>
 
 此致，<br/>

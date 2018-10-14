@@ -9,7 +9,7 @@ from lib.utils import get_today_start_timestamp
 from model._post import PostModel, POST_STATE
 from model.log_manage import ManageLog
 from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID, \
-    RK_USER_LAST_REQUEST_ACTCODE_BY_USER_ID, RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID, RK_USER_REG_CODE_BY_EMAIL, \
+    RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID, RK_USER_REG_CODE_BY_EMAIL, \
     RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL, RK_USER_REG_PASSWORD
 from slim.base.user import BaseUser
 from slim.utils import StateObject, to_hex, to_bin
@@ -36,7 +36,7 @@ class USER_GROUP(StateObject):
 class User(PostModel, BaseUser):
     email = TextField(index=True, unique=True, null=True, default=None)
     phone = TextField(index=True, unique=True, null=True, default=None)  # 大陆地区
-    nickname = CITextField(index=True, unique=True)  # CITextField
+    nickname = CITextField(index=True, unique=True, null=True)  # CITextField
     password = BlobField()
     salt = BlobField()  # auto
     biology = TextField(null=True)  # 简介
@@ -149,9 +149,10 @@ class User(PostModel, BaseUser):
             return None
 
     @classmethod
-    async def gen_reg_code_by_email(cls, email, password):
+    async def gen_reg_code_by_email(cls, email: str, password: str):
         t = int(time.time())
         code = os.urandom(8)
+        email = email.encode('utf-8')
         pipe = redis.pipeline()
         pipe.set(RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL % email,
                  config.USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL,
@@ -160,6 +161,15 @@ class User(PostModel, BaseUser):
         pipe.set(RK_USER_REG_PASSWORD % email, password, expire=config.USER_REG_CODE_EXPIRE)
         await pipe.execute()
         return code
+
+    @classmethod
+    async def reg_code_cleanup(cls, email):
+        email = email.encode('utf-8')
+        pipe = redis.pipeline()
+        pipe.delete(RK_USER_REG_CODE_BY_EMAIL % email)
+        pipe.delete(RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL % email)
+        pipe.delete(RK_USER_REG_PASSWORD % email)
+        await pipe.execute()
 
     @classmethod
     async def check_reg_code_by_email(cls, email, code):
@@ -173,21 +183,15 @@ class User(PostModel, BaseUser):
         if isinstance(code, str): code = to_bin(code)
 
         if len(code) == 8:
-            rk_code = RK_USER_REG_CODE_BY_EMAIL % email
-            rk_times = RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL % email
-            rk_pw = RK_USER_REG_PASSWORD % email
-
-            async def cleanup():
-                pipe = redis.pipeline()
-                pipe.delete(rk_code)
-                pipe.delete(rk_times)
-                pipe.delete(rk_pw)
-                await pipe.execute()
+            email_bytes = email.encode('utf-8')
+            rk_code = RK_USER_REG_CODE_BY_EMAIL % email_bytes
+            rk_times = RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL % email_bytes
+            rk_pw = RK_USER_REG_PASSWORD % email_bytes
 
             if await redis.get(rk_code) == code:
                 # 检查可用次数，decr的返回值是执行后的
                 if int(await redis.decr(rk_times)) <= 0:
-                    return await cleanup()
+                    return await cls.reg_code_cleanup(email)
                 # 无问题，取出储存值
                 return (await redis.get(rk_pw)).decode('utf-8')
 

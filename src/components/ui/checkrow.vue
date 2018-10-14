@@ -14,7 +14,7 @@
 .tip {
     color: red;
     font-size: 12px;
-    margin-top: -2px;
+    /* margin-top: -2px; */
 }
 
 .flex {

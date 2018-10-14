@@ -1,10 +1,14 @@
 import os
 import re
 import time
+
+import peewee
+
 import config
 from typing import Dict, Type, List
 
 from lib import mail
+from model import db
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
@@ -301,11 +305,12 @@ class UserView(UserMixin, PeeweeView):
 
             form = RequestSignupByEmailForm(**data)
             if not form.validate():
-                return self.finish(RETCODE.FAILED, form.errors)
+                return self.finish(RETCODE.INVALID_POSTDATA, form.errors)
 
-            email = form['email'].lower()
-            code = await User.gen_reg_code_by_email(email, form['password'])
+            email = form['email'].data.lower()
+            code = await User.gen_reg_code_by_email(email, form['password'].data)
             await mail.send_reg_code_email(email, code)
+            self.finish(RETCODE.SUCCESS)
         else:
             self.finish(RETCODE.FAILED, '此接口未开放')
 
@@ -317,12 +322,15 @@ class UserView(UserMixin, PeeweeView):
 
     async def create_user(self, password, email=None, phone=None) -> User:
         values = {}
-        if not config.POST_ID_GENERATOR == config.AutoGenerator:
+        nprefix = config.USER_NICKNAME_AUTO_PREFIX + '_'
+
+        if config.POST_ID_GENERATOR != config.AutoGenerator:
+            # 若不使用数据库生成id
             uid = User.gen_id()
             values['id'] = uid.to_bin()
-            values['nickname'] = '网友_' + uid.to_hex()
-        else:
-            values['nickname'] = '网友_' + to_hex(os.urandom(8))
+            values['nickname'] = nprefix + uid.to_hex()
+
+        values['change_nickname_chance'] = 1
 
         if email:
             values['email'] = email.lower()
@@ -344,13 +352,41 @@ class UserView(UserMixin, PeeweeView):
         values.update(User.gen_key())
         values['time'] = int(time.time())
 
-        u = User(**values)
-        u.save()
+        try:
+            uid = User.insert(values).execute()
+            u = User.get_by_pk(uid)
+        except peewee.IntegrityError as e:
+            db.rollback()
+            if e.args[0].startswith('duplicate key'):
+                return self.finish(RETCODE.ALREADY_EXISTS)
+            return self.finish(RETCODE.FAILED)
+        except peewee.DatabaseError:
+            db.rollback()
+            return self.finish(RETCODE.FAILED)
 
-        print(u.number)
-        if u.number == 1:
-            u.group = USER_GROUP.ADMIN
-            u.save()
+        times = 3
+        success = False
+        u.nickname = nprefix + to_hex(u.id.tobytes())
+
+        # 尝试填充用户名
+        while times >= 0:
+            try:
+                if u.number == 1:
+                    u.group = USER_GROUP.ADMIN
+                u.save()
+                success = True
+                break
+            except peewee.DatabaseError:
+                db.rollback()
+                times -= 1
+                u.nickname = nprefix + to_hex(os.urandom(8))
+
+        if not success:
+            return self.finish(RETCODE.FAILED)
+
+        # 清理现场
+        if email:
+            await User.reg_code_cleanup(email)
 
         # 添加统计记录
         statistic_new(POST_TYPES.USER, u.id)
@@ -362,14 +398,18 @@ class UserView(UserMixin, PeeweeView):
     async def signup_by_email(self):
         """ 确认并创建账户 """
         data = await self.post_data()
-        email = data['email'].lower()
 
+        if 'code' not in data or 'email' not in data:
+            return self.finish(RETCODE.INVALID_POSTDATA)
+
+        email = data['email'].lower()
         pw = await User.check_reg_code_by_email(email, data['code'])
         u = await self.create_user(pw, email=email)
 
         if pw and u:
             self.finish(RETCODE.SUCCESS, {'key': u.key, 'id': u.id})
         else:
+            if self.is_finished: return
             self.finish(RETCODE.FAILED)
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):

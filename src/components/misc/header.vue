@@ -41,7 +41,7 @@
                     <li class="menu-item">
                         <user-link class="user-link" :nickname="false" :user="state.user">
                             <avatar style="margin-right: 6px;" :user="state.user" :size="28" class="avatar"></avatar>
-                            <span>{{state.user.nickname}}</span>
+                            <span class="user-text limit">{{state.user.nickname}}</span>
                         </user-link>
                     </li>
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
@@ -66,7 +66,7 @@
 </header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 /* 横条 */
 
 .ic-nav {
@@ -166,7 +166,15 @@
 
 /* 小屏 */
 
-@media screen and (max-width: 35.5em) {
+@media screen and (lt-rbp(lg)) {
+    .menu-item > a.user-link {
+        .user-text {
+            max-width: 5em;
+        }
+    }
+}
+
+@media screen and (lt-rbp(sm)) {
     #navmenu-toggle-icon {
         position: absolute;
         top: 8px;
@@ -230,10 +238,15 @@
         display: block;
         padding: 0.4em 1.6em;
         height: 36px;
+        text-align: center;
     }
 
     .menu-item > a.user-link {
         padding: 0.4em 1.6em;
+
+        .user-text {
+            max-width: 5em;
+        }
     }
 
     .fade-enter-active, .fade-leave-active {
