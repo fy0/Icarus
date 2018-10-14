@@ -1,12 +1,14 @@
 <template>
 <account-signup-legacy v-if="useLegacy" />
-<redirecting v-else-if="regDone" :countdown="20">
-    <span>注册成功！</span>
-    <span>我们已经向你的邮箱发送了一封邮件，请点击其中的激活链接完成注册。</span>
-    <span>激活之后，你的账号将自动登录。</span>
-    <span>如果没有正确收到激活邮件，请检查垃圾邮件箱。</span>
-    <span>如果还是没有收到邮件，请尝试重新注册，或联系站点管理员：</span>
-    <span><a :href="`mailto:${state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}?subject=无法收到激活邮件，用户名：${state.user.nickname}`">{{state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}}</a></span>
+<redirecting v-else-if="regDone" :countdown="30">
+    <h2>注册成功！</h2>
+    <div style="align-items: none">
+        <div>我们已经向你的邮箱发送了一封邮件，请点击其中的激活链接完成注册。</div>
+        <div>激活之后，你的账号将自动登录。</div>
+        <div>如果没有正确收到激活邮件，请检查垃圾邮件箱。</div>
+        <div>如果还是没有收到邮件，请尝试重新注册，或联系站点管理员：</div>
+        <div><a :href="`mailto:${state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}?subject=无法收到激活邮件，注册邮箱：${info.email}`">{{state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}}</a></div>
+    </div>
 </redirecting>
 <div v-else class="ic-container box">
     <div class="login">

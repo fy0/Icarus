@@ -64,7 +64,7 @@ class User(PostModel, BaseUser):
     # ref_zhihu = TextField(null=True)
     # ref_weibo = TextField(null=True)
 
-    is_new_user = BooleanField(default=False)  # 是否全新用户（刚注册，未经过修改昵称）
+    is_new_user = BooleanField(default=True)  # 是否全新用户（刚注册，未经过修改昵称）
     phone_verified = BooleanField(default=False)  # 手机号已确认
     change_nickname_chance = IntegerField(default=0)  # 改名机会数量
     reset_key = BlobField(index=True, null=True, default=None)  # 重置密码所用key

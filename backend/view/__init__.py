@@ -57,12 +57,16 @@ def cooldown(interval, redis_key_template, *, unique_id_func=get_ip, cd_if_unsuc
                 ret = await func(self, *args, **kwargs)
                 # 如果设定了失败返回值CD （请求完成同时未成功）
                 if self.is_finished and cd_if_unsuccessed is not None:
-                    if self.ret_val['code'] != RETCODE.SUCCESS and cd_if_unsuccessed:
+                    if self.ret_val['code'] != RETCODE.SUCCESS:
                         await redis.set(key, '1', expire=cd_if_unsuccessed)
-                    return ret
+                        return ret
+
                 # 如果没有，检查是否存在豁免值
                 if not getattr(self, 'cancel_cooldown', None):
-                    await redis.set(key, '1', expire=interval)
+                    return ret
+
+                # 所有跳过条件都不存在，设置正常的expire并退出
+                await redis.set(key, '1', expire=interval)
                 return ret
         return myfunc
     return wrapper

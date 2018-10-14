@@ -88,6 +88,7 @@ export default {
                 $.message_success('修改成功！')
                 state.user.nickname = ret.data.nickname
                 state.user.change_nickname_chance = ret.data.change_nickname_chance
+                state.user.is_new_user = false
                 this.sending = false
                 return true
             } else if (ret.code === api.retcode.INVALID_POSTDATA) {

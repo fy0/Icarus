@@ -259,6 +259,7 @@ class UserView(UserMixin, UserLegacyView):
             values['id'] = uid.to_bin()
             values['nickname'] = nprefix + uid.to_hex()
 
+        values['is_new_user'] = True
         values['change_nickname_chance'] = 1
 
         if email:
@@ -333,6 +334,9 @@ class UserView(UserMixin, UserLegacyView):
 
         email = data['email'].lower()
         pw = await User.check_reg_code_by_email(email, data['code'])
+        if not pw:
+            return self.finish(RETCODE.FAILED)
+
         u = await self.create_user(pw, email=email)
 
         if pw and u:

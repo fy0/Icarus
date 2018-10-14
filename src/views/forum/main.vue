@@ -353,6 +353,7 @@ export default {
             }
         },
         isNewUser: function () {
+            if (!state.user) return
             let ts = new Date().getTime() / 1000
             if ((state.user.is_new_user) && (ts - state.user.time < 24 * 60 * 60)) {
                 state.dialog.userSetNickname = true
