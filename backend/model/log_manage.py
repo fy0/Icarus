@@ -1,6 +1,7 @@
 import time
 from peewee import *
 from playhouse.postgres_ext import BinaryJSONField
+from slim.base.sqlquery import DataRecord
 
 import config
 from model import BaseModel, MyTimestampField
@@ -20,6 +21,7 @@ class MANAGE_OPERATION(StateObject):
     USER_CREDIT_CHANGE = 104
     USER_REPUTE_CHANGE = 105
     USER_EXP_CHANGE = 106
+    USER_NICKNAME_CHANGE = 107
 
     BOARD_NEW = 200
     BOARD_CHANGE = 201
@@ -137,11 +139,28 @@ class ManageLog(BaseModel):
     @classmethod
     def add_by_post_changed(cls, view, key, operation, related_type, values, old_record, record, note=None,
                             *, value=NotImplemented):
-        if key in values:
+        def get_val(r, k):
+            if isinstance(r, (DataRecord, dict)):
+                return r[k]
+            elif isinstance(r, BaseModel):
+                return getattr(r, k)
+            else:
+                raise TypeError()
+
+        def key_in_values():
+            if isinstance(values, dict):
+                return key in values
+            elif isinstance(values, bool):
+                return values
+            else:
+                raise TypeError()
+
+        if key_in_values():
             if value is NotImplemented:
-                value = [old_record[key], record[key]]
-            return cls.new(view.current_user.id, view.current_role, related_type, record['id'],
-                           record['user_id'], operation, value, note=note)
+                value = [get_val(old_record, key), get_val(record, key)]
+
+            return cls.new(view.current_user.id, view.current_role, related_type, get_val(record, 'id'),
+                           get_val(record, 'user_id'), operation, value, note=note)
 
     class Meta:
         db_table = 'manage_log'

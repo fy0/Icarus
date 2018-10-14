@@ -186,6 +186,7 @@
         </div>
     </div>
     <dialog-site-new v-if="isNewSite" />
+    <dialog-user-set-nickname v-else-if="isNewUser"/>
     <dialog-topic-manage />
     <dialog-user-inactive-warn />
 </div>
@@ -348,6 +349,13 @@ export default {
     computed: {
         isNewSite: function () {
             if (this.state.boards.rawLst.length === 0) {
+                return true
+            }
+        },
+        isNewUser: function () {
+            let ts = new Date().getTime() / 1000
+            if ((state.user.is_new_user) && (ts - state.user.time < 24 * 60 * 60)) {
+                state.dialog.userSetNickname = true
                 return true
             }
         },

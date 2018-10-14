@@ -49,6 +49,8 @@ let state = {
         userSetAvatarData: null,
         // 用户未邮件激活提示框
         userInactive: false,
+        // 设置昵称
+        userSetNickname: false,
         // 用户登出确认
         userSignout: false
     },

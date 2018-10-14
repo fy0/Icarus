@@ -49,3 +49,23 @@ $.passwordHash = async function (password, iterations = 1e5) {
 
     return compositeBase64 // return composite key
 }
+
+$.checkEmail = function (email) {
+    let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+    return mail.test(email)
+}
+
+$.checkNickname = function (nickname) {
+    if ((nickname < 2) || (nickname > 32)) return false
+    // 检查首字符，检查有无非法字符
+    if (!/^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$/.test(nickname)) {
+        return false
+    }
+    // 若长度大于4，直接许可
+    if (nickname.length >= 4) {
+        return true
+    }
+    // 长度小于4，检查其中汉字数量
+    let m = nickname.match(/[\u4e00-\u9fa5]/gi)
+    if (m && m.length >= 2) return true
+}

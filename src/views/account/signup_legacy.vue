@@ -133,22 +133,10 @@ export default {
             return this.info.password === this.info.password2
         },
         checkNickname: function () {
-            if ((this.info.nickname < 2) || (this.info.nickname > 32)) return false
-            // 检查首字符，检查有无非法字符
-            if (!/^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$/.test(this.info.nickname)) {
-                return false
-            }
-            // 若长度大于4，直接许可
-            if (this.info.nickname.length >= 4) {
-                return true
-            }
-            // 长度小于4，检查其中汉字数量
-            let m = this.info.nickname.match(/[\u4e00-\u9fa5]/gi)
-            if (m && m.length >= 2) return true
+            return $.checkNickname(this.info.nickname)
         },
         checkEmail: function () {
-            let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
-            return mail.test(this.info.email)
+            return $.checkNickname(this.info.email)
         }
     },
     methods: {

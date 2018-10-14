@@ -1,5 +1,13 @@
 <template>
 <account-signup-legacy v-if="useLegacy" />
+<redirecting v-else-if="regDone" :countdown="20">
+    <span>注册成功！</span>
+    <span>我们已经向你的邮箱发送了一封邮件，请点击其中的激活链接完成注册。</span>
+    <span>激活之后，你的账号将自动登录。</span>
+    <span>如果没有正确收到激活邮件，请检查垃圾邮件箱。</span>
+    <span>如果还是没有收到邮件，请尝试重新注册，或联系站点管理员：</span>
+    <span><a :href="`mailto:${state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}?subject=无法收到激活邮件，用户名：${state.user.nickname}`">{{state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}}</a></span>
+</redirecting>
 <div v-else class="ic-container box">
     <div class="login">
         <h3 class="title">注册</h3>
@@ -110,6 +118,7 @@ export default {
                 agreeLicense: false,
                 returning: true // new 之后返回记录
             },
+            regDone: false,
             dialogLicense: false,
             formErrors: {},
             passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
@@ -155,8 +164,7 @@ export default {
                 let ret = await api.user.requestSignupByEmail(info)
 
                 if (ret.code === api.retcode.SUCCESS) {
-                    $.message_success('注册成功！请在邮箱查收激活邮件完成注册。')
-                    this.$router.push({ name: 'forum', params: {} })
+                    this.regDone = true
                 } else if (ret.code === api.retcode.INVALID_POSTDATA) {
                     this.formErrors = ret.data
                 } else {

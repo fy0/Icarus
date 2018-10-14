@@ -157,8 +157,9 @@ class UserViewRequest extends SlimViewRequest {
         return npost(`${this.urlPrefix}/request_password_reset`, null, { nickname, email })
     }
 
-    async resendActivationMail () {
-        return npost(`${this.urlPrefix}/resend_activation_mail`, null, {})
+    // 修改昵称
+    async changeNickname (nickname) {
+        return npost(`${this.urlPrefix}/change_nickname`, null, { nickname })
     }
 
     // 验证重置密码

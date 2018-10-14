@@ -14,7 +14,12 @@
                 </div>
 
                 <div class="setting-item">
-                    <span class="label">昵称</span>
+                    <span class="label">
+                        <template>昵称</template>
+                        <span class="change-nickname" v-if="user.change_nickname_chance" @click="state.dialog.userSetNickname = true">
+                            <template>修改昵称(剩余次数{{user.change_nickname_chance}})</template>
+                        </span>
+                    </span>
                     <div class="line">
                         <span>{{user.nickname}}</span>
                     </div>
@@ -100,6 +105,7 @@
 
         </div>
     </div>
+    <dialog-user-set-nickname />
 </setting-base>
 </template>
 
@@ -159,6 +165,13 @@ a.resend {
 
 .right > .rbox {
     margin-left: 20px;
+}
+
+.change-nickname {
+    color: #777;
+    font-size: 14px;
+    margin-left: 10px;
+    cursor: pointer;
 }
 </style>
 

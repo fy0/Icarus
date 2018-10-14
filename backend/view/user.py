@@ -1,12 +1,9 @@
 import os
 import re
 import time
-
 import peewee
-
 import config
 from typing import Dict, Type, List
-
 from lib import mail
 from model import db
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
@@ -15,17 +12,16 @@ from model._post import POST_TYPES, POST_STATE
 from model.statistic import statistic_new
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.base.user import BaseUser, BaseAccessTokenUserMixin
-from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
-from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin
-from slim.utils.jsdict import JsDict
 from view import route, ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, DataRecord
 from permissions import permissions_add_all
-from view.user_validate_form import RequestSignupByEmailForm
+from view.user_signup_legacy import UserLegacyView
+from view.user_validate_form import RequestSignupByEmailForm, SigninByEmailForm, SigninByNicknameForm, PasswordForm, \
+    NicknameForm
 
 
 class UserMixin(BaseAccessTokenUserMixin):
@@ -52,90 +48,23 @@ class ChangePasswordForm(ValidateForm):
     ])
 
 
-class PasswordForm(ValidateForm):
-    password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
-
-
-class SigninForm(ValidateForm):
-    email = StringField('邮箱', validators=[va.required(), va.Length(3, config.USER_EMAIL_MAX), va.Email()])
-
-    password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
-
-
-def nickname_check(form, field):
-    # 至少两个汉字，或以汉字/英文字符开头至少4个字符
-    text = '至少%d个汉字，或以汉字/英文字符开头至少%d个字符' % (config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN)
-    name = field.data
-    # 检查首字符，检查有无非法字符
-    if not re.match(r'^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$', name):
-        raise ValidationError(text)
-    # 若长度大于等于4，直接许可
-    if len(name) >= max(config.USER_NICKNAME_FOR_REG_MIN, config.USER_NICKNAME_CN_FOR_REG_MIN):
-        return True
-
-    # 当最少汉字要求少于最少英文要求
-    if config.USER_NICKNAME_CN_FOR_REG_MIN < config.USER_NICKNAME_FOR_REG_MIN:
-        # 长度小于4，检查其中汉字数量
-        if not (len(re.findall(r'[\u4e00-\u9fa5]', name)) >= config.USER_NICKNAME_CN_FOR_REG_MIN):
-            raise ValidationError(text)
-    elif config.USER_NICKNAME_CN_FOR_REG_MIN > config.USER_NICKNAME_FOR_REG_MIN:
-        if not (len(re.findall(r'[a-zA-Z0-9]', name)) >= config.USER_NICKNAME_FOR_REG_MIN):
-            raise ValidationError(text)
-
-    if config.USER_NICKNAME_CHECK_FUNC and not config.USER_NICKNAME_CHECK_FUNC(name):
-        raise ValidationError('昵称被保留')
-
-
-class SigninByNicknameForm(ValidateForm):
-    # 注意，这里前端提交的字段仍是email，所以不用nickname而是email，并非笔误
-    # 同时不做长度检查也是有意的，因为某一时期注册的帐号，昵称长度可能会不符合后期的规则，但要可以登录
-    email = StringField('昵称', validators=[
-        va.required(),
-        nickname_check
-    ])
-
-    password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
-
-
-class SignupFormLegacy(SigninForm):
-    nickname = StringField('昵称', validators=[
-        va.required(),
-        va.Length(min(config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN), config.USER_NICKNAME_FOR_REG_MAX),
-        nickname_check
-    ])
-
-    password2 = StringField('重复密码', validators=[
-        va.required(),
-        va.EqualTo('password')
-    ])
-
-
 class ResetPasswordForm(ValidateForm):
     email = StringField('邮箱', validators=[va.required(), va.Length(3, config.USER_EMAIL_MAX), va.Email()])
     nickname = StringField('昵称', validators=[
         va.required(),
         va.Length(min(config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN), config.USER_NICKNAME_FOR_REG_MAX),
-        # nickname_check  # 发生了新旧可用昵称不同，然后找回密码出现了“昵称被占用”的情况
+        # nickname_check  # 发生了新旧可用昵称列表不同，然后找回密码出现了“昵称被占用”的情况
     ])
 
 
 async def same_email_post(view):
     post = await view.post_data()
     if 'email' in post:
-        return post['email'].encode('utf-8')
+        return post['email'].lower().encode('utf-8')
 
 
 @route('user')
-class UserView(UserMixin, PeeweeView):
+class UserView(UserMixin, UserLegacyView):
     model = User
 
     @classmethod
@@ -247,7 +176,7 @@ class UserView(UserMixin, PeeweeView):
     async def signin(self):
         data = await self.post_data()
 
-        form_email = SigninForm(**data)
+        form_email = SigninByEmailForm(**data)
         form_nickname = SigninByNicknameForm(**data)
 
         if form_email.validate():
@@ -412,51 +341,29 @@ class UserView(UserMixin, PeeweeView):
             if self.is_finished: return
             self.finish(RETCODE.FAILED)
 
-    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
-        values = values_lst[0]
-        # 必须存在以下值：
-        # email password nickname
-        # 自动填充或改写以下值：
-        # id password salt group state key key_time time
-        if not config.USER_ALLOW_SIGNUP:
-            return self.finish(RETCODE.FAILED, '注册未开放')
+    @route.interface('POST')
+    async def change_nickname(self):
+        u = self.current_user
+        if not u:
+            return self.finish(RETCODE.PERMISSION_DENIED)
 
-        form = SignupFormLegacy(**raw_post)
+        post = await self.post_data()
+        form = NicknameForm(**post)
         if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
+            return self.finish(RETCODE.INVALID_POSTDATA, form.errors)
 
-        if not config.POST_ID_GENERATOR == config.AutoGenerator:
-            uid = User.gen_id().to_bin()
-            values['id'] = uid
+        if u.change_nickname_chance > 0:
+            try:
+                old_nickname = u.nickname
+                u.nickname = form['nickname'].data
+                u.change_nickname_chance -= 1
+                u.is_new_user = False
+                u.save()
+                self.finish(RETCODE.SUCCESS, {'nickname': u.nickname, 'change_nickname_chance': u.change_nickname_chance})
+                ManageLog.add_by_post_changed(self, 'nickname', MOP.USER_NICKNAME_CHANGE, POST_TYPES.USER,
+                                              True, {'nickname': old_nickname}, u, value=None)
+                return
+            except peewee.DatabaseError:
+                db.rollback()
 
-        values['email'] = values['email'].lower()
-
-        ret = User.gen_password_and_salt(raw_post['password'])
-        values.update(ret)
-
-        if 'group' not in values:
-            # 如果无权限，那此时即使带着 group 参数也被刷掉了，直接设为 normal 即可
-            values['group'] = USER_GROUP.NORMAL
-
-        if 'state' not in values:
-            values['state'] = POST_STATE.NORMAL
-
-        # 注册IP地址
-        values['ip_registered'] = await get_fuzz_ip(self)
-
-        values.update(User.gen_key())
-        values['time'] = int(time.time())
-        self._key = values['key']
-
-    async def after_insert(self, raw_post: Dict, values_lst: SQLValuesToWrite, records: List[DataRecord]):
-        record = records[0]
-        if record['number'] == 1:
-            u = User.get(User.id == record['id'])
-            u.group = USER_GROUP.ADMIN
-            u.save()
-
-        # 添加统计记录
-        statistic_new(POST_TYPES.USER, record['id'])
-        UserNotifLastInfo.new(record['id'])
-
-        record['access_token'] = self._key
+        self.finish(RETCODE.FAILED)

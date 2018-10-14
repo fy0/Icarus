@@ -39,6 +39,11 @@ def work():
         i.group = USER_GROUP.NORMAL
         i.save()
 
+    # 老用户全部设置为非新用户
+    for i in User.select().where(User.is_new_user == False):
+        i.is_new_user = True
+        i.save()
+
 
 if __name__ == '__main__':
     work()

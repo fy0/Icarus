@@ -4,11 +4,15 @@ from slim.base.permission import Ability, A, DataRecord
 from slim.base.sqlquery import SQLQueryInfo, SQL_OP
 
 
-# 如果查询的是自己，附带邮箱信息
+# 如果查询的是自己，附带部分信息
 def func(ability: Ability, user, query: 'SQLQueryInfo'):
     for i in query.conditions.find('id'):
         if i[1] == SQL_OP.EQ and i[2] == user.id.hex():
             query.select.add('email')
+            query.select.add('phone')
+            query.select.add('is_new_user')
+            query.select.add('phone_verified')
+            query.select.add('change_nickname_chance')
 
 
 banned_user.add_query_condition('user', func=func)
