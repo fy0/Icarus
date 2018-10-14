@@ -46,6 +46,7 @@ class MANAGE_OPERATION(StateObject):
         USER_CREDIT_CHANGE: '积分变更',
         USER_REPUTE_CHANGE: "声望变更",
         USER_EXP_CHANGE: "经验值变更",
+        USER_NICKNAME_CHANGE: '昵称变更',
 
         BOARD_NEW: '新建板块',
         BOARD_CHANGE: '修改板块信息',

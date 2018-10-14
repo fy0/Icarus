@@ -33,6 +33,7 @@ def work():
     sql_execute('ALTER TABLE "user" ALTER COLUMN nickname DROP NOT NULL;')
 
     sql_execute('ALTER TABLE "user" RENAME COLUMN reputation TO repute;')
+    sql_execute('ALTER TABLE "user" ADD is_new_user BOOLEAN DEFAULT TRUE  NOT NULL;')
 
     # 注册的激活机制改了，变通一下吧
     for i in User.select().where(User.group == USER_GROUP.INACTIVE):
