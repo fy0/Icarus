@@ -1,16 +1,16 @@
 <template>
 <div class="ic-container loading">
-    <div class="mu-circular-progress" style="width: 180px; height: 180px;">
-        <div class="mu-circle-wrapper active" style="width: 180px; height: 180px;">
+    <div class="mu-circular-progress" style="width: 60px; height: 60px;">
+        <div class="mu-circle-wrapper active" style="width: 60px; height: 60px;">
             <div class="mu-circle-spinner active" style="border-color: rgb(244, 67, 54);">
                 <div class="mu-circle-clipper left">
-                    <div class="mu-circle" style="border-width: 1px;"></div>
+                    <div class="mu-circle" style="border-width: 2px;"></div>
                 </div>
                 <div class="mu-circle-gap-patch">
                     <div class="mu-circle"></div>
                 </div>
                 <div class="mu-circle-clipper right">
-                    <div class="mu-circle" style="border-width: 1px;"></div>
+                    <div class="mu-circle" style="border-width: 2px;"></div>
                 </div>
             </div>
         </div>
@@ -32,6 +32,9 @@
     overflow: hidden;
 }
 
+// speed factor
+$sf: 1.5;
+
 .mu-circle-wrapper {
     display: inline-block;
     position: relative;
@@ -39,7 +42,7 @@
     height: 48px;
 
     &.active {
-        animation: container-rotate 1568ms linear infinite;
+        animation: container-rotate $sf*1568ms linear infinite;
     }
 
     .mu-circle {
@@ -62,15 +65,15 @@
     opacity: 0;
     border-color: #7e57c2;
     opacity: 1;
-    animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    animation: fill-unfill-rotate $sf*5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 .mu-circle-spinner.active .mu-circle-clipper.right .mu-circle {
-    animation: left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    animation: left-spin $sf*1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 .mu-circle-spinner.active .mu-circle-clipper.right .mu-circle {
-    animation: right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    animation: right-spin $sf*1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 .mu-circle-clipper.left .mu-circle {

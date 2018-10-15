@@ -15,7 +15,7 @@ def sql_execute(sql):
         db.execute_sql(sql)
     except Exception as e:
         print(e)
-        print('failed')
+        print('failed: %s' % sql)
         db.rollback()
 
 

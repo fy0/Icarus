@@ -35,6 +35,8 @@
 
     * 发表和编辑主题
 
+    * 文章页自动生成快捷导航
+
     * @功能
 
 * 管理后台
@@ -56,6 +58,8 @@
 * 其他
 
     * 实时在线人数
+
+    * 宽屏支持
 
 
 ## 如何部署
@@ -195,7 +199,7 @@ cnpm install
 
 如果只是开发环境下看看效果，那么：
 ```bash
-npm run dev
+npm run serve
 ```
 然后在浏览器中查看即可。
 
@@ -270,28 +274,16 @@ sudo service nginx restart
 
 第一个注册的用户将自动成为管理员。
 
+## 升级指南
 
-## Project setup
-```
-npm install
-```
+首先停止服务并更新源码。
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+然后请寻找 `backend/misc/upgrade` 目录下对应的升级文件，例如1.1升级1.2使用`u11-u12.py`。
 
-### Compiles and minifies for production
-```
-npm run build
-```
+复制到 `backend` 目录执行后删除即可。
 
-### Run your tests
-```
-npm run test
-```
+注意如果使用了 pipenv 或其他虚拟环境，要在项目对应环境中完成这个操作。
 
-### Lints and fixes files
-```
-npm run lint
-```
+然后分别升级前端项目(根目录)和后端项目(backend目录)的项目依赖。
+
+如该版本无特别的升级说明，此时直接重新开启服务即可。
