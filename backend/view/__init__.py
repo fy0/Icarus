@@ -12,7 +12,7 @@ route = app.app.route
 
 class ValidateForm(Form):
     class Meta:
-        locales = 'zh_cn' # locales = [locale.getdefaultlocale()[0]]
+        locales = ['zh_CN']  # locales = [locale.getdefaultlocale()[0]]
 
 
 async def get_fuzz_ip(view) -> str:
