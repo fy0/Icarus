@@ -210,7 +210,7 @@ npm run serve
 
 ```js
 // 单端口方案
-var host = window.location.host;
+var host = window.location.host
 
 export default {
     remote: {
@@ -219,15 +219,14 @@ export default {
     },
     qiniu: {
         server: 'http://upload.qiniu.com',
-        // host: '//test-bucket.myrpg.cn',
-        suffix: 'normal'
+        // host: '//test-bucket.myrpg.cn'
     }
 }
 ```
 
 ```js
 // 双端口方案
-var host = window.location.hostname;
+var host = window.location.hostname
 
 export default {
     remote: {
@@ -236,8 +235,7 @@ export default {
     },
     qiniu: {
         server: 'http://upload.qiniu.com',
-        // host: '//test-bucket.myrpg.cn',
-        suffix: 'normal'
+        // host: '//test-bucket.myrpg.cn'
     }
 }
 ```
