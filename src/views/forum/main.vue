@@ -18,6 +18,8 @@
 <div class="ic-container forum-box">
     <div class="wrapper">
         <div v-responsive.xs>
+            <i @click="showSlideMenu = !showSlideMenu" class="icarus icon-comment-multiple-out" style="position: fixed; top: 6px; left: 20px; font-size: 22px; z-index: 1; color: #777" />
+
             <!-- xs 时的边栏 -->
             <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                 <div v-if="showSlideMenu" class="dialog-overlay" @click="showSlideMenu = false"></div>
