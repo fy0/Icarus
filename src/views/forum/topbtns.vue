@@ -106,7 +106,6 @@
 /* 首页由于标题居中的特殊效果上下自有间隔，其他页面需要留白 15px 实现对齐 */
 .ic-topbtns-box {
     display: flex;
-    margin-bottom: 10px;
     padding-left: 10px;
     padding-right: 12px;
     align-items: center;

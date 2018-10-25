@@ -50,15 +50,15 @@
             }
 
             > .topic-info {
-                font-size: 0.8em;
+                font-size: 14px;
                 color: #777;
+                line-height: 26px;
 
                 display: flex;
-                align-items: baseline;
+                align-items: center;
                 align-content: flex-end;
                 justify-content: flex-start;
                 justify-items: flex-end;
-                font-size: 14px;
                 margin: 0;
 
                 .author {
@@ -120,6 +120,7 @@
                 cursor: pointer;
             }
         }
+
         > .append-icons {
             margin-top: -22px;
             display: flex;
@@ -164,6 +165,7 @@
             font-weight: 300;
             font-size: .8em;
             flex-basis: 0%;
+            line-height: 26px;
         }
     }
 }
@@ -211,6 +213,7 @@
             padding-left: 1.25em;
             text-overflow: ellipse;
             color: #777;
+            max-height: 64px;
 
             .icon-reply {
                 font-size: 12px;
@@ -235,41 +238,5 @@
             padding: 0 1em;
             color: #777;
         }
-    }
-}
-
-@media screen and (lt-rbp(lg)) {
-    .board-item .detail {
-        flex: 4 0 0%;
-    }
-}
-
-@media screen and (lt-rbp(sm)) {
-    .header > .ic-navbtns {
-        margin-left: 37px;
-    }
-
-    .ic-topbtns-box {
-        margin-bottom: 10px;
-        margin-top: 10px;
-    }
-
-    .header {
-        position: fixed;
-        width: 100%;
-        background: #fafafa;
-        z-index: 1;
-    }
-
-    .main {
-        // margin-top: 49px + 26px;
-        margin-top: 49px + 10px;
-    }
-}
-
-@media screen and (lt-rbp(md)) {
-    .append-icons {
-        width: 36px !important;
-        padding-right: 10px !important;
     }
 }

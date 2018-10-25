@@ -18,7 +18,7 @@
 <div class="ic-container forum-box">
     <div class="wrapper">
         <div v-responsive.xs>
-            <i @click="showSlideMenu = !showSlideMenu" class="icarus icon-comment-multiple-out" style="position: fixed; top: 6px; left: 20px; font-size: 22px; z-index: 1; color: #777" />
+            <!-- <i @click="showSlideMenu = !showSlideMenu" class="icarus icon-comment-multiple-out" style="position: fixed; top: 6px; left: 20px; font-size: 22px; z-index: 1; color: #777" /> -->
 
             <!-- xs 时的边栏 -->
             <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
@@ -31,7 +31,7 @@
                         <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
 
                         <div class="ul-boards">
-                            <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
+                            <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 21px">
                                 <div class="sign"></div>
                                 <span class="title">全部主题</span>
                             </router-link>
@@ -39,7 +39,7 @@
                             <label v-if="isBoard" class="with-subboard-topic">
                                 <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                             </label>
-                            <div style="margin-bottom: 3px;"></div>
+                            <!-- <div style="margin-bottom: 3px;"></div> -->
                             <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
                                 <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                                 <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
@@ -64,7 +64,7 @@
                     <label v-if="isBoard" class="with-subboard-topic">
                         <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                     </label>
-                    <div style="margin-bottom: 3px;"></div>
+                    <!-- <div style="margin-bottom: 3px;"></div> -->
                     <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
                         <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                         <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
@@ -75,6 +75,7 @@
 
         <div class="right" id="board-list">
             <top-btns :board="board"></top-btns>
+            <div style="border-bottom: 1px solid #eee; margin: 8px 10px 5px 10px;"></div>
             <div style="flex: 1 0 0%;">
                 <!-- 加载占位条目 -->
                 <template v-if="loading">
@@ -238,13 +239,14 @@
 }
 
 $left-nav-padding-right: 30px;
-$left-nav-sign-padding: 5px;
+$left-nav-sign-padding: 10px;
 
 .ul-boards {
     margin: 0;
     list-style: none;
 
     .item {
+        min-height: 42px; // 右侧单项的一半
         display: flex;
         align-items: center;
         padding: 7px 0;
@@ -288,8 +290,9 @@ $left-nav-sign-padding: 5px;
     display: flex;
     align-items: center;
     font-size: 14px;
+    min-height: 42px;
     user-select: none;
-    margin-bottom: 7px;
+    // margin-bottom: 7px;
     color: $gray-600;
 
     > .ic-checkbox {

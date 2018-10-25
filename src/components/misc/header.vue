@@ -15,6 +15,9 @@
                     <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum', 'index')">
                         <a>社区</a>
                     </router-link>
+                    <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('wiki', 'index')">
+                        <a>百科</a>
+                    </router-link>
                     <li class="menu-item" v-if="false && isAdmin"><a href="#">文档</a></li>
                     <li class="menu-item" v-if="false"><a href="#">聊天室</a></li>
                     <router-link tag="li" v-if="state.user" class="menu-item" :to="{ name: 'setting' }" :class="navActive('setting')">
@@ -73,6 +76,7 @@
     border-bottom: 1px solid #ddd;
     margin-bottom: 25px;
     height: 50px;
+    background-color: $header-background-color;
 }
 
 /* 内容 */
@@ -111,6 +115,7 @@
 .menu-lists {
     display: flex;
     flex: 1 0 auto;
+    font-weight: normal;
 }
 
 .menu-list {
@@ -132,7 +137,7 @@
 
 .menu-item > a {
     padding: .5em 1em;
-    color: #777;
+    color: #939fb3;
     text-decoration: none;
     font-size: 1em;
 }
@@ -155,7 +160,7 @@
 }
 
 .menu-item.link-active > a {
-    color: #000;
+    color: $gray-900;
 }
 
 .menu-item > .user-link {
@@ -184,7 +189,7 @@
     }
 
     #navmenu-toggle-icon > .bar {
-        background-color: #777;
+        color: $gray-700;
         display: block;
         width: 20px;
         height: 2px;
