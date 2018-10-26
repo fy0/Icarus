@@ -13,7 +13,7 @@ from model.topic import Topic
 from model.upload import Upload
 from model.user import User
 from model.user_oauth import UserOAuth
-from model.wiki import WikiItem, WikiArticle, WikiHistory
+from model.wiki import WikiArticle
 
 db.connect()
 
@@ -62,7 +62,7 @@ except peewee.ProgrammingError:
     db.rollback()
 
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
-                  WikiItem, WikiArticle, WikiHistory,
+                  WikiArticle,
                   Notification, UserNotifLastInfo,
                   UserOAuth,
                   Upload,

@@ -2,8 +2,7 @@
 import random
 import time
 from peewee import *
-
-from model._post import POST_STATE, POST_VISIBLE
+from model._post import POST_STATE, POST_VISIBLE, PostModel
 from slim.utils import StateObject
 from model import BaseModel, MyTimestampField
 from model.user import User
@@ -24,42 +23,20 @@ from model.user import User
 '''
 
 
-class WikiArticle(BaseModel):
-    id = BlobField(primary_key=True)
-    user_id = BlobField(index=True)
-    time = MyTimestampField(index=True)
+class WikiArticle(PostModel):
     state = IntegerField(default=POST_STATE.APPLY, index=True)
-    visible = IntegerField(default=POST_VISIBLE.NORMAL, index=True)
 
-    major_ver = IntegerField()
-    minor_ver = IntegerField()
-
-    parent = IntegerField(index=True, null=True)  # wiki article
-    root = IntegerField(index=True)  # wiki item
-
+    title = TextField(index=True)
+    root = BlobField(index=True, null=True)
+    parent = BlobField(index=True, null=True)
     content = TextField()
+    is_picked = BooleanField(index=True)
+
+    major_ver = IntegerField(index=True)
+    minor_ver = IntegerField()
 
     class Meta:
         db_table = 'wiki_article'
 
-
-class WikiItem(BaseModel):
-    id = BlobField(primary_key=True)
-    title = CharField(index=True, unique=True, max_length=50)
-    keyword = CharField(index=True, unique=True, max_length=20)
-    current = ForeignKeyField(WikiArticle, index=True, null=True)
-    time = BigIntegerField(index=True)
-    version = IntegerField(default=0)
-
-    class Meta:
-        db_table = 'wiki_item'
-
-
-class WikiHistory(BaseModel):
-    id = BlobField(primary_key=True)
-    wiki = ForeignKeyField(WikiItem, index=True)
-    item = ForeignKeyField(WikiArticle, index=True)
-    major_ver = IntegerField()
-
-    class Meta:
-        db_table = 'wiki_history'
+    def get_title(self):
+        pass
