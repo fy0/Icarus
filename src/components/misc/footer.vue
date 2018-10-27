@@ -8,10 +8,9 @@
 <style scoped>
 footer {
     width: 100%;
-    margin-top: 15px;
     padding-top: 16px;
     padding-bottom: 24px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #ddd;
     color: #999;
 }
 </style>

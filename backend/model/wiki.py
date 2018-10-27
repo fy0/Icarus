@@ -54,11 +54,11 @@ class WikiArticle(PostModel):
             return cls.get(cls.id == a)
 
     @classmethod
-    def get_index_root_article(cls):
+    def get_main_page_root_article(cls):
         try:
             return cls.select().where(cls.flag == 2, cls.root_id.is_null()).get()
         except cls.DoesNotExist:
-            a = cls.insert(time=int(time.time()), user_id=None, flag=1, is_current=True,
+            a = cls.insert(time=int(time.time()), user_id=None, flag=2, is_current=True,
                            major_ver=1, minor_ver=0, title="主页面", content='主页面文本').execute()
             statistic_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)

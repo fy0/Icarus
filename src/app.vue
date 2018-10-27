@@ -19,6 +19,8 @@
 .main {
     width: 100%;
     flex: 1;
+    padding-top: 25px;
+    padding-bottom: 15px;
 }
 </style>
 

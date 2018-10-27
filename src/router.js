@@ -126,6 +126,25 @@ export default new Router({
             component: ForumTopic
         },
 
+        // Wiki - 新建
+        {
+            path: '/wiki',
+            name: 'wiki',
+            component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/main.vue')
+        },
+        // Wiki - 新建
+        {
+            path: '/wiki/new',
+            name: 'wiki_article_new',
+            component: () => import(/* webpackChunkName: "wiki-edit" */ './views/wiki/wiki-edit.vue')
+        },
+        // Wiki - 编辑
+        {
+            path: '/wiki/edit/:id(\\S+)',
+            name: 'wiki_article_edit',
+            component: () => import(/* webpackChunkName: "wiki-edit" */ './views/wiki/wiki-edit.vue')
+        },
+
         // 设置
         {
             path: '/setting',

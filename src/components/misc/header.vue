@@ -15,7 +15,7 @@
                     <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum', 'index')">
                         <a>社区</a>
                     </router-link>
-                    <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('wiki', 'index')">
+                    <router-link tag="li" class="menu-item" :to="{ name: 'wiki' }" :class="navActive('wiki')">
                         <a>百科</a>
                     </router-link>
                     <li class="menu-item" v-if="false && isAdmin"><a href="#">文档</a></li>
@@ -74,7 +74,6 @@
 
 .ic-nav {
     border-bottom: 1px solid #ddd;
-    margin-bottom: 25px;
     height: 50px;
     background-color: $header-background-color;
 }
@@ -107,7 +106,7 @@
 }
 
 .ic-brand-heading:hover {
-    color: #286090;
+    color: $link-hover-color;
 }
 
 /* 中央与右侧导航 */
@@ -137,7 +136,7 @@
 
 .menu-item > a {
     padding: .5em 1em;
-    color: #939fb3;
+    color: $inactive;
     text-decoration: none;
     font-size: 1em;
 }

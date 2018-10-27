@@ -197,17 +197,6 @@
 </template>
 
 <style scoped lang="scss">
-.placeholder-text {
-    display: inline-block;
-    background-color: #e9e9e9;
-    width: 100%;
-
-    &.f12 { height: 12px; }
-    &.f14 { height: 14px; }
-    &.f16 { height: 16px; }
-    &.f18 { height: 18px; }
-}
-
 .wrapper {
     display: flex;
 

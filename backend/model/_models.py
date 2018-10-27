@@ -83,4 +83,4 @@ except peewee.ProgrammingError:
     db.rollback()
 
 WikiArticle.get_sidebar_root_article()
-WikiArticle.get_index_root_article()
+WikiArticle.get_main_page_root_article()

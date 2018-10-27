@@ -260,6 +260,7 @@ export default {
     notif: new NotifViewRequest('notif'),
     upload: new UploadViewRequest('upload'),
     logManage: new NotifViewRequest('log/manage'),
+    wiki: new SlimViewRequest('wiki'),
 
     Oauth: new Oauth()
 }
