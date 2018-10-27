@@ -112,6 +112,12 @@ def statistic_add_comment(related_type, related_id, comment_id):
             .execute()
 
 
+def statistic_add_post_click(post_id):
+    Statistic.update(click_count=Statistic.click_count + 1)\
+        .where(Statistic.id == post_id)\
+        .execute()
+
+
 def statistic_add_topic_click(topic_id, board_id=None):
     Statistic.update(click_count=Statistic.click_count + 1)\
         .where(Statistic.id == topic_id)\

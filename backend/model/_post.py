@@ -24,12 +24,15 @@ class POST_STATE(StateObject):
 
 class POST_VISIBLE(StateObject):
     HIDE = 10
+    PRIVATE = 30
+    NOT_IN_LIST = 40
     NORMAL = 50
     CONTENT_IF_LOGIN = 60
     USER_ONLY = 70
     ADMIN_ONLY = 80
 
-    txt = {HIDE: "隐藏", NORMAL:"标准", CONTENT_IF_LOGIN: '登陆后可见正文', USER_ONLY: '仅会员可见', ADMIN_ONLY: '仅管理员可见'}
+    txt = {HIDE: "隐藏", PRIVATE: '仅个人可见', NOT_IN_LIST: '不在列表中', NORMAL: "标准",
+           CONTENT_IF_LOGIN: '登陆后可见正文', USER_ONLY: '仅会员可见', ADMIN_ONLY: '仅管理员可见'}
 
 
 class POST_TYPES(StateObject):
@@ -49,7 +52,7 @@ class POST_TYPES(StateObject):
         from model.topic import Topic
         from model.comment import Comment
         from model.board import Board
-        from model.wiki import WikiItem
+        from model.wiki import WikiArticle
         from model.mention import Mention
 
         if isinstance(related_type, str):
@@ -66,13 +69,13 @@ class POST_TYPES(StateObject):
         elif related_type == POST_TYPES.MENTION:
             return Mention
         elif related_type == POST_TYPES.WIKI:
-            return WikiItem
+            return WikiArticle
 
     @classmethod
     def get_post(cls, related_type, related_id):
         from model.user import User
         from model.topic import Topic
-        from model.wiki import WikiItem
+        from model.wiki import WikiArticle
 
         if type(related_id) == POST_ID_GENERATOR:
             related_id = related_id.to_bin()

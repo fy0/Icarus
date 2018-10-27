@@ -19,6 +19,23 @@ visitor = Ability(None, {
         'weight': (A.READ,),
         'update_time': (A.READ,),
     },
+    'wiki_article': {
+        'id': (A.QUERY, A.READ),
+        'state': (A.READ,),
+        'visible': (A.READ,),
+        'time': (A.READ,),
+        'user_id': (A.QUERY, A.READ),
+
+        'title': (A.READ,),
+        'root_id': (A.QUERY, A.READ),
+        'parent_id': (A.QUERY, A.READ),
+        'content': (A.READ,),
+
+        'flag': (A.QUERY, A.READ,),
+        'is_current': (A.QUERY, A.READ,),
+        'major_ver': (A.READ,),
+        'minor_ver': (A.READ,),
+    },
     'user': {
         'id': (A.QUERY, A.READ),
         'nickname': (A.READ, A.CREATE),

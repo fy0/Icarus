@@ -11,6 +11,17 @@ super_user = Ability('superuser', {
         'sticky_weight': (A.READ, A.WRITE),
         'state': A.ALL,
     },
+    'wiki_article': {
+        'state': A.ALL,
+        'visible': A.ALL,
+
+        'title': A.ALL,
+        'content': A.ALL,
+
+        'is_current': A.ALL,
+        'major_ver': A.ALL,
+        'minor_ver': A.ALL,
+    },
     'board': {
         'name': A.ALL,
         'brief': A.ALL,
