@@ -138,6 +138,12 @@ export default new Router({
             name: 'wiki_list',
             component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/list.vue')
         },
+        // Wiki - 文章页面
+        {
+            path: '/wiki/id/:id([a-fA-F0-9]+)',
+            name: 'wiki_article_by_id',
+            component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/article.vue')
+        },
         // Wiki - 新建
         {
             path: '/wiki/new',

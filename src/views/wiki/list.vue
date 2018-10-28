@@ -2,6 +2,14 @@
 <wiki-base>
     <div class="box ic-paper ic-z1">
         <template v-if="page.items.length === 0">尚无文章</template>
+        <template v-else>
+            <ul>
+                <li v-for="i in page.items" :key="i.id">
+                    <router-link :to="{ name: 'wiki_article_by_id', params: {'id': i.id } }">{{i.title}}</router-link>
+                    <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
+                </li>
+            </ul>
+        </template>
     </div>
 </wiki-base>
 </template>
@@ -18,7 +26,7 @@
 import api from '@/netapi.js'
 import state from '@/state.js'
 import { marked } from '@/md.js'
-import WikiBase from './base.vue'
+import WikiBase from './_base.vue'
 
 export default {
     data () {
@@ -32,6 +40,7 @@ export default {
         }
     },
     methods: {
+        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
             let params = this.$route.params

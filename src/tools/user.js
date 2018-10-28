@@ -1,7 +1,12 @@
 import state from '@/state.js'
 
-$.isAdmin = function () {
-    return (state.user) && (state.user.group >= state.misc.USER_GROUP.ADMIN)
+$.isAdmin = function (user) {
+    user = user || state.user
+    return (user) && (user.group >= state.misc.USER_GROUP.SUPERUSER)
+}
+
+$.canEditWiki = function (user) {
+    return $.isAdmin(user)
 }
 
 // 获取用户角色（取当前最高的一个）

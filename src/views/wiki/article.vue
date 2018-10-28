@@ -1,12 +1,18 @@
 <template>
-<wiki-base>
+<wiki-base v-if="item">
     <article class="box article ic-paper ic-z1">
-        <div class="content" v-html="marked(mainpage.content || '')"></div>
+        <h1>{{item.title}}</h1>
+        <div class="content" v-html="marked(item.content || '')"></div>
     </article>
 </wiki-base>
+<page-not-found v-else />
 </template>
 
 <style lang="scss" scoped>
+article h1 {
+    text-align: center;
+}
+
 .box {
     background: $white;
     height: 100%;
@@ -26,20 +32,21 @@ export default {
             state,
             marked,
             loading: true,
-            mainpage: {}
+            item: null
         }
     },
     methods: {
         fetchData: async function () {
             let wrong = false
+            let params = this.$route.params
 
             let ret = await api.wiki.get({
-                flag: 2,
-                is_current: true
-            }, $.getRole('user'))
+                id: params.id
+            })
 
             if (ret.code === api.retcode.SUCCESS) {
-                this.mainpage = ret.data
+                this.item = ret.data
+            } else if (ret.code === api.retcode.NOT_FOUND) {
             } else {
                 wrong = ret
             }
