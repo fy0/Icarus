@@ -11,7 +11,7 @@ license: https://github.com/F-loat/vue-simplemde/blob/master/LICENSE
 
 <script>
 import { marked } from '@/md.js'
-
+import Prism from 'prismjs'
 import SimpleMDE from 'easymde/src/js/easymde.js'
 import 'easymde/dist/easymde.min.css'
 
@@ -54,7 +54,26 @@ export default {
                 element: this.$el.firstElementChild,
                 initialValue: this.value,
                 renderingConfig: {}
-            }, this.configs)
+            }, {
+                spellChecker: false,
+                autoDownloadFontAwesome: false,
+                placeholder: '这里填写内容，支持 Markdown 格式。\n支持图片上传（GIF除外），可通过拖拽或粘贴进行上传，大小限制5MB。',
+                autosave: {
+                    enabled: false,
+                    uniqueId: 'topic-post-content'
+                },
+                renderingConfig: {
+                    singleLineBreaks: false,
+                    codeSyntaxHighlighting: false
+                },
+                previewRender: function (plainText, preview) { // Async method
+                    setTimeout(function () {
+                        preview.innerHTML = this.parent.markdown(plainText)
+                        Prism.highlightAll()
+                    }.bind(this), 1)
+                    return 'Loading...'
+                }
+            })
             // 同步 value 和 initialValue 的值
             if (configs.initialValue) {
                 this.$emit('input', configs.initialValue)

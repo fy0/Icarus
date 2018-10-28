@@ -126,11 +126,17 @@ export default new Router({
             component: ForumTopic
         },
 
-        // Wiki - 新建
+        // Wiki - 主页
         {
             path: '/wiki',
             name: 'wiki',
             component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/main.vue')
+        },
+        // Wiki - 列表页
+        {
+            path: '/wiki/list/:page(\\d+)?',
+            name: 'wiki_list',
+            component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/list.vue')
         },
         // Wiki - 新建
         {

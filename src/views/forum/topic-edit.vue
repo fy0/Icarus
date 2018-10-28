@@ -45,6 +45,7 @@
 .edit-page-title {
     display: flex;
     padding: 20px 0;
+    padding-top: 0;
     justify-content: space-between;
     align-items: center;
 }
@@ -92,7 +93,6 @@ div.markdown-editor > div.editor-toolbar {
 </style>
 
 <script>
-import Prism from 'prismjs'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
@@ -125,30 +125,7 @@ export default {
             formErrors: {
                 title: [],
                 content: []
-            },
-
-            mdeConfig: {
-                spellChecker: false,
-                autoDownloadFontAwesome: false,
-                placeholder: '这里填写内容，支持 Markdown 格式。\n支持图片上传（GIF除外），可通过拖拽或粘贴进行上传，大小限制5MB。',
-                autosave: {
-                    enabled: false,
-                    uniqueId: 'topic-post-content'
-                },
-                renderingConfig: {
-                    singleLineBreaks: false,
-                    codeSyntaxHighlighting: false
-                },
-                previewRender: function (plainText, preview) { // Async method
-                    setTimeout(function () {
-                        preview.innerHTML = this.parent.markdown(plainText)
-                        Prism.highlightAll()
-                    }.bind(this), 1)
-                    return 'Loading...'
-                }
-            },
-
-            topicState: state.misc.POST_STATE.NORMAL
+            }
         }
     },
     computed: {

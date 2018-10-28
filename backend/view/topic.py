@@ -20,7 +20,10 @@ from view.user import UserMixin
 
 
 class TopicNewForm(ValidateForm):
-    title = StringField('标题', validators=[va.required(), va.Length(1, config.TOPIC_TITLE_LENGTH_MAX)])
+    title = StringField('标题', validators=[
+        va.required(),
+        va.Length(config.TOPIC_TITLE_LENGTH_MIN, config.TOPIC_TITLE_LENGTH_MAX)
+    ])
 
     content = StringField('正文', validators=[
         va.required(),
@@ -32,7 +35,10 @@ class TopicNewForm(ValidateForm):
 
 
 class TopicEditForm(ValidateForm):
-    title = StringField('标题', validators=[va.optional(), va.Length(1, config.TOPIC_TITLE_LENGTH_MAX)])
+    title = StringField('标题', validators=[
+        va.required(),
+        va.Length(config.TOPIC_TITLE_LENGTH_MIN, config.TOPIC_TITLE_LENGTH_MAX)
+    ])
 
     content = StringField('正文', validators=[
         va.optional(),
@@ -151,7 +157,9 @@ class TopicView(UserMixin, PeeweeView):
         values['time'] = int(time.time())
         values['weight'] = await Topic.weight_gen()
         values['update_time'] = int(time.time())
-        values['content'], self.do_mentions = check_content_mention(values['content'])
+
+        # 主题不再支持 @
+        # values['content'], self.do_mentions = check_content_mention(values['content'])
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

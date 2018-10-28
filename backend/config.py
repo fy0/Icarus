@@ -62,12 +62,20 @@ USER_REG_CODE_EXPIRE = 3 * 24 * 60 * 60  # 用户激活代码有效期，默认3
 USER_CHECKIN_COUNTER_INTERVAL = 3 * 24 * 60 * 60  # 签到连击间隔，默认3天
 
 ##########################################
+# 可选 - 通用内容配置
+##########################################
+
+POST_TITLE_LENGTH_MIN = 1
+POST_TITLE_LENGTH_MAX = 50
+POST_CONTENT_LENGTH_MAX = 60000
+
+##########################################
 # 可选 - 主题标题与正文限制
 ##########################################
 
-TOPIC_TITLE_LENGTH_MIN = 3
-TOPIC_TITLE_LENGTH_MAX = 50
-TOPIC_CONTENT_LENGTH_MAX = 60000
+TOPIC_TITLE_LENGTH_MIN = 2
+TOPIC_TITLE_LENGTH_MAX = POST_TITLE_LENGTH_MAX
+TOPIC_CONTENT_LENGTH_MAX = POST_CONTENT_LENGTH_MAX
 
 ##########################################
 # 可选 - 邮件发送配置，默认关闭注册邮件

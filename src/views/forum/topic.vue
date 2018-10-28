@@ -59,7 +59,7 @@
                     <div ref="share" class="share-component" data-disabled="douban,tencent,linkedin,diandian,google,qq,facebook,twitter"></div>
                 </div>
 
-                <p class="ic-hr" ref="comment-hr"></p>
+                <p class="ic-hr-30" ref="comment-hr"></p>
                 <comment-list :item="topic" :cur-page="commentPage" :post-type="POST_TYPES.TOPIC"/>
             </div>
         </div>

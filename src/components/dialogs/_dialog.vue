@@ -3,7 +3,7 @@
     <div class="dialog-box" :style="BoxStyle">
         <div>
             <span class="title">{{title}}</span>
-            <div class="ic-hr" style="margin-top: 5px !important"></div>
+            <div class="ic-hr-30" style="margin-top: 5px !important"></div>
         </div>
         <div>
             <slot />

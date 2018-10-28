@@ -1,3 +1,4 @@
+import time
 from typing import Dict, List
 import config
 from model._post import POST_TYPES
@@ -8,10 +9,22 @@ from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from view import route, cooldown, same_user
+from view import route, cooldown, same_user, ValidateForm
 from wtforms import validators as va, StringField, IntegerField
 from permissions import permissions_add_all
 from view.user import UserMixin
+
+
+class WikiNewForm(ValidateForm):
+    title = StringField('标题', validators=[
+        va.required(),
+        va.Length(config.POST_TITLE_LENGTH_MIN, config.POST_TITLE_LENGTH_MAX)
+    ])
+
+    content = StringField('正文', validators=[
+        va.required(),
+        va.Length(1, config.POST_CONTENT_LENGTH_MAX)
+    ])
 
 
 @route('wiki')
@@ -41,6 +54,21 @@ class WikiView(UserMixin, PeeweeView):
     def after_read(self, records: List[DataRecord]):
         for i in records:
             pass
+
+    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
+        values = values_lst[0]
+        form = WikiNewForm(**raw_post)
+        if not form.validate():
+            return self.finish(RETCODE.FAILED, form.errors)
+
+        values['time'] = int(time.time())
+        values['user_id'] = self.current_user.id
+
+        # 临时选项
+        values['is_current'] = True
+        values['major_ver'] = 1
+        values['minor_ver'] = 0
+        # parent_id
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

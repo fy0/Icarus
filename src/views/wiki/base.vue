@@ -4,9 +4,14 @@
         <div class="left-nav">
             <div class="box ic-paper ic-z1">
                 <div class="sidebar-content" v-html="marked(sidebar.content || '')"></div>
+                <div class="ic-hr" style="margin: 10px 0px;"></div>
                 <div class="bottom" v-if="!state.loading">
-                    <div>全部文章</div>
-                    <div>添加文章</div>
+                    <div>
+                        <router-link :to="{ name: 'wiki_list' }">全部文章</router-link>
+                    </div>
+                    <div>
+                        <router-link :to="{ name: 'wiki_article_new' }">添加文章</router-link>
+                    </div>
                     <div>随机页面</div>
                     <div>
                         <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</router-link>
