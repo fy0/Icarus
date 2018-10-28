@@ -3,17 +3,17 @@
     <div class="wrapper">
         <div class="left-nav">
             <div class="box ic-paper ic-z1">
-                <div class="sidebar-content" v-html="marked(sidebar.content || '')">
-                    <h1 id="til-1"><a href="#">模拟一些标题</a></h1>
-                    <h1 id="til-2" class="active">模拟标题2</h1>
-                    <h2 id="til-3">模拟标题33</h2>
-                    <h2 id="til-4">模拟标题4</h2>
-                    <h1 id="til-5">模拟标题5</h1>
-                </div>
-                <div>
+                <div class="sidebar-content" v-html="marked(sidebar.content || '')"></div>
+                <div class="bottom" v-if="!state.loading">
                     <div>全部文章</div>
                     <div>添加文章</div>
                     <div>随机页面</div>
+                    <div>
+                        <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</router-link>
+                    </div>
+                    <div>
+                        <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.mainpageId }, query: { manage: true } }">编辑主页</router-link>
+                    </div>
                 </div>
             </div>
         </div>
@@ -23,6 +23,24 @@
     </div>
 </div>
 </template>
+
+<style lang="scss">
+.left-nav > .box > .sidebar-content {
+    * {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    ul {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        padding: 0px 10px 3px 10px;
+    }
+}
+</style>
 
 <style lang="scss" scoped>
 .main {
@@ -47,15 +65,24 @@ $title-text-active-color: darken(#373434, 0);
         // background-color: #373434;
         height: 100%;
         margin-right: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
         font-size: 14px;
 
         a {
             color: $title-text-color;
         }
 
-        > * {
+        > .sidebar-content {
             font-size: 14px;
-            padding: 10px;
+        }
+
+        .bottom > * {
+            padding: 0 10px;
+        }
+
+        > * {
+            // padding: 10px;
             color: $title-text-color;
             background-color: $white;
 
@@ -63,10 +90,6 @@ $title-text-active-color: darken(#373434, 0);
                 color: $title-text-active-color;
                 border-left: 1px solid $title-text-active-color;
             }
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            // font-size: 14px;
         }
     }
 
@@ -86,8 +109,8 @@ export default {
         return {
             state,
             marked,
-            loading: true,
-            sidebar: {}
+            sidebar: {},
+            mainpageId: null
         }
     },
     methods: {
@@ -106,7 +129,20 @@ export default {
                     wrong = ret
                 }
             }
-            await Promise.all([getSidebar()])
+            let getMainPage = async () => {
+                let ret = await api.wiki.get({
+                    select: 'id',
+                    flag: 2,
+                    is_current: true
+                }, $.getRole('user'))
+
+                if (ret.code === api.retcode.SUCCESS) {
+                    this.mainpageId = ret.data.id
+                } else {
+                    wrong = ret
+                }
+            }
+            await Promise.all([getSidebar(), getMainPage()])
 
             if (wrong) {
                 $.message_by_code(wrong.code)

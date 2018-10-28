@@ -3,7 +3,7 @@
     <div v-if="stage == 1">
         <div class="manage-form-item">
             <span class="label">
-                <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id, asAdmin: true} }">编辑文章</router-link>
+                <router-link :to="{ name: 'forum_topic_edit', params: {id: topic.id}, query: {manage: true} }">编辑文章</router-link>
             </span>
             <div class="right">
             </div>

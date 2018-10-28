@@ -1,8 +1,17 @@
 
-// 这是为了让图片等不将父元素撑开
-
 .article > .content * {
+    // 这是为了让图片等不将父元素撑开
     max-width: 100%;
+}
+
+.editor-preview img {
+    // 附带：编辑中的撑开修正
+    width: auto;
+    max-width: 100%;
+}
+
+.article > .content p {
+    margin: 0;
 }
 
 .article > .content, .editor-preview {
@@ -12,6 +21,7 @@
         text-align: center;
     }
 
+    // 标题大小调整
     h1, h2, h3, h4, h5, h6 { line-height: 1.5em }
     h1 { font-size: 24px; }
     h2 { font-size: 22px; }
@@ -19,12 +29,6 @@
     h4 { font-size: 18px; }
     h5 { font-size: 16px; }
     h6 { font-size: 14px; }
-}
-
-// 附带：编辑中的修正
-.editor-preview img {
-    width: auto;
-    max-width: 100%;
 }
 
 .cm-header {

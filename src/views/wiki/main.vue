@@ -1,8 +1,8 @@
 <template>
 <wiki-base>
-    <div class="box ic-paper ic-z1">
+    <article class="box article ic-paper ic-z1">
         <div class="content" v-html="marked(mainpage.content || '')"></div>
-    </div>
+    </article>
 </wiki-base>
 </template>
 

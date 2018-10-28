@@ -229,8 +229,8 @@ export default {
         fetchData: async function () {
             this.pageLoading = true
             let params = this.$route.params
+            this.asAdmin = this.$route.query.manage
 
-            this.asAdmin = params.asAdmin
             if (!state.user) {
                 $.message_error('抱歉，无权访问此页面，请返回')
                 return
