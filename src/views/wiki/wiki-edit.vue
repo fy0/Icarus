@@ -1,5 +1,8 @@
 <template>
 <loading v-if="loading"/>
+<redirecting v-else-if="!canEditWiki()" class="ic-container box">
+    <span>抱歉，你的账号没有权限访问这个页面</span>
+</redirecting>
 <div v-else class="ic-container">
     <div class="edit-page-title">
         <div v-title>{{ isEdit ? '编辑文章' : '添加文章' }} - {{state.config.title}}</div>
@@ -130,6 +133,7 @@ export default {
         }
     },
     methods: {
+        canEditWiki: $.canEditWiki,
         send: async function (e) {
             let ret
             let wikiId

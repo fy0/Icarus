@@ -4,6 +4,9 @@
         <h1>{{item.title}}</h1>
         <div class="content" v-html="marked(item.content || '')"></div>
     </article>
+    <div style="margin-left: 10px; font-size: 14px; color: #777">
+        <span>最后更新时间：</span><ic-time :timestamp="item.time"/>
+    </div>
 </wiki-base>
 <page-not-found v-else />
 </template>
@@ -15,8 +18,9 @@ article h1 {
 
 .box {
     background: $white;
-    height: 100%;
     padding: 10px;
+    height: 100%;
+    height: calc(100% - 15px);
 }
 </style>
 

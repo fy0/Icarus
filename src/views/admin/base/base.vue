@@ -1,5 +1,6 @@
 <template>
-<div class="ic-container">
+<page-not-found v-if="!isAdmin()"/>
+<div class="ic-container" v-else>
     <div v-title>管理界面 - {{state.config.title}}</div>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
@@ -36,6 +37,9 @@ export default {
         return {
             state
         }
+    },
+    methods: {
+        isAdmin: $.isAdmin
     },
     components: {
         Sidebar

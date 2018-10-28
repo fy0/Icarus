@@ -9,16 +9,20 @@
                     <div>
                         <router-link :to="{ name: 'wiki_list' }">全部文章</router-link>
                     </div>
-                    <div>
-                        <router-link :to="{ name: 'wiki_article_new' }">添加文章</router-link>
-                    </div>
                     <div>随机页面</div>
-                    <div>
-                        <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</router-link>
-                    </div>
-                    <div>
-                        <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.mainpageId }, query: { manage: true } }">编辑主页</router-link>
-                    </div>
+
+                    <template v-if="canEditWiki()">
+                        <div class="ic-hr" style="margin: 10px 0px;"></div>
+                        <div>
+                            <router-link :to="{ name: 'wiki_article_new' }">添加文章</router-link>
+                        </div>
+                        <div>
+                            <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</router-link>
+                        </div>
+                        <div>
+                            <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.mainpageId }, query: { manage: true } }">编辑主页</router-link>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -119,6 +123,7 @@ export default {
         }
     },
     methods: {
+        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
 
