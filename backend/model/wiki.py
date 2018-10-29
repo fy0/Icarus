@@ -63,3 +63,15 @@ class WikiArticle(PostModel):
                            major_ver=1, minor_ver=0, title="主页面", content='主页面文本').execute()
             statistic_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)
+
+    @classmethod
+    def get_random_one(cls) -> bytes:
+        try:
+            wa = cls.select(cls.id)\
+                .where(cls.state >= POST_STATE.NORMAL, cls.flag.is_null(), cls.is_current == True) \
+                .order_by(fn.Random())\
+                .limit(1) \
+                .get()
+            return wa.id.tobytes()
+        except cls.DoesNotExist:
+            pass

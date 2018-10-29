@@ -9,7 +9,9 @@
                     <div>
                         <router-link :to="{ name: 'wiki_list' }">全部文章</router-link>
                     </div>
-                    <div>随机页面</div>
+                    <div>
+                        <router-link :to="{ name: 'wiki_random' }">随机页面</router-link>
+                    </div>
 
                     <template v-if="canEditWiki()">
                         <div class="ic-hr" style="margin: 10px 0px;"></div>

@@ -132,6 +132,12 @@ export default new Router({
             name: 'wiki',
             component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/main.vue')
         },
+        // Wiki - 随机页面
+        {
+            path: '/wiki/random',
+            name: 'wiki_random',
+            component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/random.vue')
+        },
         // Wiki - 列表页
         {
             path: '/wiki/list/:page(\\d+)?',

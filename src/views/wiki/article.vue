@@ -1,26 +1,38 @@
 <template>
 <wiki-base v-if="item">
     <article class="box article ic-paper ic-z1">
-        <h1>{{item.title}}</h1>
+        <div class="title">
+            <h1>{{item.title}}</h1>
+            <span style="font-size: 14px; float: right">
+                <ic-time :timestamp="item.time"/>
+                <div>[查看历史]</div>
+            </span>
+        </div>
+        <div class="ic-hr"></div>
         <div class="content" v-html="marked(item.content || '')"></div>
     </article>
     <div style="margin-left: 10px; font-size: 14px; color: #777">
-        <span>最后更新时间：</span><ic-time :timestamp="item.time"/>
     </div>
 </wiki-base>
 <page-not-found v-else />
 </template>
 
 <style lang="scss" scoped>
-article h1 {
-    text-align: center;
+article > .title {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
 }
 
 .box {
     background: $white;
     padding: 10px;
     height: 100%;
-    height: calc(100% - 15px);
+    height: 100%;
+}
+
+.ic-hr {
+    margin: 10px 0;
 }
 </style>
 

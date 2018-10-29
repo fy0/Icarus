@@ -192,6 +192,12 @@ class UploadViewRequest extends SlimViewRequest {
     }
 }
 
+class WikiViewRequest extends SlimViewRequest {
+    async random () {
+        return nget(`${this.urlPrefix}/random`, null)
+    }
+}
+
 // http://localhost:9999/api/user/oauth/get_oauth_url 取url链接
 class Oauth {
     async getUrl (website) {
@@ -260,7 +266,7 @@ export default {
     notif: new NotifViewRequest('notif'),
     upload: new UploadViewRequest('upload'),
     logManage: new NotifViewRequest('log/manage'),
-    wiki: new SlimViewRequest('wiki'),
+    wiki: new WikiViewRequest('wiki'),
 
     Oauth: new Oauth()
 }

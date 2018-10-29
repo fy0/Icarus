@@ -1,5 +1,8 @@
 import time
 from typing import Dict, List
+
+from peewee import fn
+
 import config
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
@@ -40,6 +43,14 @@ class WikiView(UserMixin, PeeweeView):
     def permission_init(cls):
         permission: Permissions = cls.permission
         permissions_add_all(permission)
+
+    @route.interface('GET')
+    async def random(self):
+        wa = WikiArticle.get_random_one()
+        if wa:
+            self.finish(RETCODE.SUCCESS, {'id': wa})
+        else:
+            self.finish(RETCODE.NOT_FOUND)
 
     async def get(self):
         await super().get()
