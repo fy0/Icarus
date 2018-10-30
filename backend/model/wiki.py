@@ -31,7 +31,7 @@ class WikiArticle(PostModel):
     root_id = BlobField(index=True, null=True)  # 新文章的root是null，后续继承者继承其父级的root
     parent_id = BlobField(index=True, null=True)
     content = TextField()
-    # link_name = TextField(index=Tree)
+    # link_name = TextField(index=True)
 
     flag = IntegerField(index=True, null=True, default=None)
     is_current = BooleanField(index=True, default=False)

@@ -1,38 +1,24 @@
 <template>
-<wiki-base v-if="item">
-    <article class="box article ic-paper ic-z1">
-        <div class="title">
-            <h1>{{item.title}}</h1>
-            <span style="font-size: 14px; float: right; text-align: right">
-                <ic-time :timestamp="item.time"/>
-                <div><router-link :to="{ name: 'wiki_history', params: {id: item.root_id || item.id} }">[查看历史]</router-link></div>
-            </span>
-        </div>
-        <div class="ic-hr"></div>
-        <div class="content" v-html="marked(item.content || '')"></div>
-    </article>
-    <div style="margin-left: 10px; font-size: 14px; color: #777">
+<wiki-base>
+    <div class="box ic-paper ic-z1">
+        <template v-if="page.items.length === 0">尚无文章</template>
+        <template v-else>
+            <ul>
+                <li v-for="i in page.items" :key="i.id">
+                    <router-link :to="{ name: 'wiki_article_by_id', params: {'id': i.id } }">{{i.title}}</router-link>
+                    <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
+                </li>
+            </ul>
+        </template>
     </div>
 </wiki-base>
-<page-not-found v-else />
 </template>
 
 <style lang="scss" scoped>
-article > .title {
-    display: flex;
-    position: relative;
-    justify-content: space-between;
-}
-
 .box {
     background: $white;
     padding: 10px;
     height: 100%;
-    height: 100%;
-}
-
-.ic-hr {
-    margin: 10px 0;
 }
 </style>
 
@@ -48,21 +34,27 @@ export default {
             state,
             marked,
             loading: true,
-            item: null
+            page: {
+                items: []
+            }
         }
     },
     methods: {
+        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
             let params = this.$route.params
+            let pageNumber = params.page || 1
 
-            let ret = await api.wiki.get({
-                id: params.id
-            })
+            let ret = await api.wiki.list({
+                flag: null,
+                is_current: true
+            }, pageNumber, null, $.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {
-                this.item = ret.data
+                this.page = ret.data
             } else if (ret.code === api.retcode.NOT_FOUND) {
+                this.page.items = []
             } else {
                 wrong = ret
             }
