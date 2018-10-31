@@ -83,6 +83,7 @@ class WikiView(UserMixin, PeeweeView):
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
+        WikiArticle.update(root_id=record['id']).where(WikiArticle.id == record['id'])
 
         # 添加统计记录
         statistic_new(POST_TYPES.WIKI, record['id'])

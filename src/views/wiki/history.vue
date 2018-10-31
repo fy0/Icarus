@@ -1,15 +1,12 @@
 <template>
 <wiki-base>
     <div class="box ic-paper ic-z1">
-        <template v-if="page.items.length === 0">尚无文章</template>
-        <template v-else>
-            <ul>
-                <li v-for="i in page.items" :key="i.id">
-                    <router-link :to="{ name: 'wiki_article_by_id', params: {'id': i.id } }">{{i.title}}</router-link>
-                    <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
-                </li>
-            </ul>
-        </template>
+        <ul>
+            <!-- <li v-for="i in page.items" :key="i.id">
+                <router-link :to="{ name: 'wiki_article_by_id', params: {'id': i.id } }">{{i.title}}</router-link>
+                <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
+            </li> -->
+        </ul>
     </div>
 </wiki-base>
 </template>
@@ -46,7 +43,12 @@ export default {
             let params = this.$route.params
             let pageNumber = params.page || 1
 
-            let ret = await api.wiki.list({
+            let ret = await api.wiki.get({
+                root_id: null,
+                is_current: true
+            }, pageNumber, null, $.getRole('user'))
+
+            ret = await api.wiki.list({
                 flag: null,
                 is_current: true
             }, pageNumber, null, $.getRole('user'))

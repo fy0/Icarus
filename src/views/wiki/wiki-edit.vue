@@ -149,7 +149,7 @@ export default {
 
             if (Object.keys(wikiInfo).length <= 0) {
                 $.message_success('编辑成功！但编辑者并未进行任何改动。')
-                // this.$router.push({ name: 'forum_topic', params: { id: this.topicInfo.id } })
+                this.$router.push({ name: 'wiki_article_by_id', params: { id: this.topicInfo.id } })
                 this.working = false
                 return
             }
@@ -163,13 +163,11 @@ export default {
                 ret = await api.wiki.new(wikiInfo, 'superuser')
             }
             successText = '编辑成功！已自动跳转至文章页面。'
-            console.log(111, ret)
 
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
                 wikiId = ret.data.id
-                console.log(wikiId)
-                // this.$router.push({ name: 'forum_topic', params: { id: wikiId } })
+                this.$router.push({ name: 'wiki_article_by_id', params: { id: wikiId } })
                 $.message_success(successText)
             } else if (ret.code === api.retcode.INVALID_ROLE) {
                 $.message_error('当前用户身份无此权限')
