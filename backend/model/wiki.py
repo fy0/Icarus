@@ -5,7 +5,7 @@ from peewee import *
 from model._post import POST_STATE, POST_VISIBLE, PostModel, POST_TYPES
 from model.statistic import statistic_new
 from slim.utils import StateObject
-from model import BaseModel, MyTimestampField
+from model import BaseModel, MyTimestampField, db
 from model.user import User
 
 # from model.board import Board
@@ -29,7 +29,7 @@ from model.user import User
 class WikiArticle(PostModel):
     title = TextField(index=True)
     root_id = BlobField(index=True, null=True)  # 新文章的root是null，后续继承者继承其父级的root
-    parent_id = BlobField(index=True, null=True)
+    parent_id = BlobField(index=True, null=True)  # 这一属性无意义了
     content = TextField()
     # link_name = TextField(index=True)
 
@@ -43,6 +43,18 @@ class WikiArticle(PostModel):
 
     def get_title(self):
         return self.title
+
+    @classmethod
+    def get_newest_by_root_id(cls, root_id):
+        try:
+            return cls.select()\
+                .order_by(cls.major_ver.desc(), cls.minor_ver.desc())\
+                .where(cls.root_id == root_id)\
+                .get()
+        except cls.DoesNotExist:
+            pass
+        except DatabaseError:
+            db.rollback()
 
     @classmethod
     def get_sidebar_root_article(cls):

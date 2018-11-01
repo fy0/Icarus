@@ -30,18 +30,13 @@ export default {
         }
     },
     methods: {
-        canEditWiki: $.canEditWiki,
         fetchData: async function () {
-            let wrong = false
-            let params = this.$route.params
-            let pageNumber = params.page || 1
-
             let ret = await api.wiki.random()
             if (ret.code === api.retcode.SUCCESS) {
                 this.nothing = false
                 this.$router.replace({
                     name: 'wiki_article_by_id',
-                    params: {id: ret.data.id}
+                    params: { id: ret.data.id }
                 })
             }
         }

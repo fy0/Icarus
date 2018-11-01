@@ -1,11 +1,16 @@
 <template>
 <wiki-base>
     <div class="box ic-paper ic-z1">
+        <h3>历史记录</h3>
+        <!-- <div class="ic-hr" style="margin: 10px 0;"></div> -->
         <ul>
-            <!-- <li v-for="i in page.items" :key="i.id">
+            <li v-for="i in page.items" :key="i.id">
                 <router-link :to="{ name: 'wiki_article_by_id', params: {'id': i.id } }">{{i.title}}</router-link>
-                <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
-            </li> -->
+                <template> - </template>
+                <ic-time :timestamp="i.time" />
+                <template>, </template>
+                <user-link class="author limit l2" :user="i.user_id" />
+            </li>
         </ul>
     </div>
 </wiki-base>
@@ -43,14 +48,11 @@ export default {
             let params = this.$route.params
             let pageNumber = params.page || 1
 
-            let ret = await api.wiki.get({
-                root_id: null,
-                is_current: true
-            }, pageNumber, null, $.getRole('user'))
-
-            ret = await api.wiki.list({
-                flag: null,
-                is_current: true
+            let ret = await api.wiki.list({
+                root_id: params.id,
+                minor_ver: 0,
+                order: 'major_ver.desc',
+                loadfk: { 'user_id': null }
             }, pageNumber, null, $.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {

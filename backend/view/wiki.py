@@ -75,15 +75,23 @@ class WikiView(UserMixin, PeeweeView):
         values['time'] = int(time.time())
         values['user_id'] = self.current_user.id
 
-        # 临时选项
-        values['is_current'] = True
-        values['major_ver'] = 1
-        values['minor_ver'] = 0
+        root_id = values.get('root_id', None)
+        if root_id:
+            newest = WikiArticle.get_newest_by_root_id(root_id)
+            if not newest:
+                return self.finish(RETCODE.FAILED, '找不到对应的原始词条')
+            values['major_ver'] = newest.major_ver
+            # 这里忽略并发导致的 minor_ver 相同的问题，理论上发生率太低
+            values['minor_ver'] = newest.minor_ver + 1
+        else:
+            values['is_current'] = True
+            values['major_ver'] = 1
+            values['minor_ver'] = 0
         # parent_id
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
-        WikiArticle.update(root_id=record['id']).where(WikiArticle.id == record['id'])
+        WikiArticle.update(root_id=record['id']).where(WikiArticle.id == record['id']).execute()
 
         # 添加统计记录
         statistic_new(POST_TYPES.WIKI, record['id'])

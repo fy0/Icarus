@@ -127,6 +127,11 @@ export default {
         isEdit () {
             return this.$route.name === 'wiki_article_edit'
         },
+        action: function () {
+            if (this.$route.name === 'wiki_article_edit') return 'edit'
+            if (this.$route.name === 'wiki_article_fork') return 'fork'
+            if (this.$route.name === 'wiki_article_new') return 'new'
+        },
         postButtonText: function () {
             return this.working ? '请等待'
                 : (this.isEdit ? '编辑' : '发布')
@@ -160,6 +165,9 @@ export default {
             if (this.isEdit) {
                 ret = await api.wiki.set({ id: this.wikiInfo.id }, wikiInfo, role)
             } else {
+                if (this.action === 'fork') {
+                    wikiInfo['root_id'] = this.wikiInfo.root_id
+                }
                 ret = await api.wiki.new(wikiInfo, 'superuser')
             }
             successText = '编辑成功！已自动跳转至文章页面。'
@@ -194,7 +202,7 @@ export default {
                 return
             }
 
-            if (this.isEdit) {
+            if (this.action !== 'new') {
                 let ret = await api.wiki.get({
                     id: params.id,
                     loadfk: { user_id: null }
@@ -206,7 +214,9 @@ export default {
                 }
 
                 this.wikiInfo = ret.data
-                this.save = _.clone(ret.data)
+                if (this.action === 'edit') {
+                    this.save = _.clone(ret.data)
+                }
             }
 
             this.loading = false

@@ -168,6 +168,12 @@ export default new Router({
             name: 'wiki_article_edit',
             component: () => import(/* webpackChunkName: "wiki-edit" */ './views/wiki/wiki-edit.vue')
         },
+        // Wiki - 派生
+        {
+            path: '/wiki/fork/:id(\\S+)',
+            name: 'wiki_article_fork',
+            component: () => import(/* webpackChunkName: "wiki-edit" */ './views/wiki/wiki-edit.vue')
+        },
 
         // 设置
         {

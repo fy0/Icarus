@@ -5,10 +5,13 @@
             <h1>{{item.title}}</h1>
             <span style="font-size: 14px; float: right; text-align: right">
                 <ic-time :timestamp="item.time"/>
-                <div><router-link :to="{ name: 'wiki_history', params: {id: item.root_id || item.id} }">[查看历史]</router-link></div>
+                <div>
+                    <router-link :to="{ name: 'wiki_article_fork', params: {id: item.root_id || item.id} }">[编辑]</router-link>
+                    <router-link :to="{ name: 'wiki_history', params: {id: item.root_id || item.id} }" style="margin-left: 5px">[历史]</router-link>
+                </div>
             </span>
         </div>
-        <div class="ic-hr"></div>
+        <div class="ic-hr" style="margin: 10px 0;"></div>
         <div class="content" v-html="marked(item.content || '')"></div>
     </article>
     <div style="margin-left: 10px; font-size: 14px; color: #777">
