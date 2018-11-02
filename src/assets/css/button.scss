@@ -12,6 +12,12 @@
     // justify-content: center;
     text-align: center;
 
+    &.small {
+        padding: 3px 6px;
+        font-size: 1em;
+        line-height: 1em;
+    }
+
     &.disabled {
         color: rgba(0, 0, 0, 0.3);
         cursor: not-allowed;

@@ -168,6 +168,8 @@ export default {
                 if (this.action === 'fork') {
                     wikiInfo['root_id'] = this.wikiInfo.root_id
                 }
+                console.log(11111, this.action, this.wikiInfo, wikiInfo)
+                // return
                 ret = await api.wiki.new(wikiInfo, 'superuser')
             }
             successText = '编辑成功！已自动跳转至文章页面。'

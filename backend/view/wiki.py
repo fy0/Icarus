@@ -32,6 +32,9 @@ class WikiNewForm(ValidateForm):
 
 @route('wiki')
 class WikiView(UserMixin, PeeweeView):
+    """
+    文档有一个简单的版本设定，但忽略任何并发导致的同步问题
+    """
     model = WikiArticle
 
     @classmethod
@@ -51,6 +54,14 @@ class WikiView(UserMixin, PeeweeView):
             self.finish(RETCODE.SUCCESS, {'id': wa})
         else:
             self.finish(RETCODE.NOT_FOUND)
+
+    @route.interface('POST')
+    async def pick_version(self):
+        pass
+
+    @route.interface('POST')
+    async def rollback(self):
+        pass
 
     async def get(self):
         await super().get()
@@ -87,11 +98,12 @@ class WikiView(UserMixin, PeeweeView):
             values['is_current'] = True
             values['major_ver'] = 1
             values['minor_ver'] = 0
-        # parent_id
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
-        WikiArticle.update(root_id=record['id']).where(WikiArticle.id == record['id']).execute()
+        WikiArticle.update(root_id=record['id'])\
+            .where(WikiArticle.id == record['id'], WikiArticle.minor_ver==0)\
+            .execute()
 
         # 添加统计记录
         statistic_new(POST_TYPES.WIKI, record['id'])
