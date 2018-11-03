@@ -14,9 +14,9 @@ super_user = Ability('superuser', {
     'wiki_article': {
         'state': A.ALL,
         'visible': A.ALL,
-        'root_id': (A.CREATE, A.QUERY, A.WRITE),
 
         'title': A.ALL,
+        'ref': A.ALL,
         'content': A.ALL,
     },
     'board': {

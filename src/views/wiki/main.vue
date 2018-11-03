@@ -34,8 +34,7 @@ export default {
             let wrong = false
 
             let ret = await api.wiki.get({
-                flag: 2,
-                is_current: true
+                flag: 2
             }, $.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {

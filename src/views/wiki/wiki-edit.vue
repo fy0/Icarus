@@ -16,6 +16,10 @@
             <input type="text" name="title" v-model="wikiInfo.title" :placeholder="`这里填写标题，${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
 
+        <check-row :results="formErrors.ref" :multi="true">
+            <input type="text" v-model="wikiInfo.ref" :placeholder="`这里是这篇文章的URL地址，若为abc，地址将为/wiki/ref/abc`">
+        </check-row>
+
         <check-row :results="formErrors.content" :multi="true">
             <markdown-editor ref="editor" v-model="wikiInfo.content" rows="15" autofocus></markdown-editor>
         </check-row>
@@ -27,7 +31,7 @@
 </template>
 
 <style lang="scss" scoped>
-#form_topic input[name='title'] {
+#form_topic input[type='text'] {
     padding: 6px 12px;
     width: 100%;
     font-weight: bolder;
@@ -114,6 +118,7 @@ export default {
 
             wikiInfo: {
                 title: '',
+                ref: '',
                 content: ''
             },
 
@@ -147,14 +152,14 @@ export default {
             if (this.working) return
             this.working = true
 
-            let wikiInfo = $.objDiff({
-                'title': this.wikiInfo.title,
-                'content': this.wikiInfo.content
-            }, this.save)
-
+            let wikiInfo = $.objDiff(this.wikiInfo, this.save)
             if (Object.keys(wikiInfo).length <= 0) {
                 $.message_success('编辑成功！但编辑者并未进行任何改动。')
-                this.$router.push({ name: 'wiki_article_by_id', params: { id: this.topicInfo.id } })
+                if (this.save.flag) {
+                    this.$router.push({ name: 'wiki' })
+                } else {
+                    this.$router.push({ name: 'wiki_article_by_id', params: { id: this.topicInfo.id || this.save.id } })
+                }
                 this.working = false
                 return
             }

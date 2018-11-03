@@ -1,13 +1,14 @@
 <template>
 <wiki-base v-if="item">
+    <div v-title>{{ item.title }} - 百科 - {{state.config.title}}</div>
     <article class="box article ic-paper ic-z1">
         <div class="title">
             <h1>{{item.title}}</h1>
             <span style="font-size: 14px; float: right; text-align: right">
                 <ic-time :timestamp="item.time"/>
                 <div>
-                    <router-link :to="{ name: 'wiki_article_fork', params: {id: item.root_id || item.id} }">[编辑]</router-link>
-                    <router-link :to="{ name: 'wiki_history', params: {id: item.root_id || item.id} }" style="margin-left: 5px">[历史]</router-link>
+                    <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {id: item.id}, query: { manage: true } }">[编辑]</router-link>
+                    <!-- <router-link :to="{ name: 'wiki_history', params: {id: item.id} }" style="margin-left: 5px">[历史]</router-link> -->
                 </div>
             </span>
         </div>
@@ -21,6 +22,11 @@
 </template>
 
 <style lang="scss" scoped>
+.sup {
+    font-size: smaller;
+    vertical-align: super;
+}
+
 article > .title {
     display: flex;
     position: relative;
@@ -55,14 +61,12 @@ export default {
         }
     },
     methods: {
+        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
             let params = this.$route.params
 
-            let ret = await api.wiki.get({
-                id: params.id
-            })
-
+            let ret = await api.wiki.get(params)
             if (ret.code === api.retcode.SUCCESS) {
                 this.item = ret.data
             } else if (ret.code === api.retcode.NOT_FOUND) {

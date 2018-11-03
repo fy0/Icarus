@@ -1,7 +1,7 @@
 <template>
 <wiki-base>
     <div class="box ic-paper ic-z1">
-        <template v-if="nothing">尚无一篇文章，又能前往何方？</template>
+        <template v-if="nothing">无处可去</template>
     </div>
 </wiki-base>
 </template>

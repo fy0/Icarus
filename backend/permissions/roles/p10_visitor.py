@@ -27,14 +27,9 @@ visitor = Ability(None, {
         'user_id': (A.QUERY, A.READ),
 
         'title': (A.READ,),
-        'root_id': (A.QUERY, A.READ),
-        'parent_id': (A.QUERY, A.READ),
+        'ref': (A.QUERY, A.READ,),
         'content': (A.READ,),
-
         'flag': (A.QUERY, A.READ,),
-        'is_current': (A.QUERY, A.READ,),
-        'major_ver': (A.READ,),
-        'minor_ver': (A.READ,),
     },
     'user': {
         'id': (A.QUERY, A.READ),

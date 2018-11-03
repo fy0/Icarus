@@ -1,5 +1,6 @@
 <template>
 <div class="ic-container">
+    <div v-title>百科 - {{state.config.title}}</div>
     <div class="wrapper">
         <div class="left-nav">
             <div class="box ic-paper ic-z1">
@@ -40,6 +41,7 @@
     * {
         font-size: 14px;
         margin: 0;
+        padding: 0px 10px;
     }
 
     ul {
@@ -131,8 +133,7 @@ export default {
 
             let getSidebar = async () => {
                 let ret = await api.wiki.get({
-                    flag: 1,
-                    is_current: true
+                    flag: 1
                 }, $.getRole('user'))
 
                 if (ret.code === api.retcode.SUCCESS) {
@@ -144,8 +145,7 @@ export default {
             let getMainPage = async () => {
                 let ret = await api.wiki.get({
                     select: 'id',
-                    flag: 2,
-                    is_current: true
+                    flag: 2
                 }, $.getRole('user'))
 
                 if (ret.code === api.retcode.SUCCESS) {

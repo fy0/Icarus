@@ -150,10 +150,16 @@ export default new Router({
             name: 'wiki_list',
             component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/list.vue')
         },
-        // Wiki - 文章页面
+        // Wiki - 文章页面 - id
         {
             path: '/wiki/id/:id([a-fA-F0-9]+)',
             name: 'wiki_article_by_id',
+            component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/article.vue')
+        },
+        // Wiki - 文章页面 - ref
+        {
+            path: '/wiki/ref/:ref([a-fA-F0-9]+)',
+            name: 'wiki_article_by_ref',
             component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/article.vue')
         },
         // Wiki - 新建
@@ -169,11 +175,11 @@ export default new Router({
             component: () => import(/* webpackChunkName: "wiki-edit" */ './views/wiki/wiki-edit.vue')
         },
         // Wiki - 派生
-        {
-            path: '/wiki/fork/:id(\\S+)',
-            name: 'wiki_article_fork',
-            component: () => import(/* webpackChunkName: "wiki-edit" */ './views/wiki/wiki-edit.vue')
-        },
+        // {
+        //     path: '/wiki/fork/:id(\\S+)',
+        //     name: 'wiki_article_fork',
+        //     component: () => import(/* webpackChunkName: "wiki-edit" */ './views/wiki/wiki-edit.vue')
+        // },
 
         // 设置
         {

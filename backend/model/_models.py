@@ -82,5 +82,5 @@ ALTER TABLE "user" ALTER COLUMN "number" SET DEFAULT nextval('user_count_seq')::
 except peewee.ProgrammingError:
     db.rollback()
 
-WikiArticle.get_sidebar_root_article()
-WikiArticle.get_main_page_root_article()
+WikiArticle.get_sidebar_article()
+WikiArticle.get_main_page_article()
