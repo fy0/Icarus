@@ -16,8 +16,8 @@
             <input type="text" name="title" v-model="wikiInfo.title" :placeholder="`这里填写标题，${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
 
-        <check-row :results="formErrors.ref" :multi="true">
-            <input type="text" v-model="wikiInfo.ref" :placeholder="`这里是这篇文章的URL地址，若为abc，地址将为/wiki/ref/abc`">
+        <check-row :results="formErrors.ref" :multi="true" v-if="!save.flag">
+            <input type="text" v-model="wikiInfo.ref" :placeholder="`这里是这篇文章的URL地址，若为abc，地址将为/wiki/ref/abc，不填则与标题相同`">
         </check-row>
 
         <check-row :results="formErrors.content" :multi="true">
@@ -158,7 +158,7 @@ export default {
                 if (this.save.flag) {
                     this.$router.push({ name: 'wiki' })
                 } else {
-                    this.$router.push({ name: 'wiki_article_by_id', params: { id: this.topicInfo.id || this.save.id } })
+                    this.$router.push({ name: 'wiki_article_by_id', params: { id: this.save.id } })
                 }
                 this.working = false
                 return
@@ -173,7 +173,6 @@ export default {
                 if (this.action === 'fork') {
                     wikiInfo['root_id'] = this.wikiInfo.root_id
                 }
-                console.log(11111, this.action, this.wikiInfo, wikiInfo)
                 // return
                 ret = await api.wiki.new(wikiInfo, 'superuser')
             }
@@ -182,10 +181,17 @@ export default {
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
                 wikiId = ret.data.id
-                this.$router.push({ name: 'wiki_article_by_id', params: { id: wikiId } })
+                if (ret.data.ref) {
+                    this.$router.push({ name: 'wiki_article_by_ref', params: { ref: ret.data.ref } })
+                } else {
+                    this.$router.push({ name: 'wiki_article_by_id', params: { id: wikiId } })
+                }
                 $.message_success(successText)
             } else if (ret.code === api.retcode.INVALID_ROLE) {
                 $.message_error('当前用户身份无此权限')
+                this.working = false
+            } else if (ret.code === api.retcode.ALREADY_EXISTS) {
+                $.message_error('指定的URL地址已经存在')
                 this.working = false
             } else {
                 if (ret.code === api.retcode.FAILED) {
@@ -311,8 +317,13 @@ export default {
         setTimeout(func, 500)
     },
     watch: {
-        'topicInfo.title': _.debounce(function (val, oldVal) {
-            localStorage.setItem('topic-post-title', val)
+        'wikiInfo.ref': function (val, oldVal) {
+            if (val && !/^[a-zA-Z0-9-_%]+$/.test(val)) {
+                this.wikiInfo.ref = oldVal
+            }
+        },
+        'wikiInfo.title': _.debounce(function (val, oldVal) {
+            localStorage.setItem('wiki-post-title', val)
         }, 5000)
     },
     components: {

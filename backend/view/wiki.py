@@ -1,4 +1,5 @@
 import time
+from urllib.parse import quote
 from typing import Dict, List
 from peewee import fn
 import config
@@ -49,7 +50,7 @@ class WikiView(UserMixin, PeeweeView):
     async def random(self):
         wa = WikiArticle.get_random_one()
         if wa:
-            self.finish(RETCODE.SUCCESS, {'id': wa})
+            self.finish(RETCODE.SUCCESS, {'ref': wa})
         else:
             self.finish(RETCODE.NOT_FOUND)
 
@@ -75,6 +76,8 @@ class WikiView(UserMixin, PeeweeView):
 
         values['time'] = int(time.time())
         values['user_id'] = self.current_user.id
+        if 'ref' not in values:
+            values['ref'] = quote(values['title']).replace('/', '')
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

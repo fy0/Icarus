@@ -34,10 +34,12 @@ export default {
             let ret = await api.wiki.random()
             if (ret.code === api.retcode.SUCCESS) {
                 this.nothing = false
-                this.$router.replace({
-                    name: 'wiki_article_by_id',
-                    params: { id: ret.data.id }
-                })
+                setTimeout(() => {
+                    this.$router.replace({
+                        name: 'wiki_article_by_ref',
+                        params: { ref: ret.data.ref }
+                    })
+                }, 100)
             }
         }
     },

@@ -45,11 +45,12 @@ class WikiArticle(PostModel):
     @classmethod
     def get_random_one(cls) -> bytes:
         try:
-            wa = cls.select(cls.id)\
+            wa = cls.select(cls.ref)\
                 .where(cls.state >= POST_STATE.NORMAL, cls.flag.is_null()) \
                 .order_by(fn.Random())\
                 .limit(1) \
                 .get()
-            return wa.id.tobytes()
+            # return wa.id.tobytes()
+            return wa.ref
         except cls.DoesNotExist:
             pass

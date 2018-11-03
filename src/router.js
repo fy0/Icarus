@@ -158,7 +158,7 @@ export default new Router({
         },
         // Wiki - 文章页面 - ref
         {
-            path: '/wiki/ref/:ref([a-fA-F0-9]+)',
+            path: '/wiki/ref/:ref',
             name: 'wiki_article_by_ref',
             component: () => import(/* webpackChunkName: "wiki" */ './views/wiki/article.vue')
         },
