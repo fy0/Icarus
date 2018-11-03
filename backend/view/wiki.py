@@ -29,6 +29,22 @@ class WikiNewForm(ValidateForm):
     ])
 
 
+class WikiEditForm(ValidateForm):
+    title = StringField('标题', validators=[
+        va.optional(),
+        va.Length(config.POST_TITLE_LENGTH_MIN, config.POST_TITLE_LENGTH_MAX)
+    ])
+
+    content = StringField('正文', validators=[
+        va.optional(),
+        va.Length(1, config.POST_CONTENT_LENGTH_MAX)
+    ])
+
+    # ref = StringField('地址', validators=[
+    #     va.required(),
+    # ])
+
+
 @route('wiki')
 class WikiView(UserMixin, PeeweeView):
     """
@@ -76,8 +92,22 @@ class WikiView(UserMixin, PeeweeView):
 
         values['time'] = int(time.time())
         values['user_id'] = self.current_user.id
-        if 'ref' not in values:
-            values['ref'] = quote(values['title']).replace('/', '')
+
+        ref = values.get('ref', '').strip()
+        if not ref: ref = values['title']
+        values['ref'] = quote(ref).replace('/', '')
+
+    async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+        record = records[0]
+        form = WikiEditForm(**raw_post)
+        if not form.validate():
+            return self.finish(RETCODE.FAILED, form.errors)
+
+        if record['flag'] is None:
+            # 如果不是特殊条目
+            ref = values.get('ref', '').strip()
+            if not ref: ref = values['title']
+            values['ref'] = quote(ref).replace('/', '')
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

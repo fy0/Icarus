@@ -36,7 +36,7 @@ class TopicNewForm(ValidateForm):
 
 class TopicEditForm(ValidateForm):
     title = StringField('标题', validators=[
-        va.required(),
+        va.optional(),
         va.Length(config.TOPIC_TITLE_LENGTH_MIN, config.TOPIC_TITLE_LENGTH_MAX)
     ])
 
