@@ -27,11 +27,15 @@ class MANAGE_OPERATION(StateObject):
     BOARD_CHANGE = 201
 
     TOPIC_TITLE_CHANGE = 300  # 修改标题
-    TOPIC_CONTENT_CHANGE = 301  # 修改主题
+    TOPIC_CONTENT_CHANGE = 301  # 编辑内容
     TOPIC_BOARD_MOVE = 302  # 移动主题到其他板块
     TOPIC_AWESOME_CHANGE = 303
     TOPIC_STICKY_WEIGHT_CHANGE = 305
     TOPIC_WEIGHT_CHANGE = 306
+
+    WIKI_TITLE_CHANGE = 401  # 修改标题
+    WIKI_CONTENT_CHANGE = 402  # 修改内容
+    WIKI_REF_CHANGE = 403  # 修改链接
 
     COMMENT_STATE_CHANGE = 500  # 修改评论状态
 
@@ -57,6 +61,10 @@ class MANAGE_OPERATION(StateObject):
         TOPIC_AWESOME_CHANGE: '设置优秀文章',
         TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
         TOPIC_WEIGHT_CHANGE: '修改板块权重',
+
+        WIKI_TITLE_CHANGE: '修改标题',
+        WIKI_CONTENT_CHANGE: '编辑内容',
+        WIKI_REF_CHANGE: '修改链接',
 
         COMMENT_STATE_CHANGE: '修改评论状态',
     }

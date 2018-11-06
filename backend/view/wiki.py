@@ -109,6 +109,22 @@ class WikiView(UserMixin, PeeweeView):
             if not ref: ref = values['title']
             values['ref'] = quote(ref).replace('/', '')
 
+    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
+        for old_record, record in zip(old_records, records):
+            if 'content' in values:
+                # 管理日志：正文编辑
+                ManageLog.new(self.current_user, self.current_role, POST_TYPES.WIKI, record['id'], record['user_id'],
+                              MOP.WIKI_CONTENT_CHANGE, None)
+
+            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.WIKI, values, old_record, record
+            )
+
+            manage_try_add('title', MOP.WIKI_TITLE_CHANGE)  # 管理日志：标题编辑
+            manage_try_add('ref', MOP.WIKI_REF_CHANGE)  # 管理日志：链接编辑
+            manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：改变状态
+            manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
+
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
         # 添加统计记录

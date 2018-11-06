@@ -164,10 +164,10 @@ class TopicView(UserMixin, PeeweeView):
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
 
-        if self.do_mentions:
-            self.do_mentions(record['user_id'], POST_TYPES.TOPIC, record['id'], {
-                'title': record['title'],
-            })
+        # if self.do_mentions:
+        #     self.do_mentions(record['user_id'], POST_TYPES.TOPIC, record['id'], {
+        #         'title': record['title'],
+        #     })
 
         statistic_add_topic(record['board_id'], record['id'])
 
