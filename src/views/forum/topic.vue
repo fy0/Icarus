@@ -47,6 +47,7 @@
                     <p>登陆后可见正文</p>
                 </div>
                 <div class="content" v-else v-html="marked(topic.content || '')"></div>
+                <!-- 操作日志 -->
                 <div v-if="mlog && mlog.items" class="post-manage-log">
                     <div class="post-manage-log-item" v-for="i in mlog.items.slice(0, 5)" :key="i.id">
                         <span>🛠️<user-link :user="i.user_id" /> 对此主题进行了<b>{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" /></span>
@@ -145,6 +146,9 @@
 
 .post-manage-log {
     padding: 5px 0;
+    margin-top: 20px;
+    font-size: 14px;
+
     .post-manage-log-item {
         color: $gray-500;
     }
@@ -340,8 +344,11 @@ export default {
                 }
 
                 // 目录，上不超过他自己所在的位置，下不超过评论分界线
-                let scrollTop = document.documentElement.scrollTop
-                let end = el2.offsetTop - el.clientHeight
+                let del = document.documentElement
+                let scrollTop = del.scrollTop
+                let end1 = del.offsetTop + del.clientHeight // 自身最底部（如果文章内容短而目录多，会发生目录伸到下面的情况）
+                let end2 = el2.offsetTop - el.clientHeight // 评论界限
+                let end = Math.max(end1, end2)
                 elTop = Math.max(el.offsetTop, elTop)
 
                 this.indexSticky = scrollTop > elTop
