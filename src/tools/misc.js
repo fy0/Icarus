@@ -1,19 +1,62 @@
-import Tweezer from 'tweezer.js'
+
+class Tween {
+    constructor (options) {
+        this.running = false
+        this.frame = null
+        this.opts = {
+            start: options.start || 0,
+            end: options.end || 100,
+            duration: options.duration || 500,
+            tick: options.tick,
+            complete: options.complete,
+            easing: (t, b, c, d) => {
+                if ((t /= d / 2) < 1) return c / 2 * t * t + b
+                return -c / 2 * ((--t) * (t - 2) - 1) + b
+            }
+        }
+    }
+
+    stop () {
+        this.running = false
+        if (this.frame) cancelAnimationFrame(this.frame)
+    }
+
+    start () {
+        this.running = true
+        let firstTime = null
+        let opts = this.opts
+
+        let func = (ts) => {
+            if (!this.running) return
+            firstTime = firstTime || ts
+            if (ts >= firstTime + opts.duration) {
+                if (opts.complete) opts.complete()
+                return
+            }
+
+            let elapsed = ts - firstTime
+            if (opts.tick) {
+                let val = opts.easing(elapsed, opts.start, opts.end - opts.start, opts.duration)
+                opts.tick(val)
+            }
+            this.frame = requestAnimationFrame(func)
+        }
+        this.frame = requestAnimationFrame(func)
+    }
+}
 
 let scroller = null
 
 $.scrollTo = function (el) {
     if (scroller) scroller.stop()
-    scroller = new Tweezer({
+
+    scroller = new Tween({
         start: window.pageYOffset,
         end: el.getBoundingClientRect().top + window.pageYOffset,
-        duration: 500
-    })
-        .on('tick', v => window.scrollTo(0, v))
-        .on('done', () => {
-            scroller = null
-        })
-        .begin()
+        duration: 500,
+        tick: v => window.scrollTo(0, v),
+        complete: () => { scroller = null }
+    }).start()
 }
 
 $.timeout = function (delay) {
