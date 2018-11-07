@@ -79,6 +79,6 @@ class BoardView(PeeweeView, UserMixin):
             # 添加统计记录
             statistic_new(POST_TYPES.BOARD, record['id'])
 
-            # 管理日志：重置密码
+            # 管理日志：新建
             ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
-                          record['user_id'], MOP.BOARD_NEW, record['name'])
+                          record['user_id'], MOP.POST_CREATED, record['name'])

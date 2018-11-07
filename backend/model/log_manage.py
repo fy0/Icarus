@@ -13,6 +13,7 @@ from slim.utils import StateObject
 class MANAGE_OPERATION(StateObject):
     POST_STATE_CHANGE = 0  # 改变状态：例如删除等等
     POST_VISIBLE_CHANGE = 1
+    POST_CREATE = 2  # 被创建
 
     USER_PASSWORD_CHANGE = 100  # 设置用户密码（未来再做区分，现在仅有这个）
     USER_PASSWORD_RESET = 101  # 重置用户密码
@@ -23,7 +24,7 @@ class MANAGE_OPERATION(StateObject):
     USER_EXP_CHANGE = 106
     USER_NICKNAME_CHANGE = 107
 
-    BOARD_NEW = 200
+    BOARD_NEW = 200  # 废弃
     BOARD_CHANGE = 201
 
     TOPIC_TITLE_CHANGE = 300  # 修改标题
@@ -42,6 +43,7 @@ class MANAGE_OPERATION(StateObject):
     txt = {
         POST_STATE_CHANGE: '改变状态',
         POST_VISIBLE_CHANGE: '修改可见度',
+        POST_CREATE: '创建',
 
         USER_PASSWORD_CHANGE: '重设用户密码',
         USER_PASSWORD_RESET: '重置用户密码',

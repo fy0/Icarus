@@ -73,6 +73,8 @@ class WikiView(UserMixin, PeeweeView):
     async def get(self):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
+            # vals = getattr(self, '_val_bak', None)
+            # if vals: statistic_add_topic_click(*vals)
             pass
 
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_IP, b'ic_cd_wiki_new_%b', cd_if_unsuccessed=10)
@@ -129,3 +131,6 @@ class WikiView(UserMixin, PeeweeView):
         record = records[0]
         # 添加统计记录
         statistic_new(POST_TYPES.WIKI, record['id'])
+        # 添加创建记录
+        ManageLog.new(self.current_user, self.current_role, POST_TYPES.WIKI, record['id'],
+                      record['user_id'], MOP.POST_CREATE, record['name'])

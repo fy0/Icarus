@@ -14,13 +14,15 @@ class Statistic(BaseModel):
     # all options
     last_comment_id = BlobField(null=True, default=None)
     viewed_users = ArrayField(BlobField, null=True)
+    edited_users = ArrayField(BlobField, null=True)
     commented_users = ArrayField(BlobField, null=True)
     bookmarked_users = ArrayField(BlobField, null=True)
     upvoted_users = ArrayField(BlobField, null=True)
     downvoted_users = ArrayField(BlobField, null=True)
     thanked_users = ArrayField(BlobField, null=True)
 
-    click_count = BigIntegerField(default=0)  # 点击数量
+    click_count = BigIntegerField(default=0)  # 点击数量，注意click和view并非一一对应的关系
+    edit_count = BigIntegerField(default=0)  # 编辑次数
     comment_count = BigIntegerField(default=0)  # 评论数量
     topic_count = IntegerField(default=0)  # 主题数量
     follow_count = IntegerField(default=0)  # 关注数量
@@ -54,6 +56,7 @@ class Statistic(BaseModel):
 
 
 class Statistic24h(BaseModel):
+    # 这张表会被重做
     id = BlobField(primary_key=True)
     post_type = IntegerField(index=True)
 
@@ -123,9 +126,9 @@ def statistic_add_topic_click(topic_id, board_id=None):
         .where(Statistic.id == topic_id)\
         .execute()
 
-    Statistic24h.update(click_count=Statistic24h.click_count + 1)\
-        .where(Statistic24h.id == topic_id)\
-        .execute()
+    # Statistic24h.update(click_count=Statistic24h.click_count + 1)\
+    #     .where(Statistic24h.id == topic_id)\
+    #     .execute()
 
     if not board_id:
         t = Topic.get_by_pk(topic_id)
@@ -135,18 +138,18 @@ def statistic_add_topic_click(topic_id, board_id=None):
         .where(Statistic.id == board_id)\
         .execute()
 
-    Statistic24h.update(click_count=Statistic24h.click_count + 1)\
-        .where(Statistic24h.id == board_id)\
-        .execute()
+    # Statistic24h.update(click_count=Statistic24h.click_count + 1)\
+    #     .where(Statistic24h.id == board_id)\
+    #     .execute()
 
 
 def statistic_add_topic(board_id, topic_id):
     Statistic.update(topic_count=Statistic.topic_count + 1)\
         .where(Statistic.id == board_id)\
         .execute()
-    Statistic24h.update(topic_count=Statistic24h.topic_count + 1)\
-        .where(Statistic24h.id == board_id)\
-        .execute()
+    # Statistic24h.update(topic_count=Statistic24h.topic_count + 1)\
+    #     .where(Statistic24h.id == board_id)\
+    #     .execute()
 
 
 def statistic_move_topic(from_board_id, to_board_id, topic_id):
