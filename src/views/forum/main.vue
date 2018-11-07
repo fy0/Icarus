@@ -233,6 +233,7 @@ $left-nav-sign-padding: 10px;
 .ul-boards {
     margin: 0;
     list-style: none;
+    font-weight: 300;
 
     .item {
         min-height: 42px; // 右侧单项的一半

@@ -228,18 +228,20 @@
     li {
         font-size: 14px;
         list-style: none;
-        font-weight: bolder;
-        margin-bottom: 5px;
+        font-weight: normal;
+        padding-bottom: 5px;
         margin-left: 0;
 
         a {
-            color: $gray-600;
+            color: $gray-500;
             margin-left: 3em;
+            display: block;
+            height: 100%;
         }
 
         a.active {
             font-weight: bold;
-            color: $gray-700;
+            color: $gray-600;
         }
 
         .h1, .h2 { margin-left: 1em; }

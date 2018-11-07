@@ -211,9 +211,17 @@
             max-height: 100%;
             overflow: hidden;
             padding-left: 1.25em;
-            text-overflow: ellipse;
+            text-overflow: ellipsis;
             color: #777;
             max-height: 64px;
+
+            > strong {
+                > a {
+                    font-weight: normal;
+                    overflow-x: hidden;
+                    white-space: nowrap;
+                }
+            }
 
             .icon-reply {
                 font-size: 12px;

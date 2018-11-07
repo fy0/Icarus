@@ -1,5 +1,5 @@
 <template>
-<div class="ic-container loading">
+<div class="ic-container loading" :class="{ 'wiki': isWikiPage }">
     <div class="mu-circular-progress" style="width: 60px; height: 60px;">
         <div class="mu-circle-wrapper active" style="width: 60px; height: 60px;">
             <div class="mu-circle-spinner active" style="border-color: rgb(244, 67, 54);">
@@ -190,9 +190,23 @@ $sf: 1.5;
         transform: rotate(-130deg)
     }
 }
+
+.wiki {
+    width: 100%;
+    background-color: $gray-200;
+}
 </style>
 
 <script>
 export default {
+    computed: {
+        isWikiPage: function () {
+            let name = this.$route.name
+            if (name) {
+                return name.startsWith('wiki_') &&
+                    (name !== 'wiki_article_new' || name !== 'wiki_article_edit')
+            }
+        }
+    }
 }
 </script>

@@ -5,10 +5,11 @@ html {
 body {
     overflow: hidden;
     background-color: $main-background-color;
+    color: $gray-600;
 }
 
 body, button, input, select, textarea {
-    font: 300 $font-size-base PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans, FontAwesome, sans-serif;
+    font: 400 $font-size-base Helvetica, Arial, "PingFang SC", "Noto Sans", Roboto, "Microsoft Yahei", sans-serif;
     line-height: 1.8;
 }
 

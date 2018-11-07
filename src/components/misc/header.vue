@@ -103,6 +103,8 @@
     font-size: 1.5em;
     margin-right: 0.5em;
     margin-top: -3px;
+    font-weight: 300;
+    font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans, FontAwesome, sans-serif;
 }
 
 .ic-brand-heading:hover {
