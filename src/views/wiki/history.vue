@@ -1,31 +1,25 @@
 <template>
 <wiki-base>
+    <div v-title>[历史记录]{{ article.title }} - 百科 - {{state.config.title}}</div>
     <div class="box ic-paper ic-z1">
-        <h3>历史记录</h3>
-        <!-- <div class="ic-hr" style="margin: 10px 0;"></div> -->
-        <ul>
-            <li v-for="(i, _) in page.items" :key="i.id">
-                <template>版本{{i.major_ver}} - </template>
-                <router-link :to="{ name: 'wiki_article_by_id', params: {'id': i.id } }">{{i.title}}</router-link>
-                <template> - </template>
-                <ic-time :timestamp="i.time" />
-                <template>, </template>
-                <user-link class="author limit l2" :user="i.user_id" />
-                <ul v-if="_ === 0">
-                    <!-- <li style="list-style: none;margin-left: -1em;font-weight: bold;">候选列表</li> -->
-                    <li v-for="j in pageCandidate.items" :key="j.id">
-                        <template>候选{{j.major_ver}}.{{j.minor_ver}}</template>
-                        <template> - </template>
-                        <router-link :to="{ name: 'wiki_article_by_id', params: {'id': j.id } }">{{j.title}}</router-link>
-                        <template> - </template>
-                        <ic-time :timestamp="j.time" />
-                        <template>, </template>
-                        <user-link class="author limit l2" :user="j.user_id" />
-                        <button class="ic-btn primary small" style="margin-left: 10px">选为新版</button>
-                    </li>
-                </ul>
+        <div class="title">
+            <h1>[历史记录]{{article.title}}</h1>
+            <span style="font-size: 14px; float: right; text-align: right; flex-shrink: 0;">
+                <div v-if="article.ref">
+                    <router-link :to="{ name: 'wiki_article_by_ref', params: {ref: article.ref} }" style="margin-left: 5px">[返回原文]</router-link>
+                </div>
+            </span>
+        </div>
+        <div class="ic-hr" style="margin: 10px 0;"></div>
+        <ul v-if="page.items && page.items.length">
+            <li v-for="i in page.items" :key="i.id">
+                <span>
+                    <user-link :user="i.user_id" /> 对此文章进行了<b>{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" />
+                </span>
             </li>
         </ul>
+        <div v-else>尚无历史记录</div>
+        <page-not-found v-if="notFound" />
     </div>
 </wiki-base>
 </template>
@@ -35,6 +29,12 @@
     background: $white;
     padding: 10px;
     height: 100%;
+}
+
+.title {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
 }
 </style>
 
@@ -49,11 +49,10 @@ export default {
         return {
             state,
             marked,
+            notFound: false,
             loading: true,
+            article: {},
             page: {
-                items: []
-            },
-            pageCandidate: {
                 items: []
             }
         }
@@ -65,11 +64,24 @@ export default {
             let params = this.$route.params
             let pageNumber = params.page || 1
 
+            let getArticle = async () => {
+                let ret = await api.wiki.get({
+                    id: params.id,
+                    select: ['id', 'title', 'ref']
+                }, $.getRole('user'))
+                if (ret.code === api.retcode.SUCCESS) {
+                    this.article = ret.data
+                } else if (ret.code === api.retcode.NOT_FOUND) {
+                    this.notFound = true
+                } else {
+                    wrong = ret
+                }
+            }
+
             let getHistory = async () => {
-                let ret = await api.wiki.list({
-                    root_id: params.id,
-                    minor_ver: 0,
-                    order: 'major_ver.desc',
+                let ret = await api.logManage.list({
+                    related_id: params.id,
+                    order: 'time.desc',
                     loadfk: { 'user_id': null }
                 }, pageNumber, null, $.getRole('user'))
 
@@ -82,30 +94,7 @@ export default {
                 }
             }
 
-            let getCandidate = async () => {
-                let ret = await api.wiki.get({
-                    root_id: params.id,
-                    is_current: true
-                }, $.getRole('user'))
-
-                let ret2 = await api.wiki.list({
-                    root_id: params.id,
-                    major_ver: ret.data.major_ver,
-                    'minor_ver.ne': 0,
-                    order: 'minor_ver.desc',
-                    loadfk: { 'user_id': null }
-                }, pageNumber, null, $.getRole('user'))
-
-                if (ret2.code === api.retcode.SUCCESS) {
-                    this.pageCandidate = ret2.data
-                } else if (ret2.code === api.retcode.NOT_FOUND) {
-                    this.pageCandidate.items = []
-                } else {
-                    wrong = ret2
-                }
-            }
-
-            await Promise.all([getHistory(), getCandidate()])
+            await Promise.all([getHistory(), getArticle()])
             if (wrong) {
                 $.message_by_code(wrong.code)
             }
