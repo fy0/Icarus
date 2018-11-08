@@ -5,7 +5,7 @@ import config
 from typing import Dict, List
 from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
-from model.statistic import statistic_new
+from model.post_stats import post_stats_new
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -89,7 +89,7 @@ class UserLegacyView(PeeweeView):
             u.save()
 
         # 添加统计记录
-        statistic_new(POST_TYPES.USER, record['id'])
+        post_stats_new(POST_TYPES.USER, record['id'])
         UserNotifLastInfo.new(record['id'])
 
         record['access_token'] = self._key

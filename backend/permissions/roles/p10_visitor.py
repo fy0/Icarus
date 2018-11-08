@@ -75,18 +75,7 @@ visitor = Ability(None, {
         'content': (A.READ,),
         'post_number': (A.READ,),
     },
-    'statistic': {
-        'id': (A.READ, A.QUERY),
-        'post_type': (A.READ,),
-
-        'click_count': (A.READ,),
-        'comment_count': (A.READ,),
-        'topic_count': (A.READ,),
-        'last_comment_id': (A.READ,),
-
-        'follow_count': (A.READ,),
-    },
-    'statistic24h': {
+    'post_stats': {
         'id': (A.READ, A.QUERY),
         'post_type': (A.READ,),
 

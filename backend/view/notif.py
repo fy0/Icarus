@@ -6,7 +6,7 @@ from app import app
 import config
 from typing import Dict
 from model.notif import Notification
-from model.statistic import statistic_add_comment
+from model.post_stats import post_stats_add_comment
 from model.topic import Topic
 from slim.base.ws import WSRouter
 from slim.utils.customid import CustomID

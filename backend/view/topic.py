@@ -3,7 +3,7 @@ import time
 import config
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.statistic import statistic_new, statistic_add_topic, statistic_add_topic_click, statistic_move_topic
+from model.post_stats import post_stats_new, post_stats_board_add_topic, post_stats_add_click_of_topic, post_stats_topic_move
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -72,7 +72,7 @@ class TopicView(UserMixin, PeeweeView):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
             vals = getattr(self, '_val_bak', None)
-            if vals: statistic_add_topic_click(*vals)
+            if vals: post_stats_add_click_of_topic(*vals)
 
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_IP, b'ic_cd_topic_new_%b', cd_if_unsuccessed=10)
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_topic_new_account_%b', unique_id_func=same_user, cd_if_unsuccessed=10)
@@ -108,7 +108,7 @@ class TopicView(UserMixin, PeeweeView):
             # 管理日志：移动板块
             if ManageLog.add_by_post_changed(self, 'board_id', MOP.TOPIC_BOARD_MOVE, POST_TYPES.TOPIC,
                                              values, old_record, record):
-                statistic_move_topic(old_record['board_id'], record['board_id'], record['id'])
+                post_stats_topic_move(old_record['board_id'], record['board_id'], record['id'])
 
             # 管理日志：设置精华
             ManageLog.add_by_post_changed(self, 'awesome', MOP.TOPIC_AWESOME_CHANGE, POST_TYPES.TOPIC,
@@ -169,10 +169,10 @@ class TopicView(UserMixin, PeeweeView):
         #         'title': record['title'],
         #     })
 
-        statistic_add_topic(record['board_id'], record['id'])
+        post_stats_board_add_topic(record['board_id'], record['id'])
 
         # 添加统计记录
-        statistic_new(POST_TYPES.TOPIC, record['id'])
+        post_stats_new(POST_TYPES.TOPIC, record['id'])
 
 
 '''

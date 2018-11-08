@@ -3,7 +3,7 @@ import random
 import time
 from peewee import *
 from model._post import POST_STATE, POST_VISIBLE, PostModel, POST_TYPES
-from model.statistic import statistic_new
+from model.post_stats import post_stats_new
 from slim.utils import StateObject
 from model import BaseModel, MyTimestampField, db
 from model.user import User
@@ -29,7 +29,7 @@ class WikiArticle(PostModel):
         except cls.DoesNotExist:
             a = cls.insert(time=int(time.time()), user_id=None, flag=1, title="侧边栏",
                            content='侧边栏文本', link=None).execute()
-            statistic_new(POST_TYPES.WIKI, a.tobytes())
+            post_stats_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)
 
     @classmethod
@@ -39,7 +39,7 @@ class WikiArticle(PostModel):
         except cls.DoesNotExist:
             a = cls.insert(time=int(time.time()), user_id=None, flag=2, title="主页面",
                            content='主页面文本', link=None).execute()
-            statistic_new(POST_TYPES.WIKI, a.tobytes())
+            post_stats_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)
 
     @classmethod

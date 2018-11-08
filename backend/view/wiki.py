@@ -5,7 +5,7 @@ from peewee import fn
 import config
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.statistic import statistic_new
+from model.post_stats import post_stats_new
 from model.wiki import WikiArticle
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -130,7 +130,7 @@ class WikiView(UserMixin, PeeweeView):
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
         # 添加统计记录
-        statistic_new(POST_TYPES.WIKI, record['id'])
+        post_stats_new(POST_TYPES.WIKI, record['id'])
         # 添加创建记录
         ManageLog.new(self.current_user, self.current_role, POST_TYPES.WIKI, record['id'],
                       record['user_id'], MOP.POST_CREATE, record['name'])

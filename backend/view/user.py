@@ -9,7 +9,7 @@ from model import db
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
-from model.statistic import statistic_new
+from model.post_stats import post_stats_new
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.base.user import BaseUser, BaseAccessTokenUserMixin
 from slim.retcode import RETCODE
@@ -319,7 +319,7 @@ class UserView(UserMixin, UserLegacyView):
             await User.reg_code_cleanup(email)
 
         # 添加统计记录
-        statistic_new(POST_TYPES.USER, u.id)
+        post_stats_new(POST_TYPES.USER, u.id)
         UserNotifLastInfo.new(u.id)
 
         return u

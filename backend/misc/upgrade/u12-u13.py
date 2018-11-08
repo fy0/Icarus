@@ -23,8 +23,11 @@ def work():
     sql_execute('drop table "wiki_history";')
     sql_execute('drop table "wiki_item";')
     sql_execute('drop table "wiki_article";')
-    sql_execute('ALTER TABLE statistic ADD edited_users bytea[] DEFAULT NULL  NULL;')
-    sql_execute('ALTER TABLE statistic ADD edit_count bigint DEFAULT 0 NULL;')
+    sql_execute('drop table "statistic24h";')
+    sql_execute('drop table "statistic24h_log";')
+    sql_execute('ALTER TABLE statistic RENAME TO post_stats;')
+    sql_execute('ALTER TABLE post_stats ADD edited_users bytea[] DEFAULT NULL  NULL;')
+    sql_execute('ALTER TABLE post_stats ADD edit_count bigint DEFAULT 0 NULL;')
 
 
 if __name__ == '__main__':

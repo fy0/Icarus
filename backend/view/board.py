@@ -2,7 +2,7 @@ import time
 from typing import Mapping, Dict, List
 import config
 from model._post import POST_TYPES
-from model.statistic import statistic_new
+from model.post_stats import post_stats_new
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
@@ -33,8 +33,7 @@ class BoardView(PeeweeView, UserMixin):
 
     @classmethod
     def ready(cls):
-        cls.add_soft_foreign_key('id', 'statistic', 's')
-        cls.add_soft_foreign_key('id', 'statistic24h', 's24')
+        cls.add_soft_foreign_key('id', 'post_stats', 's')
         cls.add_soft_foreign_key('user_id', 'user')
         cls.add_soft_foreign_key('parent_id', 'board')
 
@@ -77,7 +76,7 @@ class BoardView(PeeweeView, UserMixin):
     async def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
         for record in records:
             # 添加统计记录
-            statistic_new(POST_TYPES.BOARD, record['id'])
+            post_stats_new(POST_TYPES.BOARD, record['id'])
 
             # 管理日志：新建
             ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
