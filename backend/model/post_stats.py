@@ -64,62 +64,55 @@ class StatsLog(BaseModel):
         db_table = 'stats_log'
 
 
-def post_stats_add(field, user_id, post_type, post_id, related_id=None, num=1):
-    pass
+def post_stats_incr(field: Field, post_id, num=1, callback=None):
+    update_data = {field.name: field + num}
+    where = [PostStats.id == post_id]
+    if callback: callback(update_data, where)
+
+    PostStats.update(**update_data)\
+        .where(*where) \
+        .execute()
 
 
-def post_stats_add_comment(related_type, related_id, comment_id):
+def post_stats_do_comment(related_type, related_id, comment_id):
     # 关于原子更新
     # http://docs.peewee-orm.com/en/latest/peewee/querying.html#atomic-updates
-    # s: Statistic = cls.get_by_pk(related_id)
-    PostStats.update(last_comment_id=comment_id, comment_count=PostStats.comment_count + 1)\
-        .where(PostStats.id == related_id)\
-        .execute()
+
+    # 更新自身数据
+    def func(update_data, where): update_data['last_comment_id'] = comment_id
+    post_stats_incr(PostStats.comment_count, related_id, 1, callback=func)
 
     if related_type == POST_TYPES.TOPIC:
+        # 更新板块数据
         t = Topic.get_by_pk(related_id)
-        PostStats.update(last_comment_id=comment_id, comment_count=PostStats.comment_count + 1)\
-            .where(PostStats.id == t.board_id)\
-            .execute()
+        post_stats_incr(PostStats.comment_count, t.board_id, 1, callback=func)
 
 
-def post_stats_add_click(post_id):
-    PostStats.update(click_count=PostStats.click_count + 1)\
-        .where(PostStats.id == post_id)\
-        .execute()
-
-
-def post_stats_add_click_of_topic(topic_id, board_id=None):
-    PostStats.update(click_count=PostStats.click_count + 1)\
-        .where(PostStats.id == topic_id)\
-        .execute()
-
+def post_stats_add_topic_click(topic_id, board_id=None):
     if not board_id:
         t = Topic.get_by_pk(topic_id)
         board_id = t.board_id
-
-    PostStats.update(click_count=PostStats.click_count + 1)\
-        .where(PostStats.id == board_id)\
-        .execute()
-
-
-def post_stats_board_add_topic(board_id, topic_id):
-    PostStats.update(topic_count=PostStats.topic_count + 1)\
-        .where(PostStats.id == board_id)\
-        .execute()
+    post_stats_incr(PostStats.click_count, topic_id)
+    post_stats_incr(PostStats.click_count, board_id)
 
 
 def post_stats_topic_move(from_board_id, to_board_id, topic_id):
     # 修改评论数据
     ts = PostStats.get(PostStats.id == topic_id)
     if from_board_id:
-        PostStats.update(topic_count=PostStats.topic_count - 1, comment_count=PostStats.comment_count - ts.comment_count)\
-            .where(PostStats.id == from_board_id)\
-            .execute()
-    PostStats.update(topic_count=PostStats.topic_count + 1, comment_count=PostStats.comment_count + ts.comment_count)\
-        .where(PostStats.id == to_board_id)\
-        .execute()
+        def func(update_data, where):
+            update_data['comment_count'] = PostStats.comment_count - ts.comment_count
+        post_stats_incr(PostStats.topic_count, from_board_id, -1, callback=func)
+
+    def func(update_data, where):
+        update_data['comment_count'] = PostStats.comment_count + ts.comment_count
+    post_stats_incr(PostStats.topic_count, to_board_id, 1, callback=func)
 
 
 def post_stats_new(post_type, id):
     PostStats.create(id=id, post_type=post_type)
+
+
+def post_stats_topic_new(board_id, topic_id):
+    post_stats_incr(PostStats.topic_count, board_id)
+    post_stats_new(POST_TYPES.TOPIC, topic_id)

@@ -3,7 +3,8 @@ import time
 import config
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.post_stats import post_stats_new, post_stats_board_add_topic, post_stats_add_click_of_topic, post_stats_topic_move
+from model.post_stats import post_stats_new, post_stats_board_add_topic, post_stats_add_topic_click, \
+    post_stats_topic_move, post_stats_incr, PostStats, post_stats_topic_new
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -72,7 +73,7 @@ class TopicView(UserMixin, PeeweeView):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
             vals = getattr(self, '_val_bak', None)
-            if vals: post_stats_add_click_of_topic(*vals)
+            if vals: post_stats_add_topic_click(*vals)
 
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_IP, b'ic_cd_topic_new_%b', cd_if_unsuccessed=10)
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_topic_new_account_%b', unique_id_func=same_user, cd_if_unsuccessed=10)
@@ -169,10 +170,8 @@ class TopicView(UserMixin, PeeweeView):
         #         'title': record['title'],
         #     })
 
-        post_stats_board_add_topic(record['board_id'], record['id'])
-
         # 添加统计记录
-        post_stats_new(POST_TYPES.TOPIC, record['id'])
+        post_stats_topic_new(record['board_id'], record['id'])
 
 
 '''

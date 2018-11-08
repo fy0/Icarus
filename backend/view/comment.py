@@ -3,7 +3,7 @@ import config
 from typing import Dict, List
 
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.post_stats import post_stats_add_comment
+from model.post_stats import post_stats_do_comment
 from model.topic import Topic
 from slim.base.permission import Permissions
 from slim.base.sqlquery import SQLValuesToWrite, DataRecord
@@ -97,7 +97,7 @@ class CommentView(UserMixin, PeeweeView):
 
     def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
         for record in records:
-            post_stats_add_comment(record['related_type'], record['related_id'], record['id'])
+            post_stats_do_comment(record['related_type'], record['related_id'], record['id'])
             post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
             Comment.update(post_number=post_number).where(Comment.id == record['id']).execute()
 
