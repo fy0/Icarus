@@ -3,8 +3,7 @@ import time
 import config
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.post_stats import post_stats_new, post_stats_board_add_topic, post_stats_add_topic_click, \
-    post_stats_topic_move, post_stats_incr, PostStats, post_stats_topic_new
+from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, post_stats_topic_new
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -56,7 +55,7 @@ class TopicView(UserMixin, PeeweeView):
 
     @classmethod
     def ready(cls):
-        cls.add_soft_foreign_key('id', 'statistic')
+        cls.add_soft_foreign_key('id', 'post_stats')
         cls.add_soft_foreign_key('user_id', 'user')
         cls.add_soft_foreign_key('board_id', 'board')
         cls.add_soft_foreign_key('last_edit_user_id', 'user')
@@ -82,11 +81,14 @@ class TopicView(UserMixin, PeeweeView):
 
     def after_read(self, records: List[DataRecord]):
         for i in records:
-            # TODO: FIX
             self._val_bak = [i['id'], i['board_id']]
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
+            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.TOPIC, values, old_record, record
+            )
+
             if 'content' in values:
                 # 管理日志：正文编辑
                 ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'], record['user_id'],
@@ -95,33 +97,19 @@ class TopicView(UserMixin, PeeweeView):
 
             if 'title' in values:
                 # 管理日志：标题编辑
-                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'], record['user_id'],
-                              MOP.TOPIC_TITLE_CHANGE, None)
+                manage_try_add('title', MOP.TOPIC_TITLE_CHANGE)  # 管理日志：标题编辑
+                Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
 
-            # 管理日志：改变状态
-            ManageLog.add_by_post_changed(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.TOPIC,
-                                          values, old_record, record)
-
-            # 管理日志：改变可见度
-            ManageLog.add_by_post_changed(self, 'visible', MOP.POST_VISIBLE_CHANGE, POST_TYPES.TOPIC,
-                                          values, old_record, record)
+            manage_try_add('title', MOP.POST_TITLE_CHANGE)  # 管理日志：标题编辑
+            manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：状态修改
+            manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
+            manage_try_add('awesome', MOP.TOPIC_AWESOME_CHANGE)  # 管理日志：设置精华
+            manage_try_add('sticky_weight', MOP.TOPIC_STICKY_WEIGHT_CHANGE)  # 管理日志：置顶权重
+            manage_try_add('weight', MOP.TOPIC_WEIGHT_CHANGE)  # 管理日志：修改权重
 
             # 管理日志：移动板块
-            if ManageLog.add_by_post_changed(self, 'board_id', MOP.TOPIC_BOARD_MOVE, POST_TYPES.TOPIC,
-                                             values, old_record, record):
+            if manage_try_add('board_id', MOP.TOPIC_BOARD_MOVE):
                 post_stats_topic_move(old_record['board_id'], record['board_id'], record['id'])
-
-            # 管理日志：设置精华
-            ManageLog.add_by_post_changed(self, 'awesome', MOP.TOPIC_AWESOME_CHANGE, POST_TYPES.TOPIC,
-                                          values, old_record, record)
-
-            # 管理日志：置顶权重
-            ManageLog.add_by_post_changed(self, 'sticky_weight', MOP.TOPIC_STICKY_WEIGHT_CHANGE, POST_TYPES.TOPIC,
-                                          values, old_record, record)
-
-            # 管理日志：修改权重
-            ManageLog.add_by_post_changed(self, 'weight', MOP.TOPIC_WEIGHT_CHANGE, POST_TYPES.TOPIC,
-                                          values, old_record, record)
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

@@ -14,6 +14,8 @@ class MANAGE_OPERATION(StateObject):
     POST_STATE_CHANGE = 0  # 改变状态：例如删除等等
     POST_VISIBLE_CHANGE = 1
     POST_CREATE = 2  # 被创建
+    POST_TITLE_CHANGE = 3  # 修改标题
+    POST_CONTENT_CHANGE = 3  # 修改标题
 
     USER_PASSWORD_CHANGE = 100  # 设置用户密码（未来再做区分，现在仅有这个）
     USER_PASSWORD_RESET = 101  # 重置用户密码
@@ -34,9 +36,7 @@ class MANAGE_OPERATION(StateObject):
     TOPIC_STICKY_WEIGHT_CHANGE = 305
     TOPIC_WEIGHT_CHANGE = 306
 
-    WIKI_TITLE_CHANGE = 401  # 修改标题
-    WIKI_CONTENT_CHANGE = 402  # 修改内容
-    WIKI_REF_CHANGE = 403  # 修改链接
+    WIKI_REF_CHANGE = 401  # 修改链接
 
     COMMENT_STATE_CHANGE = 500  # 修改评论状态
 
@@ -44,6 +44,8 @@ class MANAGE_OPERATION(StateObject):
         POST_STATE_CHANGE: '改变状态',
         POST_VISIBLE_CHANGE: '修改可见度',
         POST_CREATE: '创建',
+        POST_TITLE_CHANGE: '修改标题',
+        POST_CONTENT_CHANGE: '编辑内容',
 
         USER_PASSWORD_CHANGE: '重设用户密码',
         USER_PASSWORD_RESET: '重置用户密码',
@@ -57,15 +59,13 @@ class MANAGE_OPERATION(StateObject):
         BOARD_NEW: '新建板块',
         BOARD_CHANGE: '修改板块信息',
 
-        TOPIC_TITLE_CHANGE: '修改标题',
-        TOPIC_CONTENT_CHANGE: '编辑内容',
+        TOPIC_TITLE_CHANGE: '修改标题',  # 待并入
+        TOPIC_CONTENT_CHANGE: '编辑内容',  # 待并入
         TOPIC_BOARD_MOVE: '移动',
         TOPIC_AWESOME_CHANGE: '设置优秀文章',
         TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
         TOPIC_WEIGHT_CHANGE: '修改板块权重',
 
-        WIKI_TITLE_CHANGE: '修改标题',
-        WIKI_CONTENT_CHANGE: '编辑内容',
         WIKI_REF_CHANGE: '修改链接',
 
         COMMENT_STATE_CHANGE: '修改评论状态',
@@ -148,8 +148,21 @@ class ManageLog(BaseModel):
         return cls.add_by_exp_changed(None, changed_user, note, value=value)
 
     @classmethod
-    def add_by_post_changed(cls, view, key, operation, related_type, values, old_record, record, note=None,
+    def add_by_post_changed(cls, view, key, operation, related_type, update_values, old_record, record, note=None,
                             *, value=NotImplemented):
+        """
+        如果指定的列发生了改变，那么新增一条记录，反之什么也不做
+        :param view: 请求中的view对象，用于拿用户id和角色
+        :param key: 指定的列名
+        :param operation: 如果条件达成记录的操作
+        :param related_type: 被改变的对象的类型
+        :param update_values: 被提交上来的值，默认为字典，在其中检查key是否存在。若为bool则直接替代key存在与否的判定结果
+        :param old_record: 应用改动前的值
+        :param record: 应用改动后的值
+        :param note: 备注信息
+        :param value: 默认值为NotImplemented，实现为记录前后的变化[old_record[key], record[key]]，若修改则记为想要的值
+        :return:
+        """
         def get_val(r, k):
             if isinstance(r, (DataRecord, dict)):
                 return r[k]
@@ -159,10 +172,10 @@ class ManageLog(BaseModel):
                 raise TypeError()
 
         def key_in_values():
-            if isinstance(values, dict):
-                return key in values
-            elif isinstance(values, bool):
-                return values
+            if isinstance(update_values, dict):
+                return key in update_values
+            elif isinstance(update_values, bool):
+                return update_values
             else:
                 raise TypeError()
 

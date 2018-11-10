@@ -11,26 +11,20 @@ class PostStats(BaseModel):
     id = BlobField(primary_key=True)
     post_type = IntegerField(index=True)
 
-    # all options
     last_comment_id = BlobField(null=True, default=None)
-    viewed_users = ArrayField(BlobField, null=True)
-    edited_users = ArrayField(BlobField, null=True)
-    commented_users = ArrayField(BlobField, null=True)
-    bookmarked_users = ArrayField(BlobField, null=True)
-    upvoted_users = ArrayField(BlobField, null=True)
-    downvoted_users = ArrayField(BlobField, null=True)
-    thanked_users = ArrayField(BlobField, null=True)
+    last_edit_user_id = BlobField(null=True, default=None)
+    last_edit_time = BigIntegerField(null=True, default=None)
 
-    click_count = BigIntegerField(default=0)  # 点击数量，注意click和view并非一一对应的关系
-    edit_count = BigIntegerField(default=0)  # 编辑次数
-    comment_count = BigIntegerField(default=0)  # 评论数量
+    click_count = BigIntegerField(default=0)  # 点击数量
+    edit_count = IntegerField(default=0)  # 编辑次数
+    comment_count = IntegerField(default=0)  # 评论数量
     topic_count = IntegerField(default=0)  # 主题数量
     follow_count = IntegerField(default=0)  # 关注数量
     bookmark_count = IntegerField(default=0)  # 收藏数量
-    upvote_count = BigIntegerField(default=0)  # 赞同数量
-    downvote_count = BigIntegerField(default=0)  # 反对数量
+    upvote_count = IntegerField(default=0)  # 赞同数量
+    downvote_count = IntegerField(default=0)  # 反对数量
     thank_count = IntegerField(default=0)  # 感谢数量
-    vote_weight = BigIntegerField(default=0, index=True)  # 权重
+    vote_weight = IntegerField(default=0, index=True)  # 权重
 
     # board
     # click_count = IntegerField(default=0)

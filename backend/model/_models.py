@@ -7,7 +7,7 @@ from model.comment import Comment
 from model.log_manage import ManageLog
 from model.mention import Mention
 from model.notif import Notification, UserNotifLastInfo
-from model.post_stats import PostStats, Statistic24h
+from model.post_stats import PostStats, StatsLog
 from model.test import Test
 from model.topic import Topic
 from model.upload import Upload
@@ -24,12 +24,14 @@ def reset():
     DROP TABLE IF EXISTS "comment";
     DROP TABLE IF EXISTS "follow";
     DROP TABLE IF EXISTS "notif";
-    DROP TABLE IF EXISTS "statistic";
-    DROP TABLE IF EXISTS "statistic24h";
+    DROP TABLE IF EXISTS "post_stats";
+    DROP TABLE IF EXISTS "stats_log";
     DROP TABLE IF EXISTS "topic";
     DROP TABLE IF EXISTS "user";
     DROP TABLE IF EXISTS "user_notif_record";
     DROP TABLE IF EXISTS "user_oauth";
+    DROP TABLE IF EXISTS "notif";
+    DROP TABLE IF EXISTS "user_notif_last_info";
     DROP TABLE IF EXISTS "wiki_history";
     DROP TABLE IF EXISTS "wiki_item";
     DROP TABLE IF EXISTS "wiki_article";
@@ -68,7 +70,8 @@ db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   Upload,
                   ManageLog,
                   Mention,
-                  PostStats, Statistic24h], safe=True)
+                  PostStats,
+                  StatsLog], safe=True)
 
 
 try:

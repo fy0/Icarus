@@ -3,8 +3,6 @@ from model.post_stats import PostStats
 from slim.base.permission import Permissions
 from slim.support.peewee import PeeweeView
 from view import route, ValidateForm
-from wtforms import validators as va, StringField, IntegerField, ValidationError
-
 from permissions import permissions_add_all
 from view.user import UserMixin
 

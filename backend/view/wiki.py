@@ -5,7 +5,7 @@ from peewee import fn
 import config
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.post_stats import post_stats_new
+from model.post_stats import post_stats_new, post_stats_incr, PostStats
 from model.wiki import WikiArticle
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -70,21 +70,21 @@ class WikiView(UserMixin, PeeweeView):
         else:
             self.finish(RETCODE.NOT_FOUND)
 
+    def after_read(self, records: List[DataRecord]):
+        for i in records:
+            self._val_bak = i['id']
+
     async def get(self):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
-            # vals = getattr(self, '_val_bak', None)
-            # if vals: statistic_add_topic_click(*vals)
-            pass
+            post_stats_incr(PostStats.click_count, self._val_bak)
+            val = getattr(self, '_val_bak', None)
+            if val: post_stats_incr(PostStats.click_count, val)
 
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_IP, b'ic_cd_wiki_new_%b', cd_if_unsuccessed=10)
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_wiki_new_account_%b', unique_id_func=same_user, cd_if_unsuccessed=10)
     async def new(self):
         return await super().new()
-
-    def after_read(self, records: List[DataRecord]):
-        for i in records:
-            pass
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]
@@ -113,16 +113,18 @@ class WikiView(UserMixin, PeeweeView):
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
-            if 'content' in values:
-                # 管理日志：正文编辑
-                ManageLog.new(self.current_user, self.current_role, POST_TYPES.WIKI, record['id'], record['user_id'],
-                              MOP.WIKI_CONTENT_CHANGE, None)
-
             manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
                 self, column, op, POST_TYPES.WIKI, values, old_record, record
             )
+            manage_try_add_with_val = lambda column, op, value: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.WIKI, values, old_record, record, value=value
+            )
 
-            manage_try_add('title', MOP.WIKI_TITLE_CHANGE)  # 管理日志：标题编辑
+            # 管理日志：正文编辑
+            if manage_try_add_with_val('content', MOP.POST_CONTENT_CHANGE, None):
+                post_stats_incr(PostStats.edit_count, record['id'])
+
+            manage_try_add('title', MOP.POST_TITLE_CHANGE)  # 管理日志：标题编辑
             manage_try_add('ref', MOP.WIKI_REF_CHANGE)  # 管理日志：链接编辑
             manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：改变状态
             manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度

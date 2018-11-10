@@ -26,8 +26,17 @@ def work():
     sql_execute('drop table "statistic24h";')
     sql_execute('drop table "statistic24h_log";')
     sql_execute('ALTER TABLE statistic RENAME TO post_stats;')
-    sql_execute('ALTER TABLE post_stats ADD edited_users bytea[] DEFAULT NULL  NULL;')
-    sql_execute('ALTER TABLE post_stats ADD edit_count bigint DEFAULT 0 NULL;')
+    sql_execute('ALTER TABLE post_stats ADD edit_count int DEFAULT 0 NULL;')
+    sql_execute('ALTER TABLE post_stats DROP viewed_users;')
+    sql_execute('ALTER TABLE post_stats DROP edited_users;')
+    sql_execute('ALTER TABLE post_stats DROP commented_users;')
+    sql_execute('ALTER TABLE post_stats DROP bookmarked_users;')
+    sql_execute('ALTER TABLE post_stats DROP upvoted_users;')
+    sql_execute('ALTER TABLE post_stats DROP downvoted_users;')
+    sql_execute('ALTER TABLE post_stats DROP thanked_users;')
+    sql_execute('ALTER TABLE post_stats ADD last_edit_time bigint DEFAULT NULL NULL;')
+    sql_execute('ALTER TABLE post_stats ADD last_edit_user_id BYTEA DEFAULT NULL NULL;')
+    sql_execute('CREATE INDEX post_stats_last_edit_time_index ON post_stats (last_edit_time);')
 
 
 if __name__ == '__main__':
