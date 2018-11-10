@@ -1,9 +1,10 @@
 from typing import Dict, List
 import time
 import config
+from lib.textdiff import diff
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, post_stats_topic_new
+from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, post_stats_topic_new, post_stats_do_edit
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -83,34 +84,6 @@ class TopicView(UserMixin, PeeweeView):
         for i in records:
             self._val_bak = [i['id'], i['board_id']]
 
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
-        for old_record, record in zip(old_records, records):
-            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
-                self, column, op, POST_TYPES.TOPIC, values, old_record, record
-            )
-
-            if 'content' in values:
-                # 管理日志：正文编辑
-                ManageLog.new(self.current_user, self.current_role, POST_TYPES.TOPIC, record['id'], record['user_id'],
-                              MOP.TOPIC_CONTENT_CHANGE, None)
-                Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
-
-            if 'title' in values:
-                # 管理日志：标题编辑
-                manage_try_add('title', MOP.TOPIC_TITLE_CHANGE)  # 管理日志：标题编辑
-                Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
-
-            manage_try_add('title', MOP.POST_TITLE_CHANGE)  # 管理日志：标题编辑
-            manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：状态修改
-            manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
-            manage_try_add('awesome', MOP.TOPIC_AWESOME_CHANGE)  # 管理日志：设置精华
-            manage_try_add('sticky_weight', MOP.TOPIC_STICKY_WEIGHT_CHANGE)  # 管理日志：置顶权重
-            manage_try_add('weight', MOP.TOPIC_WEIGHT_CHANGE)  # 管理日志：修改权重
-
-            # 管理日志：移动板块
-            if manage_try_add('board_id', MOP.TOPIC_BOARD_MOVE):
-                post_stats_topic_move(old_record['board_id'], record['board_id'], record['id'])
-
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
         form = TopicEditForm(**raw_post)
@@ -132,6 +105,32 @@ class TopicView(UserMixin, PeeweeView):
         if 'topic' in values or 'content' in values:
             values['edit_time'] = int(time.time())
             values['last_edit_user_id'] = self.current_user.id
+
+    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
+        for old_record, record in zip(old_records, records):
+            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.TOPIC, values, old_record, record
+            )
+            manage_try_add_with_diff = lambda column, op: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.TOPIC, values, old_record, record, diff_func=diff
+            )
+
+            title_changed = manage_try_add('title', MOP.POST_TITLE_CHANGE)  # 管理日志：标题编辑
+            content_changed = manage_try_add_with_diff('content', MOP.POST_CONTENT_CHANGE)  # 管理日志：正文编辑
+
+            if title_changed or content_changed:
+                post_stats_do_edit(record['id'], record['user_id'])
+                Topic.update(edit_count=Topic.edit_count + 1).where(Topic.id == record['id']).execute()
+
+            manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：状态修改
+            manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
+            manage_try_add('awesome', MOP.TOPIC_AWESOME_CHANGE)  # 管理日志：设置精华
+            manage_try_add('sticky_weight', MOP.TOPIC_STICKY_WEIGHT_CHANGE)  # 管理日志：置顶权重
+            manage_try_add('weight', MOP.TOPIC_WEIGHT_CHANGE)  # 管理日志：修改权重
+
+            # 管理日志：移动板块
+            if manage_try_add('board_id', MOP.TOPIC_BOARD_MOVE):
+                post_stats_topic_move(old_record['board_id'], record['board_id'], record['id'])
 
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]

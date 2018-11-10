@@ -3,9 +3,10 @@ from urllib.parse import quote
 from typing import Dict, List
 from peewee import fn
 import config
+from lib.textdiff import diff
 from model._post import POST_TYPES
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
-from model.post_stats import post_stats_new, post_stats_incr, PostStats
+from model.post_stats import post_stats_new, post_stats_incr, PostStats, post_stats_do_edit
 from model.wiki import WikiArticle
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
@@ -54,7 +55,7 @@ class WikiView(UserMixin, PeeweeView):
 
     @classmethod
     def ready(cls):
-        cls.add_soft_foreign_key('id', 'statistic')
+        cls.add_soft_foreign_key('id', 'post_stats')
         cls.add_soft_foreign_key('user_id', 'user')
 
     @classmethod
@@ -86,6 +87,31 @@ class WikiView(UserMixin, PeeweeView):
     async def new(self):
         return await super().new()
 
+    async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+        record = records[0]
+        form = WikiEditForm(**raw_post)
+        if not form.validate():
+            return self.finish(RETCODE.FAILED, form.errors)
+
+    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
+        for old_record, record in zip(old_records, records):
+            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.WIKI, values, old_record, record
+            )
+            manage_try_add_with_diff = lambda column, op: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.WIKI, values, old_record, record, diff_func=diff
+            )
+
+            title_changed = manage_try_add('title', MOP.POST_TITLE_CHANGE)  # 管理日志：标题编辑
+            content_changed = manage_try_add_with_diff('content', MOP.POST_CONTENT_CHANGE)  # 管理日志：正文编辑
+
+            if title_changed or content_changed:
+                post_stats_do_edit(record['id'], record['user_id'])
+
+            manage_try_add('ref', MOP.WIKI_REF_CHANGE)  # 管理日志：链接编辑
+            manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：改变状态
+            manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
+
     async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
         values = values_lst[0]
         form = WikiNewForm(**raw_post)
@@ -98,36 +124,6 @@ class WikiView(UserMixin, PeeweeView):
         ref = values.get('ref', '').strip()
         if not ref: ref = values['title']
         values['ref'] = quote(ref).replace('/', '')
-
-    async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
-        record = records[0]
-        form = WikiEditForm(**raw_post)
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
-
-        if record['flag'] is None:
-            # 如果不是特殊条目
-            ref = values.get('ref', '').strip()
-            if not ref: ref = values['title']
-            values['ref'] = quote(ref).replace('/', '')
-
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
-        for old_record, record in zip(old_records, records):
-            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
-                self, column, op, POST_TYPES.WIKI, values, old_record, record
-            )
-            manage_try_add_with_val = lambda column, op, value: ManageLog.add_by_post_changed(
-                self, column, op, POST_TYPES.WIKI, values, old_record, record, value=value
-            )
-
-            # 管理日志：正文编辑
-            if manage_try_add_with_val('content', MOP.POST_CONTENT_CHANGE, None):
-                post_stats_incr(PostStats.edit_count, record['id'])
-
-            manage_try_add('title', MOP.POST_TITLE_CHANGE)  # 管理日志：标题编辑
-            manage_try_add('ref', MOP.WIKI_REF_CHANGE)  # 管理日志：链接编辑
-            manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：改变状态
-            manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
 
     def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]

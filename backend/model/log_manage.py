@@ -1,6 +1,8 @@
 import time
 from peewee import *
 from playhouse.postgres_ext import BinaryJSONField
+
+from lib.textdiff import save_couple
 from slim.base.sqlquery import DataRecord
 
 import config
@@ -15,7 +17,7 @@ class MANAGE_OPERATION(StateObject):
     POST_VISIBLE_CHANGE = 1
     POST_CREATE = 2  # 被创建
     POST_TITLE_CHANGE = 3  # 修改标题
-    POST_CONTENT_CHANGE = 3  # 修改标题
+    POST_CONTENT_CHANGE = 4  # 修改标题
 
     USER_PASSWORD_CHANGE = 100  # 设置用户密码（未来再做区分，现在仅有这个）
     USER_PASSWORD_RESET = 101  # 重置用户密码
@@ -71,6 +73,7 @@ class MANAGE_OPERATION(StateObject):
         COMMENT_STATE_CHANGE: '修改评论状态',
     }
 
+MOP = MANAGE_OPERATION  # alias
 
 class ManageLog(BaseModel):
     id = BlobField(primary_key=True)  # 使用长ID
@@ -149,7 +152,7 @@ class ManageLog(BaseModel):
 
     @classmethod
     def add_by_post_changed(cls, view, key, operation, related_type, update_values, old_record, record, note=None,
-                            *, value=NotImplemented):
+                            *, value=NotImplemented, diff_func=save_couple):
         """
         如果指定的列发生了改变，那么新增一条记录，反之什么也不做
         :param view: 请求中的view对象，用于拿用户id和角色
@@ -160,7 +163,8 @@ class ManageLog(BaseModel):
         :param old_record: 应用改动前的值
         :param record: 应用改动后的值
         :param note: 备注信息
-        :param value: 默认值为NotImplemented，实现为记录前后的变化[old_record[key], record[key]]，若修改则记为想要的值
+        :param value: 默认值为NotImplemented，实现为diff_func的返回结果，若修改则记为想要的值
+        :param diff_func: 默认值为save_couple，实现为记录前后的变化[old_record[key], record[key]]
         :return:
         """
         def get_val(r, k):
@@ -180,8 +184,10 @@ class ManageLog(BaseModel):
                 raise TypeError()
 
         if key_in_values():
+            old, new = get_val(old_record, key), get_val(record, key)
+            if old == new: return  # 修改前后无变化
             if value is NotImplemented:
-                value = [get_val(old_record, key), get_val(record, key)]
+                value = diff_func(old, new)
 
             return cls.new(view.current_user.id, view.current_role, related_type, get_val(record, 'id'),
                            get_val(record, 'user_id'), operation, value, note=note)

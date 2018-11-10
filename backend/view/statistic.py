@@ -7,13 +7,14 @@ from permissions import permissions_add_all
 from view.user import UserMixin
 
 
-@route('statistic', None)
+@route('stats', None)
 class StatsView(UserMixin, PeeweeView):
     model = PostStats
 
     @classmethod
     def ready(cls):
         cls.add_soft_foreign_key('last_comment_id', 'comment')
+        cls.add_soft_foreign_key('last_edit_user_id', 'user')
 
     @classmethod
     def permission_init(cls):

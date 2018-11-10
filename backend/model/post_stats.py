@@ -1,3 +1,5 @@
+import time
+
 from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 from model import BaseModel, MyTimestampField
@@ -14,6 +16,7 @@ class PostStats(BaseModel):
     last_comment_id = BlobField(null=True, default=None)
     last_edit_user_id = BlobField(null=True, default=None)
     last_edit_time = BigIntegerField(null=True, default=None)
+    update_time = BigIntegerField(null=True, default=None, index=True)
 
     click_count = BigIntegerField(default=0)  # 点击数量
     edit_count = IntegerField(default=0)  # 编辑次数
@@ -58,28 +61,35 @@ class StatsLog(BaseModel):
         db_table = 'stats_log'
 
 
-def post_stats_incr(field: Field, post_id, num=1, callback=None):
+def post_stats_incr(field: Field, post_id, num=1, cb=None):
+    # 关于原子更新
+    # http://docs.peewee-orm.com/en/latest/peewee/querying.html#atomic-updates
     update_data = {field.name: field + num}
     where = [PostStats.id == post_id]
-    if callback: callback(update_data, where)
+    if cb: cb(update_data, where)
 
     PostStats.update(**update_data)\
         .where(*where) \
         .execute()
 
 
+def post_stats_do_edit(post_id, user_id):
+    def func(update, where):
+        update['last_edit_user_id'] = user_id
+        update['last_edit_time'] = int(time.time())
+        update['update_time'] = int(time.time())
+    post_stats_incr(PostStats.edit_count, post_id, cb=func)
+
+
 def post_stats_do_comment(related_type, related_id, comment_id):
-    # 关于原子更新
-    # http://docs.peewee-orm.com/en/latest/peewee/querying.html#atomic-updates
+    # 需要同时更新被评论对象的数字和最后评论id
+    def func(update, where): update['last_comment_id'] = comment_id
+    post_stats_incr(PostStats.comment_count, related_id, 1, cb=func)
 
-    # 更新自身数据
-    def func(update_data, where): update_data['last_comment_id'] = comment_id
-    post_stats_incr(PostStats.comment_count, related_id, 1, callback=func)
-
+    # 如果被评论的是文章，需要更新板块数据
     if related_type == POST_TYPES.TOPIC:
-        # 更新板块数据
         t = Topic.get_by_pk(related_id)
-        post_stats_incr(PostStats.comment_count, t.board_id, 1, callback=func)
+        post_stats_incr(PostStats.comment_count, t.board_id, 1, cb=func)
 
 
 def post_stats_add_topic_click(topic_id, board_id=None):
@@ -96,15 +106,15 @@ def post_stats_topic_move(from_board_id, to_board_id, topic_id):
     if from_board_id:
         def func(update_data, where):
             update_data['comment_count'] = PostStats.comment_count - ts.comment_count
-        post_stats_incr(PostStats.topic_count, from_board_id, -1, callback=func)
+        post_stats_incr(PostStats.topic_count, from_board_id, -1, cb=func)
 
     def func(update_data, where):
         update_data['comment_count'] = PostStats.comment_count + ts.comment_count
-    post_stats_incr(PostStats.topic_count, to_board_id, 1, callback=func)
+    post_stats_incr(PostStats.topic_count, to_board_id, 1, cb=func)
 
 
 def post_stats_new(post_type, id):
-    PostStats.create(id=id, post_type=post_type)
+    PostStats.create(id=id, post_type=post_type, update_time=int(time.time()))
 
 
 def post_stats_topic_new(board_id, topic_id):

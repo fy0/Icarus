@@ -15,6 +15,7 @@
             <li v-for="i in page.items" :key="i.id">
                 <span>
                     <user-link :user="i.user_id" /> 对此文章进行了<b>{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" />
+                    <!-- <pre>{{i.value}}</pre> -->
                 </span>
             </li>
         </ul>

@@ -262,6 +262,7 @@ export default {
     user: new UserViewRequest('user'),
     board: new SlimViewRequest('board'),
     topic: new SlimViewRequest('topic'),
+    stats: new SlimViewRequest('stats'),
     comment: new SlimViewRequest('comment'),
     notif: new NotifViewRequest('notif'),
     upload: new UploadViewRequest('upload'),

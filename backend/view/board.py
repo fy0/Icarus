@@ -1,6 +1,6 @@
 import time
-from typing import Mapping, Dict, List
 import config
+from typing import Mapping, Dict, List
 from model._post import POST_TYPES
 from model.post_stats import post_stats_new
 from slim.base.permission import Permissions, DataRecord
@@ -80,4 +80,4 @@ class BoardView(PeeweeView, UserMixin):
 
             # 管理日志：新建
             ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
-                          record['user_id'], MOP.POST_CREATED, record['name'])
+                          record['user_id'], MOP.POST_CREATE, record['name'])
