@@ -173,6 +173,7 @@
 
 .topic-box > .main {
     flex: 18 0 0%;
+    width: 0%;
 }
 
 .info {

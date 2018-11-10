@@ -38,10 +38,10 @@ renderer.code = function (code, lang, escaped) {
         }
     }
 
-    if (!lang) {
-        return `<pre class="${this.options.langPrefix}PLACEHOLDER"><code>` +
-            // + (escaped ? code : escape(code, true))
-            code + '\n</code></pre>'
+    if (!escaped) {
+        let langText = this.options.langPrefix + escape(lang, true)
+        return `<pre class="${langText}"><code class="${langText}">` +
+        code + '\n</code></pre>\n'
     }
 
     let langText = this.options.langPrefix + escape(lang, true)

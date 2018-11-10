@@ -18,6 +18,31 @@
 .article > .content, .editor-preview {
     min-height: 30vh;
 
+    blockquote {
+        color: $gray-500;
+        position: relative;
+
+        &::before, &::after {
+            display: block;
+            font-size: 35px;
+            position: absolute;
+            font-family: serif;
+            color: $gray-500;
+        }
+
+        &::before {
+            left: -35px;
+            top: 0px;
+            content: "“";
+        }
+
+        &::after {
+            right: -35px;
+            bottom: 0px;
+            content: "”";
+        }
+    }
+
     .img-center {
         text-align: center;
     }

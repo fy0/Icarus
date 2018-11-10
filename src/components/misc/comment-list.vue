@@ -19,12 +19,13 @@
             </div>
         </template>
         <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
-        <div v-else v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="ic-comment">
+        <div v-else v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="ic-comment article">
             <avatar :depth="0" :user="i.user_id" class="avatar"></avatar>
             <div class="content">
                 <div class="head">
                     <span class="floor">#{{i.post_number || (page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
                     <b class="name"><user-link :user="i.user_id" /></b>
+                    <span class="time"><ic-time :timestamp="i.time" /></span>
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>
                         <b>
@@ -32,7 +33,6 @@
                             <span v-else style="color: #999;">已删除内容</span>
                         </b>
                     </span>
-                    <span><ic-time :timestamp="i.time" /></span>
                     <a style="float: right" @click="replyTo(i)" href="javascript:void(0)">回复</a>
                 </div>
                 <blockquote v-if="i.reply_to_cmt_id && i.reply_to_cmt_id.user_id">
@@ -61,39 +61,69 @@
 }
 
 .ic-comment {
-    display: flex;
     padding: 20px;
     border-bottom: 1px solid #e0e0e0;
-}
+    display: flex;
 
-.ic-comment:target {
-    background-color: #ffa;
-}
+    &:target {
+        background-color: #ffa;
 
-.ic-comment:target > .content {
-    background-color: #ffa;
-}
+        > .content {
+            background-color: #ffa;
 
-.ic-comment:target > .content::after {
-   border-color: #ffa;
-}
+            &::after {
+                border-color: #ffa;
+            }
+        }
+    }
 
-.ic-comment .content > .head {
-    font-size: .8em;
-    /* padding-bottom: .6em; */
-}
+    .content > .head {
+        font-size: .9em;
+        /* padding-bottom: .6em; */
+    }
 
-.ic-comment .content {
-    flex: 1 0 0%;
-    padding: 0 10px 0 20px;
+    .content {
+        flex: 1 0 0%;
+        width: 0%;
+        padding: 0 10px 0 20px;
 
-    .head {
-        .floor {
-            margin-right: 10px;
+        .head {
+            .floor {
+                margin-right: 10px;
+            }
+
+            .name {
+                margin-right: 10px;
+            }
+
+            .time {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    blockquote {
+        color: $gray-500;
+        position: relative;
+
+        &::before, &::after {
+            display: block;
+            font-size: 16px;
+            position: absolute;
+            font-family: serif;
+            color: $gray-500;
         }
 
-        .name {
-            margin-right: 10px;
+        &::before {
+            left: -16px;
+            top: 0px;
+            content: "“";
+        }
+
+        &::after {
+            right: -16px;
+            bottom: 0px;
+            content: "”";
         }
     }
 }
