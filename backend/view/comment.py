@@ -1,7 +1,6 @@
 import time
 import config
 from typing import Dict, List
-
 from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_do_comment
 from model.topic import Topic
@@ -16,7 +15,6 @@ from slim.support.peewee import PeeweeView
 from slim.utils import to_bin
 from view import route, ValidateForm, cooldown, same_user
 from wtforms import validators as va, StringField, IntegerField, ValidationError
-
 from view.mention import check_content_mention
 from permissions import permissions_add_all
 from view.user import UserMixin

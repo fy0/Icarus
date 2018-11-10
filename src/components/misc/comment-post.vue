@@ -22,7 +22,10 @@
                 <div v-if="!replyTo"></div>
                 <div style="align-items: center; display: flex;" v-else>
                     <a href="javascript:void(0)" @click="setReplyTo(null)">×</a>
-                    <div style="margin-left: 10px">正在回复：{{replyTo.user_id.nickname}}</div>
+                    <div style="margin-left: 10px">
+                        <template>正在回复：</template>
+                        <a @click="highlightRepliedComment(replyTo.id)" :href="'#' + replyTo.id">{{replyTo.user_id.nickname}}#{{replyTo.post_number}}</a>
+                    </div>
                 </div>
                 <div class="ic-paper round" :class="[editing ? 'ic-z3' : 'ic-z1']">
                     <button class="postBtn ic-btn primary" @click="commentPost">发表</button>
@@ -86,6 +89,7 @@
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
+import anime from 'animejs'
 
 export default {
     props: {
@@ -125,6 +129,16 @@ export default {
         },
         onEditorBlur: async function () {
             this.editing = false
+        },
+        highlightRepliedComment: function (cid) {
+            let el = document.getElementById(cid)
+            $.scrollTo(el)
+            anime({
+                targets: el,
+                duration: 2200,
+                backgroundColor: ['rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)'],
+                easing: 'easeInOutCirc'
+            })
         },
         commentPost: async function () {
             if (this.loading) return

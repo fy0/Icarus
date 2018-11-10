@@ -29,7 +29,7 @@
                     <span v-if="i.reply_to_cmt_id">
                         <span>回复</span>
                         <b>
-                            <a v-if="i.reply_to_cmt_id.user_id" :href="'#' + i.reply_to_cmt_id.id">{{i.reply_to_cmt_id.user_id.nickname}}</a>
+                            <a v-if="i.reply_to_cmt_id.user_id" @click="highlightRepliedComment(i.reply_to_cmt_id.id)" :href="'#' + i.reply_to_cmt_id.id">{{i.reply_to_cmt_id.user_id.nickname}}#{{i.reply_to_cmt_id.post_number}}</a>
                             <span v-else style="color: #999;">已删除内容</span>
                         </b>
                     </span>
@@ -64,18 +64,6 @@
     padding: 20px;
     border-bottom: 1px solid #e0e0e0;
     display: flex;
-
-    &:target {
-        background-color: #ffa;
-
-        > .content {
-            background-color: #ffa;
-
-            &::after {
-                border-color: #ffa;
-            }
-        }
-    }
 
     .content > .head {
         font-size: .9em;
@@ -133,6 +121,7 @@
 import { marked } from '@/md.js'
 import api from '@/netapi.js'
 import CommentPost from './comment-post.vue'
+import anime from 'animejs'
 
 export default {
     props: {
@@ -165,19 +154,15 @@ export default {
     mounted: async function () {
     },
     methods: {
-        addTest: function () {
-            let func = () => {
-                this.page.items.push({
-                    user_id: {
-                        id: 'asdasd',
-                        nickname: 'John Doe'
-                    }
-                })
-            }
-            $.tpReg('一条评论', func)
-        },
-        removeTest: function () {
-            ;
+        highlightRepliedComment: function (cid) {
+            let el = document.getElementById(cid)
+            $.scrollTo(el)
+            anime({
+                targets: el,
+                duration: 2200,
+                backgroundColor: ['rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)'],
+                easing: 'easeInOutCirc'
+            })
         },
         commented: function () {
             let info = this.page.info

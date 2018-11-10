@@ -48,6 +48,7 @@ class Tween {
 let scroller = null
 
 $.scrollTo = function (el) {
+    if (!el) return
     if (scroller) scroller.stop()
 
     scroller = new Tween({
