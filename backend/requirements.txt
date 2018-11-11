@@ -1,5 +1,5 @@
 slim==0.3.13
-aiohttp>=3.3,<3.4
+aiohttp==3.3
 aiohttp-cors==0.7.0
 peewee==3.7
 asyncpg==0.18

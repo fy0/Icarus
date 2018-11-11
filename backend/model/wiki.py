@@ -28,7 +28,7 @@ class WikiArticle(PostModel):
             return cls.select().where(cls.flag == 1).get()
         except cls.DoesNotExist:
             a = cls.insert(time=int(time.time()), user_id=None, flag=1, title="侧边栏",
-                           content='侧边栏文本', link=None).execute()
+                           content='侧边栏文本', ref=None).execute()
             post_stats_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)
 
@@ -38,7 +38,7 @@ class WikiArticle(PostModel):
             return cls.select().where(cls.flag == 2).get()
         except cls.DoesNotExist:
             a = cls.insert(time=int(time.time()), user_id=None, flag=2, title="主页面",
-                           content='主页面文本', link=None).execute()
+                           content='主页面文本', ref=None).execute()
             post_stats_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)
 

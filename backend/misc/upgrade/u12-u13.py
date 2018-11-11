@@ -40,7 +40,7 @@ def work():
     sql_execute('CREATE INDEX post_stats_last_edit_time_index ON post_stats (last_edit_time);')
     sql_execute('ALTER TABLE post_stats ADD update_time bigint DEFAULT NULL NULL;')
     sql_execute('CREATE INDEX update_time_index ON post_stats (update_time);')
-    sql_execute("ALTER TABLE user_notif_last_info ADD last_manage_log_id bytea DEFAULT '\x00' NULL;")
+    sql_execute(r"ALTER TABLE user_notif_last_info ADD last_manage_log_id bytea DEFAULT '\x00' NULL;")
 
     # 移除 MOP.TOPIC_TITLE_CHANGE 300
     ManageLog.update(operation=MOP.POST_TITLE_CHANGE).where(ManageLog.operation == 300).execute()
