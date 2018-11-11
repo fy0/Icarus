@@ -1,7 +1,7 @@
 import time
 import config
 from typing import Dict, List
-from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
+from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_do_comment
 from model.topic import Topic
 from slim.base.permission import Permissions
@@ -111,5 +111,5 @@ class CommentView(UserMixin, PeeweeView):
                      records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
             # 管理日志：修改评论状态
-            ManageLog.add_by_post_changed(self, 'state', MOP.COMMENT_STATE_CHANGE, POST_TYPES.COMMENT,
+            ManageLog.add_by_post_changed(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.COMMENT,
                                           values, old_record, record)

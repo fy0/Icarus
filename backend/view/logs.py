@@ -1,4 +1,4 @@
-from model.log_manage import ManageLog
+from model.manage_log import ManageLog
 from slim.base.permission import Permissions
 from slim.support.peewee import PeeweeView
 from view import route

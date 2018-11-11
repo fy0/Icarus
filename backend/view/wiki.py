@@ -5,7 +5,7 @@ from peewee import fn
 import config
 from lib.textdiff import diff
 from model._post import POST_TYPES
-from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
+from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_new, post_stats_incr, PostStats, post_stats_do_edit
 from model.wiki import WikiArticle
 from slim.base.permission import Permissions, DataRecord

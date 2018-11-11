@@ -7,7 +7,7 @@ from peewee import *
 import config
 from lib.utils import get_today_start_timestamp
 from model._post import PostModel, POST_STATE
-from model.log_manage import ManageLog
+from model.manage_log import ManageLog
 from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID, \
     RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID, RK_USER_REG_CODE_BY_EMAIL, \
     RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL, RK_USER_REG_PASSWORD

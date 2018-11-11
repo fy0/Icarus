@@ -98,7 +98,7 @@ class POST_TYPES(StateObject):
 
         for related_type, id_lst in info.items():
             m = cls.get_model(related_type)
-            # 减少取值，优化性能
+            # TODO: 减少取值，优化性能
             fields = [m._meta.primary_key]
             if getattr(m, 'name', None):
                 fields.append(getattr(m, 'name'))

@@ -10,7 +10,7 @@ from slim.support.peewee import PeeweeView
 from model.board import Board
 from view import route, ValidateForm
 from wtforms import StringField, validators as va
-from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
+from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from permissions import permissions_add_all
 from view.user import UserMixin
 

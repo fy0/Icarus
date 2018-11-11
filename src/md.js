@@ -21,12 +21,17 @@ import 'prismjs/components/prism-json.js'
 import 'prismjs/components/prism-lua.js'
 import 'prismjs/components/prism-markdown.js'
 import 'prismjs/components/prism-python.js'
+import 'prismjs/components/prism-ruby.js'
 import 'prismjs/components/prism-sql.js'
 import 'prismjs/components/prism-nginx.js'
 
 let renderer = new baseMarked.Renderer()
 
 renderer.code = function (code, lang, escaped) {
+    if (lang === 'rb') lang = 'ruby'
+    if (lang === 'py') lang = 'python'
+    if (lang === 'js') lang = 'javascript'
+
     if (this.options.highlight) {
         var out = this.options.highlight(code, lang)
         // 这里存在问题，对部分简单代码来说 out == code 是完全可能的

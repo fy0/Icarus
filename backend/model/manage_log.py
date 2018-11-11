@@ -31,8 +31,6 @@ class MANAGE_OPERATION(StateObject):
     BOARD_NEW = 200  # 废弃
     BOARD_CHANGE = 201
 
-    TOPIC_TITLE_CHANGE = 300  # 修改标题
-    TOPIC_CONTENT_CHANGE = 301  # 编辑内容
     TOPIC_BOARD_MOVE = 302  # 移动主题到其他板块
     TOPIC_AWESOME_CHANGE = 303
     TOPIC_STICKY_WEIGHT_CHANGE = 305
@@ -40,7 +38,7 @@ class MANAGE_OPERATION(StateObject):
 
     WIKI_REF_CHANGE = 401  # 修改链接
 
-    COMMENT_STATE_CHANGE = 500  # 修改评论状态
+    # COMMENT_STATE_CHANGE = 500  # 修改评论状态
 
     txt = {
         POST_STATE_CHANGE: '改变状态',
@@ -61,19 +59,17 @@ class MANAGE_OPERATION(StateObject):
         BOARD_NEW: '新建板块',
         BOARD_CHANGE: '修改板块信息',
 
-        TOPIC_TITLE_CHANGE: '修改标题',  # 待并入
-        TOPIC_CONTENT_CHANGE: '编辑内容',  # 待并入
         TOPIC_BOARD_MOVE: '移动',
         TOPIC_AWESOME_CHANGE: '设置优秀文章',
         TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
         TOPIC_WEIGHT_CHANGE: '修改板块权重',
 
         WIKI_REF_CHANGE: '修改链接',
-
-        COMMENT_STATE_CHANGE: '修改评论状态',
     }
 
+
 MOP = MANAGE_OPERATION  # alias
+
 
 class ManageLog(BaseModel):
     id = BlobField(primary_key=True)  # 使用长ID
@@ -82,7 +78,7 @@ class ManageLog(BaseModel):
     time = MyTimestampField(index=True)  # 操作时间
     related_type = IntegerField()  # 被操作对象类型
     related_id = BlobField(index=True)  # 被操作对象
-    related_user_id = BlobField(index=True, null=True)  # 附加关联对象涉及用户
+    related_user_id = BlobField(index=True, null=True)  # 被操作对象涉及用户
     operation = IntegerField()  # 操作行为
     value = BinaryJSONField(dumps=json_ex_dumps, null=True)  # 操作数据
     note = TextField(null=True, default=None)
@@ -167,6 +163,7 @@ class ManageLog(BaseModel):
         :param diff_func: 默认值为save_couple，实现为记录前后的变化[old_record[key], record[key]]
         :return:
         """
+
         def get_val(r, k):
             if isinstance(r, (DataRecord, dict)):
                 return r[k]

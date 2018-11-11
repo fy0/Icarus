@@ -2,10 +2,10 @@ import time
 import config
 from app import app
 from lib.utils import get_today_start_timestamp
-from model.log_manage import MANAGE_OPERATION, ManageLog
+from model.manage_log import MANAGE_OPERATION, ManageLog
 from model.notif import NOTIF_TYPE, Notification
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
-from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
+from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.redis import RK_USER_ACTIVE_TIME_ZSET, redis, RK_USER_ANON_ACTIVE_TIME_ZSET
 from model.user import USER_GROUP
 from slim.base.view import BaseView

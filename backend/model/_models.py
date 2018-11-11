@@ -4,7 +4,7 @@ from model import db, BaseModel
 from model.board import Board
 from model.follow import Follow
 from model.comment import Comment
-from model.log_manage import ManageLog
+from model.manage_log import ManageLog
 from model.mention import Mention
 from model.notif import Notification, UserNotifLastInfo
 from model.post_stats import PostStats, StatsLog

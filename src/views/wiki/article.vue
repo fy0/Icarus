@@ -5,7 +5,6 @@
         <div class="title">
             <span>
                 <h1>{{item.title}}</h1>
-                <!-- <span>12 条评论 , 54 次修正，29313 次阅读， 最后更新于 2018年05月28日</span> -->
             </span>
             <span style="font-size: 14px; float: right; text-align: right; flex-shrink: 0;">
                 <span class="stat">

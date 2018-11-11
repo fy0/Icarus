@@ -6,7 +6,7 @@ import config
 from typing import Dict, Type, List
 from lib import mail
 from model import db
-from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
+from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
 from model.post_stats import post_stats_new

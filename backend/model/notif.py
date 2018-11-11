@@ -23,13 +23,14 @@ from slim.utils import StateObject
 
 
 class NOTIF_TYPE(StateObject):
-    BE_COMMENTED  = 10  # 被评论
-    BE_REPLIED    = 20  # 被回复
-    BE_FOLLOWED   = 30  # 被关注
-    BE_MENTIONED  = 40  # 被提及(@)
-    BE_BOOKMARKED = 50 # 被收藏
-    BE_LIKED      = 60 # 被赞
-    BE_SENT_PM    = 70 # 被发私信
+    BE_COMMENTED    = 10  # 被评论
+    BE_REPLIED      = 20  # 被回复
+    BE_FOLLOWED     = 30  # 被关注
+    BE_MENTIONED    = 40  # 被提及(@)
+    BE_BOOKMARKED   = 50  # 被收藏
+    BE_LIKED        = 60  # 被赞
+    BE_SENT_PM      = 70  # 被发私信
+    MANAGE_ABOUT_ME = 80  # 与我有关的管理操作
     SYSTEM_MSG    = 100
 
 
@@ -140,6 +141,48 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
     return map(wrap, item_lst)
 
 
+def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
+    return []
+    from model.manage_log import ManageLog, MOP
+
+    item_lst = ManageLog.select().where(
+        ManageLog.related_user_id == user_id,
+        ManageLog.id > last_manage_log_id,
+        ManageLog.operation.in_(
+            MOP.POST_STATE_CHANGE, MOP.POST_VISIBLE_CHANGE, MOP.USER_PASSWORD_CHANGE,
+            MOP.USER_PASSWORD_RESET, MOP.USER_KEY_RESET, MOP.USER_GROUP_CHANGE, MOP.USER_CREDIT_CHANGE,
+            MOP.USER_REPUTE_CHANGE, MOP.USER_NICKNAME_CHANGE,
+            MOP.TOPIC_BOARD_MOVE, MOP.TOPIC_AWESOME_CHANGE, MOP.TOPIC_STICKY_WEIGHT_CHANGE
+        )
+    ).order_by(ManageLog.id.desc())
+
+    def wrap(item: ManageLog):
+        # 总不能把MANAGE_OPERATION的内容换个号码，抄一遍写在上面。
+        # 因此选择过滤掉一些，其他全部归为一类。
+        return {
+            'type': NOTIF_TYPE.MANAGE_ABOUT_ME,
+            'time': item.time,
+
+            'loc_post_type': item.related_type,
+            'loc_post_id': item.related_id,
+            'loc_post_title': None,  # 预备进行二次填充
+
+            'sender_ids': (item.user_id,),
+            'receiver_id': user_id,
+
+            'from_post_type': None,
+            'from_post_id': None,
+
+            'related_type': item.related_type,  # 提醒类型较为特殊
+            'related_id': item.related_id,
+        }
+
+    def wrap2(item: dict):
+        return item
+
+    return filter(lambda x: x, map(wrap2, map(wrap, item_lst)))
+
+
 class UserNotifLastInfo(BaseModel):
     id = BlobField(primary_key=True)  # user_id
     last_be_commented_id = BlobField(default=b'\x00')
@@ -150,6 +193,7 @@ class UserNotifLastInfo(BaseModel):
     last_be_liked_id = BlobField(default=b'\x00')
     last_be_sent_pm_id = BlobField(default=b'\x00')
     last_received_sysmsg_id = BlobField(default=b'\x00')
+    last_manage_log_id = BlobField(default=b'\x00')
     update_time = MyTimestampField(index=True)
 
     @classmethod
@@ -164,6 +208,7 @@ class UserNotifLastInfo(BaseModel):
         l1 = tuple(fetch_notif_of_comment(self.id, self.last_be_commented_id))
         l2 = tuple(fetch_notif_of_reply(self.id, self.last_be_replied_id))
         l3 = tuple(fetch_notif_of_metion(self.id, self.last_be_mentioned_id))
+        l4 = tuple(fetch_notif_of_log(self.id, self.last_manage_log_id))
         lst.extend(l1)
         lst.extend(l2)
         lst.extend(l3)
@@ -172,6 +217,7 @@ class UserNotifLastInfo(BaseModel):
             if l1: self.last_be_commented_id = l1[0]['from_post_id']
             if l2: self.last_be_replied_id = l2[0]['from_post_id']
             if l3: self.last_be_mentioned_id = l3[0]['from_post_id']
+            if l4: self.last_manage_log_id = l4[0]['from_post_id']
             self.update_time = int(time.time())
             self.save()
 

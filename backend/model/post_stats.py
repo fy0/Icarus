@@ -1,5 +1,4 @@
 import time
-
 from peewee import *
 from playhouse.postgres_ext import ArrayField, BinaryJSONField
 from model import BaseModel, MyTimestampField

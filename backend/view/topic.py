@@ -3,7 +3,7 @@ import time
 import config
 from lib.textdiff import diff
 from model._post import POST_TYPES
-from model.log_manage import ManageLog, MANAGE_OPERATION as MOP
+from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, post_stats_topic_new, post_stats_do_edit
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
