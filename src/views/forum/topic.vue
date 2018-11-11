@@ -112,6 +112,10 @@
         </div>
     </div>
 
+    <ic-hangbtn title="去往评论区" style="right: 12%" :check-display="inCommentArea" :onclick="goComment">
+        <i class="icarus icon-comment-multiple-out"></i>
+        <!-- <i class="icarus icon-comment-outline"></i> -->
+    </ic-hangbtn>
     <dialog-topic-manage />
 </div>
 <page-not-found v-else />
@@ -317,6 +321,14 @@ export default {
                     $.message_by_code(ret.code)
                 }
             }
+        },
+        inCommentArea: function () {
+            let el = this.$refs['comment-hr']
+            return document.documentElement.scrollTop + 1 < el.offsetTop + el.clientHeight
+        },
+        goComment: function () {
+            let el = this.$refs['comment-hr']
+            $.scrollTo(el)
         }
     },
     watch: {

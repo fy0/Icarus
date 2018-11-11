@@ -1,13 +1,13 @@
 <template>
 <transition v-on:enter="enter">
-    <div title="回到顶部" class="gotop" @click="gotop" v-show="showGoTop">
-        <i class="icarus icon-arrow-up"></i>
+    <div class="hang-btn" @click="click" v-show="showBtn" ref="btn">
+        <slot />
     </div>
 </transition>
 </template>
 
 <style>
-.gotop {
+.hang-btn {
     z-index: 9999;
     position: fixed;
     right: 8%;
@@ -30,16 +30,25 @@ import state from '@/state.js'
 import anime from 'animejs'
 
 export default {
+    props: {
+        checkDisplay: {
+            type: Function
+        },
+        onclick: {
+            type: Function
+        }
+    },
     data () {
         return {
             state,
-            showGoTop: false
+            showBtn: false
         }
     },
     created: async function () {
-        setInterval(() => {
-            let el = document.documentElement
-            this.showGoTop = el.scrollTop > 0
+        let int = setInterval(() => {
+            // 经试验，this.$el, this.$parent.$el在切换页面后都依旧存在，只有ref是比较稳妥的做法
+            if (!this.$refs.btn) return clearInterval(int)
+            this.showBtn = this.checkDisplay(this.$el)
         }, 100)
     },
     methods: {
@@ -53,7 +62,7 @@ export default {
                 }
             })
         },
-        gotop: function () {
+        click: function () {
             anime({
                 targets: this.$el,
                 duration: 500,
@@ -62,16 +71,7 @@ export default {
             })
             // 延迟200使得动画运动到接近最高点时再向上，不会给人迟滞感
             setTimeout(() => {
-                let el = document.documentElement
-                let top = el.scrollTop
-                let timer = setInterval(() => {
-                    top -= Math.abs(top * 0.1)
-                    if (top <= 1) {
-                        top = 0
-                        clearInterval(timer)
-                    }
-                    el.scrollTop = top
-                }, 20)
+                this.onclick(this.$el)
             }, 200)
         }
     }

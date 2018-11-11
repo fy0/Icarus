@@ -79,12 +79,21 @@ visitor = Ability(None, {
         'id': (A.READ, A.QUERY),
         'post_type': (A.READ,),
 
+        'last_comment_id': (A.READ,),
+        'last_edit_user_id': (A.READ,),
+        'last_edit_time': (A.READ,),
+        'update_time': (A.READ,),
+
         'click_count': (A.READ,),
+        'edit_count': (A.READ,),
         'comment_count': (A.READ,),
         'topic_count': (A.READ,),
-        'last_comment_id': (A.READ,),
-
         'follow_count': (A.READ,),
+        'bookmark_count': (A.READ,),
+        'upvote_count': (A.READ,),
+        'downvote_count': (A.READ,),
+        'thank_count': (A.READ,),
+        'vote_weight': (A.READ,),
     },
     'manage_log': {
         'id': (A.READ,),

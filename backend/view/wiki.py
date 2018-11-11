@@ -55,7 +55,7 @@ class WikiView(UserMixin, PeeweeView):
 
     @classmethod
     def ready(cls):
-        cls.add_soft_foreign_key('id', 'post_stats')
+        cls.add_soft_foreign_key('id', 'post_stats', alias='s')
         cls.add_soft_foreign_key('user_id', 'user')
 
     @classmethod
