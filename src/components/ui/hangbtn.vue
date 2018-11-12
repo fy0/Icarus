@@ -67,7 +67,7 @@ export default {
                 targets: this.$el,
                 duration: 500,
                 easing: 'easeOutExpo',
-                scale: [1, 1.5, 1],
+                scale: [1, 1.5, 1]
             })
             // 延迟200使得动画运动到接近最高点时再向上，不会给人迟滞感
             setTimeout(() => {

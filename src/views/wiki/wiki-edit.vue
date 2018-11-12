@@ -17,7 +17,7 @@
         </check-row>
 
         <check-row :results="formErrors.ref" :multi="true" v-if="!save.flag">
-            <input type="text" v-model="wikiInfo.ref" :placeholder="`这里是这篇文章的URL地址，若为abc，地址将为/wiki/ref/abc，不填则与标题相同`">
+            <input type="text" v-model="wikiInfo.ref" :placeholder="`这里是这篇文章的URL地址，若为abc，地址将为/wiki/r/abc，不填则与标题相同`">
         </check-row>
 
         <check-row :results="formErrors.content" :multi="true">

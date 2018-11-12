@@ -2,25 +2,53 @@
 <div id="app">
     <div v-title>{{state.config.title}}</div>
     <navbar class="header"></navbar>
-    <loading v-if="state.loading" />
-    <router-view v-show="!state.loading" class="main"></router-view>
+
+    <div class="center" :class="{ 'gray': isWikiPage }">
+        <loading v-if="state.loading" />
+
+        <transition name="component-fade" mode="out-in">
+            <router-view class="main" :style="state.loading ? { 'display': 'none'} : {}"></router-view>
+        </transition>
+    </div>
+
     <my-footer class="footer"></my-footer>
     <ic-gotop />
     <msg-box />
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 #app {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
-.main {
+
+.center.gray {
+    transition: background-color .3s ease;
+    background-color: $gray-200;
+}
+
+.center {
     width: 100%;
     flex: 1;
-    padding-top: 25px;
-    padding-bottom: 15px;
+    display: flex;
+
+    > .main {
+        flex: 1;
+        width: 0%;
+        padding-top: 25px;
+        padding-bottom: 15px;
+    }
+}
+
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .3s ease;
+}
+
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active for below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
 
@@ -35,6 +63,17 @@ export default {
     data () {
         return {
             state
+        }
+    },
+    computed: {
+        isWikiPage: function () {
+            let name = this.$route.name
+            if (name) {
+                return name === 'wiki' || (
+                    name.startsWith('wiki_') &&
+                    (name !== 'wiki_article_new' && name !== 'wiki_article_edit')
+                )
+            }
         }
     },
     components: {

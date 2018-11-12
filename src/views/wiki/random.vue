@@ -1,6 +1,6 @@
 <template>
-<wiki-base>
-    <div class="box ic-paper ic-z1">
+<wiki-base v-if="nothing">
+    <div class="box ic-paper ic-z1" >
         <template v-if="nothing">无处可去</template>
     </div>
 </wiki-base>
@@ -44,10 +44,10 @@ export default {
         }
     },
     created: async function () {
-        let key = state.loadingGetKey(this.$route)
-        this.state.loadingInc(this.$route, key)
+        // let key = state.loadingGetKey(this.$route)
+        // this.state.loadingInc(this.$route, key)
         await this.fetchData()
-        this.state.loadingDec(this.$route, key)
+        // this.state.loadingDec(this.$route, key)
     },
     components: {
         WikiBase

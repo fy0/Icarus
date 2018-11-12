@@ -56,9 +56,9 @@
 </style>
 
 <style lang="scss" scoped>
-.main {
-    background-color: $gray-200;
-}
+// .center {
+//     background-color: $gray-200;
+// }
 
 $title-text-color:#777;
 $title-text-active-color: darken(#373434, 0);
