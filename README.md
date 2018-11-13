@@ -39,6 +39,18 @@
 
     * @功能
 
+* 百科
+
+    * 自定义侧边栏和主页
+
+    * 文章的创建和编辑
+
+    * 全部文章列表
+
+    * 文章历史
+
+    * 随机页面
+
 * 管理后台
 
     * 提供对板块、主题、用户、评论的管理
@@ -143,6 +155,8 @@ ALTER USER icarus WITH PASSWORD 'IcaruStest123';
 
 一般直接使用包管理器安装就可以了。
 
+Windows上可以使用[微软提供的二进制版本](https://github.com/MicrosoftArchive/redis/releases)
+
 
 ## 后端篇
 
@@ -158,6 +172,20 @@ ALTER USER icarus WITH PASSWORD 'IcaruStest123';
 sudo pip3.6 install pipenv
 pipenv install
 ```
+
+又或者使用requirements.txt进行比较传统的安装。
+
+> 特别地，在Windows上安装aioredis库时可能会遇到依赖的hiredis包无法安装的问题  
+> 如果是anaconda用户，那么可以使用：  
+> ```bash
+> conda config --append channels conda-forge  
+> conda install hiredis
+> ```  
+> 来进行安装。  
+> 如果不是anaconda用户，那么可以直接访问
+> https://anaconda.org/conda-forge/hiredis/files  
+> 直接下载.tar.bz2压缩包把里面的site-packages/hiredis解压出来放到自己的site-packages即可
+
 
 环境装完之后，这样启动服务：
 ```bash

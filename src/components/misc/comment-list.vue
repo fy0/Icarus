@@ -21,7 +21,7 @@
         <div v-else-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
         <div v-else v-for="(i, _) in page.items" :key="i.id" :id="i.id" class="ic-comment article">
             <avatar :depth="0" :user="i.user_id" class="avatar"></avatar>
-            <div class="content">
+            <div class="content" style="min-height: auto;">
                 <div class="head">
                     <span class="floor">#{{i.post_number || (page.cur_page - 1) * page.info.page_size + _ + 1}}</span>
                     <b class="name"><user-link :user="i.user_id" /></b>
@@ -65,12 +65,12 @@
     border-bottom: 1px solid #e0e0e0;
     display: flex;
 
-    .content > .head {
+    > .content > .head {
         font-size: .9em;
         /* padding-bottom: .6em; */
     }
 
-    .content {
+    > .content {
         flex: 1 0 0%;
         width: 0%;
         padding: 0 10px 0 20px;
