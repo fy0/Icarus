@@ -55,7 +55,7 @@ class WikiView(UserMixin, PeeweeView):
 
     @classmethod
     def ready(cls):
-        cls.add_soft_foreign_key('id', 'post_stats', alias='s')
+        cls.add_soft_foreign_key('id', 'post_stats')
         cls.add_soft_foreign_key('user_id', 'user')
 
     @classmethod
@@ -78,7 +78,6 @@ class WikiView(UserMixin, PeeweeView):
     async def get(self):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
-            post_stats_incr(PostStats.click_count, self._val_bak)
             val = getattr(self, '_val_bak', None)
             if val: post_stats_incr(PostStats.click_count, val)
 

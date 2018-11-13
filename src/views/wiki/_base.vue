@@ -7,10 +7,10 @@
                 <div class="sidebar-content" v-html="marked(sidebar.content || '')"></div>
                 <div class="ic-hr" style="margin: 10px 0px;"></div>
                 <div class="bottom" v-if="!state.loading">
-                    <div>
+                    <div style="font-weight: bold">
                         <router-link :to="{ name: 'wiki_list' }">全部文章</router-link>
                     </div>
-                    <div>
+                    <div style="font-weight: bold">
                         <router-link :to="{ name: 'wiki_random' }">随机页面</router-link>
                     </div>
 
@@ -41,16 +41,42 @@
     * {
         font-size: 14px;
         margin: 0;
-        padding: 0px 10px;
+        max-width: 100%;
+    }
+    > * {
+        padding: 0px 1em;
     }
 
-    ul {
+    p {
+        margin: 0;
+    }
+
+    blockquote {
+        margin-left: 1em;
+    }
+
+    ul, ol {
         padding-top: 0;
         padding-bottom: 0;
+        padding-left: 1em;
+        margin-left: 1em;
+    }
+
+    > p > a {
+        padding-left: 1em;
+    }
+
+    li {
+        margin-left: 1em;
     }
 
     h1, h2, h3, h4, h5, h6 {
         padding: 0px 10px 3px 10px;
+    }
+
+    // 一些修改
+    .img-center {
+        text-align: center;
     }
 }
 </style>
@@ -107,6 +133,7 @@ $title-text-active-color: darken(#373434, 0);
     }
 
     .right {
+        width: 0%;
         flex: 19 1 0%;
     }
 }
