@@ -4,6 +4,7 @@ from slim.base.permission import Ability, A, DataRecord
 super_user = Ability('superuser', {
     'topic': {
         'title': A.ALL,
+        'visible': A.ALL,
         'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
         'content': (A.READ, A.CREATE, A.WRITE),
         'awesome': (A.READ, A.WRITE, A.QUERY),

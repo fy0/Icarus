@@ -13,8 +13,10 @@
                     <span>被进行了以下操作：</span>
                 </div>
                 <div>
-                    <span style="font-weight: bolder">{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</span>
-                    <span v-if="i.operation === state.misc.MANAGE_OPERATION.COMMENT_STATE_CHANGE">({{i.value.map(postStateTxt).join(' -> ')}})</span>
+                    <span style="font-weight: bolder">{{MOPT[i.operation]}}</span>
+                    <span v-if="i.operation === MOP.POST_STATE_CHANGE">({{i.value.map(postStateTxt).join(' -> ')}})</span>
+                    <span v-if="i.operation === MOP.POST_VISIBLE_CHANGE">({{i.value.map(postVisibleTxt).join(' -> ')}})</span>
+                    <span v-if="simpleChangeOP.indexOf(i.operation) != -1">({{i.value.join(' -> ')}})</span>
                 </div>
                 <ic-time class="time" :timestamp="i.time" />
             </div>
@@ -95,12 +97,35 @@ export default {
             marked,
             state,
             page: { info: {}, items: [] },
-            postsOfComments: {}
+            postsOfComments: {},
+            MOP: state.misc.MANAGE_OPERATION,
+            MOPT: state.misc.MANAGE_OPERATION_TXT
+        }
+    },
+    computed: {
+        simpleChangeOP: function () {
+            let MOP = this.MOP
+            let MOPT = this.MOPT
+
+            return [
+                MOP.POST_TITLE_CHANGE,
+                MOP.USER_CREDIT_CHANGE,
+                MOP.USER_REPUTE_CHANGE,
+                MOP.USER_EXP_CHANGE,
+                MOP.USER_NICKNAME_CHANGE,
+                MOP.TOPIC_BOARD_MOVE,
+            ]
         }
     },
     methods: {
         postStateTxt: function (postState) {
             return state.misc.POST_STATE_TXT[postState]
+        },
+        postVisibleTxt: function (i) {
+            return state.misc.POST_VISIBLE_TXT[i]
+        },
+        postGroupTxt: function (i) {
+            return state.misc.USER_GROUP_TXT[i]
         },
         toMonth: function (ts) {
             let date = new Date()
@@ -123,6 +148,7 @@ export default {
                 let userIds = []
                 let boardIds = []
                 let topicIds = []
+                let wikiIds = []
                 let commentIds = []
 
                 for (let i of ret.data.items) {
@@ -132,6 +158,8 @@ export default {
                         boardIds.push(i.related_id)
                     } else if (i.related_type === state.misc.POST_TYPES.TOPIC) {
                         topicIds.push(i.related_id)
+                    } else if (i.related_type === state.misc.POST_TYPES.WIKI) {
+                        wikiIds.push(i.related_id)
                     } else if (i.related_type === state.misc.POST_TYPES.COMMENT) {
                         commentIds.push(i.related_id)
                     }
@@ -139,18 +167,22 @@ export default {
 
                 this.postsOfComments = {}
 
-                let doRequest = async (name, ids) => {
+                let doRequest = async (name, ids, ex=[]) => {
                     if (ids.length) {
-                        let retPost = await api[name].list({ 'id.in': JSON.stringify(ids) }, 1, null, 'admin')
+                        let retPost = await api[name].list({
+                            'id.in': JSON.stringify(ids),
+                            'select': ['id', 'time', 'user_id'].concat(ex)
+                        }, 1, null, 'admin')
                         for (let i of retPost.data.items) {
                             this.postsOfComments[i.id] = i
                         }
                     }
                 }
 
-                await doRequest('user', userIds)
-                await doRequest('board', boardIds)
-                await doRequest('topic', topicIds)
+                await doRequest('user', userIds, ['nickname'])
+                await doRequest('board', boardIds, ['name'])
+                await doRequest('topic', topicIds, ['title'])
+                await doRequest('wiki', wikiIds, ['title', 'ref'])
                 await doRequest('comment', commentIds)
 
                 this.page = ret.data // 提示：注意次序，渲染page依赖上层内容

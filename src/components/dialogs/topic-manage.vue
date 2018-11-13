@@ -51,6 +51,17 @@
                 </span>
             </div>
         </div>
+        <div class="manage-form-item" style="align-items: center">
+            <span class="label">可见性</span>
+            <div class="right">
+                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j">
+                    <label :for="'radio-visible-'+i">
+                        <input type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="vVisible" />
+                        <span>{{i}}</span>
+                    </label>
+                </span>
+            </div>
+        </div>
         <div class="manage-form-item">
             <span class="label">优秀</span>
             <div class="right">
@@ -81,6 +92,14 @@
                     <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[0]]}}</span>
                     <span> -> </span>
                     <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[1]]}}</span>
+                </div>
+            </div>
+            <div class="manage-form-item" v-if="changed.vVisible">
+                <span class="label">文章可见性</span>
+                <div class="right">
+                    <span class="hl">{{state.misc.POST_VISIBLE_TXT[changed.vVisible[0]]}}</span>
+                    <span> -> </span>
+                    <span class="hl">{{state.misc.POST_VISIBLE_TXT[changed.vVisible[1]]}}</span>
                 </div>
             </div>
             <div class="manage-form-item" v-if="changed.vRepute">
@@ -136,6 +155,7 @@ export default {
             vWeight: 0,
             vCredit: 0,
             vState: '0',
+            vVisible: 0,
             vRepute: 0,
             vAwesome: false,
             stage: 1,
@@ -168,6 +188,10 @@ export default {
             if (parseInt(this.vState) !== topic.state) {
                 change.vState = [topic.state, parseInt(this.vState)]
             }
+            // 文章可见性
+            if (parseInt(this.vVisible) !== topic.visible) {
+                change.vVisible = [topic.visible, parseInt(this.vVisible)]
+            }
             // 声望奖励
             if (this.vRepute !== 0) {
                 change.vRepute = [0, this.vRepute]
@@ -196,7 +220,7 @@ export default {
                 // 置顶
                 if (change.vSticky) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, 'superuser')
                     if (ret.code === 0) $.message_success('文章置顶设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -204,7 +228,7 @@ export default {
                 // 真正的提升下沉实现起来比较难，直接改变权重值吧
                 if (change.vWeight) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, 'superuser')
                     if (ret.code === 0) $.message_success('提升/下沉设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -212,7 +236,7 @@ export default {
                 // 积分奖励
                 if (change.vCredit) {
                     updateOne()
-                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'admin')
+                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'superuser')
                     // if (ret.code === 0) $.message_success('文章状态修改成功')
                     // else $.message_by_code(ret.code)
                 }
@@ -220,15 +244,23 @@ export default {
                 // 文章状态
                 if (change.vState) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, 'superuser')
                     if (ret.code === 0) $.message_success('文章状态修改成功')
+                    else $.message_by_code(ret.code)
+                }
+
+                // 文章可见性
+                if (change.vVisible) {
+                    updateOne()
+                    let ret = await api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] }, 'superuser')
+                    if (ret.code === 0) $.message_success('文章可见性修改成功')
                     else $.message_by_code(ret.code)
                 }
 
                 // 声望奖励
                 if (change.vRepute) {
                     updateOne()
-                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'admin')
+                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'superuser')
                     // if (ret.code === 0) $.message_success('文章状态修改成功')
                     // else $.message_by_code(ret.code)
                 }
@@ -236,7 +268,7 @@ export default {
                 // 优秀文章
                 if (change.vAwesome) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, 'admin')
+                    let ret = await api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, 'superuser')
                     if (ret.code === 0) $.message_success('优秀文章设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -265,6 +297,7 @@ export default {
                 let topic = this.topic
                 this.vSticky = topic.sticky_weight
                 this.vState = topic.state
+                this.vVisible = topic.visible
                 this.vAwesome = Boolean(topic.awesome)
                 this.stage = 1
             }

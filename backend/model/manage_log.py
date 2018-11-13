@@ -17,7 +17,7 @@ class MANAGE_OPERATION(StateObject):
     POST_VISIBLE_CHANGE = 1
     POST_CREATE = 2  # 被创建
     POST_TITLE_CHANGE = 3  # 修改标题
-    POST_CONTENT_CHANGE = 4  # 修改标题
+    POST_CONTENT_CHANGE = 4  # 修改内容
 
     USER_PASSWORD_CHANGE = 100  # 设置用户密码（未来再做区分，现在仅有这个）
     USER_PASSWORD_RESET = 101  # 重置用户密码

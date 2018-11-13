@@ -1,5 +1,6 @@
 from slim.base.permission import Ability, A, DataRecord
 
+
 visitor = Ability(None, {
     'topic': {
         'id': (A.QUERY, A.READ),
@@ -8,6 +9,7 @@ visitor = Ability(None, {
         'board_id': (A.QUERY, A.READ),
         'time': (A.READ,),
         'state': (A.READ,),
+        'visible': (A.READ,),
 
         'edit_time': (A.READ,),
         'edit_count': (A.READ,),

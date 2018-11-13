@@ -37,6 +37,18 @@
         </router-link>
     </template>
 
+    <!-- 百科 -->
+    <template v-else-if="type === state.misc.POST_TYPES.WIKI">
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
+        <router-link :to="{ name: ('wiki_article_by_' + (item.ref ? 'ref' : 'id')), params: {ref: item.ref, id: item.id} }" :title="getPostTitle(item, 'title')">
+            <template v-if="!useSlot">
+                <template>{{text(getPostTitle(item, 'title')) || '错误的值'}}</template>
+                <span v-if="goto">📝</span>
+            </template>
+            <slot v-else />
+        </router-link>
+    </template>
+
     <!-- 评论 -->
     <template v-else-if="type === state.misc.POST_TYPES.COMMENT">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
