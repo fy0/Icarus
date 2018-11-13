@@ -13,7 +13,10 @@
                     <span>被进行了以下操作：</span>
                 </div>
                 <div>
-                    <span style="font-weight: bolder">{{MOPT[i.operation]}}</span>
+                    <span style="font-weight: bolder">
+                        <template>{{MOPT[i.operation]}}</template>
+                        <template v-if="i.note"> - {{i.note}}</template>
+                    </span>
                     <span v-if="i.operation === MOP.POST_STATE_CHANGE">({{i.value.map(postStateTxt).join(' -> ')}})</span>
                     <span v-if="i.operation === MOP.POST_VISIBLE_CHANGE">({{i.value.map(postVisibleTxt).join(' -> ')}})</span>
                     <span v-if="simpleChangeOP.indexOf(i.operation) != -1">({{i.value.join(' -> ')}})</span>
@@ -142,7 +145,7 @@ export default {
             let ret = await api.logManage.list({
                 loadfk: { user_id: null },
                 order: 'time.desc'
-            }, params.page, null, 'admin')
+            }, params.page, null, 'superuser')
 
             if (ret.code === api.retcode.SUCCESS) {
                 let userIds = []
@@ -172,7 +175,7 @@ export default {
                         let retPost = await api[name].list({
                             'id.in': JSON.stringify(ids),
                             'select': ['id', 'time', 'user_id'].concat(ex)
-                        }, 1, null, 'admin')
+                        }, 1, null, 'superuser')
                         for (let i of retPost.data.items) {
                             this.postsOfComments[i.id] = i
                         }

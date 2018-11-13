@@ -1,46 +1,47 @@
 from permissions.roles.p30_normal_user import normal_user
 from slim.base.permission import Ability, A, DataRecord
 
+
+def merge_post_permissions_of_superuser(d):
+    base = {
+        'state': (A.QUERY, A.READ, A.WRITE, A.CREATE),
+        'visible': (A.QUERY, A.READ, A.WRITE, A.CREATE),
+        'time': (A.READ, A.CREATE),
+        'user_id': (A.QUERY, A.READ, A.CREATE),
+    }
+    base.update(d)
+    return base
+
+
 super_user = Ability('superuser', {
-    'topic': {
+    'topic': merge_post_permissions_of_superuser({
         'title': A.ALL,
-        'visible': A.ALL,
         'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),
         'content': (A.READ, A.CREATE, A.WRITE),
         'awesome': (A.READ, A.WRITE, A.QUERY),
         'weight': (A.QUERY, A.READ, A.WRITE),
         'sticky_weight': (A.READ, A.WRITE),
-        'state': A.ALL,
-    },
-    'wiki_article': {
-        'state': A.ALL,
-        'visible': A.ALL,
-
+    }),
+    'wiki_article': merge_post_permissions_of_superuser({
         'title': A.ALL,
         'ref': A.ALL,
         'content': A.ALL,
-    },
-    'board': {
+    }),
+    'board': merge_post_permissions_of_superuser({
         'name': A.ALL,
         'brief': A.ALL,
         'desc': A.ALL,
-        'time': (A.READ, A.QUERY, A.CREATE,),
         'weight': A.ALL,
         'color': (A.READ, A.WRITE, A.CREATE),
-        'state': A.ALL,
-        'visible': A.ALL,
         'category': A.ALL,
-        'user_id': (A.READ, A.CREATE),
         'parent_id': A.ALL
-    },
-    'user': {
+    }),
+    'user': merge_post_permissions_of_superuser({
         'key': (A.WRITE,),
-        'time': (A.READ,),
-        'state': A.ALL,
         'email': A.ALL,
         'nickname': A.ALL,
         'credit': A.ALL,
-        'group': A.ALL,
+        # 'group': A.ALL,
         'repute': A.ALL
-    }
+    })
 }, based_on=normal_user)

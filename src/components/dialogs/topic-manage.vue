@@ -151,6 +151,7 @@ export default {
     data () {
         return {
             state,
+            save: { title: '' },
             vSticky: '0',
             vWeight: 0,
             vCredit: 0,
@@ -165,9 +166,9 @@ export default {
     },
     computed: {
         topic: function () {
-            let ret = state.dialog.topicManageData
-            if (!ret) return { title: '' }
-            return ret
+            // TODO: 重构此页面。
+            // 看起来不合理是早期很多工具没有，又嫁接了一些后期需求导致的。
+            return this.save
         },
         changed: function () {
             let change = {}
@@ -233,14 +234,6 @@ export default {
                     else $.message_by_code(ret.code)
                 }
 
-                // 积分奖励
-                if (change.vCredit) {
-                    updateOne()
-                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'superuser')
-                    // if (ret.code === 0) $.message_success('文章状态修改成功')
-                    // else $.message_by_code(ret.code)
-                }
-
                 // 文章状态
                 if (change.vState) {
                     updateOne()
@@ -257,12 +250,20 @@ export default {
                     else $.message_by_code(ret.code)
                 }
 
+                // 积分奖励
+                if (change.vCredit) {
+                    updateOne()
+                    let ret = await api.user.set({id: this.topic.user_id}, {'credit.incr': change.vCredit[1]}, 'superuser')
+                    if (ret.code === 0) $.message_success('加分/扣分设置成功')
+                    else $.message_by_code(ret.code)
+                }
+
                 // 声望奖励
                 if (change.vRepute) {
                     updateOne()
-                    // let ret = await api.topic.set({id: this.topic.id}, {state: change.vState[1]}, 'superuser')
-                    // if (ret.code === 0) $.message_success('文章状态修改成功')
-                    // else $.message_by_code(ret.code)
+                    let ret = await api.user.set({id: this.topic.user_id}, {'repute.incr': change.vCredit[1]}, 'superuser')
+                    if (ret.code === 0) $.message_success('声望变更设置成功')
+                    else $.message_by_code(ret.code)
                 }
 
                 // 优秀文章
@@ -292,14 +293,23 @@ export default {
         }
     },
     watch: {
-        'state.dialog.topicManage': function (val) {
+        'state.dialog.topicManage': async function (val) {
             if (val) {
-                let topic = this.topic
-                this.vSticky = topic.sticky_weight
-                this.vState = topic.state
-                this.vVisible = topic.visible
-                this.vAwesome = Boolean(topic.awesome)
-                this.stage = 1
+                let info = await api.topic.get({
+                    id: state.dialog.topicManageData.id,
+                }, 'superuser')
+
+                if (info.code === api.retcode.SUCCESS) {
+                    this.save = info.data
+                    let topic = this.topic
+                    this.vSticky = topic.sticky_weight
+                    this.vState = topic.state
+                    this.vVisible = topic.visible
+                    this.vAwesome = Boolean(topic.awesome)
+                    this.stage = 1
+                } else {
+                    $.message_by_code(info.code, info)
+                }
             }
         }
     }

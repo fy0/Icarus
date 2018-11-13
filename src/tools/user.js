@@ -26,7 +26,7 @@ $.getRole = function (limit) {
     }
 
     let iCurrent = roles.indexOf(role)
-    let iLimit = roles.indexOf(limit)
+    let iLimit = limit === undefined ? 0 : roles.indexOf(limit)
     if (iLimit === -1) return null
     return roles[(iCurrent > iLimit) ? iLimit : iCurrent]
 }

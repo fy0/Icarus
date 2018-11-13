@@ -107,7 +107,7 @@ export default {
             state.dialog.boardManage = true
         },
         boardNew: async function () {
-            let ret = await api.board.new(this.boardNewInfo, 'admin')
+            let ret = await api.board.new(this.boardNewInfo, 'superuser')
             $.message_by_code(ret.code)
             if (ret.code === api.retcode.SUCCESS) {
                 this.fetchData()
@@ -118,7 +118,7 @@ export default {
                 order: 'weight.desc,time.asc',
                 loadfk: { 'user_id': null }
                 // select: 'id, time, user_id, board_id, title, state',
-            }, 1, null, 'admin')
+            }, 1, null, 'superuser')
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.boardInfo = ret.data

@@ -94,7 +94,7 @@ export default {
         changeState: async function (item, val) {
             let oldVal = item.state
             item.state = val
-            let ret = await api.comment.set({ id: item.id }, { state: val }, 'admin')
+            let ret = await api.comment.set({ id: item.id }, { state: val }, 'superuser')
             if (ret.code !== api.retcode.SUCCESS) {
                 item.state = oldVal
             }
@@ -114,7 +114,7 @@ export default {
             let ret = await api.comment.list({
                 loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } },
                 order: 'time.desc'
-            }, params.page, null, 'admin')
+            }, params.page, null, 'superuser')
 
             if (ret.code === api.retcode.SUCCESS) {
                 let topicIds = []

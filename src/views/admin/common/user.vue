@@ -77,21 +77,21 @@ export default {
         doSearch: async function () {
             let found = false
             if ($.regex.email.test(this.searchTxt)) {
-                let retList = await api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, 'admin')
+                let retList = await api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, 'superuser')
                 if (retList.code === api.retcode.SUCCESS) {
                     this.page = retList.data
                     found = true
                 }
             } else {
                 if ($.regex.nickname.test(this.searchTxt)) {
-                    let retList = await api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, null, 'admin')
+                    let retList = await api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, null, 'superuser')
                     if (retList.code === api.retcode.SUCCESS) {
                         this.page = retList.data
                         found = true
                     }
                 }
                 if ($.regex.id.test(this.searchTxt)) {
-                    let retList = await api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, null, 'admin')
+                    let retList = await api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, null, 'superuser')
                     if (retList.code === api.retcode.SUCCESS) {
                         if (found) {
                             this.page.items.push(retList.data.items[0])
@@ -123,7 +123,7 @@ export default {
                     if (password === '') {
                         swal.showValidationError('密码不能为空。')
                     }
-                    return api.user.set({ id: user.id }, { password }, 'admin')
+                    return api.user.set({ id: user.id }, { password }, 'superuser')
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -152,7 +152,7 @@ export default {
                 confirmButtonText: '确定，我要重置',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
-                    return api.user.set({ id: user.id }, { 'key': '1' }, 'admin')
+                    return api.user.set({ id: user.id }, { 'key': '1' }, 'superuser')
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -175,7 +175,7 @@ export default {
             let params = this.$route.params
             let retList = await api.user.list({
                 order: 'id.desc'
-            }, params.page, null, 'admin')
+            }, params.page, null, 'superuser')
             if (retList.code === api.retcode.SUCCESS) {
                 this.page = retList.data
             }

@@ -1,3 +1,4 @@
+from permissions.roles.p10_visitor import merge_post_permissions_of_visitor
 from permissions.roles.p20_inactive_user import inactive_user
 from slim.base.permission import Ability, A, DataRecord
 
@@ -14,7 +15,7 @@ normal_user = Ability('user', {
     },
     'topic': {
         'title': (A.READ, A.CREATE, A.WRITE),
-        'board_id': (A.QUERY, A.READ, A.CREATE),
+        # 'board_id': (A.QUERY, A.READ, A.CREATE),
         'content': (A.READ, A.CREATE, A.WRITE),
     },
     'comment': {
@@ -24,14 +25,9 @@ normal_user = Ability('user', {
         'state': (A.READ, A.WRITE,),
         'content': (A.READ, A.CREATE,),
     },
-    'upload': {
-        'id': (A.READ, A.QUERY),
-        'user_id': (A.READ, A.QUERY),
-        'state': (A.READ,),
-        'visible': (A.READ,),
-        'time': (A.READ,),
+    'upload': merge_post_permissions_of_visitor({
         'key': (A.READ, A.QUERY),
-        'size': (A.READ, A.QUERY),
+        'size': (A.READ,),
         'type_name': (A.READ, A.QUERY),
-    }
+    })
 }, based_on=inactive_user)

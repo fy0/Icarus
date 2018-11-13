@@ -204,6 +204,10 @@ class UserView(UserMixin, UserLegacyView):
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
+            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
+                self, column, op, POST_TYPES.USER, values, old_record, record
+            )
+
             # 管理日志：重置访问令牌
             ManageLog.add_by_post_changed(self, 'key', MOP.USER_KEY_RESET, POST_TYPES.USER,
                                           values, old_record, record, value=None)
@@ -211,6 +215,14 @@ class UserView(UserMixin, UserLegacyView):
             # 管理日志：重置密码
             ManageLog.add_by_post_changed(self, 'password', MOP.USER_PASSWORD_CHANGE, POST_TYPES.USER,
                                           values, old_record, record, value=None)
+
+            manage_try_add('state', MOP.POST_STATE_CHANGE)
+            manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)
+
+            manage_try_add('group', MOP.USER_GROUP_CHANGE)
+            manage_try_add('exp', MOP.USER_EXP_CHANGE)
+            manage_try_add('credit', MOP.USER_CREDIT_CHANGE)
+            manage_try_add('repute', MOP.USER_REPUTE_CHANGE)
 
     @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
     async def new(self):
@@ -364,8 +376,9 @@ class UserView(UserMixin, UserLegacyView):
                 u.is_new_user = False
                 u.save()
                 self.finish(RETCODE.SUCCESS, {'nickname': u.nickname, 'change_nickname_chance': u.change_nickname_chance})
+                # note: 虽然有点奇怪，但下面这句其实没问题 18.11.13
                 ManageLog.add_by_post_changed(self, 'nickname', MOP.USER_NICKNAME_CHANGE, POST_TYPES.USER,
-                                              True, {'nickname': old_nickname}, u, value=None)
+                                              True, {'nickname': old_nickname}, u)
                 return
             except peewee.DatabaseError:
                 db.rollback()
