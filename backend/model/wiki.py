@@ -10,6 +10,27 @@ from model.user import User
 # from model.board import Board
 
 
+DEFAULT_SIDEBAR_CONTENT = '''
+# 侧边栏文本
+[转至主页](/)
+[转至关于](/about)
+
+# 一些计划
+> 加入搜索功能
+> 加入OAuth登录
+'''
+
+DEFAULT_WIKI_CONTENT = '''
+# 欢迎来到Icarus百科
+
+如你所见，所谓百科主页面就是显示在右边的页面。
+
+实际上也就是个有点特殊的百科文档而已，和其他文档并无太大的不同。
+
+反正这里放一些导航啊、守则啊、介绍啊之类的内容即可。
+'''
+
+
 class WikiArticle(PostModel):
     title = TextField(index=True)
     content = TextField()
@@ -28,7 +49,7 @@ class WikiArticle(PostModel):
             return cls.select().where(cls.flag == 1).get()
         except cls.DoesNotExist:
             a = cls.insert(time=int(time.time()), user_id=None, flag=1, title="侧边栏",
-                           content='侧边栏文本', ref=None).execute()
+                           content=DEFAULT_SIDEBAR_CONTENT, ref=None).execute()
             post_stats_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)
 
@@ -38,7 +59,7 @@ class WikiArticle(PostModel):
             return cls.select().where(cls.flag == 2).get()
         except cls.DoesNotExist:
             a = cls.insert(time=int(time.time()), user_id=None, flag=2, title="主页面",
-                           content='主页面文本', ref=None).execute()
+                           content=DEFAULT_WIKI_CONTENT, ref=None).execute()
             post_stats_new(POST_TYPES.WIKI, a.tobytes())
             return cls.get(cls.id == a)
 
