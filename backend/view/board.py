@@ -42,16 +42,15 @@ class BoardView(PeeweeView, UserMixin):
         permission: Permissions = cls.permission
         permissions_add_all(permission)
 
-    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
-        for values in values_lst:
-            form = BoardForm(**values)
-            if not form.validate():
-                return self.finish(RETCODE.FAILED, form.errors)
+    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
+        form = BoardForm(**values)
+        if not form.validate():
+            return self.finish(RETCODE.FAILED, form.errors)
 
-            if not config.POST_ID_GENERATOR == config.AutoGenerator:
-                values['id'] = config.POST_ID_GENERATOR().digest()
-            values['time'] = int(time.time())
-            values['user_id'] = self.current_user.id
+        if not config.POST_ID_GENERATOR == config.AutoGenerator:
+            values['id'] = config.POST_ID_GENERATOR().digest()
+        values['time'] = int(time.time())
+        values['user_id'] = self.current_user.id
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
@@ -73,11 +72,10 @@ class BoardView(PeeweeView, UserMixin):
             ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
                           record['user_id'], MOP.BOARD_CHANGE, [o, n])
 
-    async def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
-        for record in records:
-            # 添加统计记录
-            post_stats_new(POST_TYPES.BOARD, record['id'])
+    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
+        # 添加统计记录
+        post_stats_new(POST_TYPES.BOARD, record['id'])
 
-            # 管理日志：新建
-            ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
-                          record['user_id'], MOP.POST_CREATE, record['name'])
+        # 管理日志：新建
+        ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
+                      record['user_id'], MOP.POST_CREATE, record['name'])

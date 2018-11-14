@@ -42,8 +42,7 @@ class CommentView(UserMixin, PeeweeView):
     async def prepare(self):
         self.do_mentions = None
 
-    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
-        values = values_lst[0]
+    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         relate_type = values.get('related_type', None)
         if not (relate_type and relate_type in POST_TYPES.values()):
             return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
@@ -93,19 +92,18 @@ class CommentView(UserMixin, PeeweeView):
             post: Topic
             await post.weight_inc()
 
-    def after_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
-        for record in records:
-            post_stats_do_comment(record['related_type'], record['related_id'], record['id'])
-            post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
-            Comment.update(post_number=post_number).where(Comment.id == record['id']).execute()
+    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
+        post_stats_do_comment(record['related_type'], record['related_id'], record['id'])
+        post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
+        Comment.update(post_number=post_number).where(Comment.id == record['id']).execute()
 
-            if self.do_mentions:
-                # 创建提醒
-                loc = [record['related_type'], record['related_id']]
-                # record['related_id']: memoryview
-                loc_title = POST_TYPES.get_post_title_by_list(loc)[record['related_id'].tobytes()]
-                related = [POST_TYPES.COMMENT, record['id']]
-                self.do_mentions(record['user_id'], loc_title, loc, related)
+        if self.do_mentions:
+            # 创建提醒
+            loc = [record['related_type'], record['related_id']]
+            # record['related_id']: memoryview
+            loc_title = POST_TYPES.get_post_title_by_list(loc)[record['related_id'].tobytes()]
+            related = [POST_TYPES.COMMENT, record['id']]
+            self.do_mentions(record['user_id'], loc_title, loc, related)
 
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord],
                      records: List[DataRecord]):

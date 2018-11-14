@@ -132,8 +132,7 @@ class TopicView(UserMixin, PeeweeView):
             if manage_try_add('board_id', MOP.TOPIC_BOARD_MOVE):
                 post_stats_topic_move(old_record['board_id'], record['board_id'], record['id'])
 
-    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
-        values = values_lst[0]
+    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         form = TopicNewForm(**raw_post)
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
@@ -149,9 +148,7 @@ class TopicView(UserMixin, PeeweeView):
         # 主题不再支持 @
         # values['content'], self.do_mentions = check_content_mention(values['content'])
 
-    def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
-        record = records[0]
-
+    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
         # if self.do_mentions:
         #     self.do_mentions(record['user_id'], POST_TYPES.TOPIC, record['id'], {
         #         'title': record['title'],

@@ -111,8 +111,7 @@ class WikiView(UserMixin, PeeweeView):
             manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：改变状态
             manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
 
-    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
-        values = values_lst[0]
+    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         form = WikiNewForm(**raw_post)
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
@@ -124,8 +123,7 @@ class WikiView(UserMixin, PeeweeView):
         if not ref: ref = values['title']
         values['ref'] = quote(ref).replace('/', '')
 
-    def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
-        record = records[0]
+    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
         # 添加统计记录
         post_stats_new(POST_TYPES.WIKI, record['id'])
         # 添加创建记录

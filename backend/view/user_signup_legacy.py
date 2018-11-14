@@ -45,8 +45,7 @@ class UserLegacyView(PeeweeView):
             return self.finish(RETCODE.FAILED, '此接口未开放')
         return await super().new()
 
-    async def before_insert(self, raw_post: Dict, values_lst: List[SQLValuesToWrite]):
-        values = values_lst[0]
+    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         # 必须存在以下值：
         # email password nickname
         # 自动填充或改写以下值：
@@ -81,8 +80,7 @@ class UserLegacyView(PeeweeView):
         values['time'] = int(time.time())
         self._key = values['key']
 
-    async def after_insert(self, raw_post: Dict, values_lst: SQLValuesToWrite, records: List[DataRecord]):
-        record = records[0]
+    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
         if record['number'] == 1:
             u = User.get(User.id == record['id'])
             u.group = USER_GROUP.ADMIN
