@@ -23,8 +23,8 @@ visitor = Ability(None, {
         'title': (A.READ,),
         'board_id': (A.QUERY, A.READ),
 
-        'edit_time': (A.READ,),
         'edit_count': (A.READ,),
+        'edit_time': (A.READ,),
         'last_edit_user_id': (A.READ,),
         'content': (A.READ,),
 
@@ -40,17 +40,19 @@ visitor = Ability(None, {
         'flag': (A.QUERY, A.READ,),
     }),
     'user': merge_post_permissions_of_visitor({
+        'email': (A.CREATE,),
+        'phone': (A.CREATE,),
         'nickname': (A.READ, A.CREATE),
-        'group': (A.READ,),
-        'number': (A.READ,),
+
         'biology': (A.READ,),
-        'key_time': (A.READ,),
         'avatar': (A.READ,),
         'type': (A.READ,),
         'url': (A.READ,),
         'location': (A.READ,),
+        'group': (A.READ,),
 
-        'email': (A.CREATE,),
+        'access_time': (A.READ,),
+        'number': (A.READ,),
         'exp': (A.READ,),
         'credit': (A.READ,),
         'repute': (A.READ,),

@@ -1,3 +1,4 @@
+from model.user import USER_GROUP
 from permissions.roles import *
 from model._post import POST_STATE, POST_VISIBLE
 from slim.base.permission import Ability, A, DataRecord
@@ -20,15 +21,24 @@ inactive_user.add_query_condition('user', func=func)
 normal_user.add_query_condition('user', func=func)
 
 
-# 拒绝其他人写入自己的个人资料
-
-def check_is_user(ability, user, action, record: DataRecord, available_columns: list):
+def check_is_me(ability, user, action, record: DataRecord, available_columns: list):
+    # 拒绝其他人写入自己的个人资料
     if user:
         if record.get('id') != user.id:
             available_columns.clear()
     return True
 
 
-banned_user.add_record_check((A.WRITE,), 'user', func=check_is_user)
-inactive_user.add_record_check((A.WRITE,), 'user', func=check_is_user)
-normal_user.add_record_check((A.WRITE,), 'user', func=check_is_user)
+def check_is_admin(ability, user, action, record: DataRecord, available_columns: list):
+    # 阻止superuser写入superuser或更高权限用户组
+    if user:
+        if record.get('group') in (USER_GROUP.SUPERUSER, USER_GROUP.ADMIN):
+            available_columns.clear()
+    return True
+
+
+banned_user.add_record_check((A.WRITE,), 'user', func=check_is_me)
+inactive_user.add_record_check((A.WRITE,), 'user', func=check_is_me)
+normal_user.add_record_check((A.WRITE,), 'user', func=check_is_me)
+
+super_user.add_record_check((A.WRITE,), 'super_user', func=check_is_admin)

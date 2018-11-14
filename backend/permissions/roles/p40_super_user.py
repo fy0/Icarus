@@ -41,7 +41,6 @@ super_user = Ability('superuser', {
         'email': A.ALL,
         'nickname': A.ALL,
         'credit': A.ALL,
-        # 'group': A.ALL,
         'repute': A.ALL
     })
 }, based_on=normal_user)

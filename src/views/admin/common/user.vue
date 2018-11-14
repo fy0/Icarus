@@ -127,7 +127,7 @@ export default {
                 }
             }).then((result) => {
                 if (result.value == null) return
-                if (result.value) {
+                if (result.value.code === api.retcode.SUCCESS) {
                     swal({
                         title: '操作成功！',
                         type: 'success'
@@ -156,7 +156,7 @@ export default {
                 }
             }).then((result) => {
                 if (result.value == null) return
-                if (result.value) {
+                if (result.value.code === api.retcode.SUCCESS) {
                     swal({
                         title: '如你所愿',
                         text: '',

@@ -11,7 +11,6 @@ normal_user = Ability('user', {
         'type': (A.QUERY, A.READ, A.WRITE),
         'url': (A.QUERY, A.READ, A.WRITE),
         'location': (A.QUERY, A.READ, A.WRITE),
-        # 'key': ['query', 'read']
     },
     'topic': {
         'title': (A.READ, A.CREATE, A.WRITE),

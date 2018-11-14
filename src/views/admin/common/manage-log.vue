@@ -19,6 +19,7 @@
                     </span>
                     <span v-if="i.operation === MOP.POST_STATE_CHANGE">({{i.value.map(postStateTxt).join(' -> ')}})</span>
                     <span v-if="i.operation === MOP.POST_VISIBLE_CHANGE">({{i.value.map(postVisibleTxt).join(' -> ')}})</span>
+                    <span v-if="i.operation === MOP.USER_GROUP_CHANGE">({{i.value.map(postGroupTxt).join(' -> ')}})</span>
                     <span v-if="simpleChangeOP.indexOf(i.operation) != -1">({{i.value.join(' -> ')}})</span>
                 </div>
                 <ic-time class="time" :timestamp="i.time" />
