@@ -1,8 +1,8 @@
 # Icarus
 
-> A opensource forum project write with python3 and vue.js
-
 ![](misc/screenshot.png)
+
+> A opensource forum project write with python3 and vue.js
 
 [更多截图(旧版)](SCREENSHOT.md)
 

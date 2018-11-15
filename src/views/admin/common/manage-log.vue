@@ -17,10 +17,7 @@
                         <template>{{MOPT[i.operation]}}</template>
                         <template v-if="i.note"> - {{i.note}}</template>
                     </span>
-                    <span v-if="i.operation === MOP.POST_STATE_CHANGE">({{i.value.map(postStateTxt).join(' -> ')}})</span>
-                    <span v-if="i.operation === MOP.POST_VISIBLE_CHANGE">({{i.value.map(postVisibleTxt).join(' -> ')}})</span>
-                    <span v-if="i.operation === MOP.USER_GROUP_CHANGE">({{i.value.map(postGroupTxt).join(' -> ')}})</span>
-                    <span v-if="simpleChangeOP.indexOf(i.operation) != -1">({{i.value.join(' -> ')}})</span>
+                    <ManageLogItemDetail :item="i" />
                 </div>
                 <ic-time class="time" :timestamp="i.time" />
             </div>
@@ -94,6 +91,7 @@ import { marked } from '@/md.js'
 import api from '@/netapi.js'
 import state from '@/state.js'
 import AdminBase from '../base/base.vue'
+import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
     data () {
@@ -106,31 +104,7 @@ export default {
             MOPT: state.misc.MANAGE_OPERATION_TXT
         }
     },
-    computed: {
-        simpleChangeOP: function () {
-            let MOP = this.MOP
-            return [
-                MOP.POST_TITLE_CHANGE,
-                MOP.USER_CREDIT_CHANGE,
-                MOP.USER_REPUTE_CHANGE,
-                MOP.USER_EXP_CHANGE,
-                MOP.USER_NICKNAME_CHANGE,
-                MOP.TOPIC_BOARD_MOVE,
-                MOP.TOPIC_AWESOME_CHANGE,
-                MOP.TOPIC_STICKY_WEIGHT_CHANGE
-            ]
-        }
-    },
     methods: {
-        postStateTxt: function (postState) {
-            return state.misc.POST_STATE_TXT[postState]
-        },
-        postVisibleTxt: function (i) {
-            return state.misc.POST_VISIBLE_TXT[i]
-        },
-        postGroupTxt: function (i) {
-            return state.misc.USER_GROUP_TXT[i]
-        },
         toMonth: function (ts) {
             let date = new Date()
             date.setTime(ts * 1000)
@@ -171,7 +145,8 @@ export default {
         '$route': 'fetchData'
     },
     components: {
-        AdminBase
+        AdminBase,
+        ManageLogItemDetail
     }
 }
 </script>

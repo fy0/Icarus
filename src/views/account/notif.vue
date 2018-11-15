@@ -21,11 +21,7 @@
                     <template>{{MOPT[i.data.op]}}</template>
                     <template v-if="i.note"> - {{i.note}}</template>
 
-                    <!-- {{i.data.value}} -->
-                    <span v-if="i.data.op === MOP.POST_STATE_CHANGE">({{i.data.value.map(postStateTxt).join(' -> ')}})</span>
-                    <span v-if="i.data.op === MOP.POST_VISIBLE_CHANGE">({{i.data.value.map(postVisibleTxt).join(' -> ')}})</span>
-                    <span v-if="i.data.op === MOP.USER_GROUP_CHANGE">({{i.data.value.map(postGroupTxt).join(' -> ')}})</span>
-                    <span v-if="simpleChangeOP.indexOf(i.data.op) != -1">({{i.data.value.join(' -> ')}})</span>
+                    <ManageLogItemDetail :item="i.data" :simple="true" />
                 </div>
             </div>
             <div v-else class="notif-content" slot="content">
@@ -78,6 +74,7 @@
 <script>
 import api from '@/netapi.js'
 import state from '@/state.js'
+import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
     data () {
@@ -91,35 +88,11 @@ export default {
             page: {}
         }
     },
-    computed: {
-        simpleChangeOP: function () {
-            let MOP = this.MOP
-            return [
-                MOP.POST_TITLE_CHANGE,
-                MOP.USER_CREDIT_CHANGE,
-                MOP.USER_REPUTE_CHANGE,
-                MOP.USER_EXP_CHANGE,
-                MOP.USER_NICKNAME_CHANGE,
-                MOP.TOPIC_BOARD_MOVE,
-                MOP.TOPIC_AWESOME_CHANGE,
-                MOP.TOPIC_STICKY_WEIGHT_CHANGE
-            ]
-        }
-    },
     created: async function () {
         await this.fetchData()
     },
     methods: {
         atConvert: $.atConvert2,
-        postStateTxt: function (postState) {
-            return state.misc.POST_STATE_TXT[postState]
-        },
-        postVisibleTxt: function (i) {
-            return state.misc.POST_VISIBLE_TXT[i]
-        },
-        postGroupTxt: function (i) {
-            return state.misc.USER_GROUP_TXT[i]
-        },
         typeName: function (type) {
             return this.state.misc.POST_TYPES_TXT[type]
         },
@@ -193,6 +166,9 @@ export default {
             }
             this.state.loadingDec(this.$route, key)
         }
+    },
+    components: {
+        ManageLogItemDetail
     },
     watch: {
         '$route': 'fetchData'

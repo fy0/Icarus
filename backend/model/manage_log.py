@@ -59,7 +59,7 @@ class MANAGE_OPERATION(StateObject):
         BOARD_NEW: '新建板块',
         BOARD_CHANGE: '修改板块信息',
 
-        TOPIC_BOARD_MOVE: '移动',
+        TOPIC_BOARD_MOVE: '移动板块',
         TOPIC_AWESOME_CHANGE: '设置优秀文章',
         TOPIC_STICKY_WEIGHT_CHANGE: '修改置顶权重',
         TOPIC_WEIGHT_CHANGE: '修改板块权重',
