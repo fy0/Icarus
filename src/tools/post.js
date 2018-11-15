@@ -31,8 +31,10 @@ $.getBasePostsByIDs = async function (func, items, role = null) {
                 'id.in': JSON.stringify(ids),
                 'select': ['id', 'time', 'user_id'].concat(ex)
             }, 1, null, role)
-            for (let i of retPost.data.items) {
-                posts[i.id] = $.makePostLinkData(type, i)
+            if (retPost.code === api.retcode.SUCCESS) {
+                for (let i of retPost.data.items) {
+                    posts[i.id] = $.makePostLinkData(type, i)
+                }
             }
         }
     }
