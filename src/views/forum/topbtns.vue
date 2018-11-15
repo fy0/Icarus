@@ -220,12 +220,16 @@ export default {
         },
         checkIn: async function () {
             let ret = await api.user.checkIn()
-            state.user['last_check_in_time'] = ret.data.time
-            state.user['check_in_his'] = ret.data.check_in_his
-            state.user.exp += ret.data.exp
-            state.user.credit += ret.data.credit
-            this.showCheckedHits2 = true
-            $.message_success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
+            if (ret.code === api.retcode.SUCCESS) {
+                state.user['last_check_in_time'] = ret.data.time
+                state.user['check_in_his'] = ret.data.check_in_his
+                state.user.exp += ret.data.exp
+                state.user.credit += ret.data.credit
+                this.showCheckedHits2 = true
+                $.message_success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
+            } else {
+                $.message_by_code(ret.code, ret.data)
+            }
         },
         navActiveStrict: function (...names) {
             for (let name of names) {

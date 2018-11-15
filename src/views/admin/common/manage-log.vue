@@ -109,8 +109,6 @@ export default {
     computed: {
         simpleChangeOP: function () {
             let MOP = this.MOP
-            let MOPT = this.MOPT
-
             return [
                 MOP.POST_TITLE_CHANGE,
                 MOP.USER_CREDIT_CHANGE,
@@ -118,6 +116,8 @@ export default {
                 MOP.USER_EXP_CHANGE,
                 MOP.USER_NICKNAME_CHANGE,
                 MOP.TOPIC_BOARD_MOVE,
+                MOP.TOPIC_AWESOME_CHANGE,
+                MOP.TOPIC_STICKY_WEIGHT_CHANGE
             ]
         }
     },
@@ -149,45 +149,14 @@ export default {
             }, params.page, null, 'superuser')
 
             if (ret.code === api.retcode.SUCCESS) {
-                let userIds = []
-                let boardIds = []
-                let topicIds = []
-                let wikiIds = []
-                let commentIds = []
-
-                for (let i of ret.data.items) {
-                    if (i.related_type === state.misc.POST_TYPES.USER) {
-                        userIds.push(i.related_id)
-                    } else if (i.related_type === state.misc.POST_TYPES.BOARD) {
-                        boardIds.push(i.related_id)
-                    } else if (i.related_type === state.misc.POST_TYPES.TOPIC) {
-                        topicIds.push(i.related_id)
-                    } else if (i.related_type === state.misc.POST_TYPES.WIKI) {
-                        wikiIds.push(i.related_id)
-                    } else if (i.related_type === state.misc.POST_TYPES.COMMENT) {
-                        commentIds.push(i.related_id)
-                    }
-                }
-
-                this.postsOfComments = {}
-
-                let doRequest = async (name, ids, ex=[]) => {
-                    if (ids.length) {
-                        let retPost = await api[name].list({
-                            'id.in': JSON.stringify(ids),
-                            'select': ['id', 'time', 'user_id'].concat(ex)
-                        }, 1, null, 'superuser')
-                        for (let i of retPost.data.items) {
-                            this.postsOfComments[i.id] = i
+                this.postsOfComments = await $.getBasePostsByIDs(async (i) => {
+                    return [
+                        {
+                            'type': i.related_type,
+                            'id': i.related_id
                         }
-                    }
-                }
-
-                await doRequest('user', userIds, ['nickname'])
-                await doRequest('board', boardIds, ['name'])
-                await doRequest('topic', topicIds, ['title'])
-                await doRequest('wiki', wikiIds, ['title', 'ref'])
-                await doRequest('comment', commentIds)
+                    ]
+                }, ret.data.items, 'superuser')
 
                 this.page = ret.data // 提示：注意次序，渲染page依赖上层内容
             }

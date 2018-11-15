@@ -19,7 +19,7 @@ class POST_STATE(StateObject):
     CLOSE = 30  # 禁止回复
     NORMAL = 50
 
-    txt = {DEL: "删除", APPLY: '待审核', CLOSE: "关闭", NORMAL: "正常"}
+    txt = {DEL: "删除", APPLY: '待审核', CLOSE: "锁定", NORMAL: "正常"}
 
 
 class POST_VISIBLE(StateObject):

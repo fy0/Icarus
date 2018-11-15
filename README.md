@@ -4,7 +4,7 @@
 
 ![](misc/screenshot.png)
 
-[更多截图](SCREENSHOT.md)
+[更多截图(旧版)](SCREENSHOT.md)
 
 
 ## 特性

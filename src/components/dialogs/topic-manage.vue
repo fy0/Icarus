@@ -253,7 +253,7 @@ export default {
                 // 积分奖励
                 if (change.vCredit) {
                     updateOne()
-                    let ret = await api.user.set({id: this.topic.user_id}, {'credit.incr': change.vCredit[1]}, 'superuser')
+                    let ret = await api.user.set({ id: this.topic.user_id }, { 'credit.incr': change.vCredit[1] }, 'superuser')
                     if (ret.code === 0) $.message_success('加分/扣分设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -261,7 +261,7 @@ export default {
                 // 声望奖励
                 if (change.vRepute) {
                     updateOne()
-                    let ret = await api.user.set({id: this.topic.user_id}, {'repute.incr': change.vCredit[1]}, 'superuser')
+                    let ret = await api.user.set({ id: this.topic.user_id }, { 'repute.incr': change.vCredit[1] }, 'superuser')
                     if (ret.code === 0) $.message_success('声望变更设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -296,12 +296,12 @@ export default {
         'state.dialog.topicManage': async function (val) {
             if (val) {
                 let info = await api.topic.get({
-                    id: state.dialog.topicManageData.id,
+                    id: state.dialog.topicManageData.id
                 }, 'superuser')
 
                 if (info.code === api.retcode.SUCCESS) {
                     this.save = info.data
-                    let topic = this.topic
+                    let topic = this.save
                     this.vSticky = topic.sticky_weight
                     this.vState = topic.state
                     this.vVisible = topic.visible

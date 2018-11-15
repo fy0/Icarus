@@ -6,16 +6,38 @@
             <span slot="time">
                 <ic-time :timestamp="i.time"/>
             </span>
-            <div class="notif-content" slot="content">
+            <div v-if="i.type === NOTIF_TYPE.MANAGE_INFO_ABOUT_ME" class="notif-content" slot="content">
+                <div style="display: flex">
+                    <template>你发表的</template>
+                    <template>{{typeName(i.related_type)}}</template>
+                    <b class="limit m12">
+                        <post-link :goto="false" :show-type="false" :type="i.related_type" :item="posts[i.related_id]"/>
+                    </b>
+                    <template>被</template>
+                    <user-link :user="posts[i.sender_ids[0]]" />
+                    <template>进行了以下操作：</template>
+                </div>
+                <div style="font-weight: bolder">
+                    <template>{{MOPT[i.data.op]}}</template>
+                    <template v-if="i.note"> - {{i.note}}</template>
+
+                    <!-- {{i.data.value}} -->
+                    <span v-if="i.data.op === MOP.POST_STATE_CHANGE">({{i.data.value.map(postStateTxt).join(' -> ')}})</span>
+                    <span v-if="i.data.op === MOP.POST_VISIBLE_CHANGE">({{i.data.value.map(postVisibleTxt).join(' -> ')}})</span>
+                    <span v-if="i.data.op === MOP.USER_GROUP_CHANGE">({{i.data.value.map(postGroupTxt).join(' -> ')}})</span>
+                    <span v-if="simpleChangeOP.indexOf(i.data.op) != -1">({{i.data.value.join(' -> ')}})</span>
+                </div>
+            </div>
+            <div v-else class="notif-content" slot="content">
                 <!-- 某人，使动者 -->
                 <user-link :user="posts[i.sender_ids[0]]" />
                 <!-- 介词 + 定语 -->
                 <template v-if="i.type === NOTIF_TYPE.BE_COMMENTED">在你发表的</template>
                 <template v-else>在</template><template>{{typeName(i.loc_post_type)}}</template>
                 <!-- 某地 -->
-                <template>
+                <b class="limit m12">
                     <post-link :goto="false" :show-type="false" :type="i.loc_post_type" :item="posts[i.loc_post_id]"/>
-                </template>
+                </b>
 
                 <!-- 做了某事，与某某有关 -->
                 <template v-if="i.type === NOTIF_TYPE.BE_COMMENTED">
@@ -64,7 +86,24 @@ export default {
             posts: {},
             POST_TYPES: state.misc.POST_TYPES,
             NOTIF_TYPE: state.misc.NOTIF_TYPE,
+            MOP: state.misc.MANAGE_OPERATION,
+            MOPT: state.misc.MANAGE_OPERATION_TXT,
             page: {}
+        }
+    },
+    computed: {
+        simpleChangeOP: function () {
+            let MOP = this.MOP
+            return [
+                MOP.POST_TITLE_CHANGE,
+                MOP.USER_CREDIT_CHANGE,
+                MOP.USER_REPUTE_CHANGE,
+                MOP.USER_EXP_CHANGE,
+                MOP.USER_NICKNAME_CHANGE,
+                MOP.TOPIC_BOARD_MOVE,
+                MOP.TOPIC_AWESOME_CHANGE,
+                MOP.TOPIC_STICKY_WEIGHT_CHANGE
+            ]
         }
     },
     created: async function () {
@@ -72,6 +111,15 @@ export default {
     },
     methods: {
         atConvert: $.atConvert2,
+        postStateTxt: function (postState) {
+            return state.misc.POST_STATE_TXT[postState]
+        },
+        postVisibleTxt: function (i) {
+            return state.misc.POST_VISIBLE_TXT[i]
+        },
+        postGroupTxt: function (i) {
+            return state.misc.USER_GROUP_TXT[i]
+        },
         typeName: function (type) {
             return this.state.misc.POST_TYPES_TXT[type]
         },
@@ -88,16 +136,33 @@ export default {
 
             if (ret.code === api.retcode.SUCCESS) {
                 let userIds = new Set()
+                let manageInfoList = []
 
                 for (let i of ret.data.items) {
+                    for (let uid of i.sender_ids) {
+                        userIds.add(uid)
+                    }
+                    if (i.type === state.misc.NOTIF_TYPE.MANAGE_INFO_ABOUT_ME) {
+                        manageInfoList.push(i)
+                        continue
+                    }
                     this.posts[i.loc_post_id] = {
                         'id': i.loc_post_id,
                         'post_type': i.loc_post_type,
                         'post_title': i.loc_post_title // 一个虚假的列，在post-link中高于其他声明
                     }
-                    for (let uid of i.sender_ids) {
-                        userIds.add(uid)
-                    }
+                }
+
+                let posts2 = await $.getBasePostsByIDs(async (i) => {
+                    return [
+                        {
+                            'type': i.related_type,
+                            'id': i.related_id
+                        }
+                    ]
+                }, manageInfoList)
+                for (let [k, v] of Object.entries(posts2)) {
+                    this.posts[k] = v
                 }
 
                 if (userIds.size > 0) {

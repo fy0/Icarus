@@ -23,15 +23,15 @@ from slim.utils import StateObject
 
 
 class NOTIF_TYPE(StateObject):
-    BE_COMMENTED    = 10  # 被评论
-    BE_REPLIED      = 20  # 被回复
-    BE_FOLLOWED     = 30  # 被关注
-    BE_MENTIONED    = 40  # 被提及(@)
-    BE_BOOKMARKED   = 50  # 被收藏
-    BE_LIKED        = 60  # 被赞
-    BE_SENT_PM      = 70  # 被发私信
-    MANAGE_ABOUT_ME = 80  # 与我有关的管理操作
-    SYSTEM_MSG    = 100
+    BE_COMMENTED         = 10  # 被评论
+    BE_REPLIED           = 20  # 被回复
+    BE_FOLLOWED          = 30  # 被关注
+    BE_MENTIONED         = 40  # 被提及(@)
+    BE_BOOKMARKED        = 50  # 被收藏
+    BE_LIKED             = 60  # 被赞
+    BE_SENT_PM           = 70  # 被发私信
+    MANAGE_INFO_ABOUT_ME = 80  # 与我有关的管理操作
+    SYSTEM_MSG           = 100
 
 
 # 注意：目前仅支持文章的评论提醒，未来的其他类型以后另算
@@ -142,25 +142,32 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
 
 
 def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
-    return []
+    # return []
     from model.manage_log import ManageLog, MOP
 
+    if last_manage_log_id is None:
+        last_manage_log_id = b'\x00'
     item_lst = ManageLog.select().where(
         ManageLog.related_user_id == user_id,
         ManageLog.id > last_manage_log_id,
         ManageLog.operation.in_(
-            MOP.POST_STATE_CHANGE, MOP.POST_VISIBLE_CHANGE, MOP.USER_PASSWORD_CHANGE,
+            (MOP.POST_STATE_CHANGE, MOP.USER_PASSWORD_CHANGE,
             MOP.USER_PASSWORD_RESET, MOP.USER_KEY_RESET, MOP.USER_GROUP_CHANGE, MOP.USER_CREDIT_CHANGE,
             MOP.USER_REPUTE_CHANGE, MOP.USER_NICKNAME_CHANGE,
-            MOP.TOPIC_BOARD_MOVE, MOP.TOPIC_AWESOME_CHANGE, MOP.TOPIC_STICKY_WEIGHT_CHANGE
+            MOP.TOPIC_BOARD_MOVE, MOP.TOPIC_AWESOME_CHANGE, MOP.TOPIC_STICKY_WEIGHT_CHANGE)
         )
     ).order_by(ManageLog.id.desc())
 
     def wrap(item: ManageLog):
         # 总不能把MANAGE_OPERATION的内容换个号码，抄一遍写在上面。
         # 因此选择过滤掉一些，其他全部归为一类。
+        if item.operation == MOP.USER_CREDIT_CHANGE:
+            if item.note == '每日签到':
+                # 签到得分忽略
+                return
+
         return {
-            'type': NOTIF_TYPE.MANAGE_ABOUT_ME,
+            'type': NOTIF_TYPE.MANAGE_INFO_ABOUT_ME,
             'time': item.time,
 
             'loc_post_type': item.related_type,
@@ -170,11 +177,17 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
             'sender_ids': (item.user_id,),
             'receiver_id': user_id,
 
-            'from_post_type': None,
-            'from_post_id': None,
+            'from_post_type': None,  # 来源为managelog，但并非post
+            'from_post_id': item.id,
 
             'related_type': item.related_type,  # 提醒类型较为特殊
             'related_id': item.related_id,
+
+            'data': {
+                'op': item.operation,
+                'role': item.role,
+                'value': item.value
+            }
         }
 
     def wrap2(item: dict):
@@ -212,6 +225,7 @@ class UserNotifLastInfo(BaseModel):
         lst.extend(l1)
         lst.extend(l2)
         lst.extend(l3)
+        lst.extend(l4)
 
         if update_last:
             if l1: self.last_be_commented_id = l1[0]['from_post_id']
@@ -239,8 +253,8 @@ class Notification(BaseModel):
     sender_ids = ArrayField(BlobField)  # 人物，行为方
     receiver_id = BlobField(index=True)  # 人物，被动方
 
-    from_post_type = IntegerField()  # 信息来源，例如A在B帖回复@C，来源是@创建的那个提醒对象，此时related指向那条回复
-    from_post_id = BlobField()
+    from_post_type = IntegerField(null=True)  # 信息来源，例如A在B帖回复@C，来源是@创建的那个提醒对象，此时related指向那条回复
+    from_post_id = BlobField(null=True)
 
     related_type = IntegerField(null=True, default=None)  # 可选，关联类型
     related_id = BlobField(null=True, default=None)  # 可选，关联ID。例如A在B帖回复C，人物是A和C，地点是B，关联是这个回复的ID

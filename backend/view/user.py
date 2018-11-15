@@ -195,7 +195,6 @@ class UserView(UserMixin, UserLegacyView):
             self.finish(RETCODE.FAILED, '登录失败！')
 
     async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
-        print(111, raw_post, self.current_user, self.current_role)
         if 'password' in raw_post:
             ret = User.gen_password_and_salt(raw_post['password'])
             values.update(ret)
