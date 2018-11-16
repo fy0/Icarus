@@ -15,7 +15,7 @@ if __name__ == '__main__':
         asyncio.ensure_future(mail.init(loop), loop=loop)
 
     co_redis = redis_init(loop)
-    asyncio.ensure_future(co_redis, loop=loop)
+    loop.run_until_complete(co_redis)
 
     if config.UPLOAD_ENABLE:
         upload.init()

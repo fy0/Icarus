@@ -6,5 +6,5 @@ app = Application(
     cookies_secret=config.COOKIES_SECRET,
     session_cls=MemoryHeaderKeySession,
     log_level=config.DEBUG_LEVEL,
-    cors_options=CORSOptions('*', allow_credentials=True, expose_headers="*", allow_headers="*")
+    cors_options=config.CORS_OPTIONS
 )

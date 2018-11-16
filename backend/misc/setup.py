@@ -64,6 +64,7 @@ UPLOAD_QINIU_IMAGE_TOPIC_STYLE = ''  # 文章页面图片所用的七牛图片�
         "HOST = '127.0.0.1'",
         "PORT = 9999",
         "DEBUG_LEVEL = logging.DEBUG",
+        "CORS_OPTIONS = CORSOptions('*', allow_credentials=True, expose_headers='*', allow_headers='*')",
         "",
         "# PostgreSQL 数据库地址",
         "DATABASE_URI = 'postgresql://icarus:IcaruStest123@localhost/icarus'",

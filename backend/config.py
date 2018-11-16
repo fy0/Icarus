@@ -1,6 +1,8 @@
 import hashlib
 import binascii
 import logging
+
+from slim import CORSOptions
 from slim.utils import ObjectID
 from slim.utils import CustomID
 
@@ -15,8 +17,9 @@ SITE_CONTACT_EMAIL = 'manage@mail.com'  # 必填，管理员联系邮箱，用�
 HOST = '127.0.0.1'
 PORT = 9999
 DEBUG_LEVEL = logging.DEBUG
-DATABASE_URI = 'postgresql://postgres@localhost/icarus'  # 必填
+CORS_OPTIONS = CORSOptions('*', allow_credentials=True, expose_headers='*', allow_headers='*')
 
+DATABASE_URI = 'postgresql://postgres@localhost/icarus'  # 必填
 REDIS_URI = 'redis://localhost:6379'
 
 # 密码将先在前端哈希后，在后端再次哈希与储存值比对，这是前端哈希用到的盐
