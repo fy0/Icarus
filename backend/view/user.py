@@ -194,9 +194,17 @@ class UserView(UserMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 
+    async def update(self):
+        post = await self.post_data()
+        if 'password' in post:
+            # 直接的密码重置过不了校验，所以hack一下
+            self.new_pass = post['password']
+            post['password'] = '00'
+        await super().set()
+
     async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         if 'password' in raw_post:
-            ret = User.gen_password_and_salt(raw_post['password'])
+            ret = User.gen_password_and_salt(self.new_pass)
             values.update(ret)
 
         if 'key' in raw_post:

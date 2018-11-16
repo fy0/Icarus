@@ -206,7 +206,6 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
 
         if i['data']['op'] == MOP.TOPIC_BOARD_MOVE:
             val = i['data']['value']
-            print(val, info2)
             i['data']['move_info'] = [
                 info2.get(to_bin(val[0]), None),
                 info2.get(to_bin(val[1]), None)

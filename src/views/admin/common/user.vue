@@ -123,7 +123,7 @@ export default {
                     if (password === '') {
                         swal.showValidationError('密码不能为空。')
                     }
-                    return api.user.set({ id: user.id }, { password }, 'superuser')
+                    return api.user.set({ id: user.id }, { password: await $.passwordHash(password) }, 'superuser')
                 }
             }).then((result) => {
                 if (result.value == null) return

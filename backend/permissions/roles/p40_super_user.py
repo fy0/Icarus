@@ -38,6 +38,7 @@ super_user = Ability('superuser', {
     }),
     'user': merge_post_permissions_of_superuser({
         'key': (A.WRITE,),
+        'password': (A.WRITE,),
         'email': A.ALL,
         'nickname': A.ALL,
         'credit': A.ALL,
