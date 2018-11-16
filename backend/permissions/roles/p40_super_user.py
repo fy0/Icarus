@@ -13,7 +13,7 @@ def merge_post_permissions_of_superuser(d):
     return base
 
 
-super_user = Ability('superuser', {
+superuser = Ability('superuser', {
     'topic': merge_post_permissions_of_superuser({
         'title': A.ALL,
         'board_id': (A.QUERY, A.READ, A.CREATE, A.WRITE),

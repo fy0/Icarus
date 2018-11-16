@@ -9,7 +9,7 @@ $.canEditWiki = function (user) {
     return $.isAdmin(user)
 }
 
-// 获取用户角色（取当前最高的一个）
+// 获取用户角色（取当前主要权限最高的一个）
 $.getRole = function (limit) {
     let role = null
     let roles = [null, 'ban', 'inactive_user', 'user', 'superuser', 'admin']

@@ -76,22 +76,24 @@ export default {
     methods: {
         doSearch: async function () {
             let found = false
+            let role = $.getRole('admin')
+
             if ($.regex.email.test(this.searchTxt)) {
-                let retList = await api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, 'superuser')
+                let retList = await api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, role)
                 if (retList.code === api.retcode.SUCCESS) {
                     this.page = retList.data
                     found = true
                 }
             } else {
                 if ($.regex.nickname.test(this.searchTxt)) {
-                    let retList = await api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, null, 'superuser')
+                    let retList = await api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, null, role)
                     if (retList.code === api.retcode.SUCCESS) {
                         this.page = retList.data
                         found = true
                     }
                 }
                 if ($.regex.id.test(this.searchTxt)) {
-                    let retList = await api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, null, 'superuser')
+                    let retList = await api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, null, role)
                     if (retList.code === api.retcode.SUCCESS) {
                         if (found) {
                             this.page.items.push(retList.data.items[0])
@@ -123,7 +125,7 @@ export default {
                     if (password === '') {
                         swal.showValidationError('密码不能为空。')
                     }
-                    return api.user.set({ id: user.id }, { password: await $.passwordHash(password) }, 'superuser')
+                    return api.user.set({ id: user.id }, { password: await $.passwordHash(password) }, $.getRole('admin'))
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -152,7 +154,7 @@ export default {
                 confirmButtonText: '确定，我要重置',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
-                    return api.user.set({ id: user.id }, { 'key': '1' }, 'superuser')
+                    return api.user.set({ id: user.id }, { 'key': '1' }, $.getRole('admin'))
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -175,7 +177,7 @@ export default {
             let params = this.$route.params
             let retList = await api.user.list({
                 order: 'id.desc'
-            }, params.page, null, 'superuser')
+            }, params.page, null, $.getRole('admin'))
             if (retList.code === api.retcode.SUCCESS) {
                 this.page = retList.data
             }
