@@ -172,7 +172,7 @@ export default {
         },
         changed: function () {
             let change = {}
-            let topic = this.state.dialog.topicManageData
+            let topic = this.save
             // 置顶
             if (parseInt(this.vSticky) !== topic.sticky_weight) {
                 change.vSticky = [topic.sticky_weight, parseInt(this.vSticky)]
@@ -190,8 +190,8 @@ export default {
                 change.vState = [topic.state, parseInt(this.vState)]
             }
             // 文章可见性
-            if (parseInt(this.vVisible) !== topic.visible) {
-                change.vVisible = [topic.visible, parseInt(this.vVisible)]
+            if (this.vVisible !== topic.visible) {
+                change.vVisible = [topic.visible, this.vVisible]
             }
             // 声望奖励
             if (this.vRepute !== 0) {
@@ -301,7 +301,7 @@ export default {
 
                 if (info.code === api.retcode.SUCCESS) {
                     this.save = info.data
-                    let topic = this.save
+                    let topic = info.data
                     this.vSticky = topic.sticky_weight
                     this.vState = topic.state
                     this.vVisible = topic.visible

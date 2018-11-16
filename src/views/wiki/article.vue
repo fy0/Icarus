@@ -90,7 +90,7 @@ export default {
             let params = this.$route.params
 
             let ret = await api.wiki.get(Object.assign({
-                loadfk: { 'id': {as: 's'} }
+                loadfk: { 'id': { as: 's' } }
             }, params))
             if (ret.code === api.retcode.SUCCESS) {
                 this.item = ret.data

@@ -21,7 +21,14 @@
                     <template>{{MOPT[i.data.op]}}</template>
                     <template v-if="i.note"> - {{i.note}}</template>
 
-                    <ManageLogItemDetail :item="i.data" :simple="true" />
+                    <span style="margin-left: 0.5em;" v-if="i.data.op === MOP.TOPIC_BOARD_MOVE">
+                        <template>(</template>
+                        <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value[0]]"/>
+                        <template> -> </template>
+                        <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value[1]]"/>
+                        <template>)</template>
+                    </span>
+                    <ManageLogItemDetail v-else :item="i.data" :simple="true" />
                 </div>
             </div>
             <div v-else class="notif-content" slot="content">
@@ -116,7 +123,23 @@ export default {
                         userIds.add(uid)
                     }
                     if (i.type === state.misc.NOTIF_TYPE.MANAGE_INFO_ABOUT_ME) {
-                        manageInfoList.push(i)
+                        this.posts[i.related_id] = {
+                            'id': i.related_id,
+                            'post_type': i.related_type,
+                            'post_title': i.data.title
+                        }
+                        if (i.data.op === this.MOP.TOPIC_BOARD_MOVE) {
+                            this.posts[i.data.value[0]] = {
+                                'id': i.data.value[0],
+                                'post_type': this.POST_TYPES.BOARD,
+                                'post_title': i.data.move_info[0]
+                            }
+                            this.posts[i.data.value[1]] = {
+                                'id': i.data.value[1],
+                                'post_type': this.POST_TYPES.BOARD,
+                                'post_title': i.data.move_info[1]
+                            }
+                        }
                         continue
                     }
                     this.posts[i.loc_post_id] = {

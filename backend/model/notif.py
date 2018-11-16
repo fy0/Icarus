@@ -19,7 +19,7 @@ from model import BaseModel, MyTimestampField, db
 from model._post import POST_STATE, POST_TYPES
 from model.user import User
 from slim import json_ex_dumps
-from slim.utils import StateObject
+from slim.utils import StateObject, to_bin
 
 
 class NOTIF_TYPE(StateObject):
@@ -142,7 +142,6 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
 
 
 def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
-    # return []
     from model.manage_log import ManageLog, MOP
 
     if last_manage_log_id is None:
@@ -158,6 +157,8 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
         )
     ).order_by(ManageLog.id.desc())
 
+    moves = []
+
     def wrap(item: ManageLog):
         # 总不能把MANAGE_OPERATION的内容换个号码，抄一遍写在上面。
         # 因此选择过滤掉一些，其他全部归为一类。
@@ -166,13 +167,17 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
                 # 签到得分忽略
                 return
 
+        if item.operation == MOP.TOPIC_BOARD_MOVE:
+            moves.append([POST_TYPES.BOARD, to_bin(item.value[0])])
+            moves.append([POST_TYPES.BOARD, to_bin(item.value[1])])
+
         return {
             'type': NOTIF_TYPE.MANAGE_INFO_ABOUT_ME,
             'time': item.time,
 
             'loc_post_type': item.related_type,
             'loc_post_id': item.related_id,
-            'loc_post_title': None,  # 预备进行二次填充
+            'loc_post_title': None,
 
             'sender_ids': (item.user_id,),
             'receiver_id': user_id,
@@ -186,14 +191,28 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
             'data': {
                 'op': item.operation,
                 'role': item.role,
-                'value': item.value
+                'value': item.value,
+                'title': None  # 进行二次填充
             }
         }
 
-    def wrap2(item: dict):
-        return item
+    ret_items = list(filter(lambda x: x, map(wrap, item_lst)))
+    info = POST_TYPES.get_post_title_by_list(*[[i['related_type'], i['related_id']] for i in ret_items])
+    info2 = POST_TYPES.get_post_title_by_list(*moves)
 
-    return filter(lambda x: x, map(wrap2, map(wrap, item_lst)))
+    for i in ret_items:
+        t = info.get(i['related_id'].tobytes(), None)
+        if t: i['data']['title'] = t
+
+        if i['data']['op'] == MOP.TOPIC_BOARD_MOVE:
+            val = i['data']['value']
+            print(val, info2)
+            i['data']['move_info'] = [
+                info2.get(to_bin(val[0]), None),
+                info2.get(to_bin(val[1]), None)
+            ]
+
+    return ret_items
 
 
 class UserNotifLastInfo(BaseModel):

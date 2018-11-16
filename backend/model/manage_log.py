@@ -29,7 +29,7 @@ class MANAGE_OPERATION(StateObject):
     USER_NICKNAME_CHANGE = 107
 
     BOARD_NEW = 200  # 废弃
-    BOARD_CHANGE = 201
+    BOARD_INFO_CHANGE = 201
 
     TOPIC_BOARD_MOVE = 302  # 移动主题到其他板块
     TOPIC_AWESOME_CHANGE = 303
@@ -57,7 +57,7 @@ class MANAGE_OPERATION(StateObject):
         USER_NICKNAME_CHANGE: '昵称变更',
 
         BOARD_NEW: '新建板块',
-        BOARD_CHANGE: '修改板块信息',
+        BOARD_INFO_CHANGE: '修改板块信息',
 
         TOPIC_BOARD_MOVE: '移动板块',
         TOPIC_AWESOME_CHANGE: '设置优秀文章',
