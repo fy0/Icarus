@@ -166,6 +166,10 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
             if item.note == '每日签到':
                 # 签到得分忽略
                 return
+        elif item.operation == MOP.USER_EXP_CHANGE:
+            if item.note == '每日登录':
+                # 签到得分忽略
+                return
 
         if item.operation == MOP.TOPIC_BOARD_MOVE:
             moves.append([POST_TYPES.BOARD, to_bin(item.value['change'][0])])

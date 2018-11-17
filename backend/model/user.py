@@ -273,8 +273,9 @@ class User(PostModel, BaseUser):
             self.credit += 5
             self.exp += 5
             self.save()
-            ManageLog.add_by_credit_changed_sys(self, note='每日签到', value=[credit, self.credit])
-            ManageLog.add_by_exp_changed_sys(self, note='每日签到', value=[exp, self.exp])
+
+            ManageLog.add_by_credit_changed_sys(self.id.tobytes(), credit, self.credit, note='每日签到')
+            ManageLog.add_by_exp_changed_sys(self.id.tobytes(), exp, self.exp, note='每日签到')
 
             return {
                 'credit': 5,
@@ -292,7 +293,7 @@ class User(PostModel, BaseUser):
             exp = self.exp
             self.exp += 5
             self.save()
-            ManageLog.add_by_exp_changed_sys(self, note='每日登录', value=[exp, self.exp])
+            ManageLog.add_by_exp_changed_sys(self.id.tobytes(), exp, self.exp, note='每日登录')
             return 5
 
     def _auth_base(self, password_text):
