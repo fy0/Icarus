@@ -32,9 +32,9 @@ def check_is_me(ability, user, action, record: DataRecord, available_columns: li
 def check_is_admin(ability, user, action, record: DataRecord, available_columns: list):
     # 阻止superuser写入superuser或更高权限用户组
     if user:
-        print(record, record.get('group'))
         if record.get('group') in (USER_GROUP.SUPERUSER, USER_GROUP.ADMIN):
-            available_columns.clear()
+            # 只允许写这两列
+            available_columns[:] = filter(lambda x: x in {'credit', 'repute'}, available_columns)
     return True
 
 

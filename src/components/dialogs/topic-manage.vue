@@ -29,14 +29,14 @@
         <div class="manage-form-item">
             <span class="label">文章评分</span>
             <div class="right" style="display: flex; align-items: center;">
-                <input class="ic-input primary" style="width:100%" v-model="vCredit" :step="1" :min="-100" :max="100" type="range" />
+                <input class="ic-input primary" style="width:100%" v-model="vCredit" :step="1" :min="-50" :max="50" type="range" />
                 <span style="min-width: 40px; text-align: center">{{vCredit}}</span>
             </div>
         </div>
         <div class="manage-form-item">
             <span class="label">声望奖励</span>
             <div class="right" style="display: flex; align-items: center;">
-                <input class="ic-input primary" style="width:100%" v-model="vRepute" :step="1" :min="-100" :max="100" type="range" />
+                <input class="ic-input primary" style="width:100%" v-model="vRepute" :step="1" :min="-10" :max="10" type="range" />
                 <span style="min-width: 40px; text-align: center">{{vRepute}}</span>
             </div>
         </div>
@@ -253,7 +253,13 @@ export default {
                 // 积分奖励
                 if (change.vCredit) {
                     updateOne()
-                    let ret = await api.user.set({ id: this.topic.user_id }, { 'credit.incr': change.vCredit[1] }, 'superuser')
+                    let ret = await api.user.set({ id: this.topic.user_id }, {
+                        'credit.incr': change.vCredit[1],
+                        '$src': JSON.stringify({
+                            'id': this.topic.id,
+                            'type': state.misc.POST_TYPES.TOPIC
+                        })
+                    }, 'superuser')
                     if (ret.code === 0) $.message_success('加分/扣分设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -261,7 +267,13 @@ export default {
                 // 声望奖励
                 if (change.vRepute) {
                     updateOne()
-                    let ret = await api.user.set({ id: this.topic.user_id }, { 'repute.incr': change.vCredit[1] }, 'superuser')
+                    let ret = await api.user.set({ id: this.topic.user_id }, {
+                        'repute.incr': change.vCredit[1],
+                        '$src': JSON.stringify({
+                            'id': this.topic.id,
+                            'type': state.misc.POST_TYPES.TOPIC
+                        })
+                    }, 'superuser')
                     if (ret.code === 0) $.message_success('声望变更设置成功')
                     else $.message_by_code(ret.code)
                 }

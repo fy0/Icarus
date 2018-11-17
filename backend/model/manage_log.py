@@ -51,10 +51,10 @@ class MANAGE_OPERATION(StateObject):
         USER_PASSWORD_RESET: '重置用户密码',
         USER_KEY_RESET: "重置用户访问令牌",
         USER_GROUP_CHANGE: '修改用户组',
-        USER_CREDIT_CHANGE: '积分变更',
-        USER_REPUTE_CHANGE: "声望变更",
-        USER_EXP_CHANGE: "经验值变更",
-        USER_NICKNAME_CHANGE: '昵称变更',
+        USER_CREDIT_CHANGE: '用户积分变更',
+        USER_REPUTE_CHANGE: "用户声望变更",
+        USER_EXP_CHANGE: "用户经验值变更",
+        USER_NICKNAME_CHANGE: '用户昵称变更',
 
         BOARD_NEW: '新建板块',
         BOARD_INFO_CHANGE: '修改板块信息',
@@ -134,7 +134,7 @@ class ManageLog(BaseModel):
             info['related_id'] = related_id
             info['related_user_id'] = related_user_id
         ret = cls.add_by_post_changed(view, field, op, POST_TYPES.USER, True,
-                                      value={'changed': [old, new]}, note=note, cb=func)
+                                      value={'change': [old, new]}, note=note, cb=func)
         return ret
 
     add_by_credit_changed = _gen_add_by_resource_changed('credit', MOP.USER_CREDIT_CHANGE)
@@ -194,7 +194,7 @@ class ManageLog(BaseModel):
                 raise TypeError()
 
         if key_in_values():
-            if value is not NotImplemented:
+            if value is NotImplemented:
                 old, new = get_val(old_record, key), get_val(record, key)
                 if old == new: return  # 修改前后无变化
                 value = {'change': diff_func(old, new)}

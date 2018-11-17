@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import time
@@ -229,8 +230,22 @@ class UserView(UserMixin, UserLegacyView):
 
             manage_try_add('group', MOP.USER_GROUP_CHANGE)
             manage_try_add('exp', MOP.USER_EXP_CHANGE)
-            manage_try_add('credit', MOP.USER_CREDIT_CHANGE)
-            manage_try_add('repute', MOP.USER_REPUTE_CHANGE)
+
+            def manage_try_add_resource(column, op):
+                if column not in values: return
+                uid = self.current_user.id
+                src = json.loads(raw_post['$src'])
+                # TODO: 检查一下是否真的存在
+
+                def func(info):
+                    info['related_type'] = src['type']
+                    info['related_id'] = to_bin(src['id'])
+                    info['related_user_id'] = uid
+
+                ManageLog.add_by_post_changed(self, column, op, POST_TYPES.USER, values, old_record, record, cb=func)
+
+            manage_try_add_resource('credit', MOP.USER_CREDIT_CHANGE)
+            manage_try_add_resource('repute', MOP.USER_REPUTE_CHANGE)
 
     @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
     async def new(self):
