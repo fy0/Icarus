@@ -1,16 +1,16 @@
 <template>
 <span class="detail" style="margin-left: .5em">
     <template v-if="getOP(item) === MOP.POST_STATE_CHANGE">
-        <span v-if="simple">-> {{postStateTxt(item.value[1])}}</span>
-        <span v-else>({{item.value.map(postStateTxt).join(' -> ')}})</span>
+        <span v-if="simple">-> {{postStateTxt(item.value.change[1])}}</span>
+        <span v-else>({{item.value.change.map(postStateTxt).join(' -> ')}})</span>
     </template>
     <template v-else-if="getOP(item) === MOP.TOPIC_AWESOME_CHANGE">
-        <span v-if="item.value[1] === 0">-> 撤销</span>
+        <span v-if="item.value.change[1] === 0">-> 撤销</span>
         <span v-else></span>
     </template>
-    <span v-else-if="getOP(item) === MOP.POST_VISIBLE_CHANGE">({{item.value.map(postVisibleTxt).join(' -> ')}})</span>
-    <span v-else-if="getOP(item) === MOP.USER_GROUP_CHANGE">({{item.value.map(postGroupTxt).join(' -> ')}})</span>
-    <span v-else-if="simpleChangeOP.indexOf(getOP(item)) != -1">({{item.value.join(' -> ')}})</span>
+    <span v-else-if="getOP(item) === MOP.POST_VISIBLE_CHANGE">({{item.value.change.map(postVisibleTxt).join(' -> ')}})</span>
+    <span v-else-if="getOP(item) === MOP.USER_GROUP_CHANGE">({{item.value.change.map(postGroupTxt).join(' -> ')}})</span>
+    <span v-else-if="simpleChangeOP.indexOf(getOP(item)) != -1">({{item.value.change.join(' -> ')}})</span>
 </span>
 </template>
 

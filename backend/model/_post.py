@@ -7,6 +7,8 @@ from abc import abstractmethod
 from typing import Dict, Type
 
 from peewee import *
+from slim.base.sqlquery import DataRecord
+
 from config import POST_ID_GENERATOR
 from slim.utils.customid import CustomID
 from slim.utils.state_obj import StateObject
@@ -45,6 +47,15 @@ class POST_TYPES(StateObject):
     MENTION = 60
 
     txt = {NONE: "???", USER:"用户", BOARD: '板块', TOPIC: '主题', WIKI: '百科', COMMENT: '评论', MENTION: '召唤'}
+
+    TITLE_FIELD = {
+        USER: 'nickname',
+        BOARD: 'name',
+        TOPIC: 'title',
+        WIKI: 'title',
+        COMMENT: None,
+        MENTION: None
+    }
 
     @classmethod
     def get_model(cls, related_type) -> Type['PostModel']:
@@ -134,3 +145,14 @@ class LongIdPostModel(PostModel):
         :return:
         """
         return None
+
+
+def get_title_by_record(post_type, record: DataRecord):
+    """
+    根据返回的 record 来获取title
+    :param post_type:
+    :param record:
+    :return:
+    """
+    tfield = POST_TYPES.TITLE_FIELD[post_type]
+    return record.get(tfield) if tfield else None

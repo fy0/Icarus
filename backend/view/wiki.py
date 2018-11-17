@@ -127,5 +127,4 @@ class WikiView(UserMixin, PeeweeView):
         # 添加统计记录
         post_stats_new(POST_TYPES.WIKI, record['id'])
         # 添加创建记录
-        ManageLog.new(self.current_user, self.current_role, POST_TYPES.WIKI, record['id'],
-                      record['user_id'], MOP.POST_CREATE, record['name'])
+        ManageLog.post_new(self, POST_TYPES.WIKI, record)

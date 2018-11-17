@@ -7,7 +7,7 @@ from slim.base.sqlquery import DataRecord
 
 import config
 from model import BaseModel, MyTimestampField
-from model._post import POST_TYPES
+from model._post import POST_TYPES, get_title_by_record
 from slim import json_ex_dumps
 from slim.utils import StateObject
 
@@ -99,6 +99,25 @@ class ManageLog(BaseModel):
         )
 
     @classmethod
+    def post_new_base(cls, user_id, role, post_type, post_record: DataRecord):
+        """
+        新建post，要注意的是这并非是只有管理员能做的操作，因此多数post不计入其中。
+        只有wiki和board是管理员创建的，予以计入。
+        :param user_id:
+        :param role:
+        :param post_type:
+        :param post_record:
+        :return:
+        """
+        title = get_title_by_record(post_type, post_record)
+        return ManageLog.new(user_id, role, post_type, post_record['id'],
+                      post_record['user_id'], MOP.POST_CREATE, {'title': title})
+
+    @classmethod
+    def post_new(cls, view, post_type, post_record: DataRecord):
+        return cls.post_new_base(view.current_user.id, view.current_role, post_type, post_record)
+
+    @classmethod
     def add_by_credit_changed(cls, view, changed_user, note=None, *, value=None):
         if view:
             user_id = view.current_user.id
@@ -147,11 +166,12 @@ class ManageLog(BaseModel):
         return cls.add_by_exp_changed(None, changed_user, note, value=value)
 
     @classmethod
-    def add_by_post_changed(cls, view, key, operation, related_type, update_values, old_record, record, note=None,
-                            *, value=NotImplemented, diff_func=save_couple):
+    def add_by_post_changed_base(cls, user_id, role, key, operation, related_type, update_values, old_record, record,
+                                 note=None, *, value=NotImplemented, diff_func=save_couple):
         """
         如果指定的列发生了改变，那么新增一条记录，反之什么也不做
-        :param view: 请求中的view对象，用于拿用户id和角色
+        :param user_id: 用户
+        :param role: 角色
         :param key: 指定的列名
         :param operation: 如果条件达成记录的操作
         :param related_type: 被改变的对象的类型
@@ -184,10 +204,17 @@ class ManageLog(BaseModel):
             old, new = get_val(old_record, key), get_val(record, key)
             if old == new: return  # 修改前后无变化
             if value is NotImplemented:
-                value = diff_func(old, new)
+                value = {'change': diff_func(old, new)}
 
-            return cls.new(view.current_user.id, view.current_role, related_type, get_val(record, 'id'),
+            return cls.new(user_id, role, related_type, get_val(record, 'id'),
                            get_val(record, 'user_id'), operation, value, note=note)
+
+    @classmethod
+    def add_by_post_changed(cls, view, key, operation, related_type, update_values, old_record, record, note=None,
+                            *, value=NotImplemented, diff_func=save_couple):
+        return cls.add_by_post_changed_base(view.current_user.id, view.current_role, key, operation, related_type,
+                                            update_values, old_record, record, note=note, value=value,
+                                            diff_func=diff_func)
 
     class Meta:
         db_table = 'manage_log'

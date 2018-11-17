@@ -51,6 +51,29 @@ def work():
     # 移除 MOP.COMMENT_STATE_CHANGE 500
     ManageLog.update(operation=MOP.POST_STATE_CHANGE).where(ManageLog.operation == 500).execute()
 
+    # BOARD_NEW 200
+    for i in ManageLog.select().where(ManageLog.operation == 200):
+        i.operation = MOP.POST_CREATE
+        i.value = {'title': i.value}
+        i.save()
+
+    for i in ManageLog.select():
+        if i and i.value:
+            if i.operation == MOP.POST_CREATE:
+                # wiki 改动
+                if not isinstance(i.value, dict):
+                    i.value = {'title': i.value}
+                    i.save()
+            elif isinstance(i.value, list):
+                i.value = {'change': i.value}
+                i.save()
+            elif isinstance(i.value, dict):
+                pass
+            else:
+                if i.operation == MOP.POST_CONTENT_CHANGE:
+                    i.value = {'change': i.value}
+                    i.save()
+
 
 if __name__ == '__main__':
     work()

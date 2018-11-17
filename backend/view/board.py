@@ -76,6 +76,5 @@ class BoardView(PeeweeView, UserMixin):
         # 添加统计记录
         post_stats_new(POST_TYPES.BOARD, record['id'])
 
-        # 管理日志：新建
-        ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
-                      record['user_id'], MOP.POST_CREATE, record['name'])
+        # 管理日志：新建板块
+        ManageLog.post_new(self, POST_TYPES.BOARD, record)

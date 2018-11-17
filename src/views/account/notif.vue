@@ -23,9 +23,9 @@
 
                     <span style="margin-left: 0.5em;" v-if="i.data.op === MOP.TOPIC_BOARD_MOVE">
                         <template>(</template>
-                        <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value[0]]"/>
+                        <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value.change[0]]"/>
                         <template> -> </template>
-                        <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value[1]]"/>
+                        <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value.change[1]]"/>
                         <template>)</template>
                     </span>
                     <ManageLogItemDetail v-else :item="i.data" :simple="true" />
@@ -129,13 +129,13 @@ export default {
                             'post_title': i.data.title
                         }
                         if (i.data.op === this.MOP.TOPIC_BOARD_MOVE) {
-                            this.posts[i.data.value[0]] = {
-                                'id': i.data.value[0],
+                            this.posts[i.data.value.change[0]] = {
+                                'id': i.data.value.change[0],
                                 'post_type': this.POST_TYPES.BOARD,
                                 'post_title': i.data.move_info[0]
                             }
-                            this.posts[i.data.value[1]] = {
-                                'id': i.data.value[1],
+                            this.posts[i.data.value.change[1]] = {
+                                'id': i.data.value.change[1],
                                 'post_type': this.POST_TYPES.BOARD,
                                 'post_title': i.data.move_info[1]
                             }
