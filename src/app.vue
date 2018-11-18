@@ -42,6 +42,14 @@
     }
 }
 
+@media screen and (lt-rbp(sm)) {
+    .center {
+        .main {
+            padding-top: 20px;
+        }
+    }
+}
+
 .component-fade-enter-active, .component-fade-leave-active {
   transition: opacity .3s ease;
 }

@@ -190,7 +190,7 @@
     }
 
     #navmenu-toggle-icon > .bar {
-        color: $gray-700;
+        background-color: $gray-700;
         display: block;
         width: 20px;
         height: 2px;

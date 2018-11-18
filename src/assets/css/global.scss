@@ -195,8 +195,9 @@ a:focus {
     }
 
     .center {
-        // margin-top: 49px + 26px;
-        margin-top: 49px + 10px;
+        // 此时顶栏变成absolute所以要隔开
+        // 注意原有 + 10px 但由于wiki界面+了的话会有白边，反而是不行
+        margin-top: 49px;
     }
 }
 

@@ -75,7 +75,7 @@
 
         <div class="right" id="board-list">
             <top-btns :board="board"></top-btns>
-            <div style="border-bottom: 1px solid #eee; margin: 8px 10px 5px 10px;"></div>
+            <div class="ic-xs-hidden" style="border-bottom: 1px solid #eee; margin: 8px 10px 5px 10px;"></div>
             <div style="flex: 1 0 0%;">
                 <!-- 加载占位条目 -->
                 <template v-if="loading">
