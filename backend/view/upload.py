@@ -1,5 +1,5 @@
 import json
-from lib import upload
+from lib import qn
 from model.upload import Upload
 from model.user import User
 from slim.base.permission import Permissions
@@ -21,7 +21,7 @@ class UploadView(UserMixin, PeeweeView):
         if user:
             if self.current_role in ('user', 'admin', 'superuser'):
                 type_name = 'avatar' if self.params.get('is_avatar', False) else None
-                return self.finish(RETCODE.SUCCESS, upload.get_token(user.id.hex(), type_name))
+                return self.finish(RETCODE.SUCCESS, qn.get_token(user.id.hex(), type_name))
         self.finish(RETCODE.FAILED)
 
     @route.interface('POST')
@@ -33,7 +33,7 @@ class UploadView(UserMixin, PeeweeView):
         auth = self.headers.get('Authorization', None)
         if auth:
             content = str(await self._request.content.read(), 'utf-8')
-            if upload.verify_callback(auth, str(self._request.url), content):
+            if qn.verify_callback(auth, str(self._request.url), content):
                 # 鉴权成功，确认为七牛服务器回调
                 info = json.loads(content)
                 uid = binhex.to_bin(info['user_id'])

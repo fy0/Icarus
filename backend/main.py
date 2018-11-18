@@ -1,7 +1,7 @@
 import misc.setup
 import asyncio
 from app import app
-from lib import mail, upload
+from lib import mail, qn
 from model.redis import init as redis_init
 from slim.utils import get_ioloop
 import config
@@ -18,6 +18,6 @@ if __name__ == '__main__':
     loop.run_until_complete(co_redis)
 
     if config.UPLOAD_ENABLE:
-        upload.init()
+        qn.init()
 
     app.run(host=config.HOST, port=config.PORT)

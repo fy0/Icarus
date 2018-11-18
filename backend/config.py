@@ -26,6 +26,13 @@ REDIS_URI = 'redis://localhost:6379'
 USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5Lq65LiN6K+G5ZCb'  # 前端盐，务必修改默认值
 
 ##########################################
+# 可选配置 - 开启搜索功能（需要Elasticsearch）
+##########################################
+
+SEARCH_ENABLE = False
+ES_URI = ''
+
+##########################################
 # 可选配置 - 用户昵称、邮箱约束
 ##########################################
 USER_ALLOW_SIGNUP = True  # 开放注册
