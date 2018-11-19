@@ -43,7 +43,7 @@
         <div class="main">
             <div class="article typo">
                 <!--<h1>{{topic.title}}</h1>-->
-                <div class="content" v-if="topic.state === state.misc.POST_STATE.CONTENT_IF_LOGIN">
+                <div class="content" v-if="topic.visible === state.misc.POST_VISIBLE.CONTENT_IF_LOGIN">
                     <p>登陆后可见正文</p>
                 </div>
                 <div class="content" v-else v-html="marked(topic.content || '')"></div>
@@ -95,7 +95,7 @@
                         <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
                         <p>历史编辑次数 {{topic.edit_count}} 次</p>
                     </div>
-                    <div class="topic-manage" v-if="isAdmin">
+                    <div class="topic-manage" v-if="isAdmin()">
                         <i class="icarus icon-39" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
                     </div>
 
@@ -282,11 +282,9 @@ export default {
             textLimit: $.textLimit
         }
     },
-    computed: {
-        isAdmin: $.isAdmin
-    },
     methods: {
         marked,
+        isAdmin: $.isAdmin,
         scrollTo: function (id) {
             let el = document.getElementById(id)
             $.scrollTo(el)

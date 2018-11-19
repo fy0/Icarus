@@ -117,6 +117,7 @@ export function marked (text, options, callback) {
 }
 
 export function mdGetIndex (text, options) {
+    if (!text) return []
     const tokens = baseMarked.lexer(text, options)
     let headings = []
     for (let t of tokens) {

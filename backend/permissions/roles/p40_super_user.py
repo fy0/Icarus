@@ -42,6 +42,9 @@ superuser = Ability('superuser', {
         'email': A.ALL,
         'nickname': A.ALL,
         'credit': A.ALL,
-        'repute': A.ALL
+        'repute': A.ALL,
+        'key_time': (A.READ,),
+        'access_time': (A.READ,),
+        'last_check_in_time': (A.READ,),
     })
 }, based_on=normal_user)

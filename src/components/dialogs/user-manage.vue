@@ -29,6 +29,12 @@
         </div>
     </div>
     <div class="manage-form-item">
+        <span class="label">最后访问时间</span>
+        <div class="right">
+            <ic-time :ago="false" :timestamp="user.access_time" />
+        </div>
+    </div>
+    <div class="manage-form-item">
         <span class="label">简介</span>
         <div class="right">
             <input type="text" class="ic-input" v-model="user.biology" />
@@ -94,7 +100,7 @@ export default {
             if (data.state) data.state = Number(data.state)
             if (data.group) data.group = Number(data.group)
 
-            let ret = await api.user.set({ id: this.user.id }, data, $.getRole())
+            let ret = await api.user.set({ id: this.user.id }, data, $.getRole('admin'))
             if (ret.code === 0) {
                 if (state.dialog.userManageData) {
                     _.assign(state.dialog.userManageData, data)
@@ -111,7 +117,7 @@ export default {
     watch: {
         'state.dialog.userManage': async function (val) {
             if (val) {
-                let info = await api.user.get({ id: state.dialog.userManageData.id }, 'superuser')
+                let info = await api.user.get({ id: state.dialog.userManageData.id }, $.getRole('admin'))
                 if (info.code === api.retcode.SUCCESS) {
                     this.user = info.data
                     this.user.state = this.user.state.toString()

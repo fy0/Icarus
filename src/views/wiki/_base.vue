@@ -2,7 +2,7 @@
 <div class="ic-container">
     <div v-title>百科 - {{state.config.title}}</div>
     <div class="wrapper">
-        <div class="left-nav">
+        <div class="left-nav ic-xs-hidden">
             <div class="box ic-paper ic-z1">
                 <div class="sidebar-content" v-html="marked(sidebar.content || '')"></div>
                 <div class="ic-hr" style="margin: 10px 0px;"></div>

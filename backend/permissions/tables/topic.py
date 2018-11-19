@@ -11,9 +11,11 @@ post_visible_work('topic')
 
 # 非登录不能查看内容的正文
 def check_remove_content_for_select(ability, user, action, record: DataRecord, available_columns: list):
-    if user:
-        if record.get('visible') == POST_VISIBLE.CONTENT_IF_LOGIN:
+    if record.get('visible') == POST_VISIBLE.CONTENT_IF_LOGIN:
+        if not user:
             available_columns.remove('content')
+    elif record.get('visible') == POST_VISIBLE.ADMIN_ONLY:
+        pass
     return True
 
 
@@ -26,7 +28,7 @@ normal_user.add_record_check((A.READ,), 'topic', func=check_remove_content_for_s
 # 跳过不可见的板块
 def ignore_hide_board(ability: Ability, user, query: 'SQLQueryInfo'):
     real_role = ability.role if not user else user.roles[-1]
-    if real_role in ['super_user', 'admin']:
+    if real_role in ['superuser', 'admin']:
         return
 
     if real_role in ['inactive_user', 'normal_user']:
