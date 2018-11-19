@@ -70,3 +70,39 @@
     &.cm-header-5 { font-size: 16px !important; }
     &.cm-header-6 { font-size: 14px !important; }
 }
+
+.placeholder-text {
+    display: inline-block;
+    background-color: #e9e9e9;
+    width: 100%;
+
+    &.f12 { height: 12px; }
+    &.f14 { height: 14px; }
+    &.f16 { height: 16px; }
+    &.f18 { height: 18px; }
+}
+
+.limit {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.inline { display: inline-block; }
+    &.w2 { width: 3em; }
+    &.w4 { width: 5em; }
+    &.w6 { width: 7em; }
+    &.w8 { width: 9em; }
+    &.w12 { width: 13em; }
+
+    &.l2 { min-width: 3em; }
+    &.l4 { min-width: 5em; }
+    &.l6 { min-width: 7em; }
+    &.l8 { min-width: 9em; }
+    &.l12 { min-width: 13em; }
+
+    &.m2 { max-width: 3em; }
+    &.m4 { max-width: 5em; }
+    &.m6 { max-width: 7em; }
+    &.m8 { max-width: 9em; }
+    &.m12 { max-width: 13em; }
+}

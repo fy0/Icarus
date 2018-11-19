@@ -283,10 +283,15 @@ export default {
     },
     computed: {
         isAdmin: function () {
-            return (this.state.user) && (this.state.user.group >= state.misc.USER_GROUP.SUPERUSER)
+            return $.isAdmin()
         }
     },
     mounted: function () {
+    },
+    watch: {
+        '$route' (to, from) {
+            this.showNavmenuBtn = false
+        }
     },
     methods: {
         flagClick: function () {

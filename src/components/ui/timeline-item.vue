@@ -28,6 +28,7 @@
 
 .ic-timeline-item {
     display: flex;
+    overflow-x: hidden;
 
     .misc {
         display: flex;

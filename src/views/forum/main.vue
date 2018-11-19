@@ -193,7 +193,7 @@
     <dialog-topic-manage />
     <dialog-user-inactive-warn />
 
-    <ic-hangbtn class="ic-xs ic-hidden" title="打开侧栏" style="right: calc(8% + 40px)" :check-display="() => true" :onclick="() => { showSlideMenu = true }">
+    <ic-hangbtn class="ic-xs ic-hidden" title="打开侧栏" style="right: calc(8% + 40px)" :check-display="() => true" :onclick="() => { showSlideMenu = !showSlideMenu }">
         <i class="icarus icon-control"></i>
     </ic-hangbtn>
 </div>

@@ -19,23 +19,29 @@
 
     <!-- 移动端使用独立的标题 -->
     <div v-responsive.xs>
-        <span>
-            <router-link :to="{ name: 'forum' }">社区</router-link>
-        </span>
-        <span class="item-separator">/</span>
-        <span>
-            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
-        </span>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="display: flex; white-space: nowrap;">
+                <span>
+                    <router-link :to="{ name: 'forum' }">社区</router-link>
+                </span>
+                <span class="item-separator">/</span>
+                <span style="display: flex">
+                    <router-link class="limit m8" :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
+                </span>
+            </div>
+            <div style="display:flex; flex-direction: column;">
+                <div style="margin-left: 10px">发布于 <ic-time :timestamp="topic.time" /></div>
+
+                <div style="display: flex; align-items: center; margin-left: -3px; justify-content: flex-end;">
+                    <user-link style="display: flex; padding: 6px 0; align-items: center;" class="user-link" :nickname="false" :user="topic.user_id">
+                        <avatar style="margin-right: 6px;" :user="topic.user_id" :size="24" class="avatar"></avatar>
+                        <span>{{topic.user_id.nickname}}</span>
+                    </user-link>
+                </div>
+            </div>
+        </div>
 
         <h2>{{topic.title}}</h2>
-
-        <div style="display: flex; align-items: center; margin-left: -3px;">
-            <user-link style="display: flex; padding: 6px 0; align-items: center;" class="user-link" :nickname="false" :user="topic.user_id">
-                <avatar style="margin-right: 6px;" :user="topic.user_id" :size="28" class="avatar"></avatar>
-                <span>{{topic.user_id.nickname}}</span>
-            </user-link>
-            <div style="margin-left: 10px">发布于 <ic-time :timestamp="topic.time" /></div>
-        </div>
 
     </div>
 

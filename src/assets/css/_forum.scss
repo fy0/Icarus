@@ -248,3 +248,39 @@
         }
     }
 }
+
+@media screen and (lt-rbp(lg)) {
+    .board-item .detail {
+        flex: 4 0 0%;
+    }
+}
+
+@media screen and (lt-rbp(sm)) {
+    .header > .ic-navbtns {
+        margin-left: 11px;
+    }
+
+    .ic-topbtns-box {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .header {
+        position: fixed;
+        width: 100%;
+        z-index: 1;
+    }
+
+    .center {
+        // 此时顶栏变成absolute所以要隔开
+        // 注意原有 + 10px 但由于wiki界面+了的话会有白边，反而是不行
+        margin-top: 49px;
+    }
+}
+
+@media screen and (lt-rbp(md)) {
+    .append-icons {
+        width: 36px !important;
+        padding-right: 10px !important;
+    }
+}

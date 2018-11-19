@@ -70,6 +70,7 @@
 <style lang="scss" scoped>
 .notif-content {
     margin-top: 10px;
+    white-space: nowrap;
 
     .brief {
         color: lighten($gray-600, 0.4);

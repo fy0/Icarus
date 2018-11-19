@@ -2,7 +2,7 @@
 <div class="ic-container">
     <div v-if="user.nickname" v-title>{{user.nickname}} - {{state.config.title}}</div>
     <div class="userpage">
-        <div class="left">
+        <div class="left ic-xs-hidden">
             <avatar :user="user" :size="164" class="avatar"></avatar>
             <p>{{user.nickname}}</p>
             <div>
@@ -12,6 +12,15 @@
             </div>
         </div>
         <div class="right">
+            <div class="ic-xs ic-hidden" style="display: flex">
+                <avatar :user="user" :size="100" class="avatar" style="flex: 1; align-items: center; justify-content: center;"></avatar>
+                <div style="flex: 1; padding-left: 10px;">
+                    <p>{{user.nickname}}</p>
+                    <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>
+                    <div>第 {{user.number}} 名会员</div>
+                    <div title="加入时间"><ic-time :ago="false" :timestamp="user.time"/></div>
+                </div>
+            </div>
             <ic-tabs v-model="activeTab">
                 <ic-tab value="tabTopic" title="主题" />
                 <ic-tab value="tabComment" title="评论"/>
@@ -58,7 +67,7 @@
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .userpage {
     display: flex;
 }
@@ -70,6 +79,7 @@
 .userpage > .right {
     flex: 8 0 0;
     padding: 0 40px;
+    width: 0%;
 }
 
 .tab {
@@ -77,6 +87,12 @@
     display: flex;
     justify-content: center;
     align-content: center;
+}
+
+@media screen and (lt-rbp(sm)) {
+    .userpage > .right {
+        padding: 0 10px;
+    }
 }
 </style>
 
