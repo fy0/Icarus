@@ -26,7 +26,7 @@
             </transition>
 
             <transition enter-active-class="animated slideInLeft faster" leave-active-class="animated slideOutLeft">
-                <div v-if="showSlideMenu" class="left-nav bs4-xs">
+                <div v-if="showSlideMenu" class="left-nav bs4-xs" style="overflow-y: auto;">
                     <div class="left-nav-box">
                         <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
 
@@ -192,6 +192,10 @@
     <dialog-user-set-nickname v-else-if="isNewUser"/>
     <dialog-topic-manage />
     <dialog-user-inactive-warn />
+
+    <ic-hangbtn class="ic-xs ic-hidden" title="打开侧栏" style="right: calc(8% + 40px)" :check-display="() => true" :onclick="() => { showSlideMenu = true }">
+        <i class="icarus icon-message"></i>
+    </ic-hangbtn>
 </div>
 </div>
 </template>

@@ -10,7 +10,7 @@
 .gotop {
     z-index: 9999;
     position: fixed;
-    right: 8%;
+    right: calc(8%);
     bottom: 6%;
     height: 40px;
     width: 40px;
