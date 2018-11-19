@@ -290,7 +290,11 @@ export default {
     },
     watch: {
         '$route' (to, from) {
-            this.showNavmenuBtn = false
+            if (this.isXs) {
+                this.showNavmenuBtn = false
+            } else {
+                this.showNavmenuBtn = true
+            }
         }
     },
     methods: {
