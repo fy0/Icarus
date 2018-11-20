@@ -1,5 +1,5 @@
 <template>
-<div class="ic-container box">
+<div class="ic-container box" style="background: none">
     <span class="not-found">404</span>
     <span>你来到了一个不存在的角落<template v-if="autoRedirectPath">，准备跳转至{{redirectTitle}}剩余 {{second}} 秒</template></span>
     <a href="https://github.com/fy0/icarus" target="_blank">Github 链接</a>
@@ -12,6 +12,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100%;
+    align-self: center;
 }
 
 .not-found {

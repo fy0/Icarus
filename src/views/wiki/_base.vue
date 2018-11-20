@@ -102,7 +102,7 @@ $title-text-active-color: darken(#373434, 0);
 
     .left-nav > .box {
         // background-color: #373434;
-        height: 100%;
+        // height: 100%;
         margin-right: 20px;
         padding-top: 10px;
         padding-bottom: 10px;

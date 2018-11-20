@@ -118,7 +118,7 @@
         </div>
     </div>
 
-    <ic-hangbtn title="去往评论区" style="right: calc(8% + 40px)" :check-display="inCommentArea" :onclick="goComment">
+    <ic-hangbtn title="去往评论区" style="right: calc(8% + 45px)" :check-display="inCommentArea" :onclick="goComment">
         <i class="icarus icon-comment-multiple-out"></i>
         <!-- <i class="icarus icon-comment-outline"></i> -->
     </ic-hangbtn>
