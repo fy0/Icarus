@@ -4,6 +4,7 @@ import os
 import time
 from typing import Union
 from peewee import *
+from playhouse.postgres_ext import ArrayField
 import config
 from lib.utils import get_today_start_timestamp
 from model._post import PostModel, POST_STATE
@@ -47,6 +48,7 @@ class User(PostModel, BaseUser):
 
     # level = IntegerField(index=True)  # 用户级别
     group = IntegerField(index=True, default=USER_GROUP.NORMAL)  # 用户权限组
+    extra_roles = ArrayField(TextField)  # 附加用户角色（例如wiki_editor）
 
     key = BlobField(index=True, null=True)
     key_time = MyTimestampField()  # 最后登录时间

@@ -1,6 +1,7 @@
 ﻿import datetime
 import time
 from peewee import *
+from playhouse.postgres_ext import ArrayField
 from model._post import POST_VISIBLE, POST_STATE, PostModel
 from slim.utils.state_obj import StateObject
 from model import BaseModel, MyTimestampField
@@ -20,6 +21,7 @@ class Board(PostModel):
     weight = IntegerField(index=True, default=0)
     color = BlobField(null=True, default=None)
     category = TextField(null=True)  # 大分类，默认为空
+    manager_ids = ArrayField(BlobField)  # 版主
 
     default_colors = ['#fda34b', '#59b3d0', '#a26bc2', '#FF5555', '#86C1B9', '#AB4642', '#777777', '#42b983',
                       '#3d5dff', '#e0cb45', '#BA8BAF', '#7CAFC2']
