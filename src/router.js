@@ -262,6 +262,13 @@ export default new Router({
             component: NotFoundComponent
         },
 
+        // 搜索
+        {
+            path: '/search',
+            name: 'search',
+            component: () => import(/* webpackChunkName: "search" */ './views/search.vue')
+        },
+
         // 关于
         {
             path: '/about',

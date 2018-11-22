@@ -48,7 +48,10 @@ class User(PostModel, BaseUser):
 
     # level = IntegerField(index=True)  # 用户级别
     group = IntegerField(index=True, default=USER_GROUP.NORMAL)  # 用户权限组
-    extra_roles = ArrayField(TextField)  # 附加用户角色（例如wiki_editor）
+
+    is_wiki_editor = BooleanField(default=False, index=True)  # 是否为wiki编辑
+    is_board_moderator = BooleanField(default=False, index=True)  # 是否为版主
+    is_forum_master = BooleanField(default=False, index=True)  # 超版
 
     key = BlobField(index=True, null=True)
     key_time = MyTimestampField()  # 最后登录时间
@@ -102,6 +105,12 @@ class User(PostModel, BaseUser):
             ret.append('inactive_user')
         if self.group >= USER_GROUP.NORMAL:
             ret.append('user')
+        if self.is_wiki_editor:
+            ret.append('wiki_editor')
+        if self.is_board_moderator:
+            ret.append('board_moderator')
+        if self.is_forum_master:
+            ret.append('forum_master')
         if self.group >= USER_GROUP.SUPERUSER:
             ret.append('superuser')
         if self.group >= USER_GROUP.ADMIN:

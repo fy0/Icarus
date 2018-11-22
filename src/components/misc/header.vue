@@ -13,7 +13,7 @@
             <div class="menu-lists" v-show="showNavmenuBtn">
                 <ul class="menu-list center">
                     <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum', 'index')">
-                        <a>社区</a>
+                        <a>论坛</a>
                     </router-link>
                     <router-link tag="li" class="menu-item" :to="{ name: 'wiki' }" :class="navActive('wiki')">
                         <a>百科</a>

@@ -44,6 +44,13 @@ def work():
     sql_execute('ALTER TABLE notif ALTER COLUMN from_post_type DROP NOT NULL;')
     sql_execute('ALTER TABLE notif ALTER COLUMN from_post_id DROP NOT NULL;')
 
+    sql_execute('ALTER TABLE "user" ADD is_wiki_editor BOOLEAN DEFAULT FALSE NOT NULL;')
+    sql_execute('ALTER TABLE "user" ADD is_board_moderator BOOLEAN DEFAULT FALSE  NOT NULL;')
+    sql_execute('ALTER TABLE "user" ADD is_forum_master BOOLEAN DEFAULT FALSE NOT NULL;')
+    sql_execute('CREATE INDEX user_is_wiki_editor_index ON "user" (is_wiki_editor);')
+    sql_execute('CREATE INDEX user_is_board_moderator_index ON "user" (is_board_moderator);')
+    sql_execute('CREATE INDEX user_is_forum_master_index ON "user" (is_forum_master);')
+
     # 移除 MOP.TOPIC_TITLE_CHANGE 300
     ManageLog.update(operation=MOP.POST_TITLE_CHANGE).where(ManageLog.operation == 300).execute()
     # 移除 MOP.TOPIC_CONTENT_CHANGE 301
