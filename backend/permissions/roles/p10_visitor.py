@@ -51,6 +51,10 @@ visitor = Ability(None, {
         'location': (A.READ,),
         'group': (A.READ,),
 
+        'is_wiki_editor': (A.READ,),
+        'is_board_moderator': (A.READ,),
+        'is_forum_master': (A.READ,),
+
         'access_time': (A.READ,),
         'number': (A.READ,),
         'exp': (A.READ,),

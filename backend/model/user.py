@@ -31,7 +31,7 @@ class USER_GROUP(StateObject):
         SUPERUSER: 'superuser',
         ADMIN: 'admin'
     }
-    txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', SUPERUSER: '超级用户', ADMIN: '管理'}
+    txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', SUPERUSER: '管理', ADMIN: '超管'}
 
 
 class User(PostModel, BaseUser):

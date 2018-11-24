@@ -164,7 +164,7 @@ export default {
                 return
             }
 
-            let role = this.asAdmin ? 'superuser' : 'user'
+            let role = $.getWikiEditRole(state.user)
             wikiInfo.returning = true
 
             if (this.isEdit) {
@@ -174,7 +174,7 @@ export default {
                     wikiInfo['root_id'] = this.wikiInfo.root_id
                 }
                 // return
-                ret = await api.wiki.new(wikiInfo, 'superuser')
+                ret = await api.wiki.new(wikiInfo, role)
             }
             successText = '编辑成功！已自动跳转至文章页面。'
 
@@ -208,7 +208,8 @@ export default {
         fetchData: async function () {
             this.loading = true
             let params = this.$route.params
-            this.asAdmin = this.$route.query.manage
+            // this.asAdmin = this.$route.query.manage
+            this.asAdmin = true // 普通用户无法进入编辑页面
 
             if (!state.user) {
                 $.message_error('抱歉，无权访问此页面，请返回')

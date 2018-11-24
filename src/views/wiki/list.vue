@@ -48,7 +48,8 @@ export default {
             let pageNumber = params.page || 1
 
             let ret = await api.wiki.list({
-                flag: null
+                flag: null,
+                order: 'title.asc'
             }, pageNumber, null, $.getRole('user'))
 
             if (ret.code === api.retcode.SUCCESS) {

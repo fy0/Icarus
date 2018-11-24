@@ -46,5 +46,9 @@ superuser = Ability('superuser', {
         'key_time': (A.READ,),
         'access_time': (A.READ,),
         'last_check_in_time': (A.READ,),
+
+        'is_wiki_editor': (A.QUERY, A.READ, A.WRITE,),
+        'is_board_moderator': (A.QUERY, A.READ, A.WRITE,),
+        'is_forum_master': (A.QUERY, A.READ, A.WRITE,),
     })
 }, based_on=normal_user)

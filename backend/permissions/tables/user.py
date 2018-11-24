@@ -11,6 +11,8 @@ def func(ability: Ability, user, query: 'SQLQueryInfo'):
         if i[1] == SQL_OP.EQ and i[2] == user.id.hex():
             query.select.add('email')
             query.select.add('phone')
+            query.select.add('key_time')
+            query.select.add('access_time')
             query.select.add('is_new_user')
             query.select.add('phone_verified')
             query.select.add('change_nickname_chance')

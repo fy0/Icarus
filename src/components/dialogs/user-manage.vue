@@ -40,6 +40,12 @@
             <input type="text" class="ic-input" v-model="user.biology" />
         </div>
     </div>
+    <div class="manage-form-item">
+        <span class="label">附加权限</span>
+        <div class="right">
+            <ic-checkbox v-model="user.is_wiki_editor">百科编辑</ic-checkbox>
+        </div>
+    </div>
     <div class="manage-form-item" style="align-items: center">
         <span class="label">状态</span>
         <div class="right" style="display: flex">

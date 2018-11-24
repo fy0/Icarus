@@ -6,7 +6,18 @@ $.isAdmin = function (user) {
 }
 
 $.canEditWiki = function (user) {
-    return $.isAdmin(user)
+    if (!user) user = state.user
+    if (!user) return
+    return $.isAdmin(user) || user.is_wiki_editor
+}
+
+$.getWikiEditRole = function (user) {
+    if ($.isAdmin(user)) {
+        return $.getRole('admin')
+    }
+    if (user.is_wiki_editor) {
+        return 'wiki_editor'
+    }
 }
 
 // 获取用户角色（取当前主要权限最高的一个）
