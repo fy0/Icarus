@@ -2,7 +2,7 @@
 import time
 from peewee import *
 from playhouse.postgres_ext import ArrayField
-from model._post import POST_VISIBLE, POST_STATE, PostModel
+from model._post import POST_VISIBLE, POST_STATE, PostModel, POST_TYPES
 from slim.utils.state_obj import StateObject
 from model import BaseModel, MyTimestampField
 from model.user import User
@@ -27,6 +27,10 @@ class Board(PostModel):
 
     class Meta:
         db_table = 'board'
+
+    @classmethod
+    def get_post_type(cls):
+        return POST_TYPES.BOARD
 
     def get_title(self):
         return self.name

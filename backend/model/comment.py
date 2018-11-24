@@ -2,7 +2,7 @@
 
 from peewee import *
 from model import BaseModel, MyTimestampField
-from model._post import POST_STATE, POST_VISIBLE, LongIdPostModel
+from model._post import POST_STATE, POST_VISIBLE, LongIdPostModel, POST_TYPES
 
 
 class Comment(LongIdPostModel):
@@ -14,3 +14,7 @@ class Comment(LongIdPostModel):
 
     class Meta:
         db_table = 'comment'
+
+    @classmethod
+    def get_post_type(cls):
+        return POST_TYPES.COMMENT

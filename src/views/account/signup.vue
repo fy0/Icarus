@@ -6,7 +6,7 @@
         <div>我们已经向你的邮箱发送了一封邮件，请点击其中的激活链接完成注册。</div>
         <div>激活之后，你的账号将自动登录。</div>
         <div>如果没有正确收到激活邮件，请检查垃圾邮件箱。</div>
-        <div>如果还是没有收到邮件，请尝试重新注册，或联系站点管理员：</div>
+        <div>如果还是没有发现邮件，请尝试重新注册，或联系站点管理员：</div>
         <div><a :href="`mailto:${state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}?subject=无法收到激活邮件，注册邮箱：${info.email}`">{{state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}}</a></div>
     </div>
 </redirecting>

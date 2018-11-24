@@ -40,9 +40,6 @@ class WikiArticle(PostModel):
     class Meta:
         db_table = 'wiki_article'
 
-    def get_title(self):
-        return self.title
-
     @classmethod
     def get_sidebar_article(cls):
         try:
@@ -75,3 +72,10 @@ class WikiArticle(PostModel):
             return wa.ref
         except cls.DoesNotExist:
             pass
+
+    @classmethod
+    def get_post_type(cls):
+        return POST_TYPES.WIKI
+
+    def get_title(self):
+        return self.title

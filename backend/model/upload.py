@@ -4,7 +4,7 @@ from playhouse.postgres_ext import BinaryJSONField
 
 import config
 from model import BaseModel, MyTimestampField
-from model._post import LongIdPostModel
+from model._post import LongIdPostModel, POST_TYPES
 
 
 class Upload(LongIdPostModel):
@@ -23,3 +23,7 @@ class Upload(LongIdPostModel):
         # 之所以有key的情况下还有独立id，是因为上传是一个一对多的过程，多个用户可能上传同一张图片，那么key就相同
         return cls.create(id=config.LONG_ID_GENERATOR().digest(), time=int(time.time()), user_id=user_id,
                           key=key, size=int(size), ext=ext, type_name=type_name, image_info=image_info)
+
+    @classmethod
+    def get_post_type(cls):
+        return POST_TYPES.UPLOAD

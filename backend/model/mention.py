@@ -1,7 +1,7 @@
 from peewee import BlobField, IntegerField, TextField
 from playhouse.postgres_ext import BinaryJSONField
 from slim import json_ex_dumps
-from model._post import LongIdPostModel
+from model._post import LongIdPostModel, POST_TYPES
 
 
 class Mention(LongIdPostModel):
@@ -18,3 +18,7 @@ class Mention(LongIdPostModel):
 
     class Meta:
         db_table = 'mention'
+
+    @classmethod
+    def get_post_type(cls):
+        return POST_TYPES.MENTION

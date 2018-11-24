@@ -7,7 +7,7 @@ from peewee import *
 from playhouse.postgres_ext import ArrayField
 import config
 from lib.utils import get_today_start_timestamp
-from model._post import PostModel, POST_STATE
+from model._post import PostModel, POST_STATE, POST_TYPES
 from model.manage_log import ManageLog
 from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID, \
     RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID, RK_USER_REG_CODE_BY_EMAIL, \
@@ -337,6 +337,10 @@ class User(PostModel, BaseUser):
 
     def __repr__(self):
         return '<User id:%x nickname:%r>' % (int.from_bytes(self.id.tobytes(), 'big'), self.nickname)
+
+    @classmethod
+    def get_post_type(cls):
+        return POST_TYPES.USER
 
     def get_title(self):
         return self.nickname

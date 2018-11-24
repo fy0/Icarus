@@ -1,6 +1,6 @@
 ﻿import time
 
-from model._post import POST_VISIBLE, POST_STATE, PostModel
+from model._post import POST_VISIBLE, POST_STATE, PostModel, POST_TYPES
 from model.redis import RK_TOPIC_WEIGHT_MAX, redis
 from slim.utils import StateObject
 from peewee import *
@@ -57,6 +57,10 @@ class Topic(PostModel):
         self.comment_time = int(time.time())
         self.save()
     '''
+
+    @classmethod
+    def get_post_type(cls):
+        return POST_TYPES.TOPIC
 
     def get_title(self):
         return self.title
