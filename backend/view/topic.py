@@ -1,6 +1,6 @@
-from typing import Dict, List
 import time
 import config
+from typing import Dict, List
 from lib.textdiff import diff
 from model._post import POST_TYPES
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
