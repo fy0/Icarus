@@ -4,6 +4,12 @@
         <router-link :to="{name: 'index'}" class="ic-brand-heading" @dbclick="flagClick">{{config.title}}</router-link>
         <!-- <a class="ic-brand-heading" href="/">Icarus</a> -->
 
+        <!-- 移动端搜索框 -->
+        <div class="search-box m ic-xs ic-hidden" v-if="state.misc.BACKEND_CONFIG.SEARCH_ENABLE">
+            <i class="icarus icon-search icon" />
+            <input class="ic-input" type="text" placeholder="点此进行搜索" v-model="searchText" @keyup.enter="doSearch" />
+        </div>
+
         <a href="#" @click="navmenuToggle" :class="showNavmenuBtn ? 'x' : ''" class="ic-xs ic-hidden" id="navmenu-toggle-icon">
             <s class="bar"></s>
             <s class="bar"></s>
@@ -30,6 +36,11 @@
                         <a>关于</a>
                     </router-link>
                 </ul>
+
+                <div class="search-box ic-xs-hidden" v-if="state.misc.BACKEND_CONFIG.SEARCH_ENABLE">
+                    <i class="icarus icon-search icon" />
+                    <input class="ic-input" type="text" placeholder="点此进行搜索" v-model="searchText" @keyup.enter="doSearch" />
+                </div>
 
                 <ul class="menu-list" v-if="state.initLoadDone && (!state.user)">
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_signup' }" :class="navActive('account_signup')">
@@ -70,6 +81,38 @@
 </template>
 
 <style lang="scss" scoped>
+/* 搜索框 */
+.search-box {
+    align-self: center;
+    margin-right: 10px;
+    position: relative;
+
+    &.m {
+        flex: 1;
+
+        > .icon {
+            top: 3px;
+        }
+
+        > input[type=text] {
+            padding: 6px 5px 6px 23px;
+        }
+    }
+
+    > .icon {
+        left: 4px;
+        top: 1px;
+        position: absolute;
+    }
+
+    > input[type=text] {
+        border: none;
+        box-shadow: none;
+        padding: 1px 5px 1px 23px;
+        width: 160px;
+    }
+}
+
 /* 横条 */
 
 .ic-nav {
@@ -278,7 +321,8 @@ export default {
             config,
             m: $.media,
             isXs: true,
-            showNavmenuBtn: false
+            showNavmenuBtn: false,
+            searchText: ''
         }
     },
     computed: {
@@ -298,6 +342,9 @@ export default {
         }
     },
     methods: {
+        doSearch: function () {
+
+        },
         flagClick: function () {
             ;
         },

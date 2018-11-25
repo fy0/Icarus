@@ -4,6 +4,8 @@ import time
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
 from elasticsearch_dsl.query import MultiMatch
+
+import config
 from slim.utils import to_hex
 
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
@@ -11,12 +13,8 @@ from model.topic import Topic
 from model.user import User
 from model.wiki import WikiArticle
 
-es = Elasticsearch(hosts=[{
-    "host": "localhost",
-    "port": 9200
-}])
-
-INDEX_NAME = "icarus-index"
+es = Elasticsearch(hosts=config.ES_HOSTS)
+INDEX_NAME = config.ES_INDEX_NAME
 
 
 def create_index():

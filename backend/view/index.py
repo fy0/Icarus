@@ -111,6 +111,8 @@ class TestBaseView(UserMixin, BaseView):
                 'SITE_CONTACT_EMAIL': config.SITE_CONTACT_EMAIL,
                 'USER_SECURE_AUTH_FRONTEND_SALT': config.USER_SECURE_AUTH_FRONTEND_SALT,
 
+                'SEARCH_ENABLE': config.SEARCH_ENABLE,
+
                 'USER_NICKNAME_MIN': config.USER_NICKNAME_MIN,
                 'USER_NICKNAME_MAX': config.USER_NICKNAME_MAX,
                 'USER_NICKNAME_CN_FOR_REG_MIN': config.USER_NICKNAME_CN_FOR_REG_MIN,

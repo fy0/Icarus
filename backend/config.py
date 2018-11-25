@@ -30,7 +30,11 @@ USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5
 ##########################################
 
 SEARCH_ENABLE = False
-ES_URI = ''
+ES_INDEX_NAME = 'icarus-index'
+ES_HOSTS = [{
+    "host": "localhost",
+    "port": 9200
+}]
 
 ##########################################
 # 可选配置 - 用户昵称、邮箱约束
