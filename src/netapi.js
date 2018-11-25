@@ -198,6 +198,12 @@ class WikiViewRequest extends SlimViewRequest {
     }
 }
 
+class SearchViewRequest extends SlimViewRequest {
+    async search (keywords) {
+        return npost(`${this.urlPrefix}/search`, null, { keywords })
+    }
+}
+
 // http://localhost:9999/api/user/oauth/get_oauth_url 取url链接
 class Oauth {
     async getUrl (website) {
@@ -268,6 +274,7 @@ export default {
     upload: new UploadViewRequest('upload'),
     logManage: new NotifViewRequest('log/manage'),
     wiki: new WikiViewRequest('wiki'),
+    search: new SearchViewRequest('search'),
 
     Oauth: new Oauth()
 }

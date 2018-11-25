@@ -109,8 +109,8 @@ def es_update_wiki(id):
     )
 
 
-def doc_search(text, page_size=30, offset=0, *, visible_min=POST_VISIBLE.NOT_IN_LIST, visible_max=POST_VISIBLE.NORMAL):
-    q = MultiMatch(query=text, fields=['title', 'content'])
+def doc_search(keywords, page_size=30, offset=0, *, visible_min=POST_VISIBLE.NOT_IN_LIST, visible_max=POST_VISIBLE.NORMAL):
+    q = MultiMatch(query=keywords, fields=['title', 'content'])
     q2 = Q({
         'range': {
             'state': {

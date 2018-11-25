@@ -5,7 +5,7 @@
         <!-- <a class="ic-brand-heading" href="/">Icarus</a> -->
 
         <!-- 移动端搜索框 -->
-        <div class="search-box m ic-xs ic-hidden" v-if="state.misc.BACKEND_CONFIG.SEARCH_ENABLE">
+        <div class="search-box m ic-xs ic-hidden" v-if="isSearchEnable">
             <i class="icarus icon-search icon" />
             <input class="ic-input" type="text" placeholder="点此进行搜索" v-model="searchText" @keyup.enter="doSearch" />
         </div>
@@ -37,7 +37,7 @@
                     </router-link>
                 </ul>
 
-                <div class="search-box ic-xs-hidden" v-if="state.misc.BACKEND_CONFIG.SEARCH_ENABLE">
+                <div class="search-box ic-xs-hidden" v-if="isSearchEnable">
                     <i class="icarus icon-search icon" />
                     <input class="ic-input" type="text" placeholder="点此进行搜索" v-model="searchText" @keyup.enter="doSearch" />
                 </div>
@@ -328,6 +328,9 @@ export default {
     computed: {
         isAdmin: function () {
             return $.isAdmin()
+        },
+        isSearchEnable: function () {
+            return state.initLoadDone && state.misc.BACKEND_CONFIG.SEARCH_ENABLE
         }
     },
     mounted: function () {
@@ -343,7 +346,13 @@ export default {
     },
     methods: {
         doSearch: function () {
-
+            // if (!this.searchText) return
+            this.$router.push({
+                name: 'search',
+                query: {
+                    q: this.searchText.trim()
+                }
+            })
         },
         flagClick: function () {
             ;

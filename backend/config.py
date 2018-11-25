@@ -162,6 +162,8 @@ TOPIC_NEW_COOLDOWN_BY_ACCOUNT = 60  # 发帖间隔：60s
 COMMENT_NEW_COOLDOWN_BY_IP = 15  # 评论间隔：15s
 COMMENT_NEW_COOLDOWN_BY_ACCOUNT = 15  # 评论间隔：15s
 
+SEARCH_COOLDOWN_BY_IP = 10  # IP搜索间隔
+
 ##########################################
 # 可选 - 其他
 ##########################################

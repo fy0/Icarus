@@ -1,13 +1,24 @@
-import app
 import locale
+from asyncio import futures
 from wtforms import Form
-from model.redis import redis
-from slim.base.view import BaseView
 from typing import Union
 from slim.retcode import RETCODE
+from slim.base.view import BaseView
 from ipaddress import IPv4Address, IPv6Address
+from concurrent.futures import ThreadPoolExecutor
+
+import app
+from model.redis import redis
+from slim.utils import get_ioloop
 
 route = app.app.route
+thread_executor = ThreadPoolExecutor()
+
+
+def run_in_thread(fn, *args, **kwargs):
+    return futures.wrap_future(
+        thread_executor.submit(fn, *args, **kwargs), loop=get_ioloop()
+    )
 
 
 class ValidateForm(Form):
