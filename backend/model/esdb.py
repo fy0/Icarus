@@ -1,10 +1,6 @@
 import os
 import time
 
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search, Q
-from elasticsearch_dsl.query import MultiMatch
-
 import config
 from slim.utils import to_hex
 
@@ -13,8 +9,13 @@ from model.topic import Topic
 from model.user import User
 from model.wiki import WikiArticle
 
-es = Elasticsearch(hosts=config.ES_HOSTS)
 INDEX_NAME = config.ES_INDEX_NAME
+if config.SEARCH_ENABLE:
+    from elasticsearch import Elasticsearch
+    from elasticsearch_dsl import Search, Q
+    from elasticsearch_dsl.query import MultiMatch
+
+    es = Elasticsearch(hosts=config.ES_HOSTS)
 
 
 def create_index():

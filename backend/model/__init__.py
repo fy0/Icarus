@@ -19,7 +19,7 @@ def asyncpg_init(db_uri):
     async_run(create_conn)
 
 
-asyncpg_init(config.DATABASE_URI)
+# asyncpg_init(config.DATABASE_URI)
 
 # peewee 配置
 
