@@ -58,15 +58,26 @@ def create_index():
 
 
 def get_post_base_body(post):
+    main_category = None
+    post_type = post.get_post_type()
+    if post_type in {POST_TYPES.TOPIC, POST_TYPES.BOARD}:
+        main_category = 'forum'
+    elif post_type in {POST_TYPES.WIKI,}:
+        main_category = 'wiki'
+
     return {
+        'id': to_hex(post.id),
         'state': post.state,
         'visible': post.visible,
         'time': post.time * 1000,
         'user_id': to_hex(post.user_id),
-        'indexed_time': int(time.time() * 1000),
 
-        'type': post.get_post_type(),
-        'title': post.get_title()
+        'type': post_type,
+        'title': post.get_title(),
+
+        # 扩展
+        'indexed_time': int(time.time() * 1000),
+        'main_category': main_category
     }
 
 
@@ -130,7 +141,9 @@ def doc_search(keywords, page_size=30, offset=0, *, visible_min=POST_VISIBLE.NOT
     s = Search(using=es, index=INDEX_NAME) \
         .query(q & q2) \
         .source(exclude=["content"]) \
-        .highlight('content', fragment_size=50)[offset : offset+page_size]
+        .highlight_options(encoder='html') \
+        .highlight('title', fragment_size=50) \
+        .highlight('content', fragment_size=100)[offset: offset+page_size]
 
     return s.execute()
 
