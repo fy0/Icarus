@@ -111,6 +111,7 @@ def es_update_wiki(id):
     body.update({
         'user_nickname': u.nickname,
         'content': post.content,
+        'ref': post.ref
     })
     es.index(
         index=INDEX_NAME,
@@ -129,7 +130,7 @@ def doc_search(keywords, page_size=30, offset=0, *, visible_min=POST_VISIBLE.NOT
                 'lte': POST_STATE.NORMAL
             }
         }
-    }) | Q({
+    }) & Q({
         'range': {
             'visible': {
                 'gte': visible_min,

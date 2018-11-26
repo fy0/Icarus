@@ -5,7 +5,7 @@
         <div>以下为<b>“{{queryText}}”</b>的搜索结果，共{{info.hits.total}}条</div>
         <div class="results" v-if="info.hits.hits">
             <div class="item" v-for="(v, k) in info.hits.hits" :key="k">
-                <h3 class="title">
+                <h3 class="title limit m18">
                     <post-link :type="v._source.type" :item="v._source" :use-slot="v.highlight.title">
                         <span v-if="v.highlight.title" v-html="v.highlight.title[0]" />
                     </post-link>
@@ -15,11 +15,13 @@
                     </span>
                 </h3>
                 <div class="link">
-                    <!-- <span class="link">http://localhost:8080/search</span> -->
+                    <post-link :type="v._source.type" :item="v._source" :use-slot="true">
+                        <span>{{getPostPath(v._source)}}</span>
+                    </post-link>
                     <!-- <span>1234个回复，5678次查看</span> -->
                 </div>
                 <div class="brief" v-if="v.highlight.content" v-html="v.highlight.content[0]"></div>
-                <div>
+                <div class="info">
                     <ic-time :timestamp="v._source.time / 1000" :ago="false" />
                     <span> - </span>
                     <post-link :type="state.misc.POST_TYPES.USER" :item="{id: v._source.user_id, nickname: v._source.user_nickname}" />
@@ -39,12 +41,25 @@
                 font-style: normal; // 移除斜体效果
                 color: $red !important;
             }
+
+            a {
+                color: $gray-700;
+            }
         }
         > .brief {
             em {
                 font-style: normal; // 移除斜体效果
                 color: darken($red, .5) !important;
             }
+        }
+        > .link {
+            a {
+                color: $blue;
+            }
+        }
+        > .info {
+            font-weight: bold;
+            color: $gray-700;
         }
     }
 }
@@ -55,17 +70,13 @@
     margin-top: 20px;
     > .item {
         > .title {
-            em {
-                color: $red !important;
-            }
-
             > .suffix {
                 font-size: 16px;
                 margin-left: .5em;
                 color: #b53b78;
             }
         }
-        margin-bottom: 20px;
+        margin-bottom: 30px;
     }
 }
 </style>
@@ -89,14 +100,25 @@ export default {
         }
     },
     methods: {
+        getPostPath: function (src) {
+            let name = 'forum_topic'
+            let params = { id: src.id }
+
+            switch (src.type) {
+                case state.misc.POST_TYPES.TOPIC:
+                    name = 'forum_topic'; break
+                case state.misc.POST_TYPES.WIKI:
+                    name = 'wiki_article_by_ref'; params.ref = src.ref; break
+            }
+
+            let info = this.$router.resolve({ name, params })
+            return window.location.origin + info.href
+        },
         fetchData: async function () {
             let key = state.loadingGetKey(this.$route)
             this.state.loadingInc(this.$route, key)
-            let query = this.$route.query
-            console.log(111, query)
             let ret = await api.search.search(this.queryText)
             this.info = ret.data
-            console.log(222, ret)
             this.state.loadingDec(this.$route, key)
         }
     },

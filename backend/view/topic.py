@@ -2,6 +2,7 @@ import time
 import config
 from typing import Dict, List
 from lib.textdiff import diff
+from model import esdb
 from model._post import POST_TYPES
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, post_stats_topic_new, post_stats_do_edit
@@ -12,7 +13,7 @@ from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, dict_filter_inplace
-from view import route, ValidateForm, cooldown, same_user
+from view import route, ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField
 
 from view.mention import check_content_mention
@@ -132,6 +133,9 @@ class TopicView(UserMixin, PeeweeView):
             if manage_try_add('board_id', MOP.TOPIC_BOARD_MOVE):
                 post_stats_topic_move(old_record['board_id'], record['board_id'], record['id'])
 
+            if config.SEARCH_ENABLE:
+                run_in_thread(esdb.es_update_topic, record['id'])
+
     async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         form = TopicNewForm(**raw_post)
         if not form.validate():
@@ -157,6 +161,8 @@ class TopicView(UserMixin, PeeweeView):
         # 添加统计记录
         post_stats_topic_new(record['board_id'], record['id'])
 
+        if config.SEARCH_ENABLE:
+            run_in_thread(esdb.es_update_topic, record['id'])
 
 '''
 from slim.utils.debug import Debug 

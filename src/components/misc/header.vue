@@ -91,7 +91,7 @@
         flex: 1;
 
         > .icon {
-            top: 3px;
+            top: 1px;
         }
 
         > input[type=text] {
@@ -101,15 +101,21 @@
 
     > .icon {
         left: 4px;
-        top: 1px;
+        top: -1px;
+        font-size: 18px;
         position: absolute;
+        pointer-events: none;
     }
 
     > input[type=text] {
         border: none;
         box-shadow: none;
         padding: 1px 5px 1px 23px;
-        width: 160px;
+
+        &:focus {
+            width: 160px;
+        }
+        width: 28px;
     }
 }
 

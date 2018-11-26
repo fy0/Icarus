@@ -4,6 +4,7 @@ from typing import Dict, List
 from peewee import fn
 import config
 from lib.textdiff import diff
+from model import esdb
 from model._post import POST_TYPES
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_new, post_stats_incr, PostStats, post_stats_do_edit
@@ -12,7 +13,7 @@ from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from view import route, cooldown, same_user, ValidateForm
+from view import route, cooldown, same_user, ValidateForm, run_in_thread
 from wtforms import validators as va, StringField, IntegerField
 from permissions import permissions_add_all
 from view.user import UserMixin
@@ -111,6 +112,9 @@ class WikiView(UserMixin, PeeweeView):
             manage_try_add('state', MOP.POST_STATE_CHANGE)  # 管理日志：改变状态
             manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)  # 管理日志：改变可见度
 
+            if config.SEARCH_ENABLE:
+                run_in_thread(esdb.es_update_wiki, record['id'])
+
     async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         form = WikiNewForm(**raw_post)
         if not form.validate():
@@ -128,3 +132,6 @@ class WikiView(UserMixin, PeeweeView):
         post_stats_new(POST_TYPES.WIKI, record['id'])
         # 添加创建记录
         ManageLog.post_new(self, POST_TYPES.WIKI, record)
+
+        if config.SEARCH_ENABLE:
+            run_in_thread(esdb.es_update_wiki, record['id'])
