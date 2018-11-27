@@ -6,16 +6,28 @@
         <div class="results" v-if="info.hits.hits">
             <div class="item" v-for="(v, k) in info.hits.hits" :key="k">
                 <h3 class="title limit m18">
-                    <post-link :type="v._source.type" :item="v._source" :use-slot="v.highlight.title">
-                        <span v-if="v.highlight.title" v-html="v.highlight.title[0]" />
-                    </post-link>
+                    <template v-if="v._source.type == state.misc.POST_TYPES.COMMENT">
+                        <post-link :type="v._source.related_type" :item="{id: v._source.related_id, title: v._source.related_title}" />
+                    </template>
+                    <template v-else>
+                        <post-link :type="v._source.type" :item="v._source" :use-slot="v.highlight.title">
+                            <span v-if="v.highlight.title" v-html="v.highlight.title[0]" />
+                        </post-link>
+                    </template>
+
                     <span class="suffix">
-                        <template v-if="v._source.main_category == 'forum'">论坛</template>
-                        <template v-else-if="v._source.main_category == 'wiki'">百科</template>
+                        <template v-if="v._source.type == state.misc.POST_TYPES.COMMENT">评论</template>
+                        <template v-else>
+                            <template v-if="v._source.main_category == 'forum'">论坛</template>
+                            <template v-else-if="v._source.main_category == 'wiki'">百科</template>
+                        </template>
                     </span>
                 </h3>
                 <div class="link">
-                    <post-link :type="v._source.type" :item="v._source" :use-slot="true">
+                    <post-link :type="v._source.related_type" :item="{id: v._source.related_id, title: v._source.related_title}" :use-slot="true" v-if="v._source.type == state.misc.POST_TYPES.COMMENT">
+                        <span>{{getPostPath({id: v._source.related_id, title: v._source.related_title})}}</span>
+                    </post-link>
+                    <post-link :type="v._source.type" :item="v._source" :use-slot="true" v-else>
                         <span>{{getPostPath(v._source)}}</span>
                     </post-link>
                     <!-- <span>1234个回复，5678次查看</span> -->

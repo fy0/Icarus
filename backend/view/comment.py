@@ -1,6 +1,8 @@
 import time
 import config
 from typing import Dict, List
+
+from model import esdb
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_do_comment
 from model.topic import Topic
@@ -13,7 +15,7 @@ from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin
-from view import route, ValidateForm, cooldown, same_user
+from view import route, ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from view.mention import check_content_mention
 from permissions import permissions_add_all
@@ -105,9 +107,15 @@ class CommentView(UserMixin, PeeweeView):
             related = [POST_TYPES.COMMENT, record['id']]
             self.do_mentions(record['user_id'], loc_title, loc, related)
 
+        if config.SEARCH_ENABLE:
+            run_in_thread(esdb.es_update_comment, record['id'])
+
     def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord],
                      records: List[DataRecord]):
         for old_record, record in zip(old_records, records):
             # 管理日志：修改评论状态
             ManageLog.add_by_post_changed(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.COMMENT,
                                           values, old_record, record)
+
+            if config.SEARCH_ENABLE:
+                run_in_thread(esdb.es_update_comment, record['id'])
