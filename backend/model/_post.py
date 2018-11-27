@@ -4,7 +4,7 @@
 一些通用类的定义
 """
 from abc import abstractmethod
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 
 from peewee import *
 from slim.base.sqlquery import DataRecord
@@ -86,7 +86,7 @@ class POST_TYPES(StateObject):
             return WikiArticle
 
     @classmethod
-    def get_post(cls, related_type, related_id):
+    def get_post(cls, related_type, related_id) -> Optional['PostModel']:
         from model.user import User
         from model.topic import Topic
         from model.wiki import WikiArticle

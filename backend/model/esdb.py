@@ -2,6 +2,7 @@ import os
 import time
 
 import config
+from model.comment import Comment
 from slim.utils import to_hex
 
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
@@ -61,10 +62,19 @@ def create_index():
 def get_post_base_body(post):
     main_category = None
     post_type = post.get_post_type()
+    title = post.get_title()
+
     if post_type in {POST_TYPES.TOPIC, POST_TYPES.BOARD}:
         main_category = 'forum'
     elif post_type in {POST_TYPES.WIKI,}:
         main_category = 'wiki'
+
+    if post_type is POST_TYPES.COMMENT:
+        post: Comment
+        if post.related_type in {POST_TYPES.TOPIC, POST_TYPES.BOARD}:
+            main_category = 'forum'
+        elif post_type in {POST_TYPES.WIKI, }:
+            main_category = 'wiki'
 
     return {
         'id': to_hex(post.id),
@@ -74,7 +84,7 @@ def get_post_base_body(post):
         'user_id': to_hex(post.user_id),
 
         'type': post_type,
-        'title': post.get_title(),
+        'title': title,
 
         # 扩展
         'indexed_time': int(time.time() * 1000),
@@ -92,6 +102,7 @@ def es_update_topic(id):
     body.update({
         'user_nickname': u.nickname,
         'content': post.content,
+        'brief': post.content[:100]
     })
     es.index(
         index=INDEX_NAME,
@@ -112,7 +123,34 @@ def es_update_wiki(id):
     body.update({
         'user_nickname': u.nickname,
         'content': post.content,
-        'ref': post.ref
+        'ref': post.ref,
+        'brief': post.content[:100]
+    })
+    es.index(
+        index=INDEX_NAME,
+        doc_type="doc",
+        id=to_hex(post.id),
+        body=body
+    )
+
+
+def es_update_comment(id):
+    post: Comment = Comment.get_by_id(id)
+    if not post: return
+    u: User = User.get_by_id(post.user_id)
+    if not u: return
+
+    p = POST_TYPES.get_post(post.related_type, post.related_id)
+
+    body = get_post_base_body(post)
+    body.update({
+        'user_nickname': u.nickname,
+        'content': post.content,
+        'brief': post.content[:100],
+
+        'related_title': p.get_title() if p else None,
+        'related_type': post.related_type,
+        'related_id': to_hex(post.related_id)
     })
     es.index(
         index=INDEX_NAME,
@@ -156,12 +194,16 @@ def update_all(reset=False):
         create_index()
 
     for i in Topic.select(Topic.id):
-        print('topic', i.id.tobytes())
+        print('topic', to_hex(i.id))
         es_update_topic(i.id)
 
     for i in WikiArticle.select(WikiArticle.id):
-        print('wiki', i.id.tobytes())
+        print('wiki', to_hex(i.id))
         es_update_wiki(i.id)
+
+    for i in Comment.select(Comment.id):
+        print('comment', to_hex(i.id))
+        es_update_comment(i.id)
 
 
 if __name__ == '__main__':

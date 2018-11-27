@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+slim = "==0.3.14"
+aiohttp = "==3.3"
+aiohttp-cors = "==0.7.0"
+peewee = "==3.7"
+asyncpg = "==0.18"
+wtforms = "==2.2.1"
+msgpack = "==0.5.6"
+psycopg2-binary = "==2.7.5"
+aiosmtplib = "==1.0.2"
+aioauth-client = "==0.12.0"
+async-timeout = "==3.0.1"
+qiniu = "==7.2.2"
+aioredis = ">=1.1.0,<=1.2.0"
+elasticsearch = "==6.3.1"
+elasticsearch-dsl = "==6.2.1"
+
+[requires]
+python_version = "3.6"
