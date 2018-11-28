@@ -31,11 +31,23 @@ EMAIL_USERNAME = 'user'
 EMAIL_PASSWORD = 'pasword'
 
 ##########################################
+# 可选配置 - 开启搜索功能（需要Elasticsearch）
+##########################################
+
+SEARCH_ENABLE = False
+ES_INDEX_NAME = 'icarus-index'
+ES_HOSTS = [{
+    "host": "localhost",
+    "port": 9200
+}]
+
+##########################################
 # 可选 - 文件上传（七牛配置）
 ##########################################
 
 UPLOAD_ENABLE = False
 UPLOAD_STATIC_HOST = ''
+UPLOAD_BACKEND = 'qiniu'
 UPLOAD_QINIU_ACCESS_KEY = 'PLACE_HOLDER'
 UPLOAD_QINIU_SECRET_KEY = 'PLACE_HOLDER'
 UPLOAD_QINIU_BUCKET = 'PLACE_HOLDER'

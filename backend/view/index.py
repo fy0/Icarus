@@ -127,9 +127,11 @@ class TestBaseView(UserMixin, BaseView):
 
                 'EMAIL_ACTIVATION_ENABLE': config.EMAIL_ACTIVATION_ENABLE,
 
+                'UPLOAD_ENABLE': config.UPLOAD_ENABLE,
+                'UPLOAD_BACKEND': config.UPLOAD_BACKEND,
                 'UPLOAD_STATIC_HOST': config.UPLOAD_STATIC_HOST,
                 'UPLOAD_QINIU_DEADLINE_OFFSET': config.UPLOAD_QINIU_DEADLINE_OFFSET,
-                'UPLOAD_QINIU_IMAGE_STYLE_TOPIC': config.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
+                'UPLOAD_QINIU_IMAGE_STYLE_TOPIC': config.UPLOAD_QINIU_IMAGE_STYLE_TOPIC,
             },
 
             'retcode': RETCODE.to_dict(),

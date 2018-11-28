@@ -1,6 +1,8 @@
 import os
 import time
 
+import elasticsearch
+
 import config
 from model.comment import Comment
 from slim.utils import to_hex
@@ -190,7 +192,10 @@ def doc_search(keywords, page_size=30, offset=0, *, visible_min=POST_VISIBLE.NOT
 
 def update_all(reset=False):
     if reset:
-        es.indices.delete(index=INDEX_NAME)
+        try:
+            es.indices.delete(index=INDEX_NAME)
+        except elasticsearch.exceptions.NotFoundError:
+            pass
         create_index()
 
     for i in Topic.select(Topic.id):

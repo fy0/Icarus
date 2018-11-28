@@ -73,7 +73,7 @@ def cooldown(interval, redis_key_template, *, unique_id_func=get_ip, cd_if_unsuc
                         return ret
 
                 # 如果没有，检查是否存在豁免值
-                if not getattr(self, 'cancel_cooldown', None):
+                if getattr(self, 'cancel_cooldown', None):
                     return ret
 
                 # 所有跳过条件都不存在，设置正常的expire并退出

@@ -1,7 +1,11 @@
 <template>
 <div class="ic-container">
-    <div v-title>搜索 - {{state.config.title}}</div>
-    <template v-if="queryText">
+    <div v-title v-if="queryText">搜索 - {{queryText}} - {{state.config.title}}</div>
+    <div v-title v-else>搜索 - {{state.config.title}}</div>
+    <template v-if="tooFrequent">
+        <span>搜索过于频繁，请稍后再试。还需等待{{needWait}}秒。</span>
+    </template>
+    <template v-else-if="queryText">
         <div>以下为<b>“{{queryText}}”</b>的搜索结果，共{{info.hits.total}}条</div>
         <div class="results" v-if="info.hits.hits">
             <div class="item" v-for="(v, k) in info.hits.hits" :key="k">
@@ -101,6 +105,8 @@ export default {
     data () {
         return {
             state,
+            tooFrequent: false,
+            needWait: 0,
             info: {
                 hits: {}
             }
@@ -130,7 +136,14 @@ export default {
             let key = state.loadingGetKey(this.$route)
             this.state.loadingInc(this.$route, key)
             let ret = await api.search.search(this.queryText)
-            this.info = ret.data
+            if (ret.code === api.retcode.SUCCESS) {
+                this.info = ret.data
+                this.tooFrequent = false
+            } else if (ret.code === api.retcode.TOO_FREQUENT) {
+                this.info = { hits: {} }
+                this.tooFrequent = true
+                this.needWait = ret.data
+            }
             this.state.loadingDec(this.$route, key)
         }
     },

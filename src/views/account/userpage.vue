@@ -7,6 +7,7 @@
             <p>{{user.nickname}}</p>
             <div>
                 <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>
+                <div v-if="user.is_wiki_editor">百科编辑</div>
                 <div>第 {{user.number}} 名会员</div>
                 <div title="加入时间"><ic-time :ago="false" :timestamp="user.time"/></div>
             </div>
