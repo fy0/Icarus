@@ -1,6 +1,10 @@
 """
 如果执行失败，请将此文件复制到backend目录再次执行。
 """
+
+import sys
+sys.path.insert(0, '.')
+
 import time
 import peewee
 from model import db
