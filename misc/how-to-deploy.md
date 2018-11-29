@@ -20,7 +20,20 @@ Windows上直接使用Anaconda3或者官方版本。
 
 Linux上部分发行版（例如ArchLinux）天然满足要求。
 
-这里只说我的个人环境，Debian/Ubuntu 解决方案：
+对于其他的发行版，首选方案是通过`pyenv`来安装和管理不同版本的Python：
+
+```bash
+curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+
+# 重新进入终端后，指定版本进行安装
+# 或者也可以选择这里不安装，到后面pipenv的时候会有选项自动安装。
+pyenv update
+pyenv install 3.6
+```
+
+来源：https://github.com/pyenv/pyenv
+
+或者使用包管理器安装，这是一个 Debian/Ubuntu 解决方案：
 
 ```bash
 # 这个 deadsnakes 的 python 源并非最流行的那一款 Python3.6 第三方源
@@ -55,8 +68,8 @@ Windows下你可以下载安装包，主流Linux可以使用包管理器添加�
 还是以ubuntu举例：https://www.postgresql.org/download/linux/ubuntu/
 
 ```bash
-# 为 ubuntu 16.04 添加 PG 源
-sudo su -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
+# 为 ubuntu 18.04 添加 PG 源
+sudo su -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
   sudo apt-key add -
 sudo apt-get update
@@ -68,12 +81,11 @@ sudo apt-get install -y postgresql-10
 装好之后做一些配置
 ```bash
 sudo su postgres
-createdb icarus
-createuser icarus
 psql
 # 进入 PQ Shell
+CREATE DATABASE icarus;
+CREATE USER icarus WITH PASSWORD 'IcaruStest123';
 GRANT ALL ON DATABASE icarus TO icarus;
-ALTER USER icarus WITH PASSWORD 'IcaruStest123';
 ```
 
 ### 4. Redis
@@ -118,23 +130,10 @@ pipenv shell
 python main.py
 ```
 
-不过有个问题就是 pipenv 太慢，总是在 Locking，给个venv的方案：
+不过有个问题就是 pipenv 太慢，总是在 Locking。
 
-```bash
-cd Icarus/backend
-python3.6 -m venv .
-source bin/activate
-pip3.6 install requirements.txt
-python3.6 main.py
-```
+可以灵活使用 `--skip-lock` 参数跳过 Locking 阶段。
 
-这样也能启动服务。
-
-另外与前端相似的，如果你觉得安装太慢，一样可以使用国内源：
-```bash
-mkdir -p ~/.config/pip
-echo -e '[global]\nindex-url = https://mirrors.ustc.edu.cn/pypi/web/simple\nformat = columns' > ~/.config/pip/pip.conf
-```
 
 ## 前端篇
 
@@ -150,16 +149,18 @@ npm install -g cnpm --registry=https://registry.npm.taobao.org
 cnpm install
 ```
 
-如果只是开发环境下看看效果，那么：
+如果只是开发环境下看看效果，那么在后端已经跑起来的情况下：
 ```bash
 npm run serve
 ```
 然后在浏览器中查看即可。
 
 
-如果需要配置外部访问，那么注意：
+## 扩展篇：Nginx部署
 
-在 Icarus 目录下新建一个 private.js，并按照以下几例进行填写
+如果需要配置外部访问，可以按如下步骤操作：
+
+在 Icarus 目录下新建一个 private.js，并按照下例进行填写
 
 ```js
 // 单端口方案
@@ -172,23 +173,7 @@ export default {
     },
     qiniu: {
         server: 'http://upload.qiniu.com',
-        // host: '//test-bucket.myrpg.cn'
-    }
-}
-```
-
-```js
-// 双端口方案
-var host = window.location.hostname
-
-export default {
-    remote: {
-        API_SERVER: '//' + host + ':9002',
-        WS_SERVER: 'ws://' + host + ':9002/ws',
-    },
-    qiniu: {
-        server: 'http://upload.qiniu.com',
-        // host: '//test-bucket.myrpg.cn'
+        // host: '//test-bucket.qiniu.com'
     }
 }
 ```
@@ -198,12 +183,15 @@ npm run build
 ```
 生成dist目录备用。
 
+随后是nginx的配置，当然你要首先安装它。
 
-## 扩展篇：Nginx部署
+我已经写好了配置文件的模板，只要简单改改放进配置目录就可以了。
 
-首先安装nginx，再复制配置文件模板并做简单修改。
+这里使用的是单端口绑定前后端，使用 9001 向外网提供服务。
 
-这里使用的是单端口模板，即使用 9001 向外网提供服务。
+在将前端静态目录映射到`/`的同时，将后端所在的9999端口映射到`/api`。
+
+这样前端页面访问 `/api` 就是访问后端了，也不存在跨域问题。
 
 ```bash
 sudo apt install nginx
