@@ -36,10 +36,6 @@ pyenv install 3.6
 或者使用包管理器安装，这是一个 Debian/Ubuntu 解决方案：
 
 ```bash
-# 这个 deadsnakes 的 python 源并非最流行的那一款 Python3.6 第三方源
-# 但是细节要比流行的源强得多，举例来说 ubuntu lts 现在内置 Python 3.5
-# 安装了那个源之后会发生 3.5 和 3.6 的 pip 互相打架无法并存的情况
-# 这个源这点就做的比较好，而且长期维护，很稳定
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
 sudo apt-get install -y python3.6 python3.6-dev python3.6-venv
@@ -97,20 +93,18 @@ Windows上可以使用[微软提供的二进制版本](https://github.com/Micros
 
 ## 后端篇
 
-运行 backend 目录下的 `main.py`，初次运行会创建自动 `private.py` 并退出。
-
-这个文件里的内容会覆盖 `config.py` 中的配置。
-
-然后逐项对内容进行修改，使其符合你机器的实际情况即可。
-
-建议使用 pipenv 进行部署。
+建议使用 pipenv 进行部署，首先切到backend目录，执行：
 
 ```bash
 sudo pip3.6 install pipenv
 pipenv install
 ```
 
-又或者使用requirements.txt进行比较传统的安装。
+不过有个问题就是 pipenv 太慢，总是在 Locking。
+
+可以灵活使用 `--skip-lock` 参数跳过 Locking 阶段。
+
+或者使用requirements.txt进行比较传统的安装。
 
 > 特别地，在Windows上安装aioredis库时可能会遇到依赖的hiredis包无法安装的问题  
 > 如果是anaconda用户，那么可以使用：  
@@ -130,9 +124,11 @@ pipenv shell
 python main.py
 ```
 
-不过有个问题就是 pipenv 太慢，总是在 Locking。
+运行 backend 目录下的 `main.py`，初次运行会创建自动 `private.py` 并退出。
 
-可以灵活使用 `--skip-lock` 参数跳过 Locking 阶段。
+`private.py` 里的内容会覆盖 `config.py` 中的配置。
+
+在初次创建后，用编辑器打开，逐项对内容进行修改，使其符合你机器的实际情况即可。
 
 
 ## 前端篇
@@ -212,3 +208,49 @@ sudo service nginx restart
 访问服务器IP的9001端口，就可以看到最上面截图中的画面了。
 
 第一个注册的用户将自动成为管理员。
+
+
+## 扩展篇：开启全文搜索与关联推荐功能
+
+这事情简单，首先在机器上安装ES：
+
+https://www.elastic.co/downloads/elasticsearch
+
+然后搞到中文分词插件：
+
+https://github.com/medcl/elasticsearch-analysis-ik/releases
+
+并将分词插件解压在ES插件目录，例如`your-es-root/plugins/ik`，然后把ES开起来：
+
+```bash
+# 超低配版，最小内存256M，最大1G
+# 根据自己服务器情况酌情调整参数
+cd elasticsearch-6.5.1
+ES_JAVA_OPTS="-Xms256m -Xmx1g" ./bin/elasticsearch
+```
+
+请注意两者版本需要一一对应，如果ES版本过新（更新非常频繁），后者可能尚未来得及更新。
+
+随后在第一次执行`main.py`自动生成的`private.py`中修改这一段的内容：
+
+```python
+SEARCH_ENABLE = False
+ES_INDEX_NAME = 'icarus-index'
+ES_HOSTS = [{
+    "host": "localhost",
+    "port": 9200
+}]
+```
+
+最省事可以只改一个：
+```python
+SEARCH_ENABLE = True
+```
+
+然后在backend目录下运行：
+```bash
+pipenv shell
+python3.6 misc/force_refresh_elasticsearch.py
+```
+
+完成。
