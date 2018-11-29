@@ -7,7 +7,23 @@
                 <ic-time :timestamp="i.time"/>
             </span>
             <div v-if="i.type === NOTIF_TYPE.MANAGE_INFO_ABOUT_ME" class="notif-content" slot="content">
-                <div style="display: flex">
+                <div v-if="i.related_type === POST_TYPES.COMMENT">
+                    <div style="display: flex">
+                        <template>你在</template><template>{{typeName(i.loc_post_type)}}</template>
+                        <!-- 某地 -->
+                        <b class="limit m12">
+                            <post-link :goto="false" :show-type="false" :type="i.loc_post_type" :item="{id: i.loc_post_id, post_title: i.loc_post_title}"/>
+                        </b>
+                        <template>下发表的{{typeName(i.related_type)}}以下评论：</template>
+                    </div>
+                    <div class="brief2" v-if="i.data.comment">{{atConvert(i.data.comment.content || '')}}</div>
+                    <div>
+                        <template>被</template>
+                        <user-link :user="posts[i.sender_ids[0]]" />
+                        <template>进行了以下操作：</template>
+                    </div>
+                </div>
+                <div v-else style="display: flex">
                     <template>你发表的</template>
                     <template>{{typeName(i.related_type)}}</template>
                     <b class="limit m12">
@@ -75,6 +91,12 @@
     .brief {
         color: lighten($gray-600, 0.4);
         margin-top: 10px;
+    }
+
+    .brief2 {
+        color: lighten($gray-600, 0.4);
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 }
 </style>

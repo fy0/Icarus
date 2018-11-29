@@ -253,4 +253,4 @@ pipenv shell
 python3.6 misc/force_refresh_elasticsearch.py
 ```
 
-完成。
+完成，重启后端进程`main.py`即可应用。

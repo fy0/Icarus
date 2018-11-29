@@ -17,6 +17,7 @@ from playhouse.postgres_ext import ArrayField, BinaryJSONField
 import config
 from model import BaseModel, MyTimestampField, db
 from model._post import POST_STATE, POST_TYPES
+from model.comment import Comment
 from model.user import User
 from slim import json_ex_dumps
 from slim.utils import StateObject, to_bin
@@ -207,6 +208,24 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
     for i in ret_items:
         t = info.get(i['related_id'].tobytes(), None)
         if t: i['data']['title'] = t
+
+        if i['related_type'] == POST_TYPES.COMMENT:
+            # 这里不是批量，可能要付出较大代价
+            c: Comment = Comment.get_by_id(i['related_id'])
+            if not c: continue
+            p = POST_TYPES.get_post(c.related_type, c.related_id)
+            if not p: continue
+            i['loc_post_type'] = c.related_type
+            i['loc_post_id'] = c.related_id
+            i['loc_post_title'] = p.get_title()
+
+            i['data']['comment'] = {
+                'related_type': c.related_type,
+                'related_id': c.related_id,
+                'related_title': p.get_title(),
+                'post_number': c.post_number,
+                'content': c.content
+            }
 
         if i['data']['op'] == MOP.TOPIC_BOARD_MOVE:
             val = i['data']['value']['change']
