@@ -136,7 +136,7 @@ export default {
             return $.checkNickname(this.info.nickname)
         },
         checkEmail: function () {
-            return $.checkNickname(this.info.email)
+            return $.checkEmail(this.info.email)
         }
     },
     methods: {
