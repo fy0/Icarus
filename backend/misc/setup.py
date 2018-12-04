@@ -49,15 +49,15 @@ ES_HOSTS = [{
 ##########################################
 
 UPLOAD_ENABLE = False
-UPLOAD_STATIC_HOST = ''
-UPLOAD_BACKEND = 'qiniu'
+UPLOAD_BACKEND = 'qiniu'  # 上传后端，目前只支持七牛
+UPLOAD_STATIC_HOST = '上传的静态资源域名地址，例如http://static.mydomain.com'
 UPLOAD_QINIU_ACCESS_KEY = 'PLACE_HOLDER'
 UPLOAD_QINIU_SECRET_KEY = 'PLACE_HOLDER'
 UPLOAD_QINIU_BUCKET = 'PLACE_HOLDER'
 UPLOAD_QINIU_SAVEKEY = '$(etag)'
 UPLOAD_QINIU_DEADLINE_OFFSET = 3600  # 上传key有效时间 10分钟
 UPLOAD_QINIU_MIME_LIMIT = 'image/*'  # 默认只允许上传图片
-UPLOAD_QINIU_CALLBACK_URL = 'PLACE_HOLDER'  # 开启时必填，七牛上传回调地址
+UPLOAD_QINIU_CALLBACK_URL = SITE_URL + '/api/upload/qn_callback'  # 开启时必填，七牛上传回调地址
 UPLOAD_FILE_SIZE_MIN = 100  # 文件必须大于100字节
 UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024  # 文件必须小于3MB
 
