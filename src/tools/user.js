@@ -1,4 +1,5 @@
 import state from '@/state.js'
+// import * as asmCrypto from '../assets/javascript/asmcrypto.all.es5.min.js'
 
 $.isAdmin = function (user) {
     user = user || state.user
@@ -42,17 +43,7 @@ $.getRole = function (limit) {
     return roles[(iCurrent > iLimit) ? iLimit : iCurrent]
 }
 
-$.passwordHash = async function (password, iterations = 1e5) {
-    let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
-    let crypto = window.crypto || window.msCrypto // for IE 11
-    let enc = new TextEncoder()
-    const pwUtf8 = enc.encode(password) // encode pw as UTF-8
-    const pwKey = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveBits']) // create pw key
-    const saltUint8 = enc.encode(salt)
-
-    const params = { name: 'PBKDF2', hash: 'SHA-512', salt: saltUint8, iterations: iterations } // pbkdf2 params
-    const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, 256) // derive key
-
+let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     const keyArray = Array.from(new Uint8Array(keyBuffer)) // key as byte array
     const saltArray = Array.from(new Uint8Array(saltUint8)) // salt as byte array
 
@@ -64,6 +55,38 @@ $.passwordHash = async function (password, iterations = 1e5) {
     const compositeBase64 = btoa('v01' + compositeStr) // encode as base64
 
     return compositeBase64 // return composite key
+}
+
+$.passwordHash = async function (password, iterations = 1e5) {
+    if (crypto.subtle && crypto.subtle.importKey) {
+        return $.passwordHashNative(password, iterations)
+    } else {
+        return $.passwordHashAsmCrypto(password, iterations)
+    }
+}
+
+$.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
+    let asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ '../assets/javascript/asmcrypto.all.es5.min.js')
+    let asmCrypto = await asmCryptoLoader()
+    let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    let enc = new TextEncoder()
+    const pwUtf8 = enc.encode(password) // encode pw as UTF-8
+    const saltUint8 = enc.encode(salt)
+    let keyBuffer = asmCrypto.Pbkdf2HmacSha512(pwUtf8, saltUint8, iterations, 32)
+    return _passwordResultToText(keyBuffer, saltUint8, iterations)
+}
+
+$.passwordHashNative = async function (password, iterations = 1e5) {
+    let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    let crypto = window.crypto || window.msCrypto // for IE 11
+    let enc = new TextEncoder()
+    const pwUtf8 = enc.encode(password) // encode pw as UTF-8
+    const pwKey = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveBits']) // create pw key
+    const saltUint8 = enc.encode(salt)
+
+    const params = { name: 'PBKDF2', hash: 'SHA-512', salt: saltUint8, iterations: iterations } // pbkdf2 params
+    const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, 256) // derive key
+    return _passwordResultToText(keyBuffer, saltUint8, iterations)
 }
 
 $.checkEmail = function (email) {

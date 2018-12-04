@@ -138,7 +138,6 @@ class AutoGenerator:
         return self.val
 
 
-PASSWORD_HASH_FUNC = hashlib.sha256
 PASSWORD_SECURE_HASH_FUNC_NAME = 'sha512'
 PASSWORD_SECURE_HASH_ITERATIONS = 10_0000  # 默认密码迭代次数，按2017年报告推荐至少1w次
 SESSION_ID_GENERATOR = CustomID

@@ -58,6 +58,7 @@
 
 .ic-comment .content {
     min-height: 50px;
+    line-height: 32px;
 }
 
 .ic-comment-post > .ic-comment {
