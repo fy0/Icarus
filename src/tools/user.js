@@ -1,5 +1,4 @@
 import state from '@/state.js'
-// import * as asmCrypto from '../assets/javascript/asmcrypto.all.es5.min.js'
 
 $.isAdmin = function (user) {
     user = user || state.user

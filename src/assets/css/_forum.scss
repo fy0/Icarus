@@ -61,11 +61,7 @@
                 justify-items: flex-end;
                 margin: 0;
 
-                .author {
-                    margin-right: 20px;
-                }
-
-                .board-badge {
+                > .board-badge {
                     color: $dark;
                     opacity: 0.6;
                     // background-color: $gray-400;
@@ -84,20 +80,20 @@
                         margin-right: 10px;
                     }
 
-                    .name, .author {
-                        max-width: 5em;
-
-                        &.bs4-xl {
-                            max-width: 9em;
-                        }
-                    }
-
-                    .time {
-                        color: #777;
-                    }
-
                     &:hover {
                         color: $dark;
+                    }
+                }
+
+                .author {
+                    margin-right: 20px;
+                }
+
+                > .board-badge > .name, > .author {
+                    max-width: 5em;
+
+                    &.bs4-xl {
+                        max-width: 9em;
                     }
                 }
             }

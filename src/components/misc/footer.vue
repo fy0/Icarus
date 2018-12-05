@@ -1,6 +1,6 @@
 <template>
 <footer class="ic-container">
-    <span>Powered by <a href="https://github.com/fy0/icarus" target="_blank">Icarus</a> © 2018</span>
+    <span>Powered by <a href="https://github.com/fy0/icarus" target="_blank">Icarus</a>1.3.0 © 2018</span>
     <span>当前共有 {{state.userOnline}} 人在线</span>
 </footer>
 </template>
