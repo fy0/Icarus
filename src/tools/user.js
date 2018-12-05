@@ -57,16 +57,16 @@ let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     return compositeBase64 // return composite key
 }
 
-$.passwordHash = async function (password, iterations = 1e5) {
+$.passwordHash = (function () {
     if (crypto.subtle && crypto.subtle.importKey) {
-        return $.passwordHashNative(password, iterations)
+        return $.passwordHashNative
     } else {
-        return $.passwordHashAsmCrypto(password, iterations)
+        return $.passwordHashAsmCrypto
     }
-}
+})()
 
 $.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
-    let asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ '../assets/javascript/asmcrypto.all.es5.min.js')
+    let asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ 'asmcrypto.js/dist_es8/pbkdf2/pbkdf2-hmac-sha512.js')
     let asmCrypto = await asmCryptoLoader()
     let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
     let enc = new TextEncoder()
