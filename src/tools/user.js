@@ -56,14 +56,6 @@ let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     return compositeBase64 // return composite key
 }
 
-$.passwordHash = (function () {
-    if (crypto.subtle && crypto.subtle.importKey) {
-        return $.passwordHashNative
-    } else {
-        return $.passwordHashAsmCrypto
-    }
-})()
-
 $.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
     let asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ 'asmcrypto.js/dist_es8/pbkdf2/pbkdf2-hmac-sha512.js')
     let asmCrypto = await asmCryptoLoader()
@@ -87,6 +79,14 @@ $.passwordHashNative = async function (password, iterations = 1e5) {
     const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, 256) // derive key
     return _passwordResultToText(keyBuffer, saltUint8, iterations)
 }
+
+$.passwordHash = (function () {
+    if (crypto.subtle && crypto.subtle.importKey) {
+        return $.passwordHashNative
+    } else {
+        return $.passwordHashAsmCrypto
+    }
+})()
 
 $.checkEmail = function (email) {
     let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
