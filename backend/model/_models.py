@@ -1,3 +1,4 @@
+import traceback
 import peewee
 
 from model import db, BaseModel
@@ -55,13 +56,16 @@ try:
     CREATE SEQUENCE IF NOT EXISTS user_count_seq NO MINVALUE NO MAXVALUE START 1 NO CYCLE;
         """)
 
+    # 请注意，这俩需要数据库的 superuser 权限，因此普通用户是做不到的
+    # 会提示 permission denied to create extension "hstore" 这样的错误
     db.execute_sql("""
     CREATE EXTENSION IF NOT EXISTS hstore;
     CREATE EXTENSION IF NOT EXISTS citext;
     """)
-except peewee.ProgrammingError:
-    # permission denied to create extension "hstore"
+except peewee.ProgrammingError as e:
     db.rollback()
+    traceback.print_exc()
+    quit()
 
 db.create_tables([Test, Board, Follow, Comment, Topic, User,
                   WikiArticle,

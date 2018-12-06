@@ -82,6 +82,9 @@ psql
 CREATE DATABASE icarus;
 CREATE USER icarus WITH PASSWORD 'IcaruStest123';
 GRANT ALL ON DATABASE icarus TO icarus;
+\c icarus;
+CREATE EXTENSION IF NOT EXISTS hstore;
+CREATE EXTENSION IF NOT EXISTS citext;
 ```
 
 ### 4. Redis
