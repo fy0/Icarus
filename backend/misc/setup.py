@@ -1,4 +1,6 @@
 import sys
+import time
+
 sys.path.insert(0, '.')
 
 import binascii
@@ -68,6 +70,7 @@ UPLOAD_QINIU_IMAGE_TOPIC_STYLE = ''  # 文章页面图片所用的七牛图片�
     f = open(private_path, 'w', encoding='utf-8')
     f.write('\n'.join([
         "import logging",
+        "from slim import CORSOptions",
         "",
         "# 站点名称",
         "SITE_NAME = 'Icarus'",
@@ -92,9 +95,14 @@ UPLOAD_QINIU_IMAGE_TOPIC_STYLE = ''  # 文章页面图片所用的七牛图片�
         "",
         extra
     ]))
-    print('%s generated.' % private_path)
-    print('Please edit private.py before run main.py next time.')
-    print('Exited.')
+    time.sleep(1)
+    print('%s generated.\n' % private_path)
+    print('Please edit private.py before run main.py again.')
+    for i in range(1, 4):
+        time.sleep(1)
+        print('%d ' % i, end='')
+        sys.stdout.flush()
+    print('\nExited.')
     quit()
 
 
