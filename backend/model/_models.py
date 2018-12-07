@@ -58,10 +58,10 @@ try:
 
     # 请注意，这俩需要数据库的 superuser 权限，因此普通用户是做不到的
     # 会提示 permission denied to create extension "hstore" 这样的错误
-    db.execute_sql("""
-    CREATE EXTENSION IF NOT EXISTS hstore;
-    CREATE EXTENSION IF NOT EXISTS citext;
-    """)
+    # db.execute_sql("""
+    # CREATE EXTENSION IF NOT EXISTS hstore;
+    # CREATE EXTENSION IF NOT EXISTS citext;
+    # """)
 except peewee.ProgrammingError as e:
     db.rollback()
     traceback.print_exc()
