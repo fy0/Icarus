@@ -215,7 +215,7 @@ export default {
 
             let boardQueryParams = {}
             if (!$.isAdmin()) {
-                boardQueryParams['can_post_rank.<'] = 100
+                // boardQueryParams['can_post_rank.<'] = 100
             }
             let ret = await api.board.list(boardQueryParams)
             if (ret.code) {

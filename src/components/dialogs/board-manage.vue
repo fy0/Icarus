@@ -33,7 +33,7 @@
         <div class="manage-form-item">
             <span class="label">色彩</span>
             <div class="right">
-                <input class="ic-input" type="text" placeholder="需为十六进制颜色" v-model="board.color">
+                <input class="ic-input" type="text" placeholder="需为十六进制颜色，不要带#" v-model="board.color">
             </div>
         </div>
         <div class="manage-form-item" style="align-items: center">
@@ -64,6 +64,7 @@
                 </span>
             </div>
         </div>
+        <!--
         <div class="manage-form-item" style="align-items: center">
             <span class="label">发帖权限</span>
             <div class="right">
@@ -81,6 +82,7 @@
                 </span>
             </div>
         </div>
+        -->
         <div class="manage-form-item" style="align-items: center">
             <span class="label">公告</span>
             <div class="right">

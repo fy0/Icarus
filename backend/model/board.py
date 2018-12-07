@@ -24,7 +24,7 @@ class Board(PostModel):
 
     # can_post_roles
     # 后续可能会有根据用户级别、根据用户组、根据发帖权限等等共同来限制是否能在这个板块发帖
-    can_post_rank = IntegerField(index=True, default=0)  # 发帖权限，临时设定为普通用户0，管理员100
+    # can_post_rank = IntegerField(index=True, default=0)  # 发帖权限，临时设定为普通用户0，管理员100
 
     default_colors = ['#fda34b', '#59b3d0', '#a26bc2', '#FF5555', '#86C1B9', '#AB4642', '#777777', '#42b983',
                       '#3d5dff', '#e0cb45', '#BA8BAF', '#7CAFC2']
