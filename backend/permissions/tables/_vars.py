@@ -9,11 +9,11 @@ base_post_state_conditions = [
 
 
 def ignore_post_invisible(ability: Ability, user, query: 'SQLQueryInfo'):
-    real_role = ability.role if not user else user.roles[-1]
-    if real_role in ['superuser', 'admin']:
+    roles = {ability.role} if not user else set(user.roles)
+    if roles & {'superuser', 'admin'}:
         return
 
-    if real_role in ['inactive_user', 'normal_user']:
+    if roles & {'inactive_user', 'user', 'wiki_editor'}:
         visible_limit = POST_VISIBLE.ADMIN_ONLY
     else:
         visible_limit = POST_VISIBLE.USER_ONLY

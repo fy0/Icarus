@@ -26,12 +26,13 @@ normal_user.add_record_check((A.READ,), 'topic', func=check_remove_content_for_s
 
 
 # 跳过不可见的板块
+# 与 ignore_post_invisible 基本一致
 def ignore_hide_board(ability: Ability, user, query: 'SQLQueryInfo'):
-    real_role = ability.role if not user else user.roles[-1]
-    if real_role in ['superuser', 'admin']:
+    roles = {ability.role} if not user else set(user.roles)
+    if roles & {'superuser', 'admin'}:
         return
 
-    if real_role in ['inactive_user', 'normal_user']:
+    if roles & {'inactive_user', 'user', 'wiki_editor'}:
         visible_limit = POST_VISIBLE.ADMIN_ONLY
     else:
         visible_limit = POST_VISIBLE.USER_ONLY
