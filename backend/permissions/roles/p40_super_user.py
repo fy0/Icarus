@@ -34,7 +34,8 @@ superuser = Ability('superuser', {
         'weight': A.ALL,
         'color': (A.READ, A.WRITE, A.CREATE),
         'category': A.ALL,
-        'parent_id': A.ALL
+        'parent_id': A.ALL,
+        'can_post_rank': A.ALL,
     }),
     'user': merge_post_permissions_of_superuser({
         'key': (A.WRITE,),

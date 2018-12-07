@@ -12,7 +12,7 @@
         <check-row :results="formErrors.title" :multi="true">
             <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
-        <check-row :results="formErrors.board" :multi="true" v-if="(!is_edit) || asAdmin">
+        <check-row :results="formErrors.board_id" :multi="true" v-if="(!is_edit) || asAdmin">
             <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
         <check-row :results="formErrors.content" :multi="true">
@@ -213,7 +213,11 @@ export default {
                 return
             }
 
-            let ret = await api.board.list()
+            let boardQueryParams = {}
+            if (!$.isAdmin()) {
+                boardQueryParams['can_post_rank.<'] = 100
+            }
+            let ret = await api.board.list(boardQueryParams)
             if (ret.code) {
                 $.message_by_code(ret.code)
                 return

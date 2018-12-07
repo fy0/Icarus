@@ -68,7 +68,8 @@ visitor = Ability(None, {
         'weight': (A.READ, A.QUERY),
         'color': (A.READ,),
         'category': (A.READ,),
-        'parent_id': (A.QUERY, A.READ,)
+        'parent_id': (A.QUERY, A.READ,),
+        'can_post_rank': (A.QUERY, A.READ,),
     }),
     'comment': merge_post_permissions_of_visitor({
         'related_id': (A.QUERY, A.READ),

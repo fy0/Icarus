@@ -4,6 +4,7 @@ from typing import Dict, List
 from lib.textdiff import diff
 from model import esdb
 from model._post import POST_TYPES
+from model.board import Board
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, post_stats_topic_new, post_stats_do_edit
 from model.topic import Topic
@@ -14,11 +15,32 @@ from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, dict_filter_inplace
 from view import route, ValidateForm, cooldown, same_user, run_in_thread
-from wtforms import validators as va, StringField, IntegerField
+from wtforms import validators as va, StringField, IntegerField, ValidationError
+from wtforms.validators import StopValidation
 
 from view.mention import check_content_mention
 from permissions import permissions_add_all
 from view.user import UserMixin
+
+
+def my_optional(form, field):
+    if field.data is None:
+        raise StopValidation()
+
+
+def board_check(form, field):
+    """
+    检查板块是否存在，是否可以允许当前用户创建文章或写入
+    """
+    try:
+        board_id = to_bin(field.data)
+    except TypeError:
+        raise ValidationError('板块ID无效')
+    board = Board.get_by_id(board_id)
+    can_post_rank = 100 if set(form.view.current_user_roles) & {'forum_master', 'superuser', 'admin'} else 0
+    if can_post_rank >= board.can_post_rank:
+        return True
+    raise ValidationError('没有权限选择此板块')
 
 
 class TopicNewForm(ValidateForm):
@@ -34,6 +56,7 @@ class TopicNewForm(ValidateForm):
 
     sticky_weight = IntegerField('置顶权重', validators=[])
     weight = IntegerField('排序权重', validators=[])
+    board_id = StringField('板块', validators=[va.required(), board_check])
 
 
 class TopicEditForm(ValidateForm):
@@ -49,6 +72,10 @@ class TopicEditForm(ValidateForm):
 
     sticky_weight = IntegerField('置顶权重', validators=[])
     weight = IntegerField('排序权重', validators=[])
+    board_id = StringField('板块', validators=[
+        my_optional,
+        board_check
+    ])
 
 
 @route('topic')
@@ -87,7 +114,9 @@ class TopicView(UserMixin, PeeweeView):
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
+        print(22222, raw_post)
         form = TopicEditForm(**raw_post)
+        form.view = self
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
 
@@ -138,6 +167,7 @@ class TopicView(UserMixin, PeeweeView):
 
     async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         form = TopicNewForm(**raw_post)
+        form.view = self
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
         values['user_id'] = self.current_user.id

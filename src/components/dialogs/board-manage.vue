@@ -47,7 +47,7 @@
             <div class="right" style="display: flex">
                 <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
                     <label :for="'radio-state-'+i">
-                        <input type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="board.state" />
+                        <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="board.state" />
                         <span>{{i}}</span>
                     </label>
                 </span>
@@ -58,8 +58,25 @@
             <div class="right">
                 <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j">
                     <label :for="'radio-visible-'+i">
-                        <input type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="board.visible" />
+                        <input class="ic-input" type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="board.visible" />
                         <span>{{i}}</span>
+                    </label>
+                </span>
+            </div>
+        </div>
+        <div class="manage-form-item" style="align-items: center">
+            <span class="label">发帖权限</span>
+            <div class="right">
+                <span style="margin-right: 10px">
+                    <label :for="'radio-can_post_rank-0'">
+                        <input class="ic-input" type="radio" name="can-post-rank" :value="0" :id="'radio-can_post_rank-0'" v-model="board.can_post_rank" />
+                        <span>普通用户</span>
+                    </label>
+                </span>
+                <span style="margin-right: 10px">
+                    <label :for="'radio-can_post_rank-100'">
+                        <input class="ic-input" type="radio" name="can-post-rank" :value="100" :id="'radio-can_post_rank-100'" v-model="board.can_post_rank" />
+                        <span>管理</span>
                     </label>
                 </span>
             </div>
@@ -88,7 +105,7 @@
     height: 70vh;
 }
 
-.ic-input {
+.ic-input[type=text], .ic-input[type=number], textarea.ic-input {
     width: 70%;
 }
 
@@ -139,7 +156,7 @@ export default {
                 return
             }
 
-            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible'])
+            let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible', 'can_post_rank'])
             let ret = await api.board.set({ id: this.board.id }, data, 'superuser', keys)
 
             if (ret.code === 0) {
