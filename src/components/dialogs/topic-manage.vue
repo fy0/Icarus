@@ -56,7 +56,7 @@
             <div class="right">
                 <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j">
                     <label :for="'radio-visible-'+i">
-                        <input type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="vVisible" />
+                        <input class="ic-input" type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="vVisible" />
                         <span>{{i}}</span>
                     </label>
                 </span>
