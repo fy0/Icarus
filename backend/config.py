@@ -25,6 +25,9 @@ REDIS_URI = 'redis://localhost:6379'
 # 密码将先在前端哈希后，在后端再次哈希与储存值比对，这是前端哈希用到的盐
 USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5Lq65LiN6K+G5ZCb'  # 前端盐，务必修改默认值
 
+# 页脚附加信息，例如可写入网站备案内容
+FOOTER_EXTRA_HTML = ''
+
 ##########################################
 # 可选配置 - 开启搜索功能（需要Elasticsearch）
 ##########################################

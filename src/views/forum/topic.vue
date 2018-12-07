@@ -49,7 +49,7 @@
         <div class="main">
             <div class="article typo">
                 <!--<h1>{{topic.title}}</h1>-->
-                <div class="content" v-if="topic.visible === state.misc.POST_VISIBLE.CONTENT_IF_LOGIN">
+                <div class="content" v-if="topic.visible === state.misc.POST_VISIBLE.CONTENT_IF_LOGIN && (!topic.content)">
                     <p>登陆后可见正文</p>
                 </div>
                 <div class="content" v-else v-html="marked(topic.content || '')"></div>

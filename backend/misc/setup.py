@@ -93,6 +93,8 @@ UPLOAD_QINIU_IMAGE_TOPIC_STYLE = ''  # 文章页面图片所用的七牛图片�
         "# 前端密码盐，已经自动生成为随机值",
         f"USER_SECURE_AUTH_FRONTEND_SALT = {frontend_salt}",
         "",
+        "# 页脚附加信息，例如可写入网站备案内容",
+        "FOOTER_EXTRA_HTML = ''",
         extra
     ]))
     time.sleep(1)

@@ -1,5 +1,6 @@
 <template>
 <footer class="ic-container">
+    <div v-html="extraHtml" v-if="extraHtml"></div>
     <span>Powered by <a href="https://github.com/fy0/icarus" target="_blank">Icarus</a>1.4.0 WIP © 2018</span>
     <span>当前共有 {{state.userOnline}} 人在线</span>
 </footer>
@@ -22,6 +23,11 @@ export default {
     data () {
         return {
             state
+        }
+    },
+    computed: {
+        extraHtml: function () {
+            return state.misc.BACKEND_CONFIG.FOOTER_EXTRA_HTML
         }
     }
 }
