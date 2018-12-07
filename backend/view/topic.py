@@ -39,7 +39,7 @@ def board_check(form, field):
     board = Board.get_by_id(board_id)
     if not board:
         raise ValidationError('板块不存在')
-    return
+
     can_post_rank = 100 if set(form.view.current_user_roles) & {'forum_master', 'superuser', 'admin'} else 0
     if can_post_rank >= board.can_post_rank:
         return True

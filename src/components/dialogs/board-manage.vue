@@ -64,7 +64,6 @@
                 </span>
             </div>
         </div>
-        <!--
         <div class="manage-form-item" style="align-items: center">
             <span class="label">发帖权限</span>
             <div class="right">
@@ -82,7 +81,6 @@
                 </span>
             </div>
         </div>
-        -->
         <div class="manage-form-item" style="align-items: center">
             <span class="label">公告</span>
             <div class="right">
