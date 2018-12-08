@@ -27,7 +27,8 @@ export default {
     },
     computed: {
         extraHtml: function () {
-            return state.misc.BACKEND_CONFIG.FOOTER_EXTRA_HTML
+            if ((!this.state.misc) || (!this.state.misc.BACKEND_CONFIG)) return
+            return this.state.misc.BACKEND_CONFIG.FOOTER_EXTRA_HTML
         }
     }
 }
