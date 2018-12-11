@@ -32,7 +32,7 @@
                     <router-link tag="li" v-if="isAdmin" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
                         <a>管理</a>
                     </router-link>
-                    <router-link tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
+                    <router-link v-if="isAboutPageEnable" tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
                         <a>关于</a>
                     </router-link>
                 </ul>
@@ -334,6 +334,9 @@ export default {
     computed: {
         isAdmin: function () {
             return $.isAdmin()
+        },
+        isAboutPageEnable: function () {
+            return state.initLoadDone && state.misc.BACKEND_CONFIG.ABOUT_PAGE_ENABLE
         },
         isSearchEnable: function () {
             return state.initLoadDone && state.misc.BACKEND_CONFIG.SEARCH_ENABLE

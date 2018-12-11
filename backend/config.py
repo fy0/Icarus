@@ -28,6 +28,10 @@ USER_SECURE_AUTH_FRONTEND_SALT = b'6I6r5oSB5YmN6Lev5peg55+l5bex77yM5aSp5LiL6LCB5
 # 页脚附加信息，例如可写入网站备案内容
 FOOTER_EXTRA_HTML = ''
 
+# 关于页面
+ABOUT_PAGE_ENABLE = True
+ABOUT_CUSTOM_HTML = ''
+
 ##########################################
 # 可选配置 - 开启搜索功能（需要Elasticsearch）
 ##########################################

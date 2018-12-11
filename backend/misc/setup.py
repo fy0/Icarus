@@ -22,6 +22,10 @@ def setup_config():
     frontend_salt = '%r' % binascii.hexlify(os.urandom(32))
 
     extra = """
+# 关于页面
+ABOUT_PAGE_ENABLE = True  # 是否显示于导航栏
+ABOUT_CUSTOM_HTML = ''  # 自定义页面内容
+
 ##########################################
 # 可选 - 邮件发送配置，默认关闭注册邮件
 ##########################################
