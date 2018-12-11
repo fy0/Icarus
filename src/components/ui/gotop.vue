@@ -19,10 +19,6 @@
     line-height: 40px;
     cursor: pointer;
 }
-
-.gotop > i {
-    font-size: 24px;
-}
 </style>
 
 <script>

@@ -20,8 +20,12 @@
     cursor: pointer;
 }
 
+.hang-btn > i {
+    font-size: 28px;
+}
+
 .gotop > i {
-    font-size: 24px;
+    font-size: 28px;
 }
 </style>
 
