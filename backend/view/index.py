@@ -110,6 +110,7 @@ class TestBaseView(UserMixin, BaseView):
             'BACKEND_CONFIG': {
                 'ABOUT_PAGE_ENABLE': config.ABOUT_PAGE_ENABLE,
                 'ABOUT_CUSTOM_HTML': config.ABOUT_CUSTOM_HTML,
+                'SIGNUP_LICENSE_HTML': config.SIGNUP_LICENSE_HTML,
 
                 'FOOTER_EXTRA_HTML': config.FOOTER_EXTRA_HTML,
                 'SITE_CONTACT_EMAIL': config.SITE_CONTACT_EMAIL,

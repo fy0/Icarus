@@ -32,6 +32,11 @@ FOOTER_EXTRA_HTML = ''
 ABOUT_PAGE_ENABLE = True
 ABOUT_CUSTOM_HTML = ''
 
+# 注册许可协议
+SIGNUP_LICENSE_HTML = '''
+请遵守当地法律法规。
+'''
+
 ##########################################
 # 可选配置 - 开启搜索功能（需要Elasticsearch）
 ##########################################

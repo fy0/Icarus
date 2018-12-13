@@ -43,7 +43,7 @@
 
     <ic-dialog v-model="dialogLicense" title="用户许可协议">
         <div>
-            <span>协议正文</span>
+            <div v-html="signupLicense"></div>
         </div>
         <div class="bottom">
             <span class="ic-btn primary" @click="dialogLicense = false">确定</span>
@@ -124,7 +124,8 @@ export default {
             dialogLicense: false,
             formErrors: {},
             passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX,
+            signupLicense: state.misc.BACKEND_CONFIG.SIGNUP_LICENSE_HTML
         }
     },
     computed: {
