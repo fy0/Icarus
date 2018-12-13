@@ -35,6 +35,7 @@ import state from './state.js'
 import api from './netapi.js'
 import ws from './ws.js'
 import config from './config.js'
+import store from './store'
 
 import PageNotFound from './components/404.vue'
 import Redirecting from './components/misc/redirecting.vue'
@@ -232,5 +233,6 @@ router.afterEach(async function (to, from, next) {
 
 new Vue({
     router,
+    store,
     render: h => h(App)
 }).$mount('#app')
