@@ -35,7 +35,7 @@ import state from './state.js'
 import api from './netapi.js'
 import ws from './ws.js'
 import config from './config.js'
-import store from './store'
+import store from './store/index.js'
 
 import PageNotFound from './components/404.vue'
 import Redirecting from './components/misc/redirecting.vue'

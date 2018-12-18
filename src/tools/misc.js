@@ -131,3 +131,17 @@ $.atConvert2 = function (text) {
     /* eslint-disable no-control-regex */
     return text.replace(/\x01([a-zA-Z0-9]+)-(.+?)\x01/g, '@$2')
 }
+
+$.retryUntilSuccess = async function (func) {
+    let ret = null
+    while (true) {
+        try {
+            ret = await func()
+            break
+        } catch (e) {
+            // 连接失败，重试
+            await $.timeout(3000)
+        }
+    }
+    return ret
+}
