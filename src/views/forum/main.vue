@@ -10,10 +10,10 @@
 
 <!-- 刷新标题 -->
 <template v-if="board">
-    <div v-title-dynamic v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{state.config.title}}</div>
-    <div v-title-dynamic v-else>{{ board.name }} - {{state.config.title}}</div>
+    <div v-title-dynamic v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{config.title}}</div>
+    <div v-title-dynamic v-else>{{ board.name }} - {{config.title}}</div>
 </template>
-<div v-else v-title>全部主题 - {{state.config.title}}</div>
+<div v-else v-title>全部主题 - {{config.title}}</div>
 
 <div class="ic-container forum-box">
     <div class="wrapper">
@@ -128,7 +128,7 @@
                                     <h2>
                                         <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                             <span>{{i.title}}</span>
-                                            <span v-if="i.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
+                                            <span v-if="i.state === POST_STATE.CLOSE">[关闭]</span>
                                         </router-link>
                                     </h2>
 
@@ -349,11 +349,9 @@ export default {
             topicManage: 'dialog.topicManage',
             topicManageData: 'dialog.topicManageData'
         }),
+        ...mapState(['config']),
         ...mapGetters([
-            'POST_TYPES',
-            'POST_TYPES_TXT',
-            'POST_STATE_TXT',
-            'POST_VISIBLE_TXT'
+            'POST_STATE'
         ]),
         ...mapGetters('forum', [
             'isNewSite'
@@ -368,23 +366,20 @@ export default {
             }
         },
         postNewTopicStyle: function () {
+            if (!this.boardId) return
             let exInfo = $.getBoardExInfoById(this.boardId)
-            if (this.isBoard && (!this.state.boards.loaded)) {
-                return { 'background-color': '#777' }
-            }
+            let bgColor = null
             if (exInfo) {
-                if (this.mouseOverPostNewBtn) {
-                    return { 'background-color': exInfo.colorHover }
-                }
-                return { 'background-color': exInfo.color }
+                bgColor = (this.mouseOverPostNewBtn) ? exInfo.colorHover : exInfo.color
             }
+            return { 'background-color': bgColor || '#777' }
         },
         isBoard: function () {
             return this.$route.name === 'forum_board'
         },
         board: function () {
             let bid = this.boardId
-            if (bid) return $.getBoardInfoById(bid)
+            if (bid) return this.getBoardInfo(bid)
         },
         boardId: function () {
             if (this.isBoard) {
@@ -394,13 +389,14 @@ export default {
         dymBoardList: function () {
             let lst = []
             let curBoardId = this.boardId
-            let chain = $.getBoardChainById(curBoardId)
+            let chain = this.getBoardChainById(curBoardId)
             let topBoardId = chain[chain.length - 1]
+            let state = this.$store.state
 
             let pushSubBoards = (i, chainIndex) => {
                 let topId = chain[--chainIndex]
                 // $.getBoardExInfoById(i.id)
-                for (let j of this.$store.forum.exInfoMap[i.id].subboards) {
+                for (let j of state.forum.exInfoMap[i.id].subboards) {
                     lst.push(j)
                     if (j.id === topId) {
                         pushSubBoards(j, chainIndex)
@@ -408,7 +404,7 @@ export default {
                 }
             }
 
-            for (let i of this.state.boards.lst) {
+            for (let i of state.forum.lst) {
                 lst.push(i)
 
                 if (i.id === topBoardId) {
@@ -430,7 +426,7 @@ export default {
             return $.isAdmin()
         },
         boardBadgeTitleById: function (id) {
-            let chain = $.getBoardChainById(id)
+            let chain = this.getBoardChainById(id)
             let ret = ''
             if (chain.length > 1) chain = chain.slice(0, -1)
             for (let i = chain.length - 1; i >= 0; i--) {
@@ -442,7 +438,7 @@ export default {
         },
         boardNavTitle: function (board) {
             if (board.parent_id) {
-                let chain = $.getBoardChainById(board.id)
+                let chain = this.getBoardChainById(board.id)
                 let prefix = _.times(chain.length - 2, () => '>').join('')
                 return `${prefix} ${board.name}`
             }
@@ -450,7 +446,7 @@ export default {
         },
         boardNavStyle: function (board) {
             if (this.isBoard) {
-                let chain = $.getBoardChainById(this.boardId)
+                let chain = this.getBoardChainById(this.boardId)
                 if (chain.indexOf(board.id) !== -1) {
                     let exInfo = $.getBoardExInfoById(board.id)
                     return {
@@ -478,11 +474,16 @@ export default {
             return $.lineStyleById(boardId, 'background-color')
         },
         getBoardInfo: function (boardId) {
-            return $.getBoardInfoById(boardId)
+            return this.$store.state.forum.infoMap[boardId]
+        },
+        getBoardChainById: function (boardId) {
+            if (!boardId) {
+                return [null]
+            }
+            return this.$store.state.forum.exInfoMap[boardId].chain
         },
         fetchData: async function () {
             this.$set(this, 'loading', true)
-            this.loading = true
             let baseQuery1 = {
                 select: 'id, time, edit_time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
                 loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
@@ -500,7 +501,7 @@ export default {
             })
 
             // 获取全局板块信息
-            await this.$store.forum.dispatch('load')
+            await this.$store.dispatch('forum/load')
 
             // if (this.isNewSite) {
             //     state.dialog.siteNew = true

@@ -1,13 +1,13 @@
 <template>
 <div id="app">
-    <div v-title>{{state.config.title}}</div>
+    <div v-title>{{config.title}}</div>
     <navbar class="header"></navbar>
 
     <div class="center" :class="{ 'gray': isWikiPage }">
-        <loading v-if="state.loading" />
+        <loading v-if="loading" />
 
         <transition name="fade" mode="out-in">
-            <router-view class="main" :style="state.loading ? { 'display': 'none'} : {}"></router-view>
+            <router-view class="main" :style="loading ? { 'display': 'none'} : {}"></router-view>
         </transition>
     </div>
 
@@ -52,19 +52,21 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import Navbar from '@/components/misc/header.vue'
 import MyFooter from '@/components/misc/footer.vue'
 import MsgBox from '@/components/misc/msgbox.vue'
+import { mapState } from 'vuex'
 
 export default {
     name: 'app',
     data () {
-        return {
-            state
-        }
+        return {}
     },
     computed: {
+        ...mapState([
+            'config',
+            'loading'
+        ]),
         isWikiPage: function () {
             let name = this.$route.name
             if (name) {

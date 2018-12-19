@@ -1,5 +1,5 @@
 import Color from 'color'
-import state from '@/state.js'
+import store from '@/store/index'
 import murmurhash from 'murmurhash'
 
 $.boardColor = function (board) {
@@ -32,10 +32,10 @@ $.lineStyleById = function (boardId, key = 'border-left-color') {
 $.getBoardInfoById = function (id) {
     // 因为要在 computed 中使用，所以不能为 async
     // if (!state.boards.loaded) await $.getBoardsInfo()
-    return state.boards.infoMap[id]
+    return store.state.forum.infoMap[id]
 }
 
 $.getBoardExInfoById = function (id) {
     // if (!state.boards.loaded) await $.getBoardsInfo()
-    return state.boards.exInfoMap[id]
+    return store.state.forum.exInfoMap[id]
 }

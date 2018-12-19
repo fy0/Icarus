@@ -166,7 +166,7 @@ router.beforeEach(async function (to, from, next) {
     if (toUrl) {
         // 正常来讲loading会在afterEach中结束并让nprogress达到完成状态
         // 如果发生了redirect，则情况有所不同
-        store.commit('LOADING_SET')
+        store.commit('LOADING_SET', 0)
         nprogress.done()
     }
     return (toUrl) ? next(toUrl) : next()

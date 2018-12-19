@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import api from '../netapi'
 import dialog from './modules/dialog'
 import forum from './modules/forum'
+import config from '@/config.js'
 
 Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
@@ -14,6 +15,7 @@ export default new Vuex.Store({
         forum
     },
     state: {
+        config,
         misc: null,
         userData: null,
         loading: 0,

@@ -16,31 +16,47 @@ export default {
         isNewSite: (state) => state.rawLst.length === 0
     },
     mutations: {
+        SET_BOARD_MANY_INFO (state, { lst, rawLst, infoMap }) {
+            state.lst = lst
+            state.rawLst = rawLst
+            state.infoMap = infoMap
+        },
+        SET_BOARD_EXINFO (state, { id, data }) {
+            state.exInfoMap[id] = data
+        },
+        SET_BOARD_EXINFO_CHAIN (state, { id, data }) {
+            if (!state.exInfoMap[id]) {
+                state.exInfoMap[id] = {}
+            }
+            state.exInfoMap[id].chain = data
+        },
+        SET_LOADED (state, val) {
+            state.loaded = val
+        }
     },
     actions: {
-        fetchBoardChain ({ state }, { boardId, forceRefresh = false }) {
+        fetchBoardChain ({ state, commit }, { boardId }) {
             // 获取当前板块的所有父节点（包括自己）
             if (!state.loaded) {
                 return []
             }
-            if (!forceRefresh) {
-                let exi = state.exInfoMap[boardId]
-                if (exi) return exi.chain
-                return []
-            }
-            let lst = [boardId]
-            if (!boardId) return lst
-            let infoMap = state.infoMap
-            if (!Object.keys(infoMap).length) return lst
-            while (true) {
-                let pid = infoMap[boardId].parent_id
-                if (!pid) break
-                lst.push(pid)
-                boardId = pid
-            }
-            state.exInfoMap[boardId].chain = lst
+
+            let theLst = (() => {
+                let lst = [boardId]
+                if (!boardId) return lst
+                let infoMap = state.infoMap
+                if (!Object.keys(infoMap).length) return lst
+                while (true) {
+                    let pid = infoMap[boardId].parent_id
+                    if (!pid) break
+                    lst.push(pid)
+                    boardId = pid
+                }
+                return lst
+            })()
+            commit('SET_BOARD_EXINFO_CHAIN', { 'id': boardId, 'data': theLst })
         },
-        async load ({ state, dispatch }, forceRefresh = false) {
+        async load ({ state, commit, dispatch }, forceRefresh = false) {
             if (state.loaded && (!forceRefresh)) return
             let boards = await api.board.list({
                 order: 'parent_id.desc,weight.desc,time.asc' // 权重从高到低，时间从先到后
@@ -62,20 +78,21 @@ export default {
                     }
 
                     let color = $.boardColor(i)
-                    state.exInfoMap[i.id] = {
-                        'subboards': subboards,
-                        'subboardsAll': [],
-                        'color': color,
-                        // darken 10% when hover
-                        'colorHover': Color(color).darken(0.1).string()
-                    }
+                    commit('SET_BOARD_EXINFO', {
+                        'id': i.id,
+                        'data': {
+                            'subboards': subboards,
+                            'subboardsAll': [],
+                            'color': color,
+                            // darken 10% when hover
+                            'colorHover': Color(color).darken(0.1).string()
+                        }
+                    })
                 }
 
-                state.lst = lst
-                state.rawLst = boards.data.items
-                state.infoMap = infoMap
+                commit('SET_BOARD_MANY_INFO', { lst, infoMap, rawLst: boards.data.items })
+                commit('SET_LOADED', true)
 
-                state.loaded = true
                 for (let i of boards.data.items) {
                     let exInfo = state.exInfoMap[i.id]
                     // 构造 subboardsAll
@@ -88,8 +105,10 @@ export default {
                     func(exInfo.subboards)
 
                     // 构造 chain
-                    dispatch('fetchBoardChain', { boardId: i.id })
+                    await dispatch('fetchBoardChain', { boardId: i.id })
                 }
+
+                await dispatch('fetchBoardChain', { boardId: undefined })
             }
         }
     }
