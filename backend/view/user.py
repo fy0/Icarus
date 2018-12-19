@@ -138,13 +138,6 @@ class UserView(UserMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('GET')
-    async def get_userid(self):
-        if self.current_user:
-            self.finish(RETCODE.SUCCESS, {'id': to_hex(self.current_user.id)})
-        else:
-            self.finish(RETCODE.PERMISSION_DENIED)
-
     @route.interface('POST')
     @cooldown(config.USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_change_password_account_%b', unique_id_func=same_user)
     async def change_password(self):

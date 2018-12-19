@@ -305,7 +305,7 @@ class User(PostModel, BaseUser):
             self.exp += 5
             self.save()
             ManageLog.add_by_exp_changed_sys(self.id.tobytes(), exp, self.exp, note='每日登录')
-            return 5
+            return {'exp': 5}
 
     def _auth_base(self, password_text):
         """

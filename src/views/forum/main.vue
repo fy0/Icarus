@@ -145,7 +145,7 @@
                                 <span class="icons">
                                     <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
                                     <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                    <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage(i)"></i>
+                                    <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage({ 'val': true, 'data': i })"></i>
                                 </span>
 
                                 <div class="append-icons">
@@ -310,18 +310,18 @@ $left-nav-sign-padding: 10px;
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
 import ZingTouch from 'zingtouch'
 import nprogress from 'nprogress/nprogress.js'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
 let pageOneHack = function (to, from, next) {
     // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
     // 但似乎由于 nprogress 的存在，显得有点僵硬
     if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
         if (from.name === 'index') {
-            state.loading = 0
+            this.$store.commit('LOADING_SET', 0)
             nprogress.done()
             return next(false)
         }
@@ -333,7 +333,6 @@ let pageOneHack = function (to, from, next) {
 export default {
     data () {
         return {
-            state,
             hoverId: null,
             loading: true,
             topics: { items: [] },
@@ -346,16 +345,25 @@ export default {
         }
     },
     computed: {
-        isNewSite: function () {
-            if (this.state.boards.rawLst.length === 0) {
-                return true
-            }
-        },
+        ...mapState('dialog', {
+            topicManage: 'dialog.topicManage',
+            topicManageData: 'dialog.topicManageData'
+        }),
+        ...mapGetters([
+            'POST_TYPES',
+            'POST_TYPES_TXT',
+            'POST_STATE_TXT',
+            'POST_VISIBLE_TXT'
+        ]),
+        ...mapGetters('forum', [
+            'isNewSite'
+        ]),
         isNewUser: function () {
+            let state = this.$store.state
             if (!state.user) return
             let ts = new Date().getTime() / 1000
             if ((state.user.is_new_user) && (ts - state.user.time < 24 * 60 * 60)) {
-                state.dialog.userSetNickname = true
+                // state.dialog.userSetNickname = true
                 return true
             }
         },
@@ -392,7 +400,7 @@ export default {
             let pushSubBoards = (i, chainIndex) => {
                 let topId = chain[--chainIndex]
                 // $.getBoardExInfoById(i.id)
-                for (let j of this.state.boards.exInfoMap[i.id].subboards) {
+                for (let j of this.$store.forum.exInfoMap[i.id].subboards) {
                     lst.push(j)
                     if (j.id === topId) {
                         pushSubBoards(j, chainIndex)
@@ -412,6 +420,11 @@ export default {
         }
     },
     methods: {
+        ...mapMutations('dialog', {
+            'setTopicManage': 'SET_TOPIC_MANAGE'
+        }),
+        ...mapActions('forum', {
+        }),
         atConvert: $.atConvert2,
         isAdmin: function () {
             return $.isAdmin()
@@ -455,10 +468,6 @@ export default {
                 }
             }
         },
-        setTopicManage: function (topic) {
-            state.dialog.topicManageData = topic
-            state.dialog.topicManage = true
-        },
         itemHover: function (id) {
             this.hoverId = id
         },
@@ -491,11 +500,11 @@ export default {
             })
 
             // 获取全局板块信息
-            await $.getBoardsInfo()
+            await this.$store.forum.dispatch('load')
 
-            if (this.isNewSite) {
-                state.dialog.siteNew = true
-            }
+            // if (this.isNewSite) {
+            //     state.dialog.siteNew = true
+            // }
 
             // 具体板块
             if (this.isBoard) {
@@ -572,21 +581,21 @@ export default {
         return pageOneHack(to, from, next)
     },
     beforeRouteLeave (to, from, next) {
-        if (to.name === 'forum_topic_new' && this.state.isInactiveUser()) {
-            state.dialog.userInactive = true
-            return false
-        }
+        // if (to.name === 'forum_topic_new' && this.state.isInactiveUser()) {
+        //     state.dialog.userInactive = true
+        //     return false
+        // }
         return next()
     },
     created () {
         this.fetchData()
 
         this.$nextTick(() => {
-            state.zt = state.zt || new ZingTouch.Region(document.body, false, false)
+            $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
             let el = document.querySelector('.main')
             if (!el) return
-            state.zt.unbind(el, 'swipe')
-            state.zt.bind(el, 'swipe', (e) => {
+            $.zt.unbind(el, 'swipe')
+            $.zt.bind(el, 'swipe', (e) => {
                 let info = e.detail.data[0]
                 let d = info.currentDirection
                 if (d < 50 || d > 310) {

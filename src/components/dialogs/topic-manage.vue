@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-model="state.dialog.topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
+<ic-dialog v-model="topicManage" :title="`对文章 ${topic.title} 进行管理操作`" @close="closeOutside">
     <div v-if="stage == 1">
         <div class="manage-form-item">
             <span class="label">
@@ -43,7 +43,7 @@
         <div class="manage-form-item">
             <span class="label">状态</span>
             <div class="right">
-                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
+                <span style="margin-right: 10px" v-for="(i, j) in POST_STATE_TXT" :key="j">
                     <label :for="'radio-state-'+j">
                         <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+j" v-model="vState" />
                         <span>{{i}}</span>
@@ -54,7 +54,7 @@
         <div class="manage-form-item" style="align-items: center">
             <span class="label">可见性</span>
             <div class="right">
-                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j">
+                <span style="margin-right: 10px" v-for="(i, j) in POST_VISIBLE_TXT" :key="j">
                     <label :for="'radio-visible-'+i">
                         <input class="ic-input" type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="vVisible" />
                         <span>{{i}}</span>
@@ -89,17 +89,17 @@
             <div class="manage-form-item" v-if="changed.vState">
                 <span class="label">文章状态</span>
                 <div class="right">
-                    <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[0]]}}</span>
+                    <span class="hl">{{POST_STATE_TXT[changed.vState[0]]}}</span>
                     <span> -> </span>
-                    <span class="hl">{{state.misc.POST_STATE_TXT[changed.vState[1]]}}</span>
+                    <span class="hl">{{POST_STATE_TXT[changed.vState[1]]}}</span>
                 </div>
             </div>
             <div class="manage-form-item" v-if="changed.vVisible">
                 <span class="label">文章可见性</span>
                 <div class="right">
-                    <span class="hl">{{state.misc.POST_VISIBLE_TXT[changed.vVisible[0]]}}</span>
+                    <span class="hl">{{POST_VISIBLE_TXT[changed.vVisible[0]]}}</span>
                     <span> -> </span>
-                    <span class="hl">{{state.misc.POST_VISIBLE_TXT[changed.vVisible[1]]}}</span>
+                    <span class="hl">{{POST_VISIBLE_TXT[changed.vVisible[1]]}}</span>
                 </div>
             </div>
             <div class="manage-form-item" v-if="changed.vRepute">
@@ -144,13 +144,12 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import api from '@/netapi.js'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
     data () {
         return {
-            state,
             save: { title: '' },
             vSticky: '0',
             vWeight: 0,
@@ -165,6 +164,16 @@ export default {
         }
     },
     computed: {
+        ...mapState('dialog', {
+            topicManage: 'dialog.topicManage',
+            topicManageData: 'dialog.topicManageData'
+        }),
+        ...mapGetters([
+            'POST_TYPES',
+            'POST_TYPES_TXT',
+            'POST_STATE_TXT',
+            'POST_VISIBLE_TXT'
+        ]),
         topic: function () {
             // TODO: 重构此页面。
             // 看起来不合理是早期很多工具没有，又嫁接了一些后期需求导致的。
@@ -257,7 +266,7 @@ export default {
                         'credit.incr': change.vCredit[1],
                         '$src': JSON.stringify({
                             'id': this.topic.id,
-                            'type': state.misc.POST_TYPES.TOPIC
+                            'type': this.POST_TYPES.TOPIC
                         })
                     }, 'superuser')
                     if (ret.code === 0) $.message_success('加分/扣分设置成功')
@@ -271,7 +280,7 @@ export default {
                         'repute.incr': change.vCredit[1],
                         '$src': JSON.stringify({
                             'id': this.topic.id,
-                            'type': state.misc.POST_TYPES.TOPIC
+                            'type': this.POST_TYPES.TOPIC
                         })
                     }, 'superuser')
                     if (ret.code === 0) $.message_success('声望变更设置成功')
@@ -298,17 +307,17 @@ export default {
         },
         close () {
             if (this.stage === 2) this.stage = 1
-            else state.dialog.topicManage = null
+            else this.$store.dialog.commit('SET_TOPIC_MANAGE', { val: false })
             if (this.stage === 4) {
                 this.$router.go(0)
             }
         }
     },
     watch: {
-        'state.dialog.topicManage': async function (val) {
+        'topicManage': async function (val) {
             if (val) {
                 let info = await api.topic.get({
-                    id: state.dialog.topicManageData.id
+                    id: this.topicManageData.id
                 }, 'superuser')
 
                 if (info.code === api.retcode.SUCCESS) {

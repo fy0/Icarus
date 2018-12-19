@@ -32,7 +32,6 @@ import './assets/css/_text.scss'
 import './md.js'
 
 import state from './state.js'
-import api from './netapi.js'
 import ws from './ws.js'
 import config from './config.js'
 import store from './store/index.js'
@@ -136,96 +135,45 @@ if (config.ws.enable) {
 
 router.beforeEach(async function (to, from, next) {
     let toUrl = null
-    state.loading = 1
+    store.commit('LOADING_SET', 1)
     nprogress.start()
 
     // 重置对话框
     state.dialog.topicManage = null
-
-    if (state.misc === undefined) {
-        let ret = null
-
-        // 获取 misc 信息
-        while (true) {
-            try {
-                ret = await api.misc()
-                break
-            } catch (e) {
-                // 连接失败，重试
-                await $.timeout(3000)
-            }
-        }
-        if (ret.code === 0) {
-            Vue.set(state, 'misc', ret.data)
-            api.retcode = ret.data.retcode
-            api.retinfo = ret.data.retinfo_cn
-        }
-
-        // 若用户已登录，做一些额外处理
-        if (!state.user) {
-            let ret = await api.user.getUserId()
-            if (ret.code !== api.retcode.SUCCESS) {
-                // 未登录，后续不必进行
-                Vue.set(state, 'initLoadDone', true)
-            } else {
-                ret = await api.user.get({ id: ret.data.id }, 'inactive_user')
-                if (ret.code !== api.retcode.SUCCESS) {
-                    // 执行未成功
-                    state.loading = 0
-                    nprogress.done()
-                    Vue.set(state, 'initLoadDone', true)
-                    $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
-                    toUrl = '/'
-                } else {
-                    if (state.misc.extra.daily_reward) {
-                        $.message_success(`每日登陆，获得经验 ${state.misc.extra.daily_reward['exp']} 点`, 5000)
-                        ret.data.exp += state.misc.extra.daily_reward['exp']
-                    }
-
-                    Vue.set(state, 'user', ret.data)
-                    Vue.set(state, 'initLoadDone', true)
-                }
-            }
-        }
-
-        // 开启周期数据
-        $.tickStart()
-    }
+    await store.dispatch('tryInitLoad')
 
     if (to.name) {
         if (!state.user) {
             if (to.name.startsWith('setting_')) {
-                state.loading = 0
-                nprogress.done()
                 toUrl = '/404'
             } else if (to.name === 'account_notif') {
-                state.loading = 0
-                nprogress.done()
                 toUrl = '/404'
             }
         } else {
             if (to.name === 'account_signin' || to.name === 'account_signup') {
-                state.loading = 0
-                nprogress.done()
                 toUrl = '/'
             }
         }
 
         if (to.name.startsWith('admin_')) {
             if (!(state.user && state.misc && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
-                state.loading = 0
-                nprogress.done()
                 $.message_error('当前账户没有权限访问此页面')
                 toUrl = '/'
             }
         }
     }
 
+    if (toUrl) {
+        // 正常来讲loading会在afterEach中结束并让nprogress达到完成状态
+        // 如果发生了redirect，则情况有所不同
+        store.commit('LOADING_SET')
+        nprogress.done()
+    }
     return (toUrl) ? next(toUrl) : next()
 })
 
 router.afterEach(async function (to, from, next) {
-    state.loading--
+    store.commit('LOADING_DEC', 1)
     nprogress.done()
     // ga('set', 'page', location.pathname + location.hash)
     // ga('send', 'pageview')

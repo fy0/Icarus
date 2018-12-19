@@ -143,10 +143,6 @@ class UserViewRequest extends SlimViewRequest {
         return npost(`${this.urlPrefix}/check_in`)
     }
 
-    async getUserId () {
-        return nget(`${this.urlPrefix}/get_userid`, null)
-    }
-
     /* eslint-disable camelcase */
     async changePassword ({ old_password, password }) {
         return npost(`${this.urlPrefix}/change_password`, null, { old_password, password })

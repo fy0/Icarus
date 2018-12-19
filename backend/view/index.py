@@ -10,6 +10,7 @@ from model.redis import RK_USER_ACTIVE_TIME_ZSET, redis, RK_USER_ANON_ACTIVE_TIM
 from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
+from slim.utils import to_hex
 from view import route
 from view.user import UserMixin
 from view.ws import WSR
@@ -76,21 +77,7 @@ class TestBaseView(UserMixin, BaseView):
         一些后端信息，一般是首次打开页面时获得
         :return:
         """
-        extra = {
-            'midnight_time': get_today_start_timestamp()
-        }
-
-        # 每日首次访问奖励
-        if self.current_user:
-            daily_reward = self.current_user.daily_access_reward()
-            if daily_reward:
-                extra['daily_reward'] = {
-                    'exp': daily_reward
-                }
-
-        self.finish(RETCODE.SUCCESS, {
-            'extra': extra,
-
+        results = {
             'POST_TYPES': POST_TYPES.to_dict(),
             'POST_TYPES_TXT': POST_TYPES.txt,
             'POST_STATE': POST_STATE.to_dict(),
@@ -141,4 +128,18 @@ class TestBaseView(UserMixin, BaseView):
 
             'retcode': RETCODE.to_dict(),
             'retinfo_cn': RETCODE.txt_cn,
-        })
+            'extra': {
+                'midnight_time': get_today_start_timestamp()
+            }
+        }
+
+        # 每日首次访问奖励
+        if self.current_user:
+            user = self.current_user
+
+            results['user'] = {
+                'id': to_hex(user.id),
+                'daily_reward': user.daily_access_reward()
+            }
+
+        self.finish(RETCODE.SUCCESS, results)
