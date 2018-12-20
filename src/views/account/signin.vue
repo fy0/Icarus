@@ -150,9 +150,8 @@ export default {
     },
     methods: {
         login: async function () {
-            let key = state.loadingGetKey(this.$route)
             if (this.checkEmail && this.checkPassword) {
-                this.state.loadingInc(this.$route, key)
+                this.$store.commit('LOADING_INC', 1)
                 // 登录请求
                 let ret = await api.user.signin({
                     email: this.info.email,
@@ -164,11 +163,11 @@ export default {
                     Vue.set(state, 'user', ret.data) // 这样顶栏可以接到事件
 
                     if (this.goLastPage) {
-                        this.state.loadingDec(this.$route, key)
+                        this.$store.commit('LOADING_DEC', 1)
                         $.message_success('登录成功，正在回到前页……')
                         this.$router.go(-1)
                     } else {
-                        this.state.loadingDec(this.$route, key)
+                        this.$store.commit('LOADING_DEC', 1)
                         $.message_success('登录成功，正在回到主页……')
                         this.$router.replace('/')
                         return
@@ -179,7 +178,7 @@ export default {
                 }
                 // ret = await api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
-                this.state.loadingDec(this.$route, key)
+                this.$store.commit('LOADING_DEC', 1)
             } else {
                 $.message_error('请正确填写所有项目')
             }

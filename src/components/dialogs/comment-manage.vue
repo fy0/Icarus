@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-if="state.dialog.commentManage">
+<ic-dialog v-if="commentManage">
     123
 </ic-dialog>
 </template>
@@ -40,43 +40,39 @@
 </style>
 
 <script>
-import state from '@/state.js'
-import api from '@/netapi.js'
-import ICDialog from './_dialog.vue'
+// import api from '@/netapi.js'
+import Dialog from './_dialog.vue'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
     data () {
         return {
-            state,
             user: { name: '' },
             save: {}
         }
     },
+    computed: {
+        ...mapState('dialog', [
+            'commentManage',
+            'commentManageData'
+        ]),
+        ...mapGetters([
+            'POST_STATE_TXT',
+            'POST_VISIBLE_TXT'
+        ])
+    },
     methods: {
         ok: async function () {
-            let data = $.objDiff(this.user, this.save)
-            if (data.state) data.state = Number(data.state)
-            if (data.group) data.group = Number(data.group)
-
-            let ret = await api.user.set({ id: this.user.id }, data, 'superuser')
-            if (ret.code === 0) {
-                if (state.dialog.userManageData) {
-                    _.assign(state.dialog.userManageData, data)
-                }
-                $.message_success('用户信息设置成功')
-            } else $.message_by_code(ret.code)
-
-            state.dialog.userManage = null
         },
         close () {
-            state.dialog.userManage = null
+            this.$store.commit('dialog/SET_USER_MANAGE', { val: false })
         }
     },
     components: {
-        'ic-dialog': ICDialog
+        'ic-dialog': Dialog
     },
     watch: {
-        'state.dialog.commentManage': async function (val) {
+        'commentManage': async function (val) {
             // if (val) {
             //     let info = await api.user.get({id: state.dialog.userManageData.id}, 'admin')
             //     if (info.code === api.retcode.SUCCESS) {

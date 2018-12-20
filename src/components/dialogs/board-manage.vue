@@ -1,5 +1,5 @@
 <template>
-<ic-dialog :width="'70%'" v-model="state.dialog.boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
+<ic-dialog :width="'70%'" v-model="boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
     <div class="wrapper ic-form">
         <div class="manage-form-item" style="margin-top: 0px;">
             <span class="label">ID</span>
@@ -45,7 +45,7 @@
         <div class="manage-form-item" style="align-items: center">
             <span class="label">状态</span>
             <div class="right" style="display: flex">
-                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
+                <span style="margin-right: 10px" v-for="(i, j) in POST_STATE_TXT" :key="j">
                     <label :for="'radio-state-'+i">
                         <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="board.state" />
                         <span>{{i}}</span>
@@ -56,7 +56,7 @@
         <div class="manage-form-item" style="align-items: center">
             <span class="label">可见性</span>
             <div class="right">
-                <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_VISIBLE_TXT" :key="j">
+                <span style="margin-right: 10px" v-for="(i, j) in POST_VISIBLE_TXT" :key="j">
                     <label :for="'radio-visible-'+i">
                         <input class="ic-input" type="radio" name="visible" :value="j" :id="'radio-visible-'+i" v-model="board.visible" />
                         <span>{{i}}</span>
@@ -119,16 +119,15 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import api from '@/netapi.js'
 import Multiselect from 'vue-multiselect'
+import { mapState, mapGetters } from 'vuex'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import '@/assets/css/_manage.scss'
 
 export default {
     data () {
         return {
-            state,
             value: 1,
             save: {},
             board: { name: '' },
@@ -137,6 +136,14 @@ export default {
         }
     },
     computed: {
+        ...mapState('dialog', [
+            'boardManage',
+            'boardManageData'
+        ]),
+        ...mapGetters([
+            'POST_STATE_TXT',
+            'POST_VISIBLE_TXT'
+        ])
     },
     methods: {
         getSelectOptionName (id) {
@@ -152,31 +159,33 @@ export default {
 
             if (Object.keys(data).length === 0) {
                 // 什么都没修改
-                state.dialog.boardManage = null
-                return
+                return this.quit()
             }
 
             let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible', 'can_post_rank'])
             let ret = await api.board.set({ id: this.board.id }, data, 'superuser', keys)
 
             if (ret.code === 0) {
-                if (state.dialog.boardManageData) {
-                    _.assign(state.dialog.boardManageData, data)
+                if (this.boardManageData) {
+                    this.$store.commit('dialog/WRITE_BOARD_MANAGE_DATA', data)
                 }
                 $.message_success('板块信息设置成功')
             } else $.message_by_code(ret.code)
 
-            state.dialog.boardManage = null
+            this.quit()
+        },
+        quit () {
+            this.$store.commit('dialog/SET_BOARD_MANAGE', { val: false })
         },
         close () {
-            state.dialog.boardManage = null
+            this.quit()
         }
     },
     watch: {
-        'state.dialog.boardManage': async function (val) {
+        'boardManage': async function (val) {
             if (val) {
                 let info = await api.board.get({
-                    id: state.dialog.boardManageData.id,
+                    id: this.boardManageData.id,
                     loadfk: { 'user_id': null }
                 }, 'superuser')
 

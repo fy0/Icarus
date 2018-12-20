@@ -165,8 +165,8 @@ export default {
     },
     computed: {
         ...mapState('dialog', {
-            topicManage: 'dialog.topicManage',
-            topicManageData: 'dialog.topicManageData'
+            topicManage: 'topicManage',
+            topicManageData: 'topicManageData'
         }),
         ...mapGetters([
             'POST_TYPES',
@@ -300,14 +300,15 @@ export default {
                 this.applyValue = 100
                 this.stage = 4
             }
-            // state.dialog.topicManage = null
+
+            this.$store.commit('dialog/SET_TOPIC_MANAGE', { val: false })
         },
         closeOutside () {
             if (this.stage === 1) this.close()
         },
         close () {
             if (this.stage === 2) this.stage = 1
-            else this.$store.dialog.commit('SET_TOPIC_MANAGE', { val: false })
+            else this.$store.commit('dialog/SET_TOPIC_MANAGE', { val: false })
             if (this.stage === 4) {
                 this.$router.go(0)
             }

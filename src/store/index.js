@@ -17,8 +17,8 @@ export default new Vuex.Store({
     state: {
         config,
         misc: null,
-        userData: null,
         loading: 0,
+        msgs: [],
 
         _initing: false
     },
@@ -47,9 +47,6 @@ export default new Vuex.Store({
             state.misc = data
             api.retcode = data.retcode
             api.retinfo = data.retinfo_cn
-        },
-        SET_USER_DATA (state, data) {
-            state.userData = data
         },
         // 全局加载动画相关
         LOADING_INC (state, num = 1) {
@@ -86,7 +83,7 @@ export default new Vuex.Store({
                         $.message_success(`每日登陆，获得经验 ${miscUser.daily_reward['exp']} 点`, 5000)
                     }
 
-                    commit('SET_USER_DATA', userInfo.data)
+                    commit('user/setUserData', userInfo.data)
                 } else {
                     $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
                 }

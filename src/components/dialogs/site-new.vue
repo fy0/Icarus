@@ -29,17 +29,13 @@
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     methods: {
         ok: async function () {
-            state.dialog.siteNew = null
+            this.$store.commit('dialog/SET_SITE_NEW', { val: false })
         }
     }
 }

@@ -29,9 +29,46 @@ export default {
     getters: {
     },
     mutations: {
+        // 主题管理
         SET_TOPIC_MANAGE: (state, { val, data }) => {
             state.topicManage = val
             state.topicManageData = data
+        },
+        // 板块管理
+        SET_BOARD_MANAGE: (state, { val, data }) => {
+            state.boardManage = val
+            state.boardManageData = data
+        },
+        // 用户管理
+        SET_USER_MANAGE: (state, { val, data }) => {
+            state.userManage = val
+            state.userManageData = data
+        },
+        // 评论管理
+        SET_COMMENT_MANAGE: (state, { val, data }) => {
+            state.commentManage = val
+            state.commentManageData = data
+        },
+        // 设置头像对话框
+        SET_USER_AVATAR: (state, { val, data }) => {
+            state.userSetAvatar = val
+            state.userSetAvatarData = data
+        },
+        // 新站点提示对话框
+        SET_SITE_NEW: (state, { val }) => {
+            state.siteNew = val
+        },
+        // 设置用户昵称
+        SET_USER_NICKANME: (state, { val }) => {
+            state.userSetNickname = val
+        },
+        // 用户登出确认
+        SET_USER_SIGNOUT: (state, { val }) => {
+            state.userSignout = val
+        },
+        // 写入板块信息
+        WRITE_BOARD_MANAGE_DATA: (state, data) => {
+            Object.assign(state.boardManageData, data)
         }
     },
     actions: {

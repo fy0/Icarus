@@ -268,15 +268,14 @@
 
 <script>
 import { marked, mdGetIndex } from '@/md.js'
-import api from '@/netapi.js'
-import state from '@/state.js'
-import '@/assets/css/_forum.scss'
+import { mapState, mapGetters } from 'vuex'
 import CommentList from '@/components/misc/comment-list.vue'
+import api from '@/netapi.js'
+import '@/assets/css/_forum.scss'
 
 export default {
     data () {
         return {
-            state,
             commentPage: 1,
             loading: true,
             POST_TYPES: state.misc.POST_TYPES,
@@ -287,6 +286,15 @@ export default {
             mlog: null,
             textLimit: $.textLimit
         }
+    },
+    computed: {
+        ...mapState(['config']),
+        ...mapGetters([
+            'POST_STATE'
+        ]),
+        ...mapGetters('forum', [
+            'isNewSite'
+        ]),
     },
     methods: {
         marked,
@@ -344,8 +352,7 @@ export default {
         // 注意：从这里观察出一个现象：
         // created 会比 mounted 早触发，但并不一定更早完成
         // await 占用时间的时候，挂载流程仍将继续
-        let key = state.loadingGetKey(this.$route)
-        this.state.loadingInc(this.$route, key)
+        this.$store.commit('LOADING_INC', 1)
         await this.fetchData()
         this.$nextTick(() => {
             window.socialShare(this.$refs.share, {
@@ -398,7 +405,7 @@ export default {
             setTimeout(loop, 100)
         })
 
-        this.state.loadingDec(this.$route, key)
+        this.$store.commit('LOADING_DEC', 1)
     },
     mounted: function () {
     },

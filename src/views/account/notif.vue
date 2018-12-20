@@ -127,8 +127,7 @@ export default {
             return this.state.misc.POST_TYPES_TXT[type]
         },
         fetchData: async function () {
-            let key = state.loadingGetKey(this.$route)
-            this.state.loadingInc(this.$route, key)
+            this.$store.commit('LOADING_INC', 1)
             let params = this.$route.query
             this.page.curPage = params.page
             let ret = await api.notif.list({
@@ -210,7 +209,7 @@ export default {
                     $.message_by_code(ret.code)
                 }
             }
-            this.state.loadingDec(this.$route, key)
+            this.$store.commit('LOADING_DEC', 1)
         }
     },
     components: {

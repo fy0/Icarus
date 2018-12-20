@@ -105,8 +105,7 @@ export default {
             state.dialog.commentManage = true
         },
         fetchData: async function () {
-            let key = state.loadingGetKey(this.$route)
-            this.state.loadingInc(this.$route, key)
+            this.$store.commit('LOADING_INC', 1)
             let params = this.$route.params
             // let ret = await api.topic.get({
             //     id: params.id,
@@ -133,7 +132,7 @@ export default {
 
                 this.page = ret.data // 提示：注意次序，渲染page依赖上层内容
             }
-            this.state.loadingDec(this.$route, key)
+            this.$store.commit('LOADING_DEC', 1)
         }
     },
     created: async function () {

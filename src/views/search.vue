@@ -133,8 +133,7 @@ export default {
             return window.location.origin + info.href
         },
         fetchData: async function () {
-            let key = state.loadingGetKey(this.$route)
-            this.state.loadingInc(this.$route, key)
+            this.$store.commit('LOADING_INC', 1)
             let ret = await api.search.search(this.queryText)
             if (ret.code === api.retcode.SUCCESS) {
                 this.info = ret.data
@@ -144,7 +143,7 @@ export default {
                 this.tooFrequent = true
                 this.needWait = ret.data
             }
-            this.state.loadingDec(this.$route, key)
+            this.$store.commit('LOADING_DEC', 1)
         }
     },
     created: async function () {

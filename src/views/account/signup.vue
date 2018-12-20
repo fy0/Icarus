@@ -158,9 +158,8 @@ export default {
             if (!this.info.agreeLicense) {
                 return
             }
-            let key = state.loadingGetKey(this.$route)
             if (this.checkPassword && this.checkPassword2 && this.checkEmail) {
-                this.state.loadingInc(this.$route, key)
+                this.$store.commit('LOADING_INC', 1)
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
@@ -174,7 +173,7 @@ export default {
                     $.message_by_code(ret.code, ret.data)
                 }
 
-                this.state.loadingDec(this.$route, key)
+                this.$store.commit('LOADING_DEC', 1)
             } else {
                 $.message_error('请正确填写所有项目')
             }

@@ -345,10 +345,6 @@ export default {
         }
     },
     computed: {
-        ...mapState('dialog', {
-            topicManage: 'dialog.topicManage',
-            topicManageData: 'dialog.topicManageData'
-        }),
         ...mapState(['config']),
         ...mapGetters([
             'POST_STATE'
