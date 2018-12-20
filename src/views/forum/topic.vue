@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container" v-if="topic.user_id">
-    <div v-title>{{ topic.title }} - {{topic.board_id.name}} - {{state.config.title}}</div>
+    <div v-title>{{ topic.title }} - {{topic.board_id.name}} - {{config.title}}</div>
 
     <div class="nav ic-xs-hidden">
         <span>
@@ -13,7 +13,7 @@
         <span class="item-separator">/</span>
         <span>
             <span :title="topic.title">{{topic.title}}</span>
-            <span v-if="topic.state === state.misc.POST_STATE.CLOSE">[关闭]</span>
+            <span v-if="topic.state === POST_STATE.CLOSE">[关闭]</span>
         </span>
     </div>
 
@@ -49,14 +49,14 @@
         <div class="main">
             <div class="article typo">
                 <!--<h1>{{topic.title}}</h1>-->
-                <div class="content" v-if="topic.visible === state.misc.POST_VISIBLE.CONTENT_IF_LOGIN && (!topic.content)">
+                <div class="content" v-if="topic.visible === POST_VISIBLE.CONTENT_IF_LOGIN && (!topic.content)">
                     <p>登陆后可见正文</p>
                 </div>
                 <div class="content" v-else v-html="marked(topic.content || '')"></div>
                 <!-- 操作日志 -->
                 <div v-if="mlog && mlog.items" class="post-manage-log">
                     <div class="post-manage-log-item" v-for="i in mlog.items.slice(0, 5)" :key="i.id">
-                        <span>🛠️<user-link :user="i.user_id" /> 对此主题进行了<b>{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" /></span>
+                        <span>🛠️<user-link :user="i.user_id" /> 对此主题进行了<b>{{MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" /></span>
                     </div>
                     <div v-if="mlog.items.length > 5">...</div>
                 </div>
@@ -78,7 +78,7 @@
                         <avatar :user="topic.user_id" :size="60" class="avatar"></avatar>
                         <div style="margin-left: 6px; line-height: 1.3em;">
                             <user-link :user="topic.user_id" />
-                            <div>{{state.misc.USER_GROUP_TXT[topic.user_id.group]}}</div>
+                            <div>{{USER_GROUP_TXT[topic.user_id.group]}}</div>
                         </div>
                     </div>
                 </div>
@@ -102,7 +102,7 @@
                         <p>历史编辑次数 {{topic.edit_count}} 次</p>
                     </div>
                     <div class="topic-manage" v-if="isAdmin()">
-                        <i class="icarus icon-39" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage(topic)"></i>
+                        <i class="icarus icon-39" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage({ 'val': true, 'data': topic })"></i>
                     </div>
 
                     <div v-if="topicIndex && topicIndex.length" class="topic-index-container" ref="index" :class="{'sticky': indexSticky}">
@@ -268,7 +268,7 @@
 
 <script>
 import { marked, mdGetIndex } from '@/md.js'
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import CommentList from '@/components/misc/comment-list.vue'
 import api from '@/netapi.js'
 import '@/assets/css/_forum.scss'
@@ -278,34 +278,33 @@ export default {
         return {
             commentPage: 1,
             loading: true,
-            POST_TYPES: state.misc.POST_TYPES,
             topic: { board_id: { id: 1 } },
             topicIndex: [],
             indexActive: -1,
             indexSticky: false,
-            mlog: null,
-            textLimit: $.textLimit
+            mlog: null
         }
     },
     computed: {
         ...mapState(['config']),
         ...mapGetters([
-            'POST_STATE'
+            'POST_STATE',
+            'POST_TYPES'
         ]),
         ...mapGetters('forum', [
             'isNewSite'
-        ]),
+        ])
     },
     methods: {
+        ...mapMutations('dialog', {
+            'setTopicManage': 'SET_TOPIC_MANAGE'
+        }),
         marked,
         isAdmin: $.isAdmin,
+        textLimit: $.textLimit,
         scrollTo: function (id) {
             let el = document.getElementById(id)
             $.scrollTo(el)
-        },
-        setTopicManage: function (topic) {
-            state.dialog.topicManageData = topic
-            state.dialog.topicManage = true
         },
         fetchData: async function () {
             let params = this.$route.params
@@ -356,7 +355,7 @@ export default {
         await this.fetchData()
         this.$nextTick(() => {
             window.socialShare(this.$refs.share, {
-                title: `${this.topic.title} - ${state.config.title}`
+                title: `${this.topic.title} - ${this.config.title}`
             })
 
             // 右侧目录跟随滚动

@@ -188,6 +188,16 @@ class UserView(UserMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 
+    async def get(self):
+        await super().get()
+        uid = self.params.get('id', None)
+        # 满足条件：请求参数有用户，当前用户已登录，请求查询的是当前用户
+        if uid and self.current_user and (uid == self.current_user.id.hex()):
+            if self.ret_val['code'] == RETCODE.SUCCESS:
+                data = self.ret_val['data']
+                data['roles'] = self.current_user_roles
+                data['main_role'] = self.current_user.main_role
+
     async def update(self):
         post = await self.post_data()
         if 'password' in post:

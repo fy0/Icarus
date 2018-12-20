@@ -24,12 +24,12 @@
                     <router-link tag="li" class="menu-item" :to="{ name: 'wiki' }" :class="navActive('wiki')">
                         <a>百科</a>
                     </router-link>
-                    <li class="menu-item" v-if="false && isAdmin"><a href="#">文档</a></li>
+                    <li class="menu-item" v-if="false && isSiteAdmin"><a href="#">文档</a></li>
                     <li class="menu-item" v-if="false"><a href="#">聊天室</a></li>
-                    <router-link tag="li" v-if="state.user" class="menu-item" :to="{ name: 'setting' }" :class="navActive('setting')">
+                    <router-link tag="li" v-if="userData" class="menu-item" :to="{ name: 'setting' }" :class="navActive('setting')">
                         <a>设置</a>
                     </router-link>
-                    <router-link tag="li" v-if="isAdmin" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
+                    <router-link tag="li" v-if="isSiteAdmin" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
                         <a>管理</a>
                     </router-link>
                     <router-link v-if="isAboutPageEnable" tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
@@ -42,7 +42,7 @@
                     <input class="ic-input" type="text" placeholder="点此进行搜索" v-model="searchText" @keyup.enter="doSearch" />
                 </div>
 
-                <ul class="menu-list" v-if="state.initLoadDone && (!state.user)">
+                <ul class="menu-list" v-if="$store.getters.isInited && (!userData)">
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_signup' }" :class="navActive('account_signup')">
                         <a>注册</a>
                     </router-link>
@@ -51,17 +51,17 @@
                     </router-link>
                 </ul>
 
-                <ul class="menu-list" v-if="state.user">
+                <ul class="menu-list" v-if="userData">
                     <li class="menu-item">
-                        <user-link class="user-link" :nickname="false" :user="state.user">
-                            <avatar style="margin-right: 6px;" :user="state.user" :size="28" class="avatar"></avatar>
-                            <span class="user-text limit">{{state.user.nickname}}</span>
+                        <user-link class="user-link" :nickname="false" :user="userData">
+                            <avatar style="margin-right: 6px;" :user="userData" :size="28" class="avatar"></avatar>
+                            <span class="user-text limit">{{userData.nickname}}</span>
                         </user-link>
                     </li>
                     <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
                         <a class="nav-icon" title="提醒">
-                            <i class="icarus icon-bell-ring" v-if="state.unread"></i>
-                            <ic-badge v-if="state.unread" style="margin-left: 6px">{{state.unread}}</ic-badge>
+                            <i class="icarus icon-bell-ring" v-if="unread"></i>
+                            <ic-badge v-if="unread" style="margin-left: 6px">{{unread}}</ic-badge>
                             <i v-else class="icarus icon-bell"></i>
                         </a>
                     </router-link>
@@ -316,15 +316,11 @@
 
 <script>
 import Media from 'vue-media'
-import state from '@/state.js'
-import config from '@/config.js'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
-    name: 'hello',
     data () {
         return {
-            state,
-            config,
             m: $.media,
             isXs: true,
             showNavmenuBtn: false,
@@ -332,15 +328,14 @@ export default {
         }
     },
     computed: {
-        isAdmin: function () {
-            return $.isAdmin()
-        },
-        isAboutPageEnable: function () {
-            return state.initLoadDone && state.misc.BACKEND_CONFIG.ABOUT_PAGE_ENABLE
-        },
-        isSearchEnable: function () {
-            return state.initLoadDone && state.misc.BACKEND_CONFIG.SEARCH_ENABLE
-        }
+        ...mapState([
+            'config'
+        ]),
+        ...mapGetters([
+            'isAboutPageEnable', 'isSearchEnable'
+        ]),
+        ...mapState('user', ['userData', 'unread']),
+        ...mapGetters('user', ['isSiteAdmin'])
     },
     mounted: function () {
     },
@@ -386,7 +381,7 @@ export default {
             return 'flag'
         },
         signout: async function () {
-            state.dialog.userSignout = true
+            this.$store.commit('dialog/SET_USER_SIGNOUT', { val: true })
         }
     },
     components: {

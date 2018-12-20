@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from '../netapi'
+import config from '@/config.js'
+
 import dialog from './modules/dialog'
 import forum from './modules/forum'
-import config from '@/config.js'
+import user from './modules/user'
 
 Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
@@ -12,7 +14,8 @@ export default new Vuex.Store({
     strict: debug,
     modules: {
         dialog,
-        forum
+        forum,
+        user
     },
     state: {
         config,
@@ -36,7 +39,11 @@ export default new Vuex.Store({
         USER_GROUP: (state, getters) => getters.misc.USER_GROUP || {},
         USER_GROUP_TXT: (state, getters) => getters.misc.USER_GROUP_TXT || {},
         USER_GROUP_TO_ROLE: (state, getters) => getters.misc.USER_GROUP_TO_ROLE || {},
-        NOTIF_TYPE: (state, getters) => getters.misc.NOTIF_TYPE || {}
+        NOTIF_TYPE: (state, getters) => getters.misc.NOTIF_TYPE || {},
+
+        isInited: (state) => (!state._initing) && (state.misc),
+        isAboutPageEnable: (state, getters) => getters.BACKEND_CONFIG.ABOUT_PAGE_ENABLE,
+        isSearchEnable: (state, getters) => getters.BACKEND_CONFIG.SEARCH_ENABLE
     },
     mutations: {
         SET_INITING (state, data) {

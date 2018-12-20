@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-model="state.dialog.siteNew" :title="`新建站点指引`" scrollable :allow-outside-close="false">
+<ic-dialog v-model="siteNew" :title="`新建站点指引`" scrollable :allow-outside-close="false">
     <div>
         <div>你好，你的站点已经初步搭建完成了。</div>
         <div>之所以会看到这张页面，是因为当前还没有任何<b>板块</b>被建立。</div>
@@ -29,9 +29,16 @@
 </style>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
     data () {
         return {}
+    },
+    computed: {
+        ...mapState('dialog', [
+            'siteNew'
+        ])
     },
     methods: {
         ok: async function () {

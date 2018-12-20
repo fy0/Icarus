@@ -34,6 +34,10 @@ class USER_GROUP(StateObject):
     txt = {BAN: '封禁', INACTIVE: '未激活', NORMAL: '会员', SUPERUSER: '管理', ADMIN: '超管'}
 
 
+# 主要用户角色序列
+MAIN_ROLE_ORDER = ['admin', 'superuser', 'user', 'inactive_user', 'banned_user', None]
+
+
 class User(PostModel, BaseUser):
     email = TextField(index=True, unique=True, null=True, default=None)
     phone = TextField(index=True, unique=True, null=True, default=None)  # 大陆地区
@@ -89,6 +93,13 @@ class User(PostModel, BaseUser):
         for i in it:
             condition |= cls.nickname == i
         return cls.select().where(condition)
+
+    @property
+    def main_role(self):
+        """ 主要用户角色 """
+        roles = set(self.roles)
+        for i in MAIN_ROLE_ORDER:
+            if i in roles: return i
 
     @property
     def roles(self):
