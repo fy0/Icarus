@@ -16,16 +16,13 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 
 export default {
     data () {
         return {
-            state,
             marked,
-            loading: true,
             nothing: true
         }
     },

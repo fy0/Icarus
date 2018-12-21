@@ -81,10 +81,6 @@ let state = {
     loadingDec: (route, key) => {
         if (key === loadingGetKey(route)) state.loading--
     },
-    // 当前用户是否为未激活帐户
-    isInactiveUser: function () {
-        return $.getRole('user') === 'inactive_user'
-    },
     // 拖动手势所使用的一个实例
     zt: null,
     // 用户在线数量

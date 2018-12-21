@@ -1,6 +1,6 @@
 <template>
 <wiki-base v-if="item">
-    <div v-title>{{ item.title }} - 百科 - {{state.config.title}}</div>
+    <div v-title>{{ item.title }} - 百科 - {{config.title}}</div>
     <article class="box article ic-paper ic-z1">
         <div class="title">
             <span>
@@ -22,7 +22,7 @@
                     </span>
                 </span>
                 <div>
-                    <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {id: item.id}, query: { manage: true } }">[编辑]</router-link>
+                    <router-link v-if="canEditWiki" :to="{ name: 'wiki_article_edit', params: {id: item.id}, query: { manage: true } }">[编辑]</router-link>
                     <router-link :to="{ name: 'wiki_history', params: {id: item.id} }" style="margin-left: 5px">[历史]</router-link>
                 </div>
             </span>
@@ -69,22 +69,25 @@ article > .title {
 </style>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 
 export default {
     data () {
         return {
-            state,
             marked,
-            loading: true,
             item: null
         }
     },
+    computed: {
+        ...mapState(['config']),
+        ...mapGetters('user', [
+            'canEditWiki'
+        ])
+    },
     methods: {
-        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
             let params = this.$route.params

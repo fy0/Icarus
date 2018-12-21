@@ -15,19 +15,23 @@
 </style>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 
 export default {
     data () {
         return {
-            state,
             marked,
-            loading: true,
             mainpage: {}
         }
+    },
+    computed: {
+        ...mapState(['config']),
+        ...mapGetters('user', [
+            'basicRole'
+        ])
     },
     methods: {
         fetchData: async function () {
@@ -35,7 +39,7 @@ export default {
 
             let ret = await api.wiki.get({
                 flag: 2
-            }, $.getRole('user'))
+            }, this.basicRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.mainpage = ret.data

@@ -1,6 +1,6 @@
 <template>
 <wiki-base>
-    <div v-title>[历史记录]{{ article.title }} - 百科 - {{state.config.title}}</div>
+    <div v-title>[历史记录]{{ article.title }} - 百科 - {{config.title}}</div>
     <div class="box ic-paper ic-z1">
         <div class="title">
             <h1>[历史记录]{{article.title}}</h1>
@@ -14,7 +14,7 @@
         <ul v-if="page.items && page.items.length">
             <li v-for="i in page.items" :key="i.id">
                 <span>
-                    <user-link :user="i.user_id" /> 对此文章进行了<b>{{state.misc.MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" />
+                    <user-link :user="i.user_id" /> 对此文章进行了<b>{{MANAGE_OPERATION_TXT[i.operation]}}</b>操作 - <ic-time :timestamp="i.time" />
                     <!-- <pre>{{i.value}}</pre> -->
                 </span>
             </li>
@@ -40,26 +40,28 @@
 </style>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 
 export default {
     data () {
         return {
-            state,
             marked,
             notFound: false,
-            loading: true,
             article: {},
             page: {
                 items: []
             }
         }
     },
+    computed: {
+        ...mapState(['config']),
+        ...mapGetters(['MANAGE_OPERATION_TXT']),
+        ...mapGetters('user', ['basicRole'])
+    },
     methods: {
-        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
             let params = this.$route.params
@@ -69,7 +71,7 @@ export default {
                 let ret = await api.wiki.get({
                     id: params.id,
                     select: ['id', 'title', 'ref']
-                }, $.getRole('user'))
+                }, this.basicRole)
                 if (ret.code === api.retcode.SUCCESS) {
                     this.article = ret.data
                 } else if (ret.code === api.retcode.NOT_FOUND) {
@@ -84,7 +86,7 @@ export default {
                     related_id: params.id,
                     order: 'time.desc',
                     loadfk: { 'user_id': null }
-                }, pageNumber, null, $.getRole('user'))
+                }, pageNumber, null, this.basicRole)
 
                 if (ret.code === api.retcode.SUCCESS) {
                     this.page = ret.data

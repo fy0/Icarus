@@ -1,12 +1,12 @@
 <template>
 <div class="ic-container">
-    <div v-if="user.nickname" v-title>{{user.nickname}} - {{state.config.title}}</div>
+    <div v-if="user.nickname" v-title>{{user.nickname}} - {{config.title}}</div>
     <div class="userpage">
         <div class="left ic-xs-hidden">
             <avatar :user="user" :size="164" class="avatar"></avatar>
             <p>{{user.nickname}}</p>
             <div>
-                <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>
+                <div>{{USER_GROUP_TXT[user.group]}}</div>
                 <div v-if="user.is_wiki_editor">百科编辑</div>
                 <div>第 {{user.number}} 名会员</div>
                 <div title="加入时间"><ic-time :ago="false" :timestamp="user.time"/></div>
@@ -17,7 +17,7 @@
                 <avatar :user="user" :size="100" class="avatar" style="flex: 1; align-items: center; justify-content: center;"></avatar>
                 <div style="flex: 1; padding-left: 10px;">
                     <p>{{user.nickname}}</p>
-                    <div>{{state.misc.USER_GROUP_TXT[user.group]}}</div>
+                    <div>{{USER_GROUP_TXT[user.group]}}</div>
                     <div>第 {{user.number}} 名会员</div>
                     <div title="加入时间"><ic-time :ago="false" :timestamp="user.time"/></div>
                 </div>
@@ -98,7 +98,7 @@
 </style>
 
 <script>
-import state from '@/state.js'
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
 
 export default {
@@ -113,9 +113,14 @@ export default {
                 comment: {
                     data: null
                 }
-            },
-            state
+            }
         }
+    },
+    computed: {
+        ...mapState(['config']),
+        ...mapGetters(['USER_GROUP_TXT']),
+        ...mapState('user', ['userData']),
+        ...mapGetters('user', ['basicRole'])
     },
     mounted: async function () {
         ;
@@ -144,7 +149,7 @@ export default {
             let role = null
             let params = this.$route.params
 
-            if (state.user && (params.id === state.user.id)) role = $.getRole('user')
+            if (this.userData && (params.id === this.userData.id)) role = this.basicRole
             let ret = await api.user.get(params, role)
 
             if (ret.code === api.retcode.SUCCESS) {

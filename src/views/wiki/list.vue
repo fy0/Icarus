@@ -1,13 +1,13 @@
 <template>
 <wiki-base>
-    <div v-title>全部文章 - 百科 - {{state.config.title}}</div>
+    <div v-title>全部文章 - 百科 - {{config.title}}</div>
     <div class="box ic-paper ic-z1">
         <template v-if="page.items.length === 0">尚无文章</template>
         <template v-else>
             <ul>
                 <li v-for="i in page.items" :key="i.id">
                     <router-link :to="{ name: 'wiki_article_by_ref', params: {'ref': i.ref } }">{{i.title}}</router-link>
-                    <router-link v-if="canEditWiki()" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
+                    <router-link v-if="canEditWiki" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
                 </li>
             </ul>
         </template>
@@ -25,23 +25,27 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
     data () {
         return {
-            state,
             marked,
-            loading: true,
             page: {
                 items: []
             }
         }
     },
+    computed: {
+        ...mapState(['config']),
+        ...mapGetters('user', [
+            'basicRole',
+            'canEditWiki'
+        ])
+    },
     methods: {
-        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
             let params = this.$route.params
@@ -50,7 +54,7 @@ export default {
             let ret = await api.wiki.list({
                 flag: null,
                 order: 'title.asc'
-            }, pageNumber, null, $.getRole('user'))
+            }, pageNumber, null, this.basicRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data

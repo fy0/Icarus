@@ -96,12 +96,12 @@
                         <a class="furbtn furbtn-s furbtn-blue" follow="1"><i class="fa fa-star"></i> 取消关注</a>
                     </div>
 
-                    <p><router-link v-if="state.user && (topic.user_id.id == state.user.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
+                    <p><router-link v-if="userData && (topic.user_id.id == userData.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
                     <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
                         <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
                         <p>历史编辑次数 {{topic.edit_count}} 次</p>
                     </div>
-                    <div class="topic-manage" v-if="isAdmin()">
+                    <div class="topic-manage" v-if="isBoardAdmin">
                         <i class="icarus icon-39" title="管理" style="color: #71c1ef; cursor: pointer" @click="setTopicManage({ 'val': true, 'data': topic })"></i>
                     </div>
 
@@ -289,11 +289,19 @@ export default {
         ...mapState(['config']),
         ...mapGetters([
             'POST_STATE',
-            'POST_TYPES'
+            'POST_TYPES',
+            'POST_VISIBLE',
+            'USER_GROUP_TXT'
         ]),
+        ...mapState('user', ['userData']),
+        ...mapGetters('user', ['basicRole', 'isForumAdmin']),
         ...mapGetters('forum', [
             'isNewSite'
-        ])
+        ]),
+        isBoardAdmin () {
+            // TOOD: 检查是否为版主
+            return this.isForumAdmin
+        }
     },
     methods: {
         ...mapMutations('dialog', {
@@ -311,7 +319,7 @@ export default {
             let ret = await api.topic.get({
                 id: params.id,
                 loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
-            }, $.getRole('user'))
+            }, this.basicRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 let mlog = await api.logManage.list({

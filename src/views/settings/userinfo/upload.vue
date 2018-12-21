@@ -1,6 +1,6 @@
 <template>
 <setting-base>
-    <div v-title>我的上传 - 用户设置 - {{state.config.title}}</div>
+    <div v-title>我的上传 - 用户设置 - {{config.title}}</div>
     <h3 class="ic-header">我的上传</h3>
     <div class="list">
         <div class="item" v-for="item in page.items" :key="item.id">
@@ -38,16 +38,19 @@
 </style>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import SettingBase from '../base/base.vue'
 
 export default {
     data () {
         return {
-            state,
             page: []
         }
+    },
+    computed: {
+        ...mapState(['config']),
+        ...mapGetters('user', ['basicRole'])
     },
     created: async function () {
         this.$store.commit('LOADING_INC', 1)
@@ -64,7 +67,7 @@ export default {
 
             let ret = await api.upload.list({
                 'type_name.is': null
-            }, 1, null, $.getRole('user'))
+            }, 1, null, this.basicRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.page = ret.data

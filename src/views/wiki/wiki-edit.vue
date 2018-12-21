@@ -5,7 +5,7 @@
 </redirecting>
 <div v-else class="ic-container">
     <div class="edit-page-title">
-        <div v-title>{{ isEdit ? '编辑文章' : '添加文章' }} - {{state.config.title}}</div>
+        <div v-title>{{ isEdit ? '编辑文章' : '添加文章' }} - {{config.title}}</div>
         <h3 class="" v-if="!isEdit">添加文章</h3>
         <h3 class="" v-else>编辑文章<span v-if="asAdmin"> - 管理员模式</span></h3>
         <button class="ic-btn primary right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
@@ -13,7 +13,7 @@
 
     <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
         <check-row :results="formErrors.title" :multi="true">
-            <input type="text" name="title" v-model="wikiInfo.title" :placeholder="`这里填写标题，${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${state.misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
+            <input type="text" name="title" v-model="wikiInfo.title" :placeholder="`这里填写标题，${BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
 
         <check-row :results="formErrors.ref" :multi="true" v-if="!save.flag">
@@ -98,9 +98,9 @@ div.markdown-editor > div.editor-toolbar {
 </style>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import nprogress from 'nprogress/nprogress.js'
 import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
@@ -110,7 +110,6 @@ import './../forum/topic-edit-fa.js'
 export default {
     data () {
         return {
-            state,
             asAdmin: false,
             loading: true,
             working: false,
@@ -129,6 +128,13 @@ export default {
         }
     },
     computed: {
+        ...mapState(['config']),
+        ...mapGetters(['BACKEND_CONFIG']),
+        ...mapState('user', ['userData']),
+        ...mapGetters('user', [
+            'canEditWiki',
+            'wikiEditRole'
+        ]),
         isEdit () {
             return this.$route.name === 'wiki_article_edit'
         },
@@ -143,7 +149,6 @@ export default {
         }
     },
     methods: {
-        canEditWiki: $.canEditWiki,
         send: async function (e) {
             let ret
             let wikiId
@@ -164,7 +169,7 @@ export default {
                 return
             }
 
-            let role = $.getWikiEditRole(state.user)
+            let role = this.wikiEditRole
             wikiInfo.returning = true
 
             if (this.isEdit) {
@@ -211,7 +216,7 @@ export default {
             // this.asAdmin = this.$route.query.manage
             this.asAdmin = true // 普通用户无法进入编辑页面
 
-            if (!state.user) {
+            if (!this.wikiEditRole) {
                 $.message_error('抱歉，无权访问此页面，请返回')
                 return
             }
@@ -237,8 +242,8 @@ export default {
         }
     },
     beforeRouteEnter (to, from, next) {
-        if (!state.user) {
-            state.working = 0
+        if (!this.userData) {
+            this.$store.commit('LOADING_SET', 0)
             nprogress.done()
             $.message_error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
             return next('/')
@@ -290,8 +295,8 @@ export default {
                             // console.log('done', ret)
                             if (ret.code === api.retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
-                                let url = `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
-                                let suffix = state.misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
+                                let url = `${this.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
+                                let suffix = this.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
                                 if (suffix) url += `-${suffix}`
                                 let newTxt = `![](${url})`
                                 let offset = newTxt.length - placeholder.length

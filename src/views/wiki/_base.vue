@@ -1,12 +1,12 @@
 <template>
 <div class="ic-container">
-    <div v-title>百科 - {{state.config.title}}</div>
+    <div v-title>百科 - {{config.title}}</div>
     <div class="wrapper">
         <div class="left-nav ic-xs-hidden">
             <div class="box ic-paper ic-z1">
                 <div class="sidebar-content" v-html="marked(sidebar.content || '')"></div>
                 <div class="ic-hr" style="margin: 10px 0px;"></div>
-                <div class="bottom" v-if="!state.loading">
+                <div class="bottom" v-if="!loading">
                     <div style="font-weight: bold">
                         <router-link :to="{ name: 'wiki_list' }">全部文章</router-link>
                     </div>
@@ -14,7 +14,7 @@
                         <router-link :to="{ name: 'wiki_random' }">随机页面</router-link>
                     </div>
 
-                    <template v-if="canEditWiki()">
+                    <template v-if="canEditWiki">
                         <div class="ic-hr" style="margin: 10px 0px;"></div>
                         <div>
                             <router-link :to="{ name: 'wiki_article_new' }">添加文章</router-link>
@@ -140,28 +140,33 @@ $title-text-active-color: darken(#373434, 0);
 </style>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import { marked } from '@/md.js'
 
 export default {
     data () {
         return {
-            state,
             marked,
             sidebar: {},
             mainpageId: null
         }
     },
+    computed: {
+        ...mapState(['config', 'loading']),
+        ...mapGetters('user', [
+            'canEditWiki',
+            'basicRole'
+        ])
+    },
     methods: {
-        canEditWiki: $.canEditWiki,
         fetchData: async function () {
             let wrong = false
 
             let getSidebar = async () => {
                 let ret = await api.wiki.get({
                     flag: 1
-                }, $.getRole('user'))
+                }, this.basicRole)
 
                 if (ret.code === api.retcode.SUCCESS) {
                     this.sidebar = ret.data
@@ -173,7 +178,7 @@ export default {
                 let ret = await api.wiki.get({
                     select: 'id',
                     flag: 2
-                }, $.getRole('user'))
+                }, this.basicRole)
 
                 if (ret.code === api.retcode.SUCCESS) {
                     this.mainpageId = ret.data.id

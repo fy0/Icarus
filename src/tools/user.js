@@ -5,43 +5,6 @@ $.isAdmin = function (user) {
     return (user) && (user.group >= state.misc.USER_GROUP.SUPERUSER)
 }
 
-$.canEditWiki = function (user) {
-    if (!user) user = state.user
-    if (!user) return
-    return $.isAdmin(user) || user.is_wiki_editor
-}
-
-$.getWikiEditRole = function (user) {
-    if ($.isAdmin(user)) {
-        return $.getRole('admin')
-    }
-    if (user.is_wiki_editor) {
-        return 'wiki_editor'
-    }
-}
-
-// 获取用户角色（取当前主要权限最高的一个）
-$.getRole = function (limit) {
-    let role = null
-    let roles = [null, 'ban', 'inactive_user', 'user', 'superuser', 'admin']
-    let rolesMap = {
-        [state.misc.USER_GROUP.BAN]: 'ban',
-        [state.misc.USER_GROUP.INACTIVE]: 'inactive_user',
-        [state.misc.USER_GROUP.NORMAL]: 'user',
-        [state.misc.USER_GROUP.SUPERUSER]: 'superuser',
-        [state.misc.USER_GROUP.ADMIN]: 'admin'
-    }
-
-    if (state.user) {
-        role = rolesMap[state.user.group]
-    }
-
-    let iCurrent = roles.indexOf(role)
-    let iLimit = limit === undefined ? 0 : roles.indexOf(limit)
-    if (iLimit === -1) return null
-    return roles[(iCurrent > iLimit) ? iLimit : iCurrent]
-}
-
 let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     const keyArray = Array.from(new Uint8Array(keyBuffer)) // key as byte array
     const saltArray = Array.from(new Uint8Array(saltUint8)) // salt as byte array
