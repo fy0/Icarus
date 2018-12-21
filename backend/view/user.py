@@ -197,6 +197,7 @@ class UserView(UserMixin, UserLegacyView):
                 data = self.ret_val['data']
                 data['roles'] = self.current_user_roles
                 data['main_role'] = self.current_user.main_role
+                self.finish(RETCODE.SUCCESS, data)
 
     async def update(self):
         post = await self.post_data()

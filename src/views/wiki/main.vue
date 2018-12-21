@@ -28,10 +28,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['config']),
-        ...mapGetters('user', [
-            'basicRole'
-        ])
+        ...mapState(['config'])
     },
     methods: {
         fetchData: async function () {
@@ -39,7 +36,7 @@ export default {
 
             let ret = await api.wiki.get({
                 flag: 2
-            }, this.basicRole)
+            }, this.$user.basicRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.mainpage = ret.data

@@ -97,6 +97,15 @@ Vue.component('dialog-user-inactive-warn', DialogUserInactiveWarn)
 Vue.component('dialog-user-set-nickname', DialogUserSetNickname)
 Vue.component('dialog-user-signout', DialogUserSignout)
 
+// 插件
+import ConfigHelper from './plugins/config_helper'
+import DialogHelper from './plugins/dialog_helper'
+import UserHelper from './plugins/user_helper'
+
+Vue.use(ConfigHelper)
+Vue.use(DialogHelper)
+Vue.use(UserHelper)
+
 Vue.directive('title', {
     inserted: function (el, binding) {
         document.title = el.innerText

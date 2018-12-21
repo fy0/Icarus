@@ -83,16 +83,10 @@ export default new Vuex.Store({
             // 若为登录用户，试图获取用户信息
             if (ret.data.user) {
                 let miscUser = ret.data.user
-                let userInfo = await api.user.get({ id: miscUser.id }, 'user')
-                if (userInfo.code === api.retcode.SUCCESS) {
-                    // 获取成功
-                    if (miscUser.daily_reward) {
-                        $.message_success(`每日登陆，获得经验 ${miscUser.daily_reward['exp']} 点`, 5000)
-                    }
+                await dispatch('user/apiGetUserData', miscUser.id)
 
-                    commit('user/setUserData', userInfo.data)
-                } else {
-                    $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
+                if (miscUser.daily_reward) {
+                    $.message_success(`每日登陆，获得经验 ${miscUser.daily_reward['exp']} 点`, 5000)
                 }
             }
             $.tickStart()

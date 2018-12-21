@@ -1,6 +1,6 @@
 <template>
 <setting-base>
-    <div v-title>个人信息 - 用户设置 - {{state.config.title}}</div>
+    <div v-title>个人信息 - 用户设置 - {{$config.title}}</div>
     <h3 class="ic-header">个人信息</h3>
 
     <div class="box">
@@ -16,7 +16,7 @@
                 <div class="setting-item">
                     <span class="label">
                         <template>昵称</template>
-                        <span class="change-nickname" v-if="user.change_nickname_chance" @click="state.dialog.userSetNickname = true">
+                        <span class="change-nickname" v-if="user.change_nickname_chance" @click="$dialog.setUserNickname(true)">
                             <template>修改昵称(剩余次数{{user.change_nickname_chance}})</template>
                         </span>
                     </span>
@@ -65,20 +65,20 @@
         </div>
         <div class="right">
             <div class="setting-item">
-                <div class="line box-avatar" @click="(atLeastUser) ? state.dialog.userSetAvatar = true : null" >
+                <div class="line box-avatar" @click="($user.data) ? state.dialog.userSetAvatar = true : null" >
                     <avatar :is-link="false" :user="state.user" :size="200" class="avatar"></avatar>
-                    <button v-if="atLeastUser" class="ic-btn primary btn-upload" style="margin-top: 10px; max-width: 200px">点此上传新头像</button>
+                    <button v-if="$user.data" class="ic-btn primary btn-upload" style="margin-top: 10px; max-width: 200px">点此上传新头像</button>
                 </div>
             </div>
 
             <div class="setting-item">
                 <span class="label">用户组</span>
                 <div class="line">
-                    <span>{{state.misc.USER_GROUP_TXT[user.group]}}</span>
-                    <template v-if="state.isInactiveUser()">
+                    <span>{{USER_GROUP_TXT[user.group]}}</span>
+                    <!-- <template v-if="state.isInactiveUser()">
                         <a class="resend" v-if="sending">正在发送中 ...</a>
                         <a class="resend" v-else href="javascript:void(0)" @click="resendActivationMail">重发激活邮件</a>
-                    </template>
+                    </template> -->
                 </div>
             </div>
 
@@ -176,36 +176,24 @@ a.resend {
 </style>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import SettingBase from '../base/base.vue'
 
 export default {
     data () {
         return {
-            state,
             sending: false,
             userSave: null,
-            updating: false,
-            avatarUploadShow: false
+            updating: false
         }
     },
     computed: {
         'user': function () {
             if (!this.userSave) {
-                this.$set(this, 'userSave', _.clone(state.user))
+                this.$set(this, 'userSave', _.clone(this.$user.data))
             }
             return this.userSave
-        },
-        atLeastUser: function () {
-            if (this.state.user) {
-                let g = this.state.user.group
-                return g && g > this.state.misc.USER_GROUP.INACTIVE
-            }
-        },
-        changed: function () {
-            let data = $.objDiff(this.userSave, state.user)
-            return Object.keys(data).length
         }
     },
     methods: {
@@ -215,31 +203,20 @@ export default {
             //     id: params.id,
             // })
         },
-        resendActivationMail: async function () {
-            if (this.sending) return
-            this.sending = true
-            let ret = await api.user.resendActivationMail()
-            if (ret.code === api.retcode.SUCCESS) {
-                $.message_success('激活邮件发送成功！请检查邮箱。')
-            } else {
-                $.message_error('发送失败，每30分钟只能发送一次。')
-            }
-            this.sending = false
-        },
+        // resendActivationMail: async function () {
+        //     if (this.sending) return
+        //     this.sending = true
+        //     let ret = await api.user.resendActivationMail()
+        //     if (ret.code === api.retcode.SUCCESS) {
+        //         $.message_success('激活邮件发送成功！请检查邮箱。')
+        //     } else {
+        //         $.message_error('发送失败，每30分钟只能发送一次。')
+        //     }
+        //     this.sending = false
+        // },
         updateInfo: async function () {
             if (this.updating) return
-            if (!this.changed) return
-            this.updating = true
-            let data = $.objDiff(this.userSave, state.user)
-            delete data['avatar'] // 头像的更新是独立的参见BUG12
-            let ret = await api.user.set({ id: state.user.id }, data, 'user')
-            if (ret.code === api.retcode.SUCCESS) {
-                for (let [k, v] of Object.entries(data)) {
-                    state.user[k] = v
-                }
-                this.userSave = _.clone(state.user)
-                $.message_success('信息修改成功！')
-            }
+            await this.$store.dispatch('user/apiSetUserData')
             this.updating = false
         }
     },
