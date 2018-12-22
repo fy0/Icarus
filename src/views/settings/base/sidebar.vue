@@ -45,20 +45,14 @@
 </style>
 
 <script>
-import state from '@/state.js'
 
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     computed: {
         isLoginUser: function () {
-            if (this.state.user) {
-                let g = this.state.user.group
-                return g && g > this.state.misc.USER_GROUP.INACTIVE
-            }
+            return this.$user.data // && this.$user.data.group >= this.$misc.USER_GROUP.USER
         }
     }
 }

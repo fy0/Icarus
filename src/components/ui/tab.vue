@@ -15,8 +15,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     props: {
         title: {
@@ -27,9 +25,7 @@ export default {
         }
     },
     data () {
-        return {
-            state
-        }
+        return {}
     },
     computed: {
         isActive: function () {

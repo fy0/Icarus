@@ -10,6 +10,7 @@ class UserHelperGetters {
     get roles () { return getters['user/roles'] }
     get basicRole () { return getters['user/basicRole'] }
     get mainRole () { return getters['user/mainRole'] }
+    get forumAdminRole () { return getters['user/forumAdminRole'] }
     get wikiEditRole () { return getters['user/wikiEditRole'] }
 
     get canEditWiki () { return getters['user/canEditWiki'] }

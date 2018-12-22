@@ -1,11 +1,11 @@
 import api from '../netapi.js'
-import state from '@/state.js'
+import store from '@/store/index'
 
 let uploadKeyTime = 0
 let uploadToken = ''
 
 $.staticUrl = function (key) {
-    return `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${key}`
+    return `${store.state.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${key}`
 }
 
 $.asyncGetUploadToken = async function (isAvatarUpload = false) {
@@ -17,7 +17,7 @@ $.asyncGetUploadToken = async function (isAvatarUpload = false) {
         return null
     }
 
-    let offset = state.misc.BACKEND_CONFIG.UPLOAD_QINIU_DEADLINE_OFFSET - 2 * 60
+    let offset = store.state.BACKEND_CONFIG.UPLOAD_QINIU_DEADLINE_OFFSET - 2 * 60
     let now = Date.parse(new Date()) / 1000
     // 若 token 的有效时间降至，那么申请一个新的（2min余量）
     if ((now - uploadKeyTime) > offset) {

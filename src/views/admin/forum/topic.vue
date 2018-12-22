@@ -1,6 +1,6 @@
 <template>
 <admin-base>
-    <div v-title>主题管理 - 管理界面 - {{state.config.title}}</div>
+    <div v-title>主题管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">主题管理</h3>
 
     <div class="search-box" v-if="false">
@@ -9,7 +9,7 @@
     <div v-if="topics && topics.items && topics.items.length">
         <ul class="ic-collection">
             <li class="item ic-collection-item" v-for="i in topics.items" :key="i.id">
-                <router-link class="title" :class="i.state === state.misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                <router-link class="title" :class="i.state === this.$misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                     <span>{{i.title}}</span>
                     <span class="icons">
                         <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272"></i>
@@ -20,8 +20,8 @@
                     <router-link class="board" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link> ·
                     <user-link :user="i.user_id" /> ·
                     <ic-time :timestamp="i.time" /> ·
-                    <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
-                    <i class="ic-topic-manage-icon icarus icon-39" title="管理" @click="setTopicManage(i)"></i>
+                    <span>{{$misc.POST_STATE_TXT[i.state]}}</span> ·
+                    <i class="ic-topic-manage-icon icarus icon-39" title="管理" @click="$dialogs.setTopicManage(true, i)"></i>
                 </div>
             </li>
         </ul>
@@ -71,22 +71,16 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 
 export default {
     data () {
         return {
-            state,
             searchTxt: '',
             topics: {}
         }
     },
     methods: {
-        setTopicManage: function (topic) {
-            state.dialog.topicManageData = topic
-            state.dialog.topicManage = true
-        },
         fetchData: async function () {
             let params = this.$route.params
             let retList = await api.topic.list({

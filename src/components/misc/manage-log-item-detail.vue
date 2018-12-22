@@ -18,8 +18,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     props: {
         item: {},
@@ -27,9 +25,8 @@ export default {
     },
     data () {
         return {
-            state,
-            MOP: state.misc.MANAGE_OPERATION,
-            MOPT: state.misc.MANAGE_OPERATION_TXT
+            MOP: this.$misc.MANAGE_OPERATION,
+            MOPT: this.$misc.MANAGE_OPERATION_TXT
         }
     },
     computed: {
@@ -49,13 +46,13 @@ export default {
     },
     methods: {
         postStateTxt: function (postState) {
-            return state.misc.POST_STATE_TXT[postState]
+            return this.$misc.POST_STATE_TXT[postState]
         },
         postVisibleTxt: function (i) {
-            return state.misc.POST_VISIBLE_TXT[i]
+            return this.$misc.POST_VISIBLE_TXT[i]
         },
         postGroupTxt: function (i) {
-            return state.misc.USER_GROUP_TXT[i]
+            return this.$misc.USER_GROUP_TXT[i]
         },
         getOP: function (item) {
             return item.operation || item.op

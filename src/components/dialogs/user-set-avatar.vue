@@ -1,5 +1,5 @@
 <template>
-<ic-dialog title="设置头像" v-model="state.dialog.userSetAvatar" :show-button-area="false" :on-close="close" :allow-outside-close="false">
+<ic-dialog title="设置头像" v-model="userSetAvatar" :show-button-area="false" :on-close="close" :allow-outside-close="false">
     <div class="content">
         <template v-if="loading">
             <div class="user-set-avatar-loading">
@@ -304,14 +304,13 @@ $i_h: 42px;
 </style>
 
 <script>
+import { mapState } from 'vuex'
 import * as qiniu from 'qiniu-js'
-import state from '@/state.js'
 import api from '@/netapi.js'
 
 export default {
     data () {
         return {
-            state,
             image: '',
             imageResult: '',
             loading: false,
@@ -350,6 +349,9 @@ export default {
         }
     },
     computed: {
+        ...mapState('dialog', [
+            'userSetAvatar'
+        ]),
         imgStyle: function () {
             return {
                 top: `${this.camera.top}px`,
@@ -488,7 +490,7 @@ export default {
         close: function () {
             this.image = ''
             this.imageResult = ''
-            state.dialog.userSetAvatar = false
+            this.$dialogs.setUserNickname(false)
         },
         saveAvatarImage: async function () {
             this.loading = true
@@ -502,7 +504,9 @@ export default {
                         // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                         // console.log('done', res)
                         if (res.code === api.retcode.SUCCESS) {
-                            state.user.avatar = res.data
+                            let newData = Object.assign({}, this.$user.data)
+                            newData.avatar = res.data
+                            this.$store.commit('user/SET_USER_DATA', newData)
                         }
                         // TODO: 完成的效果先不弄了，直接关掉了事
                         this.loading = false

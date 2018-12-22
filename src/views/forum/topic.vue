@@ -307,7 +307,6 @@ export default {
             'setTopicManage': 'SET_TOPIC_MANAGE'
         }),
         marked,
-        isAdmin: $.isAdmin,
         textLimit: $.textLimit,
         scrollTo: function (id) {
             let el = document.getElementById(id)

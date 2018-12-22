@@ -41,13 +41,10 @@
 <script>
 import Vue from 'vue'
 import api from '@/netapi.js'
-import state from '@/state.js'
 
 export default {
-    name: '',
     data () {
         return {
-            state: '',
             info: {
                 nickname: '',
                 email: '',
@@ -65,8 +62,8 @@ export default {
             },
             dialogLicense: false,
             formErrors: {},
-            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+            passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     mounted () {
@@ -126,8 +123,7 @@ export default {
                     let userinfo = ret.data
                     if (ret.code === 0) {
                         api.saveAccessToken(userinfo['access_token'])
-                        ret = await api.user.get({ id: ret.data.id }, 'user')
-                        Vue.set(state, 'user', ret.data)
+                        await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                         $.message_by_code(ret.code)
                         // 用户注册完之后顺便把对应内容发给 oauthUpdate 更新

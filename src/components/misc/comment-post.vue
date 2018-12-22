@@ -2,14 +2,14 @@
 <template>
 <div class="ic-comment-post" id="ic-comment-post">
     <div class="ic-comment" v-if="false">
-        <avatar :user="state.user" class="avatar"></avatar>
+        <avatar :user="this.$user.data" class="avatar"></avatar>
         <div class="right-box">
             <div class="ic-paper round ic-z1 not-signin-content">你的账号需要激活后才能发言，请检查邮箱</div>
         </div>
     </div>
 
-    <div class="ic-comment" v-else-if="state.user">
-        <avatar :depth="editing ? 3 : 1" :user="state.user" class="avatar"></avatar>
+    <div class="ic-comment" v-else-if="this.$user.data">
+        <avatar :depth="editing ? 3 : 1" :user="this.$user.data" class="avatar"></avatar>
         <div class="right-box" v-if="isClosed()">
             <div class="ic-paper round ic-z1 not-signin-content">评论已关闭</div>
         </div>
@@ -89,7 +89,6 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import anime from 'animejs'
 
 export default {
@@ -99,7 +98,6 @@ export default {
     },
     data () {
         return {
-            state,
             loading: false,
             replyTo: null,
             editing: false,
@@ -117,8 +115,8 @@ export default {
     },
     methods: {
         isClosed () {
-            if (this.postType === state.misc.POST_TYPES.TOPIC) {
-                return this.item.state <= state.misc.POST_STATE.CLOSE
+            if (this.postType === this.$misc.POST_TYPES.TOPIC) {
+                return this.item.state <= this.$misc.POST_STATE.CLOSE
             }
             return false
         },

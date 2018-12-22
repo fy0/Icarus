@@ -1,7 +1,7 @@
 <template>
-<page-not-found v-if="!isAdmin()"/>
+<page-not-found v-if="!$user.isSiteAdmin"/>
 <div class="ic-container" v-else>
-    <div v-title>管理界面 - {{state.config.title}}</div>
+    <div v-title>管理界面 - {{$config.title}}</div>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>
@@ -31,16 +31,12 @@
 
 <script>
 import Sidebar from './sidebar.vue'
-import state from '@/state.js'
 
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     methods: {
-        isAdmin: $.isAdmin
     },
     components: {
         Sidebar

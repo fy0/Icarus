@@ -99,12 +99,10 @@
 <script>
 import Vue from 'vue'
 import api from '@/netapi.js'
-import state from '@/state.js'
 
 export default {
     data () {
         return {
-            state,
             info: {
                 email: '',
                 nickname: '',
@@ -116,8 +114,8 @@ export default {
             },
             dialogLicense: false,
             formErrors: {},
-            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+            passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {
@@ -158,8 +156,7 @@ export default {
                     let userinfo = ret.data
                     if (ret.code === 0) {
                         api.saveAccessToken(userinfo['access_token'])
-                        ret = await api.user.get({ id: ret.data.id }, 'inactive_user')
-                        Vue.set(state, 'user', ret.data)
+                        await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                         if (ret.code === api.retcode.SUCCESS) {
                             $.message_success('注册成功！')

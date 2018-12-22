@@ -1,10 +1,10 @@
 <template>
-<ic-dialog v-if="state.user" :width="'360px'" v-model="state.dialog.userSetNickname" :title="`修改用户昵称`" scrollable>
+<ic-dialog v-if="$user.data" :width="'360px'" v-model="userSetNickname" :title="`修改用户昵称`" scrollable>
     <div>
         <form class="ic-form">
             <check-row>
                 <label for="nickname">当前昵称</label>
-                <div>{{state.user.nickname}}</div>
+                <div>{{$user.data.nickname}}</div>
             </check-row>
             <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
                 <label for="nickname">新昵称</label>
@@ -51,13 +51,12 @@
 </style>
 
 <script>
-import state from '@/state.js'
+import { mapState } from 'vuex'
 import api from '@/netapi.js'
 
 export default {
     data () {
         return {
-            state,
             formErrors: {
                 nickname: []
             },
@@ -67,14 +66,19 @@ export default {
             sending: false
         }
     },
+    computed: {
+        ...mapState('dialog', [
+            'userSetNickname'
+        ])
+    },
     methods: {
         ok: async function () {
             if (await this.changeNickname()) {
-                state.dialog.userSetNickname = null
+                this.$dialogs.setUserNickname(false)
             }
         },
         cancel: async function () {
-            state.dialog.userSetNickname = null
+            this.$dialogs.setUserNickname(false)
         },
         checkNickname: function () {
             return $.checkNickname(this.info.nickname)
@@ -86,9 +90,11 @@ export default {
             let ret = await api.user.changeNickname(this.info.nickname)
             if (ret.code === api.retcode.SUCCESS) {
                 $.message_success('修改成功！')
-                state.user.nickname = ret.data.nickname
-                state.user.change_nickname_chance = ret.data.change_nickname_chance
-                state.user.is_new_user = false
+                let newData = Object.assign({}, this.$user.data)
+                newData.nickname = ret.data.nickname
+                newData.change_nickname_chance = ret.data.change_nickname_chance
+                newData.is_new_user = false
+                this.$store.commit('user/SET_USER_DATA', newData)
                 this.sending = false
                 return true
             } else if (ret.code === api.retcode.INVALID_POSTDATA) {

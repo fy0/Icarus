@@ -22,6 +22,7 @@ export default new Vuex.Store({
         misc: null,
         loading: 0,
         msgs: [],
+        online: 0,
 
         _initing: false
     },
@@ -64,6 +65,16 @@ export default new Vuex.Store({
         },
         LOADING_SET (state, num = 0) {
             state.loading = num
+        },
+        // MESSAGE
+        MESSAGE_PUSH (state, info) {
+            state.msgs.push(info)
+        },
+        MESSAGE_REMOVE (state, info) {
+            state.msgs.splice(state.msgs.indexOf(info), 1)
+        },
+        SET_ONLINE (state, num) {
+            state.online = num
         }
     },
     actions: {
@@ -80,14 +91,17 @@ export default new Vuex.Store({
             }
             commit('SET_MISC', ret.data)
 
-            // 若为登录用户，试图获取用户信息
             if (ret.data.user) {
+                // 若为登录用户，试图获取用户信息
                 let miscUser = ret.data.user
                 await dispatch('user/apiGetUserData', miscUser.id)
 
                 if (miscUser.daily_reward) {
                     $.message_success(`每日登陆，获得经验 ${miscUser.daily_reward['exp']} 点`, 5000)
                 }
+            } else {
+                // 未登录，清除现有信息（用于退出登录等场景）
+                commit('user/RESET')
             }
             $.tickStart()
             commit('SET_INITING', false)

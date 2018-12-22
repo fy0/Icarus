@@ -112,20 +112,18 @@
 <script>
 import Vue from 'vue'
 import api from '@/netapi.js'
-import state from '@/state.js'
 
 export default {
     data () {
         return {
-            state,
             info: {
                 email: '',
                 password: ''
             },
             goLastPage: false,
             formErrors: {},
-            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+            passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {
@@ -158,9 +156,7 @@ export default {
                     password: await $.passwordHash(this.info.password)
                 })
                 if (ret.code === api.retcode.SUCCESS) {
-                    ret = await api.user.get({ id: ret.data.id }, 'inactive_user')
-                    if (ret.code !== api.retcode.SUCCESS) return
-                    Vue.set(state, 'user', ret.data) // 这样顶栏可以接到事件
+                    await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                     if (this.goLastPage) {
                         this.$store.commit('LOADING_DEC', 1)

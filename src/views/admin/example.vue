@@ -9,14 +9,11 @@
 
 <script>
 // import api from '@/netapi.js'
-import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     methods: {
         fetchData: async function () {

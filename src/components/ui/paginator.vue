@@ -93,8 +93,6 @@
 故而不予使用，但是样式确实漂亮，因此又“借”之。
 */
 
-import state from '@/state.js'
-
 export default {
     props: {
         pageInfo: Object,
@@ -109,9 +107,7 @@ export default {
         }
     },
     data () {
-        return {
-            state
-        }
+        return {}
     },
     methods: {
         toInfo: function (page) {

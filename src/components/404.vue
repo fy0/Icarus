@@ -22,8 +22,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     props: {
         countdown: {
@@ -41,7 +39,6 @@ export default {
     },
     data () {
         return {
-            state,
             second: 7,
             timer: null
         }
@@ -50,7 +47,7 @@ export default {
         fetchData: function () {
             this.timer = setInterval(() => {
                 // 防止某些页面因为网络太慢，在还未加载出内容时被404页面倒计时跳转主页
-                if (state.loading) return
+                if (this.$store.state.loading) return
                 this.second--
                 if (!this.second) {
                     clearInterval(this.timer)

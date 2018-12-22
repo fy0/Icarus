@@ -15,7 +15,7 @@
         </div>
         <div class="brief ic-xs-hidden ic-md-hidden" title="板块简介" v-if="board">{{board.brief}}</div>
     </div>
-    <div v-if="state.user" style="display: flex; align-items: center;">
+    <div v-if="$user.data" style="display: flex; align-items: center;">
         <!-- <span>声望: {{state.user.repute}}</span> -->
         <div class="char-info">
             <div class="bar-area">
@@ -23,8 +23,8 @@
                 <ic-progress :show-percent-when-hover="true" class="expbar" v-model="levelInfo.cur" :title="`${levelInfo.cur}/${levelInfo.exp.level}`" :max="levelInfo.exp.level"/>
             </div>
             <div class="other">
-                <span><i class="icarus icon-bulb"/> {{state.user.exp}}</span>
-                <span><i class="icarus icon-coin1"/> {{state.user.credit}}</span>
+                <span><i class="icarus icon-bulb"/> {{$user.data.exp}}</span>
+                <span><i class="icarus icon-coin1"/> {{$user.data.credit}}</span>
             </div>
         </div>
         <span class="ic-btn outline orange checkin" @click="checkIn" v-if="!checkedIn">签到</span>
@@ -163,7 +163,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import api from '@/netapi.js'
 
 export default {
@@ -172,7 +171,6 @@ export default {
     },
     data () {
         return {
-            state,
             withSubBoardsTopic: false,
             showOrderMenu: false,
             showCheckedHits1: false,
@@ -196,14 +194,14 @@ export default {
             }
         },
         levelInfo: function () {
-            return $.getLevelByExp(this.state.user.exp)
+            return $.getLevelByExp(this.$user.data.exp)
         },
         checkedIn: function () {
-            return state.user && state.user['last_check_in_time'] >= state.misc.extra.midnight_time
+            return this.$user.data && this.$user.data['last_check_in_time'] >= this.$misc.extra.midnight_time
         },
         checkedInText: function () {
             if (this.showCheckedHits1 || this.showCheckedHits2) {
-                return `x ${state.user.check_in_his}`
+                return `x ${this.$user.data.check_in_his}`
             }
             return '已签'
         }
@@ -221,10 +219,12 @@ export default {
         checkIn: async function () {
             let ret = await api.user.checkIn()
             if (ret.code === api.retcode.SUCCESS) {
-                state.user['last_check_in_time'] = ret.data.time
-                state.user['check_in_his'] = ret.data.check_in_his
-                state.user.exp += ret.data.exp
-                state.user.credit += ret.data.credit
+                let newData = Object.assign({}, this.$user.data)
+                newData['last_check_in_time'] = ret.data.time
+                newData['check_in_his'] = ret.data.check_in_his
+                newData.exp += ret.data.exp
+                newData.credit += ret.data.credit
+                this.$store.commit('user/SET_USER_DATA', newData)
                 this.showCheckedHits2 = true
                 $.message_success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
             } else {

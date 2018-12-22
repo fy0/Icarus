@@ -1,5 +1,5 @@
 import api from '../netapi.js'
-import state from '@/state.js'
+import store from '@/store/index'
 
 $.makePostLinkData = function (type, item) {
     let title = item.name || item.title || item.nickname
@@ -9,7 +9,7 @@ $.makePostLinkData = function (type, item) {
 }
 
 $.getBasePostsByIDs = async function (func, items, role = null) {
-    let PT = state.misc.POST_TYPES
+    let PT = store.state.POST_TYPES
     let idsByType = {}
 
     for (let i of items) {

@@ -1,6 +1,6 @@
 <template>
 <admin-base>
-    <div v-title>管理日志 - 管理界面 - {{state.config.title}}</div>
+    <div v-title>管理日志 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">管理日志</h3>
 
     <div v-if="page.items.length === 0" class="no-comment">目前没有日志</div>
@@ -89,7 +89,6 @@
 <script>
 import { marked } from '@/md.js'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
@@ -97,11 +96,10 @@ export default {
     data () {
         return {
             marked,
-            state,
             page: { info: {}, items: [] },
             postsOfComments: {},
-            MOP: state.misc.MANAGE_OPERATION,
-            MOPT: state.misc.MANAGE_OPERATION_TXT
+            MOP: this.$misc.MANAGE_OPERATION,
+            MOPT: this.$misc.MANAGE_OPERATION_TXT
         }
     },
     methods: {

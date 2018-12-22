@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container">
-    <div v-title>用户设置 - {{state.config.title}}</div>
+    <div v-title>用户设置 - {{$config.title}}</div>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>
@@ -27,13 +27,10 @@
 
 <script>
 import Sidebar from './sidebar.vue'
-import state from '@/state.js'
 
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     components: {
         Sidebar

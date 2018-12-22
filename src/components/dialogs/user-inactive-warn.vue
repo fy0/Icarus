@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-if="state.user" v-model="state.dialog.userInactive" :title="`还未准备好……`" scrollable>
+<ic-dialog v-if="$user.data" v-model="userInactive" :title="`还未准备好……`" scrollable>
     <div>
         <div>你的账号需要<b>激活</b>后才能发言，请在邮箱中查收激活邮件。</div>
         <div>
@@ -30,19 +30,23 @@
 </style>
 
 <script>
-import state from '@/state.js'
+import { mapState } from 'vuex'
 import api from '@/netapi.js'
 
 export default {
     data () {
         return {
-            state,
             sending: false
         }
     },
+    computed: {
+        ...mapState('dialog', [
+            'userInactive'
+        ])
+    },
     methods: {
         ok: async function () {
-            state.dialog.userInactive = null
+            this.$dialogs.setUserInactive(false)
         },
         resendActivationMail: async function () {
             this.sending = true

@@ -145,7 +145,7 @@
                                 <span class="icons">
                                     <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
                                     <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                    <i v-if="isAdmin() && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage({ 'val': true, 'data': i })"></i>
+                                    <i v-if="$user.isForumAdmin && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage({ 'val': true, 'data': i })"></i>
                                 </span>
 
                                 <div class="append-icons">
@@ -191,7 +191,7 @@
     <dialog-site-new v-if="isNewSite" />
     <dialog-user-set-nickname v-else-if="isNewUser"/>
     <dialog-topic-manage />
-    <dialog-user-inactive-warn />
+    <!-- <dialog-user-inactive-warn /> -->
 
     <ic-hangbtn class="ic-xs ic-hidden" title="打开侧栏" style="right: calc(8% + 45px)" :check-display="() => true" :onclick="() => { showSlideMenu = !showSlideMenu }">
         <i class="icarus icon-control"></i>
@@ -418,9 +418,6 @@ export default {
         ...mapActions('forum', {
         }),
         atConvert: $.atConvert2,
-        isAdmin: function () {
-            return $.isAdmin()
-        },
         boardBadgeTitleById: function (id) {
             let chain = this.getBoardChainById(id)
             let ret = ''

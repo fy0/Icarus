@@ -1,7 +1,8 @@
-import state from '@/state.js'
+import store from '@/store/index'
 
 let messageId = 1
 
+// 这个模块先不动吧，暂且如此
 $.message = function (type, text, timeout = 3000) {
     // type: default, secondary, success, warning, error
     let convert = {
@@ -12,9 +13,9 @@ $.message = function (type, text, timeout = 3000) {
         'error': 'am-alert-danger'
     }
     let data = { type, text, class: convert[type], id: messageId++ }
-    state.msgs.push(data)
+    store.commit('MESSAGE_PUSH', data)
     _.delay(() => {
-        state.msgs.splice(state.msgs.indexOf(data), 1)
+        store.commit('MESSAGE_REMOVE', data)
     }, timeout)
 }
 
@@ -39,9 +40,9 @@ $.message_error = function (text, timeout = 3000) {
 }
 
 $.message_by_code = function (code, data, text = null, timeout = 3000) {
-    text = text || state.misc.retinfo_cn[code]
-    if (code === state.misc.retcode.SUCCESS) $.message_success(text, timeout)
-    else if (code === state.misc.retcode.TOO_FREQUENT && data) {
+    text = text || store.state.misc.retinfo_cn[code]
+    if (code === store.state.misc.retcode.SUCCESS) $.message_success(text, timeout)
+    else if (code === store.state.misc.retcode.TOO_FREQUENT && data) {
         $.message_error(`${text}，尚需等待 ${data} 秒`, timeout)
     } else $.message_error(text, timeout)
 }

@@ -1,6 +1,6 @@
 <template>
 <admin-base>
-    <div v-title>用户管理 - 管理界面 - {{state.config.title}}</div>
+    <div v-title>用户管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">用户管理</h3>
 
     <div class="search-box">
@@ -15,9 +15,9 @@
                     <user-link :user="i" />
                     <div class="info">
                         <span>注册于 <ic-time :ago="false" :timestamp="i.time" /></span> ·
-                        <span>{{state.misc.USER_GROUP_TXT[i.group]}}</span> ·
-                        <span>{{state.misc.POST_STATE_TXT[i.state]}}</span> ·
-                        <i class="ic-topic-manage-icon icarus icon-39" title="管理" @click="setUserManage(i)"></i>
+                        <span>{{$misc.USER_GROUP_TXT[i.group]}}</span> ·
+                        <span>{{$misc.POST_STATE_TXT[i.state]}}</span> ·
+                        <i class="ic-topic-manage-icon icarus icon-39" title="管理" @click="$dialogs.setUserManage(true, i)"></i>
                     </div>
                     <div>
                         <a @click="userPasswordReset(i)" href="javascript:void(0);" style="margin-right: 10px;">密码重置</a>
@@ -62,13 +62,11 @@
 <script>
 import api from '@/netapi.js'
 import swal from 'sweetalert2'
-import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 
 export default {
     data () {
         return {
-            state,
             searchTxt: '',
             page: {}
         }
@@ -107,10 +105,6 @@ export default {
             if (!found) {
                 this.page = {}
             }
-        },
-        setUserManage: function (user) {
-            state.dialog.userManageData = user
-            state.dialog.userManage = true
         },
         userPasswordReset: function (user) {
             swal({

@@ -1,6 +1,6 @@
 <template>
 <setting-base>
-    <div v-title>用户设置 - {{state.config.title}}</div>
+    <div v-title>用户设置 - {{$config.title}}</div>
     <span>测试。以后来个仪表盘什么的</span>
 </setting-base>
 </template>
@@ -10,14 +10,11 @@
 
 <script>
 // import api from '@/netapi.js'
-import state from '@/state.js'
 import SettingBase from './base/base.vue'
 
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     methods: {
         fetchData: async function () {

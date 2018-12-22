@@ -68,7 +68,6 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 
 export default {
     data () {
@@ -81,8 +80,8 @@ export default {
             requesting: false,
             formErrors: {},
             stage: 0,
-            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+            passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {
@@ -107,8 +106,8 @@ export default {
                 let ret = await api.user.validatePasswordReset(query.uid, query.code, await $.passwordHash(this.info.password))
                 if (ret.code === api.retcode.SUCCESS) {
                     this.stage = 2
-                    if (state.user && state.user.id === ret.data.id) {
-                        state.user = null
+                    if (this.$user.data && this.$user.data.id === ret.data.id) {
+                        this.$store.commit('user/RESET')
                     }
                 } else {
                     this.formErrors = ret.data

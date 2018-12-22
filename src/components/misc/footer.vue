@@ -2,7 +2,7 @@
 <footer class="ic-container">
     <div class="left">
         <div class="copyright">Powered by <a href="https://github.com/fy0/icarus" target="_blank">Icarus</a>1.4.0 WIP © 2018</div>
-        <span>当前共有 {{state.userOnline}} 人在线</span>
+        <span>当前共有 {{$store.state.online}} 人在线</span>
     </div>
     <div class="right">
         <div v-html="extraHtml" v-if="extraHtml"></div>
@@ -56,18 +56,13 @@ footer.ic-container {
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     computed: {
         extraHtml: function () {
-            if ((!this.state.misc) || (!this.state.misc.BACKEND_CONFIG)) return
-            return this.state.misc.BACKEND_CONFIG.FOOTER_EXTRA_HTML
+            return this.$store.getters.BACKEND_CONFIG.FOOTER_EXTRA_HTML
         }
     }
 }

@@ -103,18 +103,16 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
     data () {
         return {
-            state,
             posts: {},
-            POST_TYPES: state.misc.POST_TYPES,
-            NOTIF_TYPE: state.misc.NOTIF_TYPE,
-            MOP: state.misc.MANAGE_OPERATION,
-            MOPT: state.misc.MANAGE_OPERATION_TXT,
+            POST_TYPES: this.$misc.POST_TYPES,
+            NOTIF_TYPE: this.$misc.NOTIF_TYPE,
+            MOP: this.$misc.MANAGE_OPERATION,
+            MOPT: this.$misc.MANAGE_OPERATION_TXT,
             page: {}
         }
     },
@@ -124,14 +122,14 @@ export default {
     methods: {
         atConvert: $.atConvert2,
         typeName: function (type) {
-            return this.state.misc.POST_TYPES_TXT[type]
+            return this.$misc.POST_TYPES_TXT[type]
         },
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)
             let params = this.$route.query
             this.page.curPage = params.page
             let ret = await api.notif.list({
-                receiver_id: state.user.id,
+                receiver_id: this.$user.data.id,
                 order: 'time.desc'
                 // loadfk: {user_id: null, board_id: null}
             }, params.page)
@@ -144,7 +142,7 @@ export default {
                     for (let uid of i.sender_ids) {
                         userIds.add(uid)
                     }
-                    if (i.type === state.misc.NOTIF_TYPE.MANAGE_INFO_ABOUT_ME) {
+                    if (i.type === this.$misc.NOTIF_TYPE.MANAGE_INFO_ABOUT_ME) {
                         this.posts[i.related_id] = {
                             'id': i.related_id,
                             'post_type': i.related_type,
@@ -201,7 +199,7 @@ export default {
                 if (ret2.code === api.retcode.SUCCESS) {
                     // 会出现负数问题
                     // state.unread -= ret2.data
-                    state.unread = 0
+                    this.$store.commit('user/SET_UNREAD', 0)
                 }
             } else {
                 if (ret.code === api.retcode.NOT_FOUND) {

@@ -1,6 +1,6 @@
 <template>
 <admin-base>
-    <div v-title>板块管理 - 管理界面 - {{state.config.title}}</div>
+    <div v-title>板块管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">板块管理</h3>
 
     <table class="pure-table pure-table-horizontal" style="width: 100%">
@@ -23,9 +23,9 @@
                 <td>{{i.brief}}</td>
                 <td>{{boardsInfoDict[i.parent_id] ? boardsInfoDict[i.parent_id].name : '无'}}</td>
                 <td>{{i.weight}}</td>
-                <td>{{state.misc.POST_STATE_TXT[i.state]}}</td>
+                <td>{{$misc.POST_STATE_TXT[i.state]}}</td>
                 <td>
-                    <a href="javascript:void(0)" @click="setBoardManage(i)">编辑</a>
+                    <a href="javascript:void(0)" @click="$dialogs.setBoardManage(true, i)">编辑</a>
                 </td>
             </tr>
         </tbody>
@@ -85,14 +85,12 @@ table {
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 import DialogBoardManage from '@/components/dialogs/board-manage.vue'
 
 export default {
     data () {
         return {
-            state,
             boardNewInfo: {
                 name: '',
                 brief: ''
@@ -102,10 +100,6 @@ export default {
         }
     },
     methods: {
-        setBoardManage: function (board) {
-            state.dialog.boardManageData = board
-            state.dialog.boardManage = true
-        },
         boardNew: async function () {
             let ret = await api.board.new(this.boardNewInfo, 'superuser')
             $.message_by_code(ret.code)
@@ -118,7 +112,7 @@ export default {
                 order: 'weight.desc,time.asc',
                 loadfk: { 'user_id': null }
                 // select: 'id, time, user_id, board_id, title, state',
-            }, 1, null, 'superuser')
+            }, 1, null, this.$user.forumAdminRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.boardInfo = ret.data

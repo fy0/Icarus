@@ -1,9 +1,4 @@
-import state from '@/state.js'
-
-$.isAdmin = function (user) {
-    user = user || state.user
-    return (user) && (user.group >= state.misc.USER_GROUP.SUPERUSER)
-}
+import store from '@/store/index'
 
 let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     const keyArray = Array.from(new Uint8Array(keyBuffer)) // key as byte array
@@ -22,7 +17,7 @@ let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
 $.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
     let asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ 'asmcrypto.js/dist_es8/pbkdf2/pbkdf2-hmac-sha512.js')
     let asmCrypto = await asmCryptoLoader()
-    let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    let salt = store.state.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
     let enc = new TextEncoder()
     const pwUtf8 = enc.encode(password) // encode pw as UTF-8
     const saltUint8 = enc.encode(salt)
@@ -31,7 +26,7 @@ $.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
 }
 
 $.passwordHashNative = async function (password, iterations = 1e5) {
-    let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    let salt = store.state.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
     let crypto = window.crypto || window.msCrypto // for IE 11
     let enc = new TextEncoder()
     const pwUtf8 = enc.encode(password) // encode pw as UTF-8

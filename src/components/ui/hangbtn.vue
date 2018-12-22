@@ -30,7 +30,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import anime from 'animejs'
 
 export default {
@@ -44,7 +43,6 @@ export default {
     },
     data () {
         return {
-            state,
             showBtn: false
         }
     },

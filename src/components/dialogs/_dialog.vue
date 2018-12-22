@@ -73,7 +73,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import '@/assets/css/_manage.scss'
 
 export default {
@@ -136,9 +135,7 @@ export default {
         }
     },
     data () {
-        return {
-            state
-        }
+        return {}
     },
     computed: {
         BoxStyle: function () {

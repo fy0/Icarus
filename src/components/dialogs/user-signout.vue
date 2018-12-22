@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-model="state.dialog.userSignout" :width="'500px'" :title="`退出登录`">
+<ic-dialog v-model="userSignout" :width="'500px'" :title="`退出登录`">
     <div class="main">
         <i class="icarus icon-question-circle icon"></i>
         <div>你确定要退出登录吗？</div>
@@ -38,16 +38,19 @@
 </style>
 
 <script>
-import state from '@/state.js'
+import { mapState } from 'vuex'
 import api from '@/netapi.js'
-import Vue from 'vue'
 
 export default {
     data () {
         return {
-            state,
             quiting: false
         }
+    },
+    computed: {
+        ...mapState('dialog', [
+            'userSignout'
+        ])
     },
     methods: {
         ok: async function () {
@@ -55,16 +58,15 @@ export default {
             this.quiting = true
             let ret = await api.user.signout()
             if (ret.code === api.retcode.SUCCESS || ret.code === api.retcode.FAILED) {
+                await this.$store.dispatch('initLoad')
                 $.message_success('登出成功')
-                Vue.delete(state, 'user')
-                state.reset()
                 this.$router.replace('/')
             }
             this.quiting = false
-            state.dialog.userSignout = false
+            this.$dialogs.setUserSignout(false)
         },
         close: async function () {
-            state.dialog.userSignout = false
+            this.$dialogs.setUserSignout(false)
         }
     }
 }

@@ -2,8 +2,8 @@
 <!-- 搞不懂为什么有时候加载未完成，那边就会触发渲染了，不挡一下的话会报错 -->
 <span v-if="item && item.id">
     <!-- 用户 -->
-    <template v-if="type === state.misc.POST_TYPES.USER">
-        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
+    <template v-if="type === POST_TYPES.USER">
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="getPostTitle(item, 'nickname')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'nickname')) || '错误的值'}}</template>
@@ -14,8 +14,8 @@
     </template>
 
     <!-- 板块 -->
-    <template v-else-if="type === state.misc.POST_TYPES.BOARD">
-        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
+    <template v-else-if="type === POST_TYPES.BOARD">
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="getPostTitle(item, 'name')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'name')) || '错误的值'}}</template>
@@ -26,8 +26,8 @@
     </template>
 
     <!-- 主题 -->
-    <template v-else-if="type === state.misc.POST_TYPES.TOPIC">
-        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
+    <template v-else-if="type === POST_TYPES.TOPIC">
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="getPostTitle(item, 'title')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'title')) || '错误的值'}}</template>
@@ -38,8 +38,8 @@
     </template>
 
     <!-- 百科 -->
-    <template v-else-if="type === state.misc.POST_TYPES.WIKI">
-        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
+    <template v-else-if="type === POST_TYPES.WIKI">
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
         <router-link :to="{ name: ('wiki_article_by_' + (item.ref ? 'ref' : 'id')), params: {ref: item.ref, id: item.id} }" :title="getPostTitle(item, 'title')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'title')) || '错误的值'}}</template>
@@ -50,8 +50,8 @@
     </template>
 
     <!-- 评论 -->
-    <template v-else-if="type === state.misc.POST_TYPES.COMMENT">
-        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{state.misc.POST_TYPES_TXT[type]}}</span>
+    <template v-else-if="type === POST_TYPES.COMMENT">
+        <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
         <template v-if="!useSlot">
             <span class="limited-title">“{{text(item.content)}}”</span>
         </template>
@@ -76,13 +76,11 @@
 </style>
 
 <script>
-import state from '@/state.js'
+import { mapGetters } from 'vuex'
 
 export default {
     data () {
-        return {
-            state
-        }
+        return {}
     },
     props: {
         item: {},
@@ -104,6 +102,10 @@ export default {
         }
     },
     methods: {
+        ...mapGetters([
+            'POST_TYPES',
+            'POST_TYPES_TXT'
+        ]),
         getPostTitle: function (i, key) {
             if (i['post_title']) return i['post_title']
             return i[key]

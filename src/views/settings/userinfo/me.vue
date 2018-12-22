@@ -28,7 +28,7 @@
                 <div class="setting-item">
                     <span class="label">帐户状态</span>
                     <div class="line">
-                        <span>{{state.misc.POST_STATE_TXT[user.state]}}</span>
+                        <span>{{$misc.POST_STATE_TXT[user.state]}}</span>
                     </div>
                 </div>
 

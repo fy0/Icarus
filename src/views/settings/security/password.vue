@@ -1,6 +1,6 @@
 <template>
 <setting-base>
-    <div v-title>修改密码 - 用户设置 - {{state.config.title}}</div>
+    <div v-title>修改密码 - 用户设置 - {{$config.title}}</div>
     <h3 class="ic-header">修改密码</h3>
     <form class="ic-form">
         <check-row :flex="true" :results="formErrors.old_password" :check="true" :text='checkPasswordText'>
@@ -60,13 +60,11 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import SettingBase from '../base/base.vue'
 
 export default {
     data () {
         return {
-            state,
             info: {
                 old_password: '',
                 password: '',
@@ -75,8 +73,8 @@ export default {
             },
             dialogLicense: false,
             formErrors: {},
-            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+            passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
     computed: {

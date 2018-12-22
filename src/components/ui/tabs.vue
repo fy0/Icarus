@@ -22,8 +22,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     props: {
         value: {
@@ -32,7 +30,6 @@ export default {
     },
     data () {
         return {
-            state,
             tabs: []
         }
     },

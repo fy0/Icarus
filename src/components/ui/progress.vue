@@ -14,8 +14,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     props: {
         text: {
@@ -49,7 +47,6 @@ export default {
     },
     data () {
         return {
-            state,
             hover: false
         }
     },

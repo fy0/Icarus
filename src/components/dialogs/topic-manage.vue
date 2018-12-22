@@ -164,10 +164,10 @@ export default {
         }
     },
     computed: {
-        ...mapState('dialog', {
-            topicManage: 'topicManage',
-            topicManageData: 'topicManageData'
-        }),
+        ...mapState('dialog', [
+            'topicManage',
+            'topicManageData'
+        ]),
         ...mapGetters([
             'POST_TYPES',
             'POST_TYPES_TXT',

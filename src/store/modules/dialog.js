@@ -58,6 +58,10 @@ export default {
         SET_SITE_NEW: (state, { val }) => {
             state.siteNew = val
         },
+        // 未激活提示
+        SET_USER_INACTIVE: (state, { val }) => {
+            state.userInactive = val
+        },
         // 设置用户昵称
         SET_USER_NICKANME: (state, { val }) => {
             state.userSetNickname = val
@@ -68,7 +72,27 @@ export default {
         },
         // 写入板块信息
         WRITE_BOARD_MANAGE_DATA: (state, data) => {
-            Object.assign(state.boardManageData, data)
+            if (state.boardManageData) {
+                Object.assign(state.boardManageData, data)
+            }
+        },
+        // 写入板块信息
+        WRITE_USER_MANAGE_DATA: (state, data) => {
+            if (state.userManageData) {
+                Object.assign(state.userManageData, data)
+            }
+        },
+        // 关闭所有
+        CLOSE_ALL: (state) => {
+            state.topicManage = false
+            state.boardManage = false
+            state.userManage = false
+            state.commentManage = false
+            state.siteNew = false
+            state.userSetAvatar = false
+            state.userInactive = false
+            state.userSetNickname = false
+            state.userSignout = false
         }
     },
     actions: {

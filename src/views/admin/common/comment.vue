@@ -1,6 +1,6 @@
 <template>
 <admin-base>
-    <div v-title>评论管理 - 管理界面 - {{state.config.title}}</div>
+    <div v-title>评论管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">评论管理</h3>
 
     <div v-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
@@ -21,8 +21,8 @@
                 <div class="content" v-html="marked(i.content || '')"></div>
                 <div>
                     <span>状态:</span>
-                    <i v-if="false" class="icarus ic-topic-manage-icon icon-39" title="管理" @click="setCommentManage(i)"></i>
-                    <template v-for="(v, k) in state.misc.POST_STATE_TXT">
+                    <i v-if="false" class="icarus ic-topic-manage-icon icon-39" title="管理" @click="setCommentManage(true, i)"></i>
+                    <template v-for="(v, k) in this.$misc.POST_STATE_TXT">
                         <a v-if="i.state != k" class="state" :key="k" href="javascript:void(0)" @click="changeState(i, k)">{{v}}</a>
                         <b v-else :key="k" class="state">{{v}}</b>
                     </template>
@@ -73,14 +73,12 @@
 <script>
 import { marked } from '@/md.js'
 import api from '@/netapi.js'
-import state from '@/state.js'
 import AdminBase from '../base/base.vue'
 
 export default {
     data () {
         return {
             marked,
-            state,
             page: { info: {}, items: [] },
             postsOfComments: {}
         }
@@ -100,10 +98,6 @@ export default {
             }
             $.message_by_code(ret.code)
         },
-        setCommentManage: async function (item) {
-            state.dialog.commentManageData = item
-            state.dialog.commentManage = true
-        },
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)
             let params = this.$route.params
@@ -119,7 +113,7 @@ export default {
                 let topicIds = []
 
                 for (let i of ret.data.items) {
-                    if (i.related_type === state.misc.POST_TYPES.TOPIC) {
+                    if (i.related_type === this.$misc.POST_TYPES.TOPIC) {
                         topicIds.push(i.related_id)
                     }
                 }

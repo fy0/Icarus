@@ -13,14 +13,10 @@
 <script>
 import Vue from 'vue'
 import api from '@/netapi.js'
-import state from '@/state.js'
 
 export default {
-    name: '',
     data () {
-        return {
-            state
-        }
+        return {}
     },
     beforeCreate () { // 判断是否有参数提交，如果没有就跳转到主页
         if (this.$route.query.code) { // xx?oauth=xxx
@@ -37,9 +33,7 @@ export default {
             let ret = await api.Oauth.send(code) // 拿到oauth返回的code，交给 api - get_user_data
             // 判断返回值，跳转到主页或者补全信息界面
             if (ret['code'] === api.retcode.SUCCESS) {
-                let uret = await api.user.get({ id: ret.data.user_id }, 'inactive_user')
-                if (uret.code !== api.retcode.SUCCESS) return
-                Vue.set(state, 'user', uret.data) // 这样顶栏可以接到事件
+                await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                 if (this.goLastPage) {
                     $.message_success('登录成功，正在回到前页……')

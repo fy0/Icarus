@@ -1,7 +1,7 @@
 <template>
 <redirecting v-if="regDone">
     <span>注册流程已全部完成。</span>
-    <span>欢迎来到 {{state.config.title}}，{{state.user.nickname}}</span>
+    <span>欢迎来到 {{$config.title}}，{{$user.data.nickname}}</span>
 </redirecting>
 <div v-else-if="available" class="ic-container box">
     <span class="captain">激活账号</span>
@@ -26,13 +26,10 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
-import Vue from 'vue'
 
 export default {
     data () {
         return {
-            state,
             text: '正在发送请求 ...',
             regDone: false,
             available: false
@@ -48,8 +45,7 @@ export default {
             if (ret.code === api.retcode.SUCCESS) {
                 this.text = '注册完成，正在进行收尾……'
                 api.saveAccessToken(ret.data.key)
-                ret = await api.user.get({ id: ret.data.id }, 'inactive_user')
-                Vue.set(state, 'user', ret.data)
+                await this.$store.dispatch('user/apiGetUserData', ret.data.id)
                 this.regDone = true
             } else {
                 if (ret.code === api.retcode.ALREADY_EXISTS) {

@@ -54,7 +54,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import murmurhash from 'murmurhash'
 
 export default {
@@ -81,7 +80,7 @@ export default {
     },
     methods: {
         staticUrl: function (key) {
-            return `${state.misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${key}`
+            return `${this.$store.getters.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${key}`
         }
     },
     computed: {

@@ -19,8 +19,6 @@
 </style>
 
 <script>
-import state from '@/state.js'
-
 export default {
     props: {
         countdown: {
@@ -38,7 +36,6 @@ export default {
     },
     data () {
         return {
-            state,
             second: 7,
             timer: null
         }

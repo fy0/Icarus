@@ -13,8 +13,7 @@ import AdminBase from './base/base.vue'
 
 export default {
     data () {
-        return {
-        }
+        return {}
     },
     components: {
         AdminBase

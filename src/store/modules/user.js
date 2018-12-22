@@ -14,6 +14,11 @@ export default {
         roles: (state, getters) => getters._userData.roles,
         basicRole: (state, getters) => state.userData ? 'user' : null,
         mainRole: (state, getters) => getters._userData['main_role'],
+        forumAdminRole: (state, getters) => {
+            if (getters.isSiteAdmin) {
+                return getters.mainRole
+            }
+        },
         wikiEditRole: (state, getters) => {
             if (getters.isSiteAdmin) {
                 return getters.mainRole
@@ -36,10 +41,10 @@ export default {
         SET_USER_DATA (state, data) {
             state.userData = data
         },
-        setUnread (state, data) {
+        SET_UNREAD (state, data) {
             state.unread = data
         },
-        reset (state) {
+        RESET (state) {
             state.unread = 0
             state.userData = null
         }

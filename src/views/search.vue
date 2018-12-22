@@ -1,7 +1,7 @@
 <template>
 <div class="ic-container">
-    <div v-title v-if="queryText">搜索 - {{queryText}} - {{state.config.title}}</div>
-    <div v-title v-else>搜索 - {{state.config.title}}</div>
+    <div v-title v-if="queryText">搜索 - {{queryText}} - {{$config.title}}</div>
+    <div v-title v-else>搜索 - {{$config.title}}</div>
     <template v-if="tooFrequent">
         <span>搜索过于频繁，请稍后再试。还需等待{{needWait}}秒。</span>
     </template>
@@ -10,7 +10,7 @@
         <div class="results" v-if="info.hits.hits">
             <div class="item" v-for="(v, k) in info.hits.hits" :key="k">
                 <h3 class="title limit m18">
-                    <template v-if="v._source.type == state.misc.POST_TYPES.COMMENT">
+                    <template v-if="v._source.type == $misc.POST_TYPES.COMMENT">
                         <post-link :type="v._source.related_type" :item="{id: v._source.related_id, title: v._source.related_title}" />
                     </template>
                     <template v-else>
@@ -20,7 +20,7 @@
                     </template>
 
                     <span class="suffix">
-                        <template v-if="v._source.type == state.misc.POST_TYPES.COMMENT">评论</template>
+                        <template v-if="v._source.type == $misc.POST_TYPES.COMMENT">评论</template>
                         <template v-else>
                             <template v-if="v._source.main_category == 'forum'">论坛</template>
                             <template v-else-if="v._source.main_category == 'wiki'">百科</template>
@@ -28,7 +28,7 @@
                     </span>
                 </h3>
                 <div class="link">
-                    <post-link :type="v._source.related_type" :item="{id: v._source.related_id, title: v._source.related_title}" :use-slot="true" v-if="v._source.type == state.misc.POST_TYPES.COMMENT">
+                    <post-link :type="v._source.related_type" :item="{id: v._source.related_id, title: v._source.related_title}" :use-slot="true" v-if="v._source.type == $misc.POST_TYPES.COMMENT">
                         <span>{{getPostPath({id: v._source.related_id, title: v._source.related_title})}}</span>
                     </post-link>
                     <post-link :type="v._source.type" :item="v._source" :use-slot="true" v-else>
@@ -40,7 +40,7 @@
                 <div class="info">
                     <ic-time :timestamp="v._source.time / 1000" :ago="false" />
                     <span> - </span>
-                    <post-link :type="state.misc.POST_TYPES.USER" :item="{id: v._source.user_id, nickname: v._source.user_nickname}" />
+                    <post-link :type="$misc.POST_TYPES.USER" :item="{id: v._source.user_id, nickname: v._source.user_nickname}" />
                 </div>
             </div>
         </div>
@@ -98,13 +98,11 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import api from '@/netapi.js'
 
 export default {
     data () {
         return {
-            state,
             tooFrequent: false,
             needWait: 0,
             info: {
@@ -123,9 +121,9 @@ export default {
             let params = { id: src.id }
 
             switch (src.type) {
-                case state.misc.POST_TYPES.TOPIC:
+                case this.$misc.POST_TYPES.TOPIC:
                     name = 'forum_topic'; break
-                case state.misc.POST_TYPES.WIKI:
+                case this.$misc.POST_TYPES.WIKI:
                     name = 'wiki_article_by_ref'; params.ref = src.ref; break
             }
 

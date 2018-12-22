@@ -7,7 +7,7 @@
         <div>激活之后，你的账号将自动登录。</div>
         <div>如果没有正确收到激活邮件，请检查垃圾邮件箱。</div>
         <div>如果还是没有发现邮件，请尝试重新注册，或联系站点管理员：</div>
-        <div><a :href="`mailto:${state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}?subject=无法收到激活邮件，注册邮箱：${info.email}`">{{state.misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}}</a></div>
+        <div><a :href="`mailto:${$misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}?subject=无法收到激活邮件，注册邮箱：${info.email}`">{{$misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}}</a></div>
     </div>
 </redirecting>
 <div v-else class="ic-container box">
@@ -105,13 +105,11 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 import AccountSignupLegacy from '@/views/account/signup_legacy.vue'
 
 export default {
     data () {
         return {
-            state,
             info: {
                 email: '',
                 password: '',
@@ -123,14 +121,14 @@ export default {
             regDone: false,
             dialogLicense: false,
             formErrors: {},
-            passwordMin: state.misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: state.misc.BACKEND_CONFIG.USER_PASSWORD_MAX,
-            signupLicense: state.misc.BACKEND_CONFIG.SIGNUP_LICENSE_HTML
+            passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+            passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX,
+            signupLicense: this.$misc.BACKEND_CONFIG.SIGNUP_LICENSE_HTML
         }
     },
     computed: {
         useLegacy: function () {
-            return (!(state.misc.BACKEND_CONFIG.EMAIL_ACTIVATION_ENABLE))
+            return (!(this.$misc.BACKEND_CONFIG.EMAIL_ACTIVATION_ENABLE))
         },
         checkPasswordText: function () {
             return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`

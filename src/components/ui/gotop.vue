@@ -22,13 +22,11 @@
 </style>
 
 <script>
-import state from '@/state.js'
 import anime from 'animejs'
 
 export default {
     data () {
         return {
-            state,
             showGoTop: false
         }
     },

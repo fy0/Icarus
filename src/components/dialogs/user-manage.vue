@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-model="state.dialog.userManage" :title="`对用户 ${user.nickname} 进行管理操作`" @close="close" scrollable>
+<ic-dialog v-model="userManage" :title="`对用户 ${user.nickname} 进行管理操作`" @close="close" scrollable>
     <div class="manage-form-item" style="margin-top: 30px;">
         <span class="label">ID</span>
         <div class="right">{{user.id}}</div>
@@ -49,7 +49,7 @@
     <div class="manage-form-item" style="align-items: center">
         <span class="label">状态</span>
         <div class="right" style="display: flex">
-            <span style="margin-right: 10px" v-for="(i, j) in state.misc.POST_STATE_TXT" :key="j">
+            <span style="margin-right: 10px" v-for="(i, j) in POST_STATE_TXT" :key="j">
                 <label :for="'radio-state-'+i">
                     <input class="ic-input" type="radio" name="state" :value="j" :id="'radio-state-'+i" v-model="user.state" />
                     <span>{{i}}</span>
@@ -60,7 +60,7 @@
     <div class="manage-form-item" style="align-items: center">
         <span class="label">用户组</span>
         <div class="right" style="display: flex">
-            <span style="margin-right: 10px" v-for="(i, j) in state.misc.USER_GROUP_TXT" :key="j">
+            <span style="margin-right: 10px" v-for="(i, j) in USER_GROUP_TXT" :key="j">
                 <label :for="'radio-group-'+i">
                     <input class="ic-input" type="radio" name="group" :value="j" :id="'radio-group-'+i" v-model="user.group" />
                     <span>{{i}}</span>
@@ -89,16 +89,25 @@
 </style>
 
 <script>
-import state from '@/state.js'
+import { mapState, mapGetters } from 'vuex'
 import api from '@/netapi.js'
 
 export default {
     data () {
         return {
-            state,
             user: { name: '' },
             save: {}
         }
+    },
+    computed: {
+        ...mapState('dialog', [
+            'userManage',
+            'userManageData'
+        ]),
+        ...mapGetters([
+            'USER_GROUP_TXT',
+            'POST_STATE_TXT'
+        ])
     },
     methods: {
         ok: async function () {
@@ -106,24 +115,22 @@ export default {
             if (data.state) data.state = Number(data.state)
             if (data.group) data.group = Number(data.group)
 
-            let ret = await api.user.set({ id: this.user.id }, data, $.getRole('admin'))
+            let ret = await api.user.set({ id: this.user.id }, data, this.$user.mainRole)
             if (ret.code === 0) {
-                if (state.dialog.userManageData) {
-                    _.assign(state.dialog.userManageData, data)
-                }
+                this.$store.commit('dialog/WRITE_USER_MANAGE_DATA', data)
                 $.message_success('用户信息设置成功')
             } else $.message_by_code(ret.code)
 
-            state.dialog.userManage = null
+            this.$dialogs.setUserManage(false)
         },
         close () {
-            state.dialog.userManage = null
+            this.$dialogs.setUserManage(false)
         }
     },
     watch: {
-        'state.dialog.userManage': async function (val) {
+        'userManage': async function (val) {
             if (val) {
-                let info = await api.user.get({ id: state.dialog.userManageData.id }, $.getRole('admin'))
+                let info = await api.user.get({ id: this.userManageData.id }, this.$user.mainRole)
                 if (info.code === api.retcode.SUCCESS) {
                     this.user = info.data
                     this.user.state = this.user.state.toString()

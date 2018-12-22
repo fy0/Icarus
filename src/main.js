@@ -31,8 +31,7 @@ import './assets/icons/iconfont.css'
 import './assets/css/_text.scss'
 import './md.js'
 
-import state from './state.js'
-import ws from './ws.js'
+// import ws from './ws.js'
 import config from './config.js'
 import store from './store/index.js'
 
@@ -100,10 +99,12 @@ Vue.component('dialog-user-signout', DialogUserSignout)
 // 插件
 import ConfigHelper from './plugins/config_helper'
 import DialogHelper from './plugins/dialog_helper'
+import MiscHelper from './plugins/misc_helper'
 import UserHelper from './plugins/user_helper'
 
 Vue.use(ConfigHelper)
 Vue.use(DialogHelper)
+Vue.use(MiscHelper)
 Vue.use(UserHelper)
 
 Vue.directive('title', {
@@ -127,19 +128,19 @@ Vue.directive('title-dynamic', {
 nprogress.configure({ showSpinner: false })
 
 if (config.ws.enable) {
-    ws.conn.callback['notif.refresh'] = (data) => {
-        if (data) {
-            if (!state.unreadAlerted) {
-                // $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
-                state.unreadAlerted = true
-            }
-            Vue.set(state, 'unread', data)
-        }
-    }
+    // ws.conn.callback['notif.refresh'] = (data) => {
+    //     if (data) {
+    //         if (!state.unreadAlerted) {
+    //             // $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
+    //             state.unreadAlerted = true
+    //         }
+    //         Vue.set(state, 'unread', data)
+    //     }
+    // }
 
-    ws.conn.callback['user.online'] = (data) => {
-        Vue.set(state, 'userOnline', data)
-    }
+    // ws.conn.callback['user.online'] = (data) => {
+    //     Vue.set(state, 'userOnline', data)
+    // }
 }
 
 router.beforeEach(async function (to, from, next) {
@@ -148,11 +149,12 @@ router.beforeEach(async function (to, from, next) {
     nprogress.start()
 
     // 重置对话框
-    state.dialog.topicManage = null
+    store.commit('dialog/CLOSE_ALL')
+    // 试图初始化全局数据
     await store.dispatch('tryInitLoad')
 
     if (to.name) {
-        if (!state.user) {
+        if (!store.state.user.userData) {
             if (to.name.startsWith('setting_')) {
                 toUrl = '/404'
             } else if (to.name === 'account_notif') {
@@ -165,9 +167,9 @@ router.beforeEach(async function (to, from, next) {
         }
 
         if (to.name.startsWith('admin_')) {
-            if (!(state.user && state.misc && state.user.group >= state.misc.USER_GROUP.SUPERUSER)) {
-                $.message_error('当前账户没有权限访问此页面')
-                toUrl = '/'
+            if (!store.getters['user/isSiteAdmin']) {
+                // $.message_error('当前账户没有权限访问此页面')
+                toUrl = '/404'
             }
         }
     }

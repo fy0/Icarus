@@ -72,12 +72,10 @@
 
 <script>
 import api from '@/netapi.js'
-import state from '@/state.js'
 
 export default {
     data () {
         return {
-            state,
             info: {
                 email: '',
                 nickname: ''
