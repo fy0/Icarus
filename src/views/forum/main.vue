@@ -470,8 +470,8 @@ export default {
             if (!boardId) {
                 return [null]
             }
-            if (!this.$store.state.forum.exInfoMap[boardId]) return [null]
-            return this.$store.state.forum.exInfoMap[boardId].chain
+            let exinfo = this.$store.state.forum.exInfoMap[boardId]
+            return exinfo.chain
         },
         fetchData: async function () {
             this.$set(this, 'loading', true)

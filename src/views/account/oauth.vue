@@ -11,7 +11,6 @@
 </style>
 
 <script>
-import Vue from 'vue'
 import api from '@/netapi.js'
 
 export default {

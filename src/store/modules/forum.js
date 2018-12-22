@@ -41,7 +41,7 @@ export default {
                 return []
             }
 
-            let theLst = (() => {
+            let theLst = ((boardId) => {
                 let lst = [boardId]
                 if (!boardId) return lst
                 let infoMap = state.infoMap
@@ -53,7 +53,8 @@ export default {
                     boardId = pid
                 }
                 return lst
-            })()
+            })(boardId)
+
             commit('SET_BOARD_EXINFO_CHAIN', { 'id': boardId, 'data': theLst })
         },
         async load ({ state, commit, dispatch }, forceRefresh = false) {
@@ -105,10 +106,10 @@ export default {
                     func(exInfo.subboards)
 
                     // 构造 chain
-                    await dispatch('fetchBoardChain', { boardId: i.id })
+                    dispatch('fetchBoardChain', { boardId: i.id })
                 }
 
-                await dispatch('fetchBoardChain', { boardId: undefined })
+                dispatch('fetchBoardChain', { boardId: undefined })
             }
         }
     }

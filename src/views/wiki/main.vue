@@ -15,7 +15,7 @@
 </style>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import api from '@/netapi.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
