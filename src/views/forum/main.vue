@@ -356,7 +356,7 @@ export default {
         ]),
         postNewTopicStyle: function () {
             if (!this.boardId) return
-            let exInfo = $.getBoardExInfoById(this.boardId)
+            let exInfo = this.getBoardExInfoById(this.boardId)
             let bgColor = null
             if (exInfo) {
                 bgColor = (this.mouseOverPostNewBtn) ? exInfo.colorHover : exInfo.color
@@ -414,6 +414,7 @@ export default {
         boardBadgeTitleById: function (id) {
             let chain = this.getBoardChainById(id)
             let ret = ''
+            if (!chain) return
             if (chain.length > 1) chain = chain.slice(0, -1)
             for (let i = chain.length - 1; i >= 0; i--) {
                 let board = this.getBoardInfo(chain[i])
@@ -434,7 +435,7 @@ export default {
             if (this.isBoard) {
                 let chain = this.getBoardChainById(this.boardId)
                 if (chain.indexOf(board.id) !== -1) {
-                    let exInfo = $.getBoardExInfoById(board.id)
+                    let exInfo = this.getBoardExInfoById(board.id)
                     return {
                         'color': exInfo.color,
                         'font-weight': 'bold'
