@@ -9,7 +9,7 @@ $.makePostLinkData = function (type, item) {
 }
 
 $.getBasePostsByIDs = async function (func, items, role = null) {
-    let PT = store.state.POST_TYPES
+    let PT = store.getters.POST_TYPES
     let idsByType = {}
 
     for (let i of items) {

@@ -17,7 +17,7 @@ let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
 $.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
     let asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ 'asmcrypto.js/dist_es8/pbkdf2/pbkdf2-hmac-sha512.js')
     let asmCrypto = await asmCryptoLoader()
-    let salt = store.state.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    let salt = store.getters.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
     let enc = new TextEncoder()
     const pwUtf8 = enc.encode(password) // encode pw as UTF-8
     const saltUint8 = enc.encode(salt)
@@ -26,7 +26,7 @@ $.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
 }
 
 $.passwordHashNative = async function (password, iterations = 1e5) {
-    let salt = store.state.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    let salt = store.getters.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
     let crypto = window.crypto || window.msCrypto // for IE 11
     let enc = new TextEncoder()
     const pwUtf8 = enc.encode(password) // encode pw as UTF-8

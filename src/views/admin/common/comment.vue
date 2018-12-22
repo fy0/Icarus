@@ -22,7 +22,7 @@
                 <div>
                     <span>状态:</span>
                     <i v-if="false" class="icarus ic-topic-manage-icon icon-39" title="管理" @click="setCommentManage(true, i)"></i>
-                    <template v-for="(v, k) in this.$misc.POST_STATE_TXT">
+                    <template v-for="(v, k) in $misc.POST_STATE_TXT">
                         <a v-if="i.state != k" class="state" :key="k" href="javascript:void(0)" @click="changeState(i, k)">{{v}}</a>
                         <b v-else :key="k" class="state">{{v}}</b>
                     </template>
@@ -92,7 +92,7 @@ export default {
         changeState: async function (item, val) {
             let oldVal = item.state
             item.state = val
-            let ret = await api.comment.set({ id: item.id }, { state: val }, 'superuser')
+            let ret = await api.comment.set({ id: item.id }, { state: val }, this.$user.mainRole)
             if (ret.code !== api.retcode.SUCCESS) {
                 item.state = oldVal
             }
@@ -107,7 +107,7 @@ export default {
             let ret = await api.comment.list({
                 loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } },
                 order: 'time.desc'
-            }, params.page, null, 'superuser')
+            }, params.page, null, this.$user.mainRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 let topicIds = []

@@ -171,7 +171,7 @@ export default {
                 }
 
                 if (this.asAdmin) {
-                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'superuser')
+                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, this.$user.mainRole)
                 } else {
                     ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'user')
                 }

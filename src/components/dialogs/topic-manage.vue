@@ -230,7 +230,7 @@ export default {
                 // 置顶
                 if (change.vSticky) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, 'superuser')
+                    let ret = await api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('文章置顶设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -238,7 +238,7 @@ export default {
                 // 真正的提升下沉实现起来比较难，直接改变权重值吧
                 if (change.vWeight) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, 'superuser')
+                    let ret = await api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('提升/下沉设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -246,7 +246,7 @@ export default {
                 // 文章状态
                 if (change.vState) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, 'superuser')
+                    let ret = await api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('文章状态修改成功')
                     else $.message_by_code(ret.code)
                 }
@@ -254,7 +254,7 @@ export default {
                 // 文章可见性
                 if (change.vVisible) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] }, 'superuser')
+                    let ret = await api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('文章可见性修改成功')
                     else $.message_by_code(ret.code)
                 }
@@ -268,7 +268,7 @@ export default {
                             'id': this.topic.id,
                             'type': this.POST_TYPES.TOPIC
                         })
-                    }, 'superuser')
+                    }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('加分/扣分设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -282,7 +282,7 @@ export default {
                             'id': this.topic.id,
                             'type': this.POST_TYPES.TOPIC
                         })
-                    }, 'superuser')
+                    }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('声望变更设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -290,7 +290,7 @@ export default {
                 // 优秀文章
                 if (change.vAwesome) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, 'superuser')
+                    let ret = await api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('优秀文章设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -300,8 +300,6 @@ export default {
                 this.applyValue = 100
                 this.stage = 4
             }
-
-            this.$store.commit('dialog/SET_TOPIC_MANAGE', { val: false })
         },
         closeOutside () {
             if (this.stage === 1) this.close()
@@ -319,7 +317,7 @@ export default {
             if (val) {
                 let info = await api.topic.get({
                     id: this.topicManageData.id
-                }, 'superuser')
+                }, this.$user.mainRole)
 
                 if (info.code === api.retcode.SUCCESS) {
                     this.save = info.data

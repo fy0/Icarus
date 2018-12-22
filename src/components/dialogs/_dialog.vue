@@ -151,7 +151,8 @@ export default {
                 if (this.onClose) {
                     this.onClose()
                 }
-                this.$emit('input', false)
+                this.$store.commit('dialog/CLOSE_ALL')
+                // this.$emit('input', false)
             }
         }
     }

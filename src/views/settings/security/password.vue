@@ -5,17 +5,17 @@
     <form class="ic-form">
         <check-row :flex="true" :results="formErrors.old_password" :check="true" :text='checkPasswordText'>
             <label for="old_password">旧密码</label>
-            <input class="ic-input" type="password" name="old_password" id="old_password" v-model="info.old_password">
+            <input class="ic-input" autocomplete="old-password" type="password" name="old_password" id="old_password" v-model="info.old_password">
         </check-row>
 
         <check-row :flex="true" :results="formErrors.password" :check="(!info.password) || checkPassword" :text='checkPasswordText'>
             <label for="password">新密码</label>
-            <input class="ic-input" type="password" name="password" id="password" v-model="info.password">
+            <input class="ic-input" autocomplete="password" type="password" name="password" id="password" v-model="info.password">
         </check-row>
 
         <check-row :flex="true" :results="formErrors.password2" :check="(!info.password2) || checkPassword2" :text="'重复密码应与前密码一致'">
             <label for="password2">重复密码</label>
-            <input class="ic-input" type="password" name="password2" id="password2" v-model="info.password2">
+            <input class="ic-input" autocomplete="password" type="password" name="password2" id="password2" v-model="info.password2">
         </check-row>
 
         <div class="ic-form-row">

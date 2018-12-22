@@ -1,5 +1,5 @@
 <template>
-<div>
+<div v-if="!notFound">
 
 <div v-if="false" class="ic-paper board-header" :style="lineStyleBG(board.id)" style="margin-bottom: 30px; margin-top: -15px; width: 100%">
     <div class="left">
@@ -188,8 +188,8 @@
             </div>
         </div>
     </div>
-    <dialog-site-new v-if="isNewSite" />
-    <dialog-user-set-nickname v-else-if="isNewUser"/>
+    <dialog-site-new v-if="isSiteNew" />
+    <dialog-user-set-nickname v-else-if="$user.isNewUser"/>
     <dialog-topic-manage />
     <!-- <dialog-user-inactive-warn /> -->
 
@@ -198,6 +198,7 @@
     </ic-hangbtn>
 </div>
 </div>
+<page-not-found v-else />
 </template>
 
 <style scoped lang="scss">
@@ -335,6 +336,7 @@ export default {
         return {
             hoverId: null,
             loading: true,
+            notFound: false,
             topics: { items: [] },
             withSubBoardTopic: false,
             withSubBoardTopicOptionReady: false,
@@ -350,17 +352,8 @@ export default {
             'POST_STATE'
         ]),
         ...mapGetters('forum', [
-            'isNewSite'
+            'isSiteNew'
         ]),
-        isNewUser: function () {
-            let state = this.$store.state
-            if (!state.user) return
-            let ts = new Date().getTime() / 1000
-            if ((state.user.is_new_user) && (ts - state.user.time < 24 * 60 * 60)) {
-                // state.dialog.userSetNickname = true
-                return true
-            }
-        },
         postNewTopicStyle: function () {
             if (!this.boardId) return
             let exInfo = $.getBoardExInfoById(this.boardId)
@@ -469,10 +462,14 @@ export default {
         getBoardInfo: function (boardId) {
             return this.$store.state.forum.infoMap[boardId]
         },
+        getBoardExInfoById: function (boardId) {
+            return this.$store.state.forum.exInfoMap[boardId] || {}
+        },
         getBoardChainById: function (boardId) {
             if (!boardId) {
                 return [null]
             }
+            if (!this.$store.state.forum.exInfoMap[boardId]) return [null]
             return this.$store.state.forum.exInfoMap[boardId].chain
         },
         fetchData: async function () {
@@ -496,16 +493,22 @@ export default {
             // 获取全局板块信息
             await this.$store.dispatch('forum/load')
 
-            // if (this.isNewSite) {
-            //     state.dialog.siteNew = true
-            // }
+            // 如果板块不存在
+            if (params.id && (!this.$store.state.forum.infoMap[params.id])) {
+                this.notFound = true
+                return
+            }
+
+            if (this.isSiteNew) {
+                this.$dialogs.setSiteNew(true)
+            }
 
             // 具体板块
             if (this.isBoard) {
                 // 若是要求包含子板块内容
                 if (localStorage.getItem('sbt')) {
                     let lst = [params.id]
-                    for (let i of $.getBoardExInfoById(params.id).subboardsAll) {
+                    for (let i of this.getBoardExInfoById(params.id).subboardsAll) {
                         lst.push(i.id)
                     }
                     baseQuery['board_id.in'] = JSON.stringify(lst)

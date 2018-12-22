@@ -117,7 +117,7 @@ export default {
             let ret = await api.logManage.list({
                 loadfk: { user_id: null },
                 order: 'time.desc'
-            }, params.page, null, 'superuser')
+            }, params.page, null, this.$user.mainRole)
 
             if (ret.code === api.retcode.SUCCESS) {
                 this.postsOfComments = await $.getBasePostsByIDs(async (i) => {
@@ -127,7 +127,7 @@ export default {
                             'id': i.related_id
                         }
                     ]
-                }, ret.data.items, 'superuser')
+                }, ret.data.items, this.$user.mainRole)
 
                 this.page = ret.data // 提示：注意次序，渲染page依赖上层内容
             }

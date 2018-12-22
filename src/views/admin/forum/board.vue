@@ -101,7 +101,7 @@ export default {
     },
     methods: {
         boardNew: async function () {
-            let ret = await api.board.new(this.boardNewInfo, 'superuser')
+            let ret = await api.board.new(this.boardNewInfo, this.$user.mainRole)
             $.message_by_code(ret.code)
             if (ret.code === api.retcode.SUCCESS) {
                 this.fetchData()

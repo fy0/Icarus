@@ -22,7 +22,7 @@
                     </span>
                 </span>
                 <div>
-                    <router-link v-if="canEditWiki" :to="{ name: 'wiki_article_edit', params: {id: item.id}, query: { manage: true } }">[编辑]</router-link>
+                    <router-link v-if="isWikiAdmin" :to="{ name: 'wiki_article_edit', params: {id: item.id}, query: { manage: true } }">[编辑]</router-link>
                     <router-link :to="{ name: 'wiki_history', params: {id: item.id} }" style="margin-left: 5px">[历史]</router-link>
                 </div>
             </span>
@@ -84,7 +84,7 @@ export default {
     computed: {
         ...mapState(['config']),
         ...mapGetters('user', [
-            'canEditWiki'
+            'isWikiAdmin'
         ])
     },
     methods: {

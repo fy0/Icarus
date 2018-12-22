@@ -14,7 +14,7 @@
                         <router-link :to="{ name: 'wiki_random' }">随机页面</router-link>
                     </div>
 
-                    <template v-if="canEditWiki">
+                    <template v-if="isWikiAdmin">
                         <div class="ic-hr" style="margin: 10px 0px;"></div>
                         <div>
                             <router-link :to="{ name: 'wiki_article_new' }">添加文章</router-link>
@@ -155,7 +155,7 @@ export default {
     computed: {
         ...mapState(['config', 'loading']),
         ...mapGetters('user', [
-            'canEditWiki',
+            'isWikiAdmin',
             'basicRole'
         ])
     },

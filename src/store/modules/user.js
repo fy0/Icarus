@@ -11,6 +11,15 @@ export default {
         // 注意：这个_userData不要在外部使用
         _userData: (state) => state.userData || {},
 
+        // 是否新注册用户
+        isNewUser: (state, getters) => {
+            if (!state.userData) return
+            let ts = new Date().getTime() / 1000
+            if ((state.userData.is_new_user) && (ts - state.userData.time < 24 * 60 * 60)) {
+                return true
+            }
+        },
+
         roles: (state, getters) => getters._userData.roles,
         basicRole: (state, getters) => state.userData ? 'user' : null,
         mainRole: (state, getters) => getters._userData['main_role'],
@@ -23,12 +32,12 @@ export default {
             if (getters.isSiteAdmin) {
                 return getters.mainRole
             }
-            if (state.userData.is_wiki_editor) {
+            if (getters._userData.is_wiki_editor) {
                 return 'wiki_editor'
             }
         },
         // 是否能编辑WIKI
-        canEditWiki: (state, getters) => {
+        isWikiAdmin: (state, getters) => {
             if (!state.userData) return
             return getters.isSiteAdmin || state.userData.is_wiki_editor
         },

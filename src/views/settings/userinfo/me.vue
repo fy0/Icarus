@@ -65,8 +65,8 @@
         </div>
         <div class="right">
             <div class="setting-item">
-                <div class="line box-avatar" @click="($user.data) ? state.dialog.userSetAvatar = true : null" >
-                    <avatar :is-link="false" :user="state.user" :size="200" class="avatar"></avatar>
+                <div class="line box-avatar" @click="($user.data) ? $dialogs.setUserAvatar(true) : null" >
+                    <avatar :is-link="false" :user="$user.data" :size="200" class="avatar"></avatar>
                     <button v-if="$user.data" class="ic-btn primary btn-upload" style="margin-top: 10px; max-width: 200px">点此上传新头像</button>
                 </div>
             </div>
@@ -74,7 +74,7 @@
             <div class="setting-item">
                 <span class="label">用户组</span>
                 <div class="line">
-                    <span>{{USER_GROUP_TXT[user.group]}}</span>
+                    <span>{{$misc.USER_GROUP_TXT[user.group]}}</span>
                     <!-- <template v-if="state.isInactiveUser()">
                         <a class="resend" v-if="sending">正在发送中 ...</a>
                         <a class="resend" v-else href="javascript:void(0)" @click="resendActivationMail">重发激活邮件</a>
@@ -176,8 +176,6 @@ a.resend {
 </style>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import api from '@/netapi.js'
 import SettingBase from '../base/base.vue'
 
 export default {
@@ -189,11 +187,15 @@ export default {
         }
     },
     computed: {
-        'user': function () {
+        user: function () {
             if (!this.userSave) {
                 this.$set(this, 'userSave', _.clone(this.$user.data))
             }
             return this.userSave
+        },
+        changed: function () {
+            let data = $.objDiff(this.userSave, this.$user.data)
+            return Object.keys(data).length
         }
     },
     methods: {
@@ -216,7 +218,8 @@ export default {
         // },
         updateInfo: async function () {
             if (this.updating) return
-            await this.$store.dispatch('user/apiSetUserData')
+            this.updating = true
+            await this.$store.dispatch('user/apiSetUserData', this.user)
             this.updating = false
         }
     },

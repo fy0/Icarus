@@ -1,6 +1,6 @@
 <template>
 <loading v-if="loading"/>
-<redirecting v-else-if="!canEditWiki()" class="ic-container box">
+<redirecting v-else-if="!isWikiAdmin" class="ic-container box">
     <span>抱歉，你的账号没有权限访问这个页面</span>
 </redirecting>
 <div v-else class="ic-container">
@@ -98,6 +98,7 @@ div.markdown-editor > div.editor-toolbar {
 </style>
 
 <script>
+import store from '@/store/index'
 import { mapState, mapGetters } from 'vuex'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
 import api from '@/netapi.js'
@@ -132,7 +133,7 @@ export default {
         ...mapGetters(['BACKEND_CONFIG']),
         ...mapState('user', ['userData']),
         ...mapGetters('user', [
-            'canEditWiki',
+            'isWikiAdmin',
             'wikiEditRole'
         ]),
         isEdit () {
@@ -242,8 +243,8 @@ export default {
         }
     },
     beforeRouteEnter (to, from, next) {
-        if (!this.userData) {
-            this.$store.commit('LOADING_SET', 0)
+        if (!store.state.user.userData) {
+            store.commit('LOADING_SET', 0)
             nprogress.done()
             $.message_error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
             return next('/')

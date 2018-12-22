@@ -10,6 +10,12 @@ class DialogsHelperGetters {
     setTopicManage (val, data) {
         store.commit('dialog/SET_TOPIC_MANAGE', { val, data })
     }
+    setUserAvatar (val, data) {
+        store.commit('dialog/SET_USER_AVATAR', { val, data })
+    }
+    setSiteNew (val) {
+        store.commit('dialog/SET_SITE_NEW', { val })
+    }
     setUserManage (val, data) {
         store.commit('dialog/SET_USER_MANAGE', { val, data })
     }

@@ -9,7 +9,7 @@
     <div v-if="topics && topics.items && topics.items.length">
         <ul class="ic-collection">
             <li class="item ic-collection-item" v-for="i in topics.items" :key="i.id">
-                <router-link class="title" :class="i.state === this.$misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                <router-link class="title" :class="i.state === $misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                     <span>{{i.title}}</span>
                     <span class="icons">
                         <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272"></i>
@@ -87,7 +87,7 @@ export default {
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 // select: 'id, time, user_id, board_id, title, state',
                 loadfk: { 'user_id': null, 'board_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
-            }, params.page, null, 'superuser')
+            }, params.page, null, this.$user.mainRole)
             if (retList.code === api.retcode.SUCCESS) {
                 this.topics = retList.data
             }

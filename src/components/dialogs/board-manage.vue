@@ -163,7 +163,7 @@ export default {
             }
 
             let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible', 'can_post_rank'])
-            let ret = await api.board.set({ id: this.board.id }, data, 'superuser', keys)
+            let ret = await api.board.set({ id: this.board.id }, data, this.$user.mainRole, keys)
 
             if (ret.code === 0) {
                 if (this.boardManageData) {
@@ -187,7 +187,7 @@ export default {
                 let info = await api.board.get({
                     id: this.boardManageData.id,
                     loadfk: { 'user_id': null }
-                }, 'superuser')
+                }, this.$user.mainRole)
 
                 if (info.code === api.retcode.SUCCESS) {
                     this.board = info.data
@@ -195,7 +195,7 @@ export default {
 
                     let ret = await api.board.list({
                         order: 'weight.desc,time.asc'
-                    }, 1, null, 'superuser')
+                    }, 1, null, this.$user.mainRole)
                     if (ret.code === api.retcode.SUCCESS) {
                         // vue-select 目前不允许写 null，要再等一等
                         this.boardList = []

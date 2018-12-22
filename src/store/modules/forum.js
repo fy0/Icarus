@@ -13,7 +13,7 @@ export default {
         exInfoMap: {} // 自行计算总结的信息
     },
     getters: {
-        isNewSite: (state) => state.rawLst.length === 0
+        isSiteNew: (state) => state.rawLst.length === 0
     },
     mutations: {
         SET_BOARD_MANY_INFO (state, { lst, rawLst, infoMap }) {

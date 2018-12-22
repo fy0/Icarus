@@ -53,7 +53,7 @@
     <template v-else-if="type === POST_TYPES.COMMENT">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
         <template v-if="!useSlot">
-            <span class="limited-title">“{{text(item.content)}}”</span>
+            <span class="limited-title">“{{text(item.content || '未知内容')}}”</span>
         </template>
         <slot v-else />
     </template>
@@ -101,11 +101,13 @@ export default {
             default: false
         }
     },
-    methods: {
+    computed: {
         ...mapGetters([
             'POST_TYPES',
             'POST_TYPES_TXT'
-        ]),
+        ])
+    },
+    methods: {
         getPostTitle: function (i, key) {
             if (i['post_title']) return i['post_title']
             return i[key]

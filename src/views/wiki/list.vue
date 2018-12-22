@@ -7,7 +7,7 @@
             <ul>
                 <li v-for="i in page.items" :key="i.id">
                     <router-link :to="{ name: 'wiki_article_by_ref', params: {'ref': i.ref } }">{{i.title}}</router-link>
-                    <router-link v-if="canEditWiki" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
+                    <router-link v-if="isWikiAdmin" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
                 </li>
             </ul>
         </template>
@@ -42,7 +42,7 @@ export default {
         ...mapState(['config']),
         ...mapGetters('user', [
             'basicRole',
-            'canEditWiki'
+            'isWikiAdmin'
         ])
     },
     methods: {

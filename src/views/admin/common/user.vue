@@ -74,7 +74,7 @@ export default {
     methods: {
         doSearch: async function () {
             let found = false
-            let role = $.getRole('admin')
+            let role = this.$user.mainRole
 
             if ($.regex.email.test(this.searchTxt)) {
                 let retList = await api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, role)
@@ -119,7 +119,7 @@ export default {
                     if (password === '') {
                         swal.showValidationError('密码不能为空。')
                     }
-                    return api.user.set({ id: user.id }, { password: await $.passwordHash(password) }, $.getRole('admin'))
+                    return api.user.set({ id: user.id }, { password: await $.passwordHash(password) }, this.$user.mainRole)
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -148,7 +148,7 @@ export default {
                 confirmButtonText: '确定，我要重置',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
-                    return api.user.set({ id: user.id }, { 'key': '1' }, $.getRole('admin'))
+                    return api.user.set({ id: user.id }, { 'key': '1' }, this.$user.mainRole)
                 }
             }).then((result) => {
                 if (result.value == null) return
@@ -171,7 +171,7 @@ export default {
             let params = this.$route.params
             let retList = await api.user.list({
                 order: 'id.desc'
-            }, params.page, null, $.getRole('admin'))
+            }, params.page, null, this.$user.mainRole)
             if (retList.code === api.retcode.SUCCESS) {
                 this.page = retList.data
             }
