@@ -169,6 +169,8 @@ export default {
                 if (this.boardManageData) {
                     this.$store.commit('dialog/WRITE_BOARD_MANAGE_DATA', data)
                 }
+                // 重新载入板块数据
+                await this.$store.dispatch('forum/load')
                 $.message_success('板块信息设置成功')
             } else $.message_by_code(ret.code)
 
