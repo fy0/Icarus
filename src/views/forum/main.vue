@@ -310,6 +310,7 @@ $left-nav-sign-padding: 10px;
 </style>
 
 <script>
+import store from '@/store/index'
 import api from '@/netapi.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
@@ -322,7 +323,7 @@ let pageOneHack = function (to, from, next) {
     // 但似乎由于 nprogress 的存在，显得有点僵硬
     if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
         if (from.name === 'index') {
-            this.$store.commit('LOADING_SET', 0)
+            store.commit('LOADING_SET', 0)
             nprogress.done()
             return next(false)
         }
@@ -348,6 +349,7 @@ export default {
     },
     computed: {
         ...mapState(['config']),
+        ...mapState('user', ['userData']),
         ...mapGetters([
             'POST_STATE'
         ]),
@@ -471,6 +473,7 @@ export default {
                 return [null]
             }
             let exinfo = this.$store.state.forum.exInfoMap[boardId]
+            if (!exinfo) return []
             return exinfo.chain
         },
         fetchData: async function () {
@@ -502,6 +505,10 @@ export default {
 
             if (this.isSiteNew) {
                 this.$dialogs.setSiteNew(true)
+            } else {
+                if (this.$user.isNewUser) {
+                    this.$dialogs.setUserNickname(true)
+                }
             }
 
             // 具体板块
@@ -588,7 +595,7 @@ export default {
     created () {
         this.fetchData()
 
-        this.$nextTick(() => {
+        this.$nextTick(function () {
             $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
             let el = document.querySelector('.main')
             if (!el) return
@@ -609,6 +616,11 @@ export default {
     watch: {
         // 如果路由有变化，会再次执行该方法
         '$route': 'fetchData',
+        'userData': async function (newVal) {
+            // 用户登入登出后进行板块信息重载
+            // TODO: 不理解为什么不执行
+            await this.$store.dispatch('forum/load')
+        },
         'withSubBoardTopic': async function (newVal, oldVal) {
             if (this.withSubBoardTopicOptionReady) {
                 localStorage.removeItem('sbt', newVal)

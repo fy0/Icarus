@@ -59,6 +59,14 @@ export default {
         }
     },
     actions: {
+        // 退出登录
+        async apiSignout ({ dispatch }) {
+            let ret = await api.user.signout()
+            if (ret.code === api.retcode.SUCCESS || ret.code === api.retcode.FAILED) {
+                await dispatch('initLoad', null, { root: true })
+                $.message_success('登出成功')
+            }
+        },
         // 获取当前用户信息
         async apiGetUserData ({ state, getters, commit }, uid) {
             if (!uid) uid = getters._userData.id
@@ -71,6 +79,7 @@ export default {
                 $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
             }
         },
+        // 设置当前用户信息
         async apiSetUserData ({ state, getters, dispatch }, newData) {
             let oldData = state.userData
             let updateData = $.objDiff(newData, oldData)

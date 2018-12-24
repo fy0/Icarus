@@ -47,6 +47,10 @@ export default {
                 let infoMap = state.infoMap
                 if (!Object.keys(infoMap).length) return lst
                 while (true) {
+                    if (!infoMap[boardId]) {
+                        // 板块父级因权限原因不可见，斩断计算链就行了
+                        return []
+                    }
                     let pid = infoMap[boardId].parent_id
                     if (!pid) break
                     lst.push(pid)

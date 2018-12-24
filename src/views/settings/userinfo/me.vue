@@ -16,7 +16,7 @@
                 <div class="setting-item">
                     <span class="label">
                         <template>昵称</template>
-                        <span class="change-nickname" v-if="user.change_nickname_chance" @click="$dialog.setUserNickname(true)">
+                        <span class="change-nickname" v-if="user.change_nickname_chance" @click="$dialogs.setUserNickname(true)">
                             <template>修改昵称(剩余次数{{user.change_nickname_chance}})</template>
                         </span>
                     </span>

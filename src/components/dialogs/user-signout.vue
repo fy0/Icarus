@@ -39,7 +39,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -56,12 +55,9 @@ export default {
         ok: async function () {
             if (this.quiting) return
             this.quiting = true
-            let ret = await api.user.signout()
-            if (ret.code === api.retcode.SUCCESS || ret.code === api.retcode.FAILED) {
-                await this.$store.dispatch('initLoad')
-                $.message_success('登出成功')
-                this.$router.replace('/')
-            }
+            this.$store.dispatch('user/apiSignout')
+            // TODO: 这里先假设退出登录一定会成功吧
+            this.$router.replace('/')
             this.quiting = false
             this.$dialogs.setUserSignout(false)
         },
