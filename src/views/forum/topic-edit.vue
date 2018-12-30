@@ -10,7 +10,7 @@
 
     <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
         <check-row :results="formErrors.title" :multi="true">
-            <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${this.$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
+            <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
         <check-row :results="formErrors.board_id" :multi="true" v-if="(!is_edit) || asAdmin">
             <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
@@ -297,6 +297,7 @@ export default {
     },
     created: async function () {
         await this.fetchData()
+        let vm = this
 
         let func = async () => {
             let editor = this.$refs.editor
@@ -327,8 +328,8 @@ export default {
                             // console.log('done', ret)
                             if (ret.code === api.retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
-                                let url = `${this.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
-                                let suffix = this.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
+                                let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
+                                let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
                                 if (suffix) url += `-${suffix}`
                                 let newTxt = `![](${url})`
                                 let offset = newTxt.length - placeholder.length

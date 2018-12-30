@@ -269,6 +269,8 @@ export default {
 
         let func = async () => {
             let editor = this.$refs.editor
+            let vm = this
+
             if (editor) {
                 let uploadImage = async function (editor, fileList) {
                     let theFile = null
@@ -296,8 +298,8 @@ export default {
                             // console.log('done', ret)
                             if (ret.code === api.retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
-                                let url = `${this.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
-                                let suffix = this.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
+                                let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
+                                let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
                                 if (suffix) url += `-${suffix}`
                                 let newTxt = `![](${url})`
                                 let offset = newTxt.length - placeholder.length
