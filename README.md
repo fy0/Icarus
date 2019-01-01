@@ -6,6 +6,7 @@
 
 [更多截图(旧版)](SCREENSHOT.md)
 
+[2.0分支开发中，路线图见此](https://t.myrpg.cn/topic/2827)
 
 ## 开源协议
 
