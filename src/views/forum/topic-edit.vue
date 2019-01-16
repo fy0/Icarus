@@ -346,8 +346,11 @@ export default {
                     await uploadImage(editor, e.dataTransfer.files)
                 })
                 cm.on('paste', async (editor, e) => {
+                    if (e.clipboardData.files.length > 0) {
+                        // fix for macos
+                        e.preventDefault()
+                    }
                     await uploadImage(editor, e.clipboardData.files)
-                    return false
                 })
             } else {
                 setTimeout(func, 500)

@@ -40,6 +40,12 @@ EMAIL_USERNAME = 'user'
 EMAIL_PASSWORD = 'pasword'
 
 ##########################################
+# 可选配置 - 开启WIKI
+##########################################
+
+WIKI_ENABLE = True
+
+##########################################
 # 可选配置 - 开启搜索功能（需要Elasticsearch）
 ##########################################
 
@@ -67,7 +73,7 @@ UPLOAD_QINIU_CALLBACK_URL = SITE_URL + '/api/upload/qn_callback'  # 开启时必
 UPLOAD_FILE_SIZE_MIN = 100  # 文件必须大于100字节
 UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024  # 文件必须小于3MB
 
-UPLOAD_QINIU_IMAGE_TOPIC_STYLE = ''  # 文章页面图片所用的七牛图片样式
+UPLOAD_QINIU_IMAGE_STYLE_TOPIC = ''  # 文章页面图片所用的七牛图片样式
 
 """
 

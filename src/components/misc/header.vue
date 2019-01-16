@@ -21,9 +21,11 @@
                     <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum', 'index')">
                         <a>论坛</a>
                     </router-link>
-                    <router-link tag="li" class="menu-item" :to="{ name: 'wiki' }" :class="navActive('wiki')">
-                        <a>百科</a>
-                    </router-link>
+                    <template v-if="$store.getters.BACKEND_CONFIG.WIKI_ENABLE">
+                        <router-link tag="li" class="menu-item" :to="{ name: 'wiki' }" :class="navActive('wiki')">
+                            <a>百科</a>
+                        </router-link>
+                    </template>
                     <li class="menu-item" v-if="false && isSiteAdmin"><a href="#">文档</a></li>
                     <li class="menu-item" v-if="false"><a href="#">聊天室</a></li>
                     <router-link tag="li" v-if="userData" class="menu-item" :to="{ name: 'setting' }" :class="navActive('setting')">

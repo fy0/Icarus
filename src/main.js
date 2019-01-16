@@ -172,6 +172,13 @@ router.beforeEach(async function (to, from, next) {
                 toUrl = '/404'
             }
         }
+
+        if (to.name.startsWith('wiki')) {
+            if (!store.getters.BACKEND_CONFIG.WIKI_ENABLE) {
+                // WIKI 开关关闭
+                toUrl = '/404'
+            }
+        }
     }
 
     if (toUrl) {
