@@ -21,7 +21,7 @@ module.exports = {
     css: {
         loaderOptions: {
             sass: {
-                data: '@import "@/assets/css/base-ui.scss";'
+                data: '@import "@/assets/css/variables.scss"; @import "@/assets/css/input.scss";'
             }
         }
     }

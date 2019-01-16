@@ -189,7 +189,7 @@
         </div>
     </div>
     <dialog-site-new v-if="isSiteNew" />
-    <dialog-user-set-nickname v-else-if="$user.isNewUser"/>
+    <dialog-user-set-nickname v-else-if="$user.isNewUser && $user.data.change_nickname_chance > 0"/>
     <dialog-topic-manage />
     <!-- <dialog-user-inactive-warn /> -->
 
