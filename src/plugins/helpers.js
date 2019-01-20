@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 let store = null
 let user = null
 let getters = null
@@ -57,16 +59,19 @@ export default ({ app }, inject) => {
     user = store.state.user
     getters = store.getters
 
-    app.$config = {
+    Object.defineProperty(Vue.prototype, '$config', {
         get () { return this.$store.state.config }
-    }
-    app.$misc = {
+    })
+
+    Object.defineProperty(Vue.prototype, '$misc', {
         get () { return this.$store.state.misc }
-    }
-    app.$user = {
+    })
+
+    Object.defineProperty(Vue.prototype, '$user', {
         get () { return uhg }
-    }
-    app.$dialogs = {
+    })
+
+    Object.defineProperty(Vue.prototype, '$dialogs', {
         get () { return dhg }
-    }
+    })
 }

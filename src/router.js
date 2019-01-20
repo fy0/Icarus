@@ -1,32 +1,31 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-/*
 import AccountSignin from '@/views/account/signin.vue'
 import AccountSignup from '@/views/account/signup.vue'
 import AccountSignupByEmailDone from '@/views/account/signup_by_email_done.vue'
-import AccountUserPage from '@/views/account/userpage.vue'
+// import AccountUserPage from '@/views/account/userpage.vue'
 import AccountNotif from '@/views/account/notif.vue'
-import AccountOAuth from '@/views/account/oauth.vue'
-import AccountOAuthCheck from '@/views/account/oauth_check.vue'
+// import AccountOAuth from '@/views/account/oauth.vue'
+// import AccountOAuthCheck from '@/views/account/oauth_check.vue'
 import AccountPasswordReset from '@/views/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 
-import Setting from '@/views/settings/setting.vue'
-import SettingUserinfoMe from '@/views/settings/userinfo/me.vue'
-import SettingUserinfoUpload from '@/views/settings/userinfo/upload.vue'
-import SettingUserinfoPrivacy from '@/views/settings/userinfo/privacy.vue'
-import SettingSecurityPassword from '@/views/settings/security/password.vue'
-import SettingSecurityOAuth from '@/views/settings/security/oauth.vue'
+// import Setting from '@/views/settings/setting.vue'
+// import SettingUserinfoMe from '@/views/settings/userinfo/me.vue'
+// import SettingUserinfoUpload from '@/views/settings/userinfo/upload.vue'
+// import SettingUserinfoPrivacy from '@/views/settings/userinfo/privacy.vue'
+// import SettingSecurityPassword from '@/views/settings/security/password.vue'
+// import SettingSecurityOAuth from '@/views/settings/security/oauth.vue'
 
-// import ForumBoards from '@/views/forum/boards.vue'
-import ForumMain from '@/views/forum/main.vue'
-import ForumTopic from '@/views/forum/topic.vue'
+// // import ForumBoards from '@/views/forum/boards.vue'
+// import ForumMain from '@/views/forum/main.vue'
+// import ForumTopic from '@/views/forum/topic.vue'
+
+import About from '@/views/about.vue'
 
 // 404 页面较为特殊，通常是以组件的形式被使用
-import NotFoundComponent from '@/components/404.vue'
-*/
-import About from '@/views/about.vue'
+// import NotFoundComponent from '@/components/404.vue'
 
 Vue.use(Router)
 
@@ -42,36 +41,36 @@ export function createRouter () {
             //     component: ForumMain
             // },
 
-            // // 用户 - 登录
-            // {
-            //     path: '/account/signin',
-            //     name: 'account_signin',
-            //     component: AccountSignin
-            // },
-            // // 用户 - 注册
-            // {
-            //     path: '/account/signup',
-            //     name: 'account_signup',
-            //     component: AccountSignup
-            // },
-            // // 用户 - 邮件激活
-            // {
-            //     path: '/account/signup_by_email_done',
-            //     name: 'account_signup_by_email_done',
-            //     component: AccountSignupByEmailDone
-            // },
-            // // 用户 - 申请重置密码
-            // {
-            //     path: '/account/lost_password',
-            //     name: 'account_password_reset_request',
-            //     component: AccountPasswordResetRequest
-            // },
-            // // 用户 - 重置密码
-            // {
-            //     path: '/account/password_reset',
-            //     name: 'account_password_reset',
-            //     component: AccountPasswordReset
-            // },
+            // 用户 - 登录
+            {
+                path: '/account/signin',
+                name: 'account_signin',
+                component: AccountSignin
+            },
+            // 用户 - 注册
+            {
+                path: '/account/signup',
+                name: 'account_signup',
+                component: AccountSignup
+            },
+            // 用户 - 邮件激活
+            {
+                path: '/account/signup_by_email_done',
+                name: 'account_signup_by_email_done',
+                component: AccountSignupByEmailDone
+            },
+            // 用户 - 申请重置密码
+            {
+                path: '/account/lost_password',
+                name: 'account_password_reset_request',
+                component: AccountPasswordResetRequest
+            },
+            // 用户 - 重置密码
+            {
+                path: '/account/password_reset',
+                name: 'account_password_reset',
+                component: AccountPasswordReset
+            },
 
             // // 用户 - 个人主页
             // {
@@ -80,12 +79,12 @@ export function createRouter () {
             //     component: AccountUserPage
             // },
 
-            // // 用户 - 个人提醒
-            // {
-            //     path: '/notifications',
-            //     name: 'account_notif',
-            //     component: AccountNotif
-            // },
+            // 用户 - 个人提醒
+            {
+                path: '/notifications',
+                name: 'account_notif',
+                component: AccountNotif
+            },
 
             // // 论坛 - 主页面
             // {

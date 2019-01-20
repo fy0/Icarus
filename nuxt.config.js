@@ -40,6 +40,8 @@ module.exports = {
         {
             handler: function (req, res, next) {
                 let spaPaths = [
+                    '/account/**',
+                    'notifications',
                     '/admin/**'
                 ]
                 if (mm.some(req._parsedUrl.pathname, spaPaths)) {
