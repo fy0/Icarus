@@ -54,24 +54,58 @@ class DialogsHelperGetters {
 let uhg = new UserHelperGetters()
 let dhg = new DialogsHelperGetters()
 
-export default ({ app }, inject) => {
-    store = app.store
+export default (ctx, inject) => {
+    store = ctx.store
     user = store.state.user
     getters = store.getters
 
-    Object.defineProperty(Vue.prototype, '$config', {
-        get () { return this.$store.state.config }
-    })
+    let setUp = (ctx) => {
+        if (process.browser) {
+            store = ctx.$store
+            user = store.state.user
+            getters = store.getters
+        }
+    }
 
-    Object.defineProperty(Vue.prototype, '$misc', {
-        get () { return this.$store.state.misc }
-    })
+    if (process.browser) {
+        Object.defineProperty(Vue.prototype, '$config', {
+            get () { return this.$store.state.config }
+        })
 
-    Object.defineProperty(Vue.prototype, '$user', {
-        get () { return uhg }
-    })
+        Object.defineProperty(Vue.prototype, '$misc', {
+            get () { return this.$store.state.misc }
+        })
 
-    Object.defineProperty(Vue.prototype, '$dialogs', {
-        get () { return dhg }
-    })
+        Object.defineProperty(Vue.prototype, '$user', {
+            get () { setUp(this); return uhg }
+        })
+
+        Object.defineProperty(Vue.prototype, '$dialogs', {
+            get () { setUp(this); return dhg }
+        })
+    } else {
+        if (!Vue.prototype.$misc === undefined) {
+            Object.defineProperty(Vue.prototype, '$misc', {
+                get () { return store.state.misc }
+            })
+        }
+
+        if (!Vue.prototype.$config === undefined) {
+            Object.defineProperty(Vue.prototype, '$config', {
+                get () { return store.state.config }
+            })
+        }
+
+        if (!Vue.prototype.$user === undefined) {
+            Object.defineProperty(Vue.prototype, '$user', {
+                get () { return uhg }
+            })
+        }
+
+        if (!Vue.prototype.$dialogs === undefined) {
+            Object.defineProperty(Vue.prototype, '$dialogs', {
+                get () { return dhg }
+            })
+        }
+    }
 }
