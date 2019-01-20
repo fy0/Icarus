@@ -5,7 +5,7 @@
         <span>旨在成为一个简洁、易用、高效的开源社区系统。</span>
         <a href="https://github.com/fy0/icarus" target="_blank">Github 链接</a>
     </template>
-    <div v-title>关于 - {{$config.title}}</div>
+    <!-- <div v-title>关于 - {{$config.title}}</div> -->
 </div>
 </template>
 

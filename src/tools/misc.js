@@ -1,3 +1,6 @@
+if (process.server) {
+    var window = {}
+}
 
 class Tween {
     constructor (options) {

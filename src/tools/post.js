@@ -1,5 +1,12 @@
 import api from '../netapi.js'
-import store from '@/store/index'
+
+let store = null
+
+if (process.browser) {
+    window.onNuxtReady(({ $store }) => {
+        store = $store
+    })
+}
 
 $.makePostLinkData = function (type, item) {
     let title = item.name || item.title || item.nickname

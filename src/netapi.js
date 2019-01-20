@@ -1,24 +1,46 @@
-
-// import 'whatwg-fetch'
+import axios from 'axios'
 import config from './config.js'
 
+axios.defaults.retry = 2
+axios.defaults.retryDelay = 300
+
 let remote = config.remote
+const backend = axios.create({
+    baseURL: remote.API_SERVER,
+    timeout: 5000,
+    withCredentials: true,
+    headers: {
+        'Accept': 'application/json'
+    }
+})
+
+backend.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response.data
+}, function (error) {
+    // Do something with response error
+    return Promise.reject(error)
+})
 
 function getAccessToken () {
-    return localStorage.getItem('t')
+    if (process.browser) {
+        return localStorage.getItem('t')
+    }
 }
 
 function saveAccessToken (token) {
-    localStorage.setItem('t', token)
+    if (process.browser) {
+        localStorage.setItem('t', token)
+    }
 }
 
-function paramSerialize (obj) {
-    let str = []
-    for (let i of Object.keys(obj)) {
-        str.push(encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]))
-    }
-    return str.join('&')
-}
+// function paramSerialize (obj) {
+//     let str = []
+//     for (let i of Object.keys(obj)) {
+//         str.push(encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]))
+//     }
+//     return str.join('&')
+// }
 
 function buildFormData (obj) {
     if (!obj) return
@@ -30,38 +52,32 @@ function buildFormData (obj) {
 }
 
 async function doRequest (url, method, params, data = null, role = null) {
-    let reqParams = {
-        method: method,
-        mode: 'cors',
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json'
-            // 'Content-Type': 'application/json;'
-        }
+    let headers = {}
+    let token = getAccessToken()
+
+    if (token) {
+        // 设置 access token
+        headers['AccessToken'] = token
     }
-    // 设置 access token
-    let authMode = config.remote.authMode
-    if ((authMode === 'access_token') || (authMode === 'access_token_in_params')) {
-        let token = getAccessToken()
-        if (authMode === 'access_token') {
-            reqParams.headers['AccessToken'] = token
-        } else {
-            if (params === null) params = { AccessToken: token }
-            else params['AccessToken'] = token
-        }
-    }
+
     if (role) {
         // 不然的话服务器回收到一个 'null' 的 str
-        reqParams.headers['Role'] = role
+        headers['Role'] = role
     }
-    if (params) url += `?${paramSerialize(params)}`
+
+    return backend.request({
+        url,
+        method,
+        headers,
+        params,
+        data: buildFormData(data)
+    })
+    // if (params) url += `?${paramSerialize(params)}`
     // if (method === 'POST') reqParams.body = JSON.stringify(data)
-    if (method === 'POST') reqParams.body = buildFormData(data)
-    return fetch(url, reqParams)
 }
 
-async function nget (url, params, role = null) { return (await doRequest(url, 'GET', params, null, role)).json() }
-async function npost (url, params, data, role = null) { return (await doRequest(url, 'POST', params, data, role)).json() }
+async function nget (url, params, role = null) { return doRequest(url, 'GET', params, null, role) }
+async function npost (url, params, data, role = null) { return doRequest(url, 'POST', params, data, role) }
 
 function filterValues (filter, data) {
     let keys = null
@@ -81,7 +97,7 @@ function filterValues (filter, data) {
 class SlimViewRequest {
     constructor (path) {
         this.path = path
-        this.urlPrefix = `${remote.API_SERVER}/api/${path}`
+        this.urlPrefix = `/api/${path}`
     }
 
     async get (params, role = null) {
@@ -204,7 +220,7 @@ class SearchViewRequest extends SlimViewRequest {
 class Oauth {
     async getUrl (website) {
         if (website === 'github') {
-            let info = await nget(`${remote.API_SERVER}/api/user/oauth/get_oauth_url`)
+            let info = await nget(`/api/user/oauth/get_oauth_url`)
             return info['data']['url']
         } else if (website === 'qq') {
             return nget()
@@ -213,14 +229,14 @@ class Oauth {
         }
     }
     async oauthUpdate (userdata) {
-        let ret = await npost(`${remote.API_SERVER}/api/user/oauth/update`, null, userdata, null)
+        let ret = await npost(`/api/user/oauth/update`, null, userdata, null)
         if (ret.code === retcode.SUCCESS) {
             return retcode.SUCCESS
         }
         return retcode.FAILED
     }
     async send (code) {
-        let ret = await nget(`${remote.API_SERVER}/api/user/oauth/get_user_data`, { 'code': code })
+        let ret = await nget(`/api/user/oauth/get_user_data`, { 'code': code })
         if (ret.code !== retcode.FAILED) {
             let oauthState = ret['data']['state']
             if (oauthState === 50) {
@@ -253,12 +269,12 @@ export default {
 
     /** 获取综合信息 */
     misc: async function () {
-        return nget(`${remote.API_SERVER}/api/misc/info`)
+        return nget(`/api/misc/info`)
     },
 
     /** 周期请求 */
     tick: async function (auid) {
-        return nget(`${remote.API_SERVER}/api/misc/tick`, { auid })
+        return nget(`/api/misc/tick`, { auid })
     },
 
     user: new UserViewRequest('user'),

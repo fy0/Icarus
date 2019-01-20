@@ -1,7 +1,14 @@
 import api from '../netapi.js'
-import store from '@/store/index'
+let store = null
+
+if (process.browser) {
+    window.onNuxtReady(({ $store }) => {
+        store = $store
+    })
+}
 
 $.tickStart = async () => {
+    if (process.server) return
     let tickHttp = async () => {
         let auid = localStorage.getItem('auid')
         let ret = await api.tick(auid)

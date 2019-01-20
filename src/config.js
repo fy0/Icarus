@@ -1,8 +1,9 @@
-let hostname = window.location.hostname
+// let hostname = window.location.hostname
+let hostname = 'localhost'
 
 let config = {
     remote: {
-        API_SERVER: `//${hostname}:9999`,
+        API_SERVER: `http://${hostname}:9999`,
         WS_SERVER: `ws://${hostname}:9999/ws`,
         authMode: 'access_token' // access_token / access_token_in_params / cookie
     },

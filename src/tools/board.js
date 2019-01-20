@@ -1,6 +1,13 @@
 import Color from 'color'
-import store from '@/store/index'
 import murmurhash from 'murmurhash'
+
+let store = null
+
+if (process.browser) {
+    window.onNuxtReady(({ $store }) => {
+        store = $store
+    })
+}
 
 $.boardColor = function (board) {
     if (board.color) {

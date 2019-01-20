@@ -1,4 +1,10 @@
-import store from '@/store/index'
+let store = null
+
+if (process.browser) {
+    window.onNuxtReady(({ $store }) => {
+        store = $store
+    })
+}
 
 let messageId = 1
 
