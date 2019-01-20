@@ -76,6 +76,9 @@ class UserLegacyView(PeeweeView):
         # 注册IP地址
         values['ip_registered'] = await get_fuzz_ip(self)
 
+        values['is_new_user'] = False  # 目前的代表了是否重设过昵称，但在legacy模式中注册时即设置好了昵称
+        values['change_nickname_chance'] = 0
+
         values.update(User.gen_key())
         values['time'] = int(time.time())
         self._key = values['key']
