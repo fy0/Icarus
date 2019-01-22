@@ -14,6 +14,7 @@
 </style>
 
 <script>
+let a = 1
 export default {
     data () {
         return {}
@@ -22,6 +23,10 @@ export default {
         customAbout: function () {
             return this.$store.getters.BACKEND_CONFIG.ABOUT_CUSTOM_HTML
         }
+    },
+    created () {
+        a++
+        console.log(a)
     }
 }
 </script>

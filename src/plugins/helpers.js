@@ -1,73 +1,68 @@
 import Vue from 'vue'
 
-let store = null
-let user = null
-let getters = null
-
 class UserHelperGetters {
-    get data () { return user.userData }
-    get unread () { return user.unread }
+    get data () { return this._user.userData }
+    get unread () { return this._user.unread }
 
-    get isNewUser () { return getters['user/isNewUser'] }
+    get isNewUser () { return this._getters['user/isNewUser'] }
 
-    get roles () { return getters['user/roles'] }
-    get basicRole () { return getters['user/basicRole'] }
-    get mainRole () { return getters['user/mainRole'] }
-    get forumAdminRole () { return getters['user/forumAdminRole'] }
-    get wikiEditRole () { return getters['user/wikiEditRole'] }
+    get roles () { return this._getters['user/roles'] }
+    get basicRole () { return this._getters['user/basicRole'] }
+    get mainRole () { return this._getters['user/mainRole'] }
+    get forumAdminRole () { return this._getters['user/forumAdminRole'] }
+    get wikiEditRole () { return this._getters['user/wikiEditRole'] }
 
-    get isWikiAdmin () { return getters['user/isWikiAdmin'] }
-    get isSiteAdmin () { return getters['user/isSiteAdmin'] }
-    get isForumAdmin () { return getters['user/isForumAdmin'] }
+    get isWikiAdmin () { return this._getters['user/isWikiAdmin'] }
+    get isSiteAdmin () { return this._getters['user/isSiteAdmin'] }
+    get isForumAdmin () { return this._getters['user/isForumAdmin'] }
 }
 
 class DialogsHelperGetters {
     setBoardManage (val, data) {
-        store.commit('dialog/SET_BOARD_MANAGE', { val, data })
+        this._store.commit('dialog/SET_BOARD_MANAGE', { val, data })
     }
     setCommentManage (val, data) {
-        store.commit('dialog/SET_COMMENT_MANAGE', { val, data })
+        this._store.commit('dialog/SET_COMMENT_MANAGE', { val, data })
     }
     setTopicManage (val, data) {
-        store.commit('dialog/SET_TOPIC_MANAGE', { val, data })
+        this._store.commit('dialog/SET_TOPIC_MANAGE', { val, data })
     }
     setUserAvatar (val, data) {
-        store.commit('dialog/SET_USER_AVATAR', { val, data })
+        this._store.commit('dialog/SET_USER_AVATAR', { val, data })
     }
     setSiteNew (val) {
-        store.commit('dialog/SET_SITE_NEW', { val })
+        this._store.commit('dialog/SET_SITE_NEW', { val })
     }
     setUserManage (val, data) {
-        store.commit('dialog/SET_USER_MANAGE', { val, data })
+        this._store.commit('dialog/SET_USER_MANAGE', { val, data })
     }
     setUserNickname (val) {
-        store.commit('dialog/SET_USER_NICKANME', { val })
+        this._store.commit('dialog/SET_USER_NICKANME', { val })
     }
     setUserInactive (val) {
-        store.commit('dialog/SET_USER_INACTIVE', { val })
+        this._store.commit('dialog/SET_USER_INACTIVE', { val })
     }
     setUserSignout (val) {
-        store.commit('dialog/SET_USER_SIGNOUT', { val })
+        this._store.commit('dialog/SET_USER_SIGNOUT', { val })
     }
 }
 
-let uhg = new UserHelperGetters()
-let dhg = new DialogsHelperGetters()
-
 export default (ctx, inject) => {
-    store = ctx.store
-    user = store.state.user
-    getters = store.getters
+    let uhg = new UserHelperGetters()
+    let dhg = new DialogsHelperGetters()
 
-    let setUp = (ctx) => {
-        if (process.browser) {
-            store = ctx.$store
-            user = store.state.user
-            getters = store.getters
-        }
-    }
+    dhg._store = ctx.store
+    uhg._user = ctx.store.state.user
+    uhg._getters = ctx.store.getters
 
     if (process.browser) {
+        // 浏览器端
+        let setUp = (ctx) => {
+            dhg._store = ctx.store
+            uhg._user = ctx.store.state.user
+            uhg._getters = ctx.store.getters
+        }
+
         Object.defineProperty(Vue.prototype, '$config', {
             get () { return this.$store.state.config }
         })
@@ -84,15 +79,16 @@ export default (ctx, inject) => {
             get () { setUp(this); return dhg }
         })
     } else {
+        // 服务器端
         if (!Vue.prototype.$misc === undefined) {
             Object.defineProperty(Vue.prototype, '$misc', {
-                get () { return store.state.misc }
+                get () { return ctx.store.state.misc }
             })
         }
 
         if (!Vue.prototype.$config === undefined) {
             Object.defineProperty(Vue.prototype, '$config', {
-                get () { return store.state.config }
+                get () { return ctx.store.state.config }
             })
         }
 

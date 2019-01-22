@@ -623,7 +623,7 @@ export default {
         },
         'withSubBoardTopic': async function (newVal, oldVal) {
             if (this.withSubBoardTopicOptionReady) {
-                localStorage.removeItem('sbt', newVal)
+                localStorage.removeItem('sbt')
                 if (newVal) localStorage.setItem('sbt', 1)
                 await this.fetchData()
             }

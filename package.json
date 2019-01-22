@@ -36,6 +36,7 @@
     "nprogress": "^0.2.0",
     "nuxt": "^2.0.0",
     "nuxt-sass-resources-loader": "^2.0.5",
+    "nuxt-universal-storage": "^0.1.4",
     "objectid-js": "^1.0.2patch1",
     "prismjs": "^1.15.0",
     "qiniu-js": "^2.5.3",
