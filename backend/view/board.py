@@ -11,8 +11,7 @@ from model.board import Board
 from view import route, ValidateForm
 from wtforms import StringField, validators as va
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
-from permissions import permissions_add_all
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 class BoardForm(ValidateForm):
@@ -27,7 +26,7 @@ class BoardForm(ValidateForm):
 
 
 @route('board')
-class BoardView(PeeweeView, UserMixin):
+class BoardView(PeeweeView, UserViewMixin):
     model = Board
     LIST_PAGE_SIZE = -1
 
@@ -36,11 +35,6 @@ class BoardView(PeeweeView, UserMixin):
         cls.add_soft_foreign_key('id', 'post_stats', 's')
         cls.add_soft_foreign_key('user_id', 'user')
         cls.add_soft_foreign_key('parent_id', 'board')
-
-    @classmethod
-    def permission_init(cls):
-        permission: Permissions = cls.permission
-        permissions_add_all(permission)
 
     async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
         form = BoardForm(**values)

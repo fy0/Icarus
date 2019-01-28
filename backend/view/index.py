@@ -12,7 +12,7 @@ from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from slim.utils import to_hex
 from view import route
-from view.user import UserMixin
+from view.user import UserViewMixin
 from view.ws import WSR
 
 
@@ -24,7 +24,7 @@ async def user_online():
 
 
 @route('misc')
-class TestBaseView(UserMixin, BaseView):
+class TestBaseView(UserViewMixin, BaseView):
     @classmethod
     def interface(cls):
         cls.use('info', 'GET')

@@ -3,20 +3,14 @@ from model.post_stats import PostStats
 from slim.base.permission import Permissions
 from slim.support.peewee import PeeweeView
 from view import route, ValidateForm
-from permissions import permissions_add_all
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 @route('stats', None)
-class StatsView(UserMixin, PeeweeView):
+class StatsView(UserViewMixin, PeeweeView):
     model = PostStats
 
     @classmethod
     def ready(cls):
         cls.add_soft_foreign_key('last_comment_id', 'comment')
         cls.add_soft_foreign_key('last_edit_user_id', 'user')
-
-    @classmethod
-    def permission_init(cls):
-        permission: Permissions = cls.permission
-        permissions_add_all(permission)

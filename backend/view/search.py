@@ -5,11 +5,11 @@ from slim.retcode import RETCODE
 import config
 from slim.base.view import BaseView
 from view import route, cooldown, thread_executor, run_in_thread
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 @route('search')
-class TestBaseView(UserMixin, BaseView):
+class TestBaseView(UserViewMixin, BaseView):
     @route.interface('POST')
     @cooldown(config.SEARCH_COOLDOWN_BY_IP, b'ic_cd_search_cooldown_by_ip_%b')
     async def search(self):

@@ -17,11 +17,11 @@ from model._post import POST_STATE
 from model.user import User
 from model.user_oauth import UserOAuth
 from view import route
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 @route('user/oauth')
-class UserOAuthView(UserMixin, PeeweeView):
+class UserOAuthView(UserViewMixin, PeeweeView):
     model = UserOAuth
 
     github = GithubClient(
