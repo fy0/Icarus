@@ -1,3 +1,4 @@
+// browser only
 let store = null
 
 if (process.browser) {

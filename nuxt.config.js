@@ -62,7 +62,8 @@ module.exports = {
     */
     plugins: [
         '@/plugins/_main',
-        '@/plugins/helpers'
+        '@/plugins/helpers',
+        '@/plugins/api'
     ],
 
     /*

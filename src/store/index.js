@@ -1,4 +1,3 @@
-import api from '../netapi'
 import config from '@/config.js'
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -42,8 +41,8 @@ export const mutations = {
     // 设置
     SET_MISC (state, data) {
         state.misc = data
-        api.retcode = data.retcode
-        api.retinfo = data.retinfo_cn
+        this.$api.retcode = data.retcode
+        this.$api.retinfo = data.retinfo_cn
     },
     // 全局加载动画相关
     LOADING_INC (state, num = 1) {
@@ -73,8 +72,8 @@ export const actions = {
         if (state._initing) return
         commit('SET_INITING', true)
         // 获取MISC信息
-        let ret = await $.retryUntilSuccess(api.misc)
-        if (ret.code !== api.retcode.SUCCESS) {
+        let ret = await $.retryUntilSuccess(this.$api.misc)
+        if (ret.code !== this.$api.retcode.SUCCESS) {
             $.message_error(`服务器的返回异常，请刷新重试。`, 5000)
             commit('SET_INITING', false)
             return
@@ -102,7 +101,7 @@ export const actions = {
             await dispatch('initLoad')
         }
     },
-    async nuxtServerInit ({ commit, dispatch }, { req }) {
+    async nuxtServerInit ({ commit, dispatch }, { req, app }) {
         await dispatch('tryInitLoad')
         // let ret = await api.misc()
         // commit('SET_MISC', ret.data)
