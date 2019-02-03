@@ -102,10 +102,14 @@ export const actions = {
         }
     },
     async nuxtServerInit ({ commit, dispatch }, { req, app }) {
+        // 设置初始 access token
+        // this.$api.accessToken = this.$storage.getUniversal('t')
+        // 尝试加载
         await dispatch('tryInitLoad')
         // let ret = await api.misc()
         // commit('SET_MISC', ret.data)
 
+        // console.log(111, req.headers.cookie)
         // ret = await api.userInfo2(req.headers)
         // if (ret.code === 0) {
         //     commit('SET_USERDATA', ret.data)

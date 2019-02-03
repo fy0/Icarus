@@ -188,7 +188,7 @@ class UserView(UserViewMixin, UserLegacyView):
         if uid and self.current_user and (uid == self.current_user.id.hex()):
             if self.ret_val['code'] == RETCODE.SUCCESS:
                 data = self.ret_val['data']
-                data['roles'] = self.current_user_roles
+                data['roles'] = self.roles
                 data['main_role'] = self.current_user.main_role
                 self.finish(RETCODE.SUCCESS, data)
 

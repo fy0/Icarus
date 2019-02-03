@@ -56,15 +56,12 @@ function filterValues (filter, data) {
 
 export function createAPIRequester (ctx) {
     function getAccessToken () {
-        if (process.browser) {
-            return localStorage.getItem('t')
-        }
+        // return theMod.token
+        return ctx.app.$storage.getUniversal('t')
     }
 
     function saveAccessToken (token) {
-        if (process.browser) {
-            localStorage.setItem('t', token)
-        }
+        return ctx.app.$storage.setUniversal('t', token)
     }
 
     async function doRequest (url, method, params, data = null, role = null) {
@@ -266,6 +263,7 @@ export function createAPIRequester (ctx) {
         retcode,
         retinfo,
         saveAccessToken,
+        accessToken: null, // 需在初始化时进行设置
 
         /** 获取综合信息 */
         misc: async function () {

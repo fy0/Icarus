@@ -110,8 +110,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
-
 export default {
     data () {
         return {
@@ -150,11 +148,11 @@ export default {
             if (this.checkEmail && this.checkPassword) {
                 this.$store.commit('LOADING_INC', 1)
                 // 登录请求
-                let ret = await api.user.signin({
+                let ret = await this.$api.user.signin({
                     email: this.info.email,
                     password: await $.passwordHash(this.info.password)
                 })
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                     if (this.goLastPage) {
@@ -171,7 +169,7 @@ export default {
                     this.formErrors = ret.data
                     $.message_by_code(ret.code)
                 }
-                // ret = await api.user.get({username: this.info.username}, 'test')
+                // ret = await this.$api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
                 this.$store.commit('LOADING_DEC', 1)
             } else {
@@ -180,7 +178,7 @@ export default {
         },
         github_url: async function () {
             // 获取url，然后跳转
-            let ghUrl = await api.Oauth.getUrl('github')
+            let ghUrl = await this.$api.Oauth.getUrl('github')
             window.open(ghUrl, '_blank')
             // console.log(ghUrl)
         }

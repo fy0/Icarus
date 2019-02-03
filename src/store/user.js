@@ -1,5 +1,3 @@
-import api from '@/netapi.js'
-
 export const state = () => ({
     userData: null,
     unread: 0
@@ -61,8 +59,8 @@ export const mutations = {
 export const actions = {
     // 退出登录
     async apiSignout ({ dispatch }) {
-        let ret = await api.user.signout()
-        if (ret.code === api.retcode.SUCCESS || ret.code === api.retcode.FAILED) {
+        let ret = await this.$api.user.signout()
+        if (ret.code === this.$api.retcode.SUCCESS || ret.code === this.$api.retcode.FAILED) {
             await dispatch('initLoad', null, { root: true })
             $.message_success('登出成功')
         }
@@ -72,8 +70,8 @@ export const actions = {
         if (!uid) uid = getters._userData.id
         if (!uid) return
 
-        let userInfo = await api.user.get({ id: uid }, 'user')
-        if (userInfo.code === api.retcode.SUCCESS) {
+        let userInfo = await this.$api.user.get({ id: uid }, 'user')
+        if (userInfo.code === this.$api.retcode.SUCCESS) {
             commit('SET_USER_DATA', userInfo.data)
         } else {
             $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
@@ -85,8 +83,8 @@ export const actions = {
         let updateData = $.objDiff(newData, oldData)
         delete updateData['avatar'] // 头像的更新是独立的，参见BUG12
         if (Object.keys(updateData).length === 0) return
-        let ret = await api.user.set({ id: oldData.id }, updateData, 'user')
-        if (ret.code === api.retcode.SUCCESS) {
+        let ret = await this.$api.user.set({ id: oldData.id }, updateData, 'user')
+        if (ret.code === this.$api.retcode.SUCCESS) {
             await dispatch('apiGetUserData')
             $.message_success('信息修改成功！')
         }

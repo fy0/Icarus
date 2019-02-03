@@ -38,7 +38,7 @@ def board_check(form, field):
     if not board:
         raise ValidationError('板块不存在')
 
-    can_post_rank = 100 if set(form.view.current_user_roles) & {'forum_master', 'superuser', 'admin'} else 0
+    can_post_rank = 100 if set(form.view.roles) & {'forum_master', 'superuser', 'admin'} else 0
     if can_post_rank >= board.can_post_rank:
         return True
     raise ValidationError('没有权限选择此板块')

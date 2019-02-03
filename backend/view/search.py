@@ -15,7 +15,7 @@ class TestBaseView(UserViewMixin, BaseView):
     async def search(self):
         post = await self.post_data()
         vmax = POST_VISIBLE.CONTENT_IF_LOGIN
-        role = list(self.current_user_roles)[-1]
+        role = list(self.roles)[-1]
         if role in ('forum_master', 'superuser', 'admin'):
             vmax = POST_VISIBLE.ADMIN_ONLY
         ret = await run_in_thread(esdb.doc_search, post['keywords'], visible_max=vmax)

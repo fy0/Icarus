@@ -9,6 +9,7 @@ import config
 if __name__ == '__main__':
     import model._models
     import view._views
+    import permissions
 
     loop = get_ioloop()
     if config.EMAIL_ENABLE:
