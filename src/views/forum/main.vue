@@ -310,15 +310,13 @@ $left-nav-sign-padding: 10px;
 </style>
 
 <script>
-import store from '@/store/index'
-import api from '@/netapi.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
 import ZingTouch from 'zingtouch'
 import nprogress from 'nprogress/nprogress.js'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
-let pageOneHack = function (to, from, next) {
+let pageOneHack = function (to, from, next, store) {
     // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
     // 但似乎由于 nprogress 的存在，显得有点僵硬
     if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
@@ -553,17 +551,17 @@ export default {
                 order = 'sticky_weight.desc, ' + order
             }
 
-            let retList = await api.topic.list(Object.assign({
+            let retList = await this.$api.topic.list(Object.assign({
                 order: order
             }, baseQuery), page)
-            if (retList.code === api.retcode.SUCCESS) {
+            if (retList.code === this.$api.retcode.SUCCESS) {
                 if (!this.isBoard && (!page || page === 1)) {
                     // 首页
-                    let retStickyTopics = await api.topic.list(Object.assign({
+                    let retStickyTopics = await this.$api.topic.list(Object.assign({
                         sticky_weight: 5, // 全局置顶项
                         order: order
                     }, baseQuery1))
-                    if (retStickyTopics.code === api.retcode.SUCCESS) {
+                    if (retStickyTopics.code === this.$api.retcode.SUCCESS) {
                         retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
                     }
                 }
@@ -580,10 +578,10 @@ export default {
         }
     },
     beforeRouteEnter (to, from, next) {
-        return pageOneHack(to, from, next)
+        return pageOneHack(to, from, next, store)
     },
     beforeRouteUpdate (to, from, next) {
-        return pageOneHack(to, from, next)
+        return pageOneHack(to, from, next, store)
     },
     beforeRouteLeave (to, from, next) {
         // if (to.name === 'forum_topic_new' && this.state.isInactiveUser()) {

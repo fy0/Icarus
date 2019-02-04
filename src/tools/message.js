@@ -19,10 +19,13 @@ $.message = function (type, text, timeout = 3000) {
         'error': 'am-alert-danger'
     }
     let data = { type, text, class: convert[type], id: messageId++ }
-    store.commit('MESSAGE_PUSH', data)
-    _.delay(() => {
-        store.commit('MESSAGE_REMOVE', data)
-    }, timeout)
+    // TODO: 暂时无法解决
+    if (store) {
+        store.commit('MESSAGE_PUSH', data)
+        _.delay(() => {
+            store.commit('MESSAGE_REMOVE', data)
+        }, timeout)
+    }
 }
 
 $.message_text = function (text, timeout = 3000) {
