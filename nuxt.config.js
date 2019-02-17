@@ -63,7 +63,8 @@ module.exports = {
     plugins: [
         '@/plugins/_main',
         '@/plugins/helpers',
-        '@/plugins/api'
+        '@/plugins/api',
+        '@/plugins/message'
     ],
 
     /*

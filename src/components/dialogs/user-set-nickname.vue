@@ -52,7 +52,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -87,8 +86,8 @@ export default {
             if (this.sending) return
             this.sending = true
 
-            let ret = await api.user.changeNickname(this.info.nickname)
-            if (ret.code === api.retcode.SUCCESS) {
+            let ret = await this.$api.user.changeNickname(this.info.nickname)
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 $.message_success('修改成功！')
                 let newData = Object.assign({}, this.$user.data)
                 newData.nickname = ret.data.nickname
@@ -97,7 +96,7 @@ export default {
                 this.$store.commit('user/SET_USER_DATA', newData)
                 this.sending = false
                 return true
-            } else if (ret.code === api.retcode.INVALID_POSTDATA) {
+            } else if (ret.code === this.$api.retcode.INVALID_POSTDATA) {
                 this.formErrors = ret.data
             }
             this.sending = false
