@@ -99,7 +99,6 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -129,7 +128,7 @@ export default {
         atConvert: $.atConvert2,
         tabTopicLoad: async function () {
             let uid = this.user.id
-            let retList = await api.topic.list({
+            let retList = await this.$api.topic.list({
                 user_id: uid,
                 order: 'time.desc',
                 loadfk: { 'user_id': null, 'board_id': null }
@@ -138,7 +137,7 @@ export default {
         },
         tabCommentLoad: async function () {
             let uid = this.user.id
-            let retList = await api.comment.list({
+            let retList = await this.$api.comment.list({
                 user_id: uid,
                 order: 'time.desc',
                 loadfk: {}
@@ -150,13 +149,13 @@ export default {
             let params = this.$route.params
 
             if (this.userData && (params.id === this.userData.id)) role = this.basicRole
-            let ret = await api.user.get(params, role)
+            let ret = await this.$api.user.get(params, role)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.user = ret.data
                 await this.tabTopicLoad()
             } else {
-                $.message_by_code(ret.code)
+                this.$message.byCode(ret.code)
             }
         }
     },
@@ -172,9 +171,9 @@ export default {
         }
     },
     created: async function () {
-        this.$store.commit('LOADING_INC', 1)
+        // this.$store.commit('LOADING_INC', 1)
         await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+        // this.$store.commit('LOADING_DEC', 1)
     },
     components: {
     }

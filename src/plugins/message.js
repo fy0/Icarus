@@ -36,6 +36,27 @@ function createMessageBoard (ctx) {
         error (text, timeout = 3000) {
             this.message(text, 'success', timeout) // 绿色
         }
+
+        byCode (code, data, text = null, timeout = 3000) {
+            text = text || ctx.store.state.misc.retinfo_cn[code]
+            if (code === ctx.store.state.misc.retcode.SUCCESS) this.success(text, timeout)
+            else if (code === ctx.store.state.misc.retcode.TOO_FREQUENT && data) {
+                this.error(`${text}，尚需等待 ${data} 秒`, timeout)
+            } else this.error(text, timeout)
+        }
+
+        byForm (code, data, alias, timeout = 6000) {
+            if (code) {
+                for (let [k, errs] of Object.entries(data)) {
+                    for (let err of errs) {
+                        let name = alias[k] || k
+                        this.byCode(code, data, `${name}：${err}`, timeout)
+                    }
+                }
+            } else {
+                this.byCode(code, data, null, timeout)
+            }
+        }
     }
 
     return new MessageBoard()

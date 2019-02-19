@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import AccountSignin from '@/views/account/signin.vue'
 import AccountSignup from '@/views/account/signup.vue'
 import AccountSignupByEmailDone from '@/views/account/signup_by_email_done.vue'
-// import AccountUserPage from '@/views/account/userpage.vue'
+import AccountUserPage from '@/views/account/userpage.vue'
 import AccountNotif from '@/views/account/notif.vue'
 // import AccountOAuth from '@/views/account/oauth.vue'
 // import AccountOAuthCheck from '@/views/account/oauth_check.vue'
@@ -72,12 +72,12 @@ export function createRouter () {
                 component: AccountPasswordReset
             },
 
-            // // 用户 - 个人主页
-            // {
-            //     path: '/user/:id(\\S+)',
-            //     name: 'account_userpage',
-            //     component: AccountUserPage
-            // },
+            // 用户 - 个人主页
+            {
+                path: '/user/:id(\\S+)',
+                name: 'account_userpage',
+                component: AccountUserPage
+            },
 
             // 用户 - 个人提醒
             {
