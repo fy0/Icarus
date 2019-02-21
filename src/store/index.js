@@ -46,13 +46,19 @@ export const mutations = {
     },
     // 全局加载动画相关
     LOADING_INC (state, num = 1) {
-        state.loading += num
+        if (process.browser) {
+            state.loading += num
+        }
     },
     LOADING_DEC (state, num = 1) {
-        state.loading -= num
+        if (process.browser) {
+            state.loading -= num
+        }
     },
     LOADING_SET (state, num = 0) {
-        state.loading = num
+        if (process.browser) {
+            state.loading = num
+        }
     },
     // MESSAGE
     MESSAGE_PUSH (state, info) {

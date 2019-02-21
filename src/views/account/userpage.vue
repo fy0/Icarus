@@ -171,9 +171,9 @@ export default {
         }
     },
     created: async function () {
-        // this.$store.commit('LOADING_INC', 1)
+        this.$store.commit('LOADING_INC', 1)
         await this.fetchData()
-        // this.$store.commit('LOADING_DEC', 1)
+        this.$store.commit('LOADING_DEC', 1)
     },
     components: {
     }
