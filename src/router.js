@@ -22,6 +22,8 @@ import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 // import ForumMain from '@/views/forum/main.vue'
 // import ForumTopic from '@/views/forum/topic.vue'
 
+import WikiMain from '@/views/wiki/main.vue'
+
 import About from '@/views/about.vue'
 
 // 404 页面较为特殊，通常是以组件的形式被使用
@@ -129,12 +131,13 @@ export function createRouter () {
             //     component: ForumTopic
             // },
 
-            // // Wiki - 主页
-            // {
-            //     path: '/wiki',
-            //     name: 'wiki',
-            //     component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/main.vue')
-            // },
+            // Wiki - 主页
+            {
+                path: '/wiki',
+                name: 'wiki',
+                component: WikiMain
+                // component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/main.vue')
+            },
             // // Wiki - 随机页面
             // {
             //     path: '/wiki/random',

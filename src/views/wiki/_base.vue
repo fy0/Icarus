@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container">
-    <div v-title>百科 - {{config.title}}</div>
+    <!-- <div v-title>百科 - {{config.title}}</div> -->
     <div class="wrapper">
         <div class="left-nav ic-xs-hidden">
             <div class="box ic-paper ic-z1">
@@ -141,7 +141,6 @@ $title-text-active-color: darken(#373434, 0);
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import api from '@/netapi.js'
 import { marked } from '@/md.js'
 
 export default {
@@ -155,48 +154,51 @@ export default {
     computed: {
         ...mapState(['config', 'loading']),
         ...mapGetters('user', [
-            'isWikiAdmin',
-            'basicRole'
+            'isWikiAdmin'
         ])
     },
     methods: {
         fetchData: async function () {
             let wrong = false
+            console.log(111, Object.keys(this), this.$user)
 
             let getSidebar = async () => {
-                let ret = await api.wiki.get({
+                console.log(111, this.$user)
+                let ret = await this.$api.wiki.get({
                     flag: 1
-                }, this.basicRole)
+                }, this.$user.basicRole)
 
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     this.sidebar = ret.data
                 } else {
                     wrong = ret
                 }
             }
             let getMainPage = async () => {
-                let ret = await api.wiki.get({
+                let ret = await this.$api.wiki.get({
                     select: 'id',
                     flag: 2
-                }, this.basicRole)
+                }, this.$user.basicRole)
 
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     this.mainpageId = ret.data.id
                 } else {
                     wrong = ret
                 }
             }
-            await Promise.all([getSidebar(), getMainPage()])
+            await getSidebar()
+            await getMainPage()
+            // await Promise.all([getSidebar(), getMainPage()])
 
             if (wrong) {
-                $.message_by_code(wrong.code)
+                this.$message.byCode(wrong.code)
             }
         }
     },
     created: async function () {
-        this.$store.commit('LOADING_INC', 1)
+        // this.$store.commit('LOADING_INC', 1)
         await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+        // this.$store.commit('LOADING_DEC', 1)
     }
 }
 </script>

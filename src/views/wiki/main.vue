@@ -16,7 +16,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import api from '@/netapi.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 
@@ -34,18 +33,18 @@ export default {
         fetchData: async function () {
             let wrong = false
 
-            let ret = await api.wiki.get({
+            let ret = await this.$api.wiki.get({
                 flag: 2
             }, this.$user.basicRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.mainpage = ret.data
             } else {
                 wrong = ret
             }
 
             if (wrong) {
-                $.message_by_code(wrong.code)
+                this.$message.byCode(wrong.code)
             }
         }
     },
