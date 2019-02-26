@@ -14,7 +14,6 @@
 </style>
 
 <script>
-let a = 1
 export default {
     data () {
         return {}
@@ -25,8 +24,6 @@ export default {
         }
     },
     created () {
-        a++
-        console.log(a)
     }
 }
 </script>

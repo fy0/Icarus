@@ -160,10 +160,8 @@ export default {
     methods: {
         fetchData: async function () {
             let wrong = false
-            console.log(111, Object.keys(this), this.$user)
 
             let getSidebar = async () => {
-                console.log(111, this.$user)
                 let ret = await this.$api.wiki.get({
                     flag: 1
                 }, this.$user.basicRole)
@@ -186,9 +184,7 @@ export default {
                     wrong = ret
                 }
             }
-            await getSidebar()
-            await getMainPage()
-            // await Promise.all([getSidebar(), getMainPage()])
+            await Promise.all([getSidebar(), getMainPage()])
 
             if (wrong) {
                 this.$message.byCode(wrong.code)
@@ -196,9 +192,9 @@ export default {
         }
     },
     created: async function () {
-        // this.$store.commit('LOADING_INC', 1)
+        this.$store.commit('LOADING_INC', 1)
         await this.fetchData()
-        // this.$store.commit('LOADING_DEC', 1)
+        this.$store.commit('LOADING_DEC', 1)
     }
 }
 </script>

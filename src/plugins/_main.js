@@ -9,9 +9,9 @@ import 'qiniu-js'
 import 'nprogress/nprogress.css'
 
 // 加载动画组件
-// import 'vue-loaders/dist/vue-loaders.css'
-// import * as VueLoaders from 'vue-loaders'
-// Vue.use(VueLoaders)
+import 'vue-loaders/dist/vue-loaders.css'
+import * as VueLoaders from 'vue-loaders'
+Vue.use(VueLoaders)
 
 // import responsive from 'vue-responsive'
 // Vue.use(responsive)

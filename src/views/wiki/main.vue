@@ -1,9 +1,11 @@
 <template>
-<wiki-base>
-    <article class="box article ic-paper ic-z1">
-        <div class="content" v-html="marked(mainpage.content || '')"></div>
-    </article>
-</wiki-base>
+<div>
+    <wiki-base>
+        <article class="box article ic-paper ic-z1">
+            <div class="content" v-html="marked(mainpage.content || '')"></div>
+        </article>
+    </wiki-base>
+</div>
 </template>
 
 <style lang="scss" scoped>

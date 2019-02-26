@@ -1,4 +1,4 @@
-import Vue from 'vue'
+// import Vue from 'vue'
 
 class UserHelperGetters {
     get data () { return this._user.userData }
@@ -55,53 +55,59 @@ export default (ctx, inject) => {
     uhg._user = ctx.store.state.user
     uhg._getters = ctx.store.getters
 
-    if (process.browser) {
-        // 浏览器端
-        let setUp = (ctx) => {
-            dhg._store = ctx.store
-            uhg._user = ctx.store.state.user
-            uhg._getters = ctx.store.getters
-        }
+    // if (process.browser) {
+    //     // 浏览器端
+    //     let setUp = (ctx) => {
+    //         dhg._store = ctx.store
+    //         uhg._user = ctx.store.state.user
+    //         uhg._getters = ctx.store.getters
+    //     }
 
-        Object.defineProperty(Vue.prototype, '$config', {
-            get () { return this.$store.state.config }
-        })
+    //     Object.defineProperty(Vue.prototype, '$config', {
+    //         get () { return this.$store.state.config }
+    //     })
 
-        Object.defineProperty(Vue.prototype, '$misc', {
-            get () { return this.$store.state.misc }
-        })
+    //     Object.defineProperty(Vue.prototype, '$misc', {
+    //         get () { return this.$store.state.misc }
+    //     })
 
-        Object.defineProperty(Vue.prototype, '$user', {
-            get () { setUp(this); return uhg }
-        })
+    //     Object.defineProperty(Vue.prototype, '$user', {
+    //         get () { setUp(this); return uhg }
+    //     })
 
-        Object.defineProperty(Vue.prototype, '$dialogs', {
-            get () { setUp(this); return dhg }
-        })
-    } else {
-        // 服务器端
-        if (!Vue.prototype.$misc === undefined) {
-            Object.defineProperty(Vue.prototype, '$misc', {
-                get () { return ctx.store.state.misc }
-            })
-        }
+    //     Object.defineProperty(Vue.prototype, '$dialogs', {
+    //         get () { setUp(this); return dhg }
+    //     })
+    // } else {
+    //     // 服务器端
+    //     if (!Vue.prototype.$misc === undefined) {
+    //         Object.defineProperty(Vue.prototype, '$misc', {
+    //             get () { return ctx.store.state.misc }
+    //         })
+    //     }
 
-        if (!Vue.prototype.$config === undefined) {
-            Object.defineProperty(Vue.prototype, '$config', {
-                get () { return ctx.store.state.config }
-            })
-        }
+    //     if (!Vue.prototype.$config === undefined) {
+    //         Object.defineProperty(Vue.prototype, '$config', {
+    //             get () { return ctx.store.state.config }
+    //         })
+    //     }
 
-        if (!Vue.prototype.$user === undefined) {
-            Object.defineProperty(Vue.prototype, '$user', {
-                get () { return uhg }
-            })
-        }
+    //     if (!Vue.prototype.$user === undefined) {
+    //         Object.defineProperty(Vue.prototype, '$user', {
+    //             get () { return uhg }
+    //         })
+    //     }
 
-        if (!Vue.prototype.$dialogs === undefined) {
-            Object.defineProperty(Vue.prototype, '$dialogs', {
-                get () { return dhg }
-            })
-        }
-    }
+    //     if (!Vue.prototype.$dialogs === undefined) {
+    //         Object.defineProperty(Vue.prototype, '$dialogs', {
+    //             get () { return dhg }
+    //         })
+    //     }
+    // }
+
+    inject('misc', ctx.store.state.misc)
+    inject('config', ctx.store.state.config)
+
+    inject('user', uhg)
+    inject('dialogs', dhg)
 }
