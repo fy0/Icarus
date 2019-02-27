@@ -42,7 +42,10 @@ module.exports = {
                 let spaPaths = [
                     '/account/**',
                     'notifications',
-                    '/admin/**'
+                    '/admin/**',
+                    '/wiki/new',
+                    '/wiki/edit/**',
+                    '/setting/**'
                 ]
                 if (mm.some(req._parsedUrl.pathname, spaPaths)) {
                     res.spa = true

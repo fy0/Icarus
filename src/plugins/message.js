@@ -30,11 +30,11 @@ function createMessageBoard (ctx) {
         }
 
         warn (text, timeout = 3000) {
-            this.message(text, 'success', timeout) // 绿色
+            this.text(text, 'warning', timeout) // 黄色
         }
 
         error (text, timeout = 3000) {
-            this.message(text, 'success', timeout) // 绿色
+            this.text(text, 'error', timeout) // 红色
         }
 
         byCode (code, data, text = null, timeout = 3000) {

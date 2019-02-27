@@ -23,6 +23,9 @@ import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 // import ForumTopic from '@/views/forum/topic.vue'
 
 import WikiMain from '@/views/wiki/main.vue'
+// import WikiEdit from '@/views/wiki/wiki-edit.vue'
+import WikiArticle from '@/views/wiki/article.vue'
+import WikiList from '@/views/wiki/list.vue'
 
 import About from '@/views/about.vue'
 
@@ -150,29 +153,33 @@ export function createRouter () {
             //     name: 'wiki_history',
             //     component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/history.vue')
             // },
-            // // Wiki - 列表页
-            // {
-            //     path: '/wiki/list/:page(\\d+)?',
-            //     name: 'wiki_list',
-            //     component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/list.vue')
-            // },
-            // // Wiki - 文章页面 - id
-            // {
-            //     path: '/wiki/id/:id([a-fA-F0-9]+)',
-            //     name: 'wiki_article_by_id',
-            //     component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/article.vue')
-            // },
-            // // Wiki - 文章页面 - ref
-            // {
-            //     path: '/wiki/r/:ref',
-            //     name: 'wiki_article_by_ref',
-            //     component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/article.vue')
-            // },
-            // // Wiki - 新建
+            // Wiki - 列表页
+            {
+                path: '/wiki/list/:page(\\d+)?',
+                name: 'wiki_list',
+                component: WikiList
+                // component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/list.vue')
+            },
+            // Wiki - 文章页面 - id
+            {
+                path: '/wiki/id/:id([a-fA-F0-9]+)',
+                name: 'wiki_article_by_id',
+                component: WikiArticle
+                // component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/article.vue')
+            },
+            // Wiki - 文章页面 - ref
+            {
+                path: '/wiki/r/:ref',
+                name: 'wiki_article_by_ref',
+                component: WikiArticle
+                // component: () => import(/* webpackChunkName: "wiki" */ '@/views/wiki/article.vue')
+            },
+            // Wiki - 新建
             // {
             //     path: '/wiki/new',
             //     name: 'wiki_article_new',
-            //     component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
+            //     component: WikiEdit
+            //     // component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
             // },
             // // Wiki - 编辑
             // {
