@@ -1,9 +1,11 @@
 <template>
-<wiki-base v-if="nothing">
-    <div class="box ic-paper ic-z1" >
-        <template v-if="nothing">无处可去</template>
-    </div>
-</wiki-base>
+<div>
+    <wiki-base v-if="nothing">
+        <div class="box ic-paper ic-z1" >
+            <template v-if="nothing">无处可去</template>
+        </div>
+    </wiki-base>
+</div>
 </template>
 
 <style lang="scss" scoped>
@@ -15,7 +17,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 
@@ -28,15 +29,15 @@ export default {
     },
     methods: {
         fetchData: async function () {
-            let ret = await api.wiki.random()
-            if (ret.code === api.retcode.SUCCESS) {
+            let ret = await this.$api.wiki.random()
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.nothing = false
-                setTimeout(() => {
+                this.$nextTick(() => {
                     this.$router.replace({
                         name: 'wiki_article_by_ref',
                         params: { ref: ret.data.ref }
                     })
-                }, 100)
+                })
             }
         }
     },

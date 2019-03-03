@@ -1,9 +1,10 @@
-import api from '../netapi.js'
+let api = null
 let store = null
 
 if (process.browser) {
-    window.onNuxtReady(({ $store }) => {
-        store = $store
+    window.onNuxtReady((ctx) => {
+        store = ctx.store
+        api = ctx.$store.app.$api
     })
 }
 

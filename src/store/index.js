@@ -98,7 +98,8 @@ export const actions = {
             // 未登录，清除现有信息（用于退出登录等场景）
             commit('user/RESET')
         }
-        $.tickStart()
+        // TODO: 需要替代方案
+        // $.tickStart()
         commit('SET_INITING', false)
     },
     // 若未初始化，进行初始化

@@ -4,20 +4,22 @@ license: https://github.com/F-loat/vue-simplemde/blob/master/LICENSE
 -->
 
 <template>
-<div class="markdown-editor">
-    <textarea></textarea>
-</div>
+<no-ssr>
+    <div class="markdown-editor">
+        <textarea></textarea>
+    </div>
+</no-ssr>
 </template>
 
 <script>
 import { marked } from '@/md.js'
 import Prism from 'prismjs'
-import SimpleMDE from 'easymde/src/js/easymde.js'
+// import SimpleMDE from 'easymde/src/js/easymde.js'
 import 'easymde/dist/easymde.min.css'
 
-SimpleMDE.prototype.markdown = function (text) {
-    return marked(text)
-}
+// SimpleMDE.prototype.markdown = function (text) {
+//     return marked(text)
+// }
 
 export default {
     name: 'markdown-editor',
@@ -50,6 +52,12 @@ export default {
     },
     methods: {
         initialize () {
+            let SimpleMDE = require('easymde/src/js/easymde.js')
+
+            SimpleMDE.prototype.markdown = function (text) {
+                return marked(text)
+            }
+
             const configs = Object.assign({
                 element: this.$el.firstElementChild,
                 initialValue: this.value,
@@ -85,6 +93,7 @@ export default {
             // 设置是否渲染输入的html
             // marked.setOptions({ sanitize: this.sanitize })
             // 实例化编辑器
+            console.log(22222, this.value)
             this.simplemde = new SimpleMDE(configs)
             // 添加自定义 previewClass
             const className = this.previewClass || ''
