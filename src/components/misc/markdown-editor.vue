@@ -4,11 +4,9 @@ license: https://github.com/F-loat/vue-simplemde/blob/master/LICENSE
 -->
 
 <template>
-<no-ssr>
-    <div class="markdown-editor">
-        <textarea></textarea>
-    </div>
-</no-ssr>
+<div class="markdown-editor">
+    <textarea></textarea>
+</div>
 </template>
 
 <script>

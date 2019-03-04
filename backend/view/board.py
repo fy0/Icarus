@@ -63,7 +63,7 @@ class BoardView(PeeweeView, UserViewMixin):
                 del n[k]
 
             # 管理日志
-            ManageLog.new(self.current_user, self.current_role, POST_TYPES.BOARD, record['id'],
+            ManageLog.new(self.current_user, self.current_request_role, POST_TYPES.BOARD, record['id'],
                           record['user_id'], MOP.BOARD_INFO_CHANGE, [o, n])
 
     async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):

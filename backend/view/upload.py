@@ -18,7 +18,7 @@ class UploadView(UserViewMixin, PeeweeView):
     async def token(self):
         user = self.current_user
         if user:
-            if self.current_role in ('user', 'admin', 'superuser'):
+            if self.current_request_role in ('user', 'admin', 'superuser'):
                 type_name = 'avatar' if self.params.get('is_avatar', False) else None
                 return self.finish(RETCODE.SUCCESS, qn.get_token(user.id.hex(), type_name))
         self.finish(RETCODE.FAILED)
