@@ -92,6 +92,9 @@ export default {
         fetchData: async function () {
             let wrong = false
             let params = this.$route.params
+            if (params.ref && (!/%\w/.test(params.ref))) {
+                params.ref = encodeURIComponent(params.ref)
+            }
 
             let ret = await this.$api.wiki.get(Object.assign({
                 loadfk: { 'id': { as: 's' } }
