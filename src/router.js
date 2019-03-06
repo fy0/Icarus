@@ -19,7 +19,7 @@ import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 // import SettingSecurityOAuth from '@/views/settings/security/oauth.vue'
 
 // // import ForumBoards from '@/views/forum/boards.vue'
-// import ForumMain from '@/views/forum/main.vue'
+import ForumMain from '@/views/forum/main.vue'
 // import ForumTopic from '@/views/forum/topic.vue'
 
 import WikiMain from '@/views/wiki/main.vue'
@@ -42,11 +42,11 @@ export function createRouter () {
         base: process.env.BASE_URL,
         routes: [
             // 主页面
-            // {
-            //     path: '/',
-            //     name: 'index',
-            //     component: ForumMain
-            // },
+            {
+                path: '/',
+                name: 'index',
+                component: ForumMain
+            },
 
             // 用户 - 登录
             {
@@ -185,12 +185,13 @@ export function createRouter () {
                 component: WikiEdit
                 // component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
             },
-            // // Wiki - 编辑
-            // {
-            //     path: '/wiki/edit/:id(\\S+)',
-            //     name: 'wiki_article_edit',
-            //     component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
-            // },
+            // Wiki - 编辑
+            {
+                path: '/wiki/edit/:id(\\S+)',
+                name: 'wiki_article_edit',
+                component: WikiEdit
+                // component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
+            },
             // // Wiki - 派生
             // // {
             // //     path: '/wiki/fork/:id(\\S+)',

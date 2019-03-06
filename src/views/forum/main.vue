@@ -312,23 +312,23 @@ $left-nav-sign-padding: 10px;
 <script>
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
-import ZingTouch from 'zingtouch'
-import nprogress from 'nprogress/nprogress.js'
+// import ZingTouch from 'zingtouch'
+// import nprogress from 'nprogress/nprogress.js'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
-let pageOneHack = function (to, from, next, store) {
-    // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
-    // 但似乎由于 nprogress 的存在，显得有点僵硬
-    if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
-        if (from.name === 'index') {
-            store.commit('LOADING_SET', 0)
-            nprogress.done()
-            return next(false)
-        }
-        return next({ name: 'index', query: to.query })
-    }
-    next()
-}
+// let pageOneHack = function (to, from, next, store) {
+//     // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
+//     // 但似乎由于 nprogress 的存在，显得有点僵硬
+//     if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
+//         if (from.name === 'index') {
+//             store.commit('LOADING_SET', 0)
+//             nprogress.done()
+//             return next(false)
+//         }
+//         return next({ name: 'index', query: to.query })
+//     }
+//     next()
+// }
 
 export default {
     data () {
@@ -485,7 +485,7 @@ export default {
             let page = 1
 
             // 包含子板块内容
-            if (localStorage.getItem('sbt')) {
+            if (this.$storage.getUniversal('sbt')) {
                 this.withSubBoardTopic = true
             }
             this.$nextTick(() => {
@@ -512,7 +512,7 @@ export default {
             // 具体板块
             if (this.isBoard) {
                 // 若是要求包含子板块内容
-                if (localStorage.getItem('sbt')) {
+                if (this.$storage.getUniversal('sbt')) {
                     let lst = [params.id]
                     for (let i of this.getBoardExInfoById(params.id).subboardsAll) {
                         lst.push(i.id)
@@ -577,12 +577,12 @@ export default {
             this.loading = false
         }
     },
-    beforeRouteEnter (to, from, next) {
-        return pageOneHack(to, from, next, store)
-    },
-    beforeRouteUpdate (to, from, next) {
-        return pageOneHack(to, from, next, store)
-    },
+    // beforeRouteEnter (to, from, next) {
+    //     return pageOneHack(to, from, next, store)
+    // },
+    // beforeRouteUpdate (to, from, next) {
+    //     return pageOneHack(to, from, next, store)
+    // },
     beforeRouteLeave (to, from, next) {
         // if (to.name === 'forum_topic_new' && this.state.isInactiveUser()) {
         //     state.dialog.userInactive = true
@@ -590,25 +590,25 @@ export default {
         // }
         return next()
     },
-    created () {
-        this.fetchData()
+    created: async function () {
+        await this.fetchData()
 
         this.$nextTick(function () {
-            $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
-            let el = document.querySelector('.main')
-            if (!el) return
-            $.zt.unbind(el, 'swipe')
-            $.zt.bind(el, 'swipe', (e) => {
-                let info = e.detail.data[0]
-                let d = info.currentDirection
-                if (d < 50 || d > 310) {
-                    // 向右滑动
-                    this.showSlideMenu = true
-                } else if (d > 130 && d < 230) {
-                    // 向左滑动
-                    this.showSlideMenu = false
-                }
-            }, false)
+            // $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
+            // let el = document.querySelector('.main')
+            // if (!el) return
+            // $.zt.unbind(el, 'swipe')
+            // $.zt.bind(el, 'swipe', (e) => {
+            //     let info = e.detail.data[0]
+            //     let d = info.currentDirection
+            //     if (d < 50 || d > 310) {
+            //         // 向右滑动
+            //         this.showSlideMenu = true
+            //     } else if (d > 130 && d < 230) {
+            //         // 向左滑动
+            //         this.showSlideMenu = false
+            //     }
+            // }, false)
         })
     },
     watch: {
@@ -621,8 +621,8 @@ export default {
         },
         'withSubBoardTopic': async function (newVal, oldVal) {
             if (this.withSubBoardTopicOptionReady) {
-                localStorage.removeItem('sbt')
-                if (newVal) localStorage.setItem('sbt', 1)
+                this.$storage.removeUniversal('sbt')
+                if (newVal) this.$storage.setUniversal('sbt', 1)
                 await this.fetchData()
             }
         }

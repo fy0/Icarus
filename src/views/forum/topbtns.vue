@@ -163,8 +163,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
-
 export default {
     props: {
         board: null
@@ -197,6 +195,7 @@ export default {
             return $.getLevelByExp(this.$user.data.exp)
         },
         checkedIn: function () {
+            console.log(333, this.$misc, this.$store.state.misc)
             return this.$user.data && this.$user.data['last_check_in_time'] >= this.$misc.extra.midnight_time
         },
         checkedInText: function () {
@@ -217,8 +216,8 @@ export default {
             })
         },
         checkIn: async function () {
-            let ret = await api.user.checkIn()
-            if (ret.code === api.retcode.SUCCESS) {
+            let ret = await this.$api.user.checkIn()
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 let newData = Object.assign({}, this.$user.data)
                 newData['last_check_in_time'] = ret.data.time
                 newData['check_in_his'] = ret.data.check_in_his
@@ -226,9 +225,9 @@ export default {
                 newData.credit += ret.data.credit
                 this.$store.commit('user/SET_USER_DATA', newData)
                 this.showCheckedHits2 = true
-                $.message_success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
+                this.$message.success(`签到成功！获得经验 ${ret.data.exp} 点，积分 ${ret.data.credit} 点，已连续签到 ${ret.data.check_in_his} 次！`, 5000)
             } else {
-                $.message_by_code(ret.code, ret.data)
+                this.$message.byCode(ret.code, ret.data)
             }
         },
         navActiveStrict: function (...names) {

@@ -91,7 +91,6 @@ export default {
             // 设置是否渲染输入的html
             // marked.setOptions({ sanitize: this.sanitize })
             // 实例化编辑器
-            console.log(22222, this.value)
             this.simplemde = new SimpleMDE(configs)
             // 添加自定义 previewClass
             const className = this.previewClass || ''
