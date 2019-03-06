@@ -9,11 +9,11 @@
 </div>
 
 <!-- 刷新标题 -->
-<template v-if="board">
+<!-- <template v-if="board">
     <div v-title-dynamic v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{config.title}}</div>
     <div v-title-dynamic v-else>{{ board.name }} - {{config.title}}</div>
 </template>
-<div v-else v-title>全部主题 - {{config.title}}</div>
+<div v-else v-title>全部主题 - {{config.title}}</div> -->
 
 <div class="ic-container forum-box">
     <div class="wrapper">

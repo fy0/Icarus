@@ -1,4 +1,4 @@
-import Vue from 'vue'
+/* eslint-disable no-new-wrappers */
 
 class UserHelperGetters {
     get data () { return this._user.userData }
@@ -55,32 +55,12 @@ export default (ctx, inject) => {
     uhg._user = ctx.store.state.user
     uhg._getters = ctx.store.getters
 
-    if (process.browser) {
-        // 浏览器端
-        Object.defineProperty(Vue.prototype, '$config', {
-            get () { return this.$store.state.config }
-        })
-
-        Object.defineProperty(Vue.prototype, '$misc', {
-            get () { return this.$store.state.misc }
-        })
-    } else {
-        // 服务器端
-        if (!Vue.prototype.$misc === undefined) {
-            Object.defineProperty(Vue.prototype, '$misc', {
-                get () { return ctx.store.state.misc }
-            })
-        }
-
-        if (!Vue.prototype.$config === undefined) {
-            Object.defineProperty(Vue.prototype, '$config', {
-                get () { return ctx.store.state.config }
-            })
-        }
-    }
-
-    // inject('misc', ctx.store.state.misc)
-    // inject('config', ctx.store.state.config)
+    inject('misc', new Proxy(new String('state.misc proxy'), {
+        get: (target, name) => ctx.store.state.misc[name]
+    }))
+    inject('config', new Proxy(new String('state.config proxy'), {
+        get: (target, name) => ctx.store.state.config[name]
+    }))
 
     inject('user', uhg)
     inject('dialogs', dhg)

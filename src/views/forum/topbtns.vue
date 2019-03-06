@@ -195,7 +195,6 @@ export default {
             return $.getLevelByExp(this.$user.data.exp)
         },
         checkedIn: function () {
-            console.log(333, this.$misc, this.$store.state.misc)
             return this.$user.data && this.$user.data['last_check_in_time'] >= this.$misc.extra.midnight_time
         },
         checkedInText: function () {
