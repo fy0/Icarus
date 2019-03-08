@@ -7,8 +7,8 @@
             <template v-else>
                 <ul>
                     <li v-for="i in page.items" :key="i.id">
-                        <router-link :to="{ name: 'wiki_article_by_ref', params: {'ref': i.ref } }">{{i.title}}</router-link>
-                        <router-link v-if="isWikiAdmin" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</router-link>
+                        <nuxt-link :to="{ name: 'wiki_article_by_ref', params: {'ref': i.ref } }">{{i.title}}</nuxt-link>
+                        <nuxt-link v-if="isWikiAdmin" :to="{ name: 'wiki_article_edit', params: {'id': i.id }, query: { manage: true } }" style="margin-left: 10px">[编辑]</nuxt-link>
                     </li>
                 </ul>
             </template>

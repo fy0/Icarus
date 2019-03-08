@@ -1,5 +1,4 @@
 import Color from 'color'
-import api from '@/netapi.js'
 
 export const state = () => ({
     // 暂时没有能力修改这些了
@@ -63,11 +62,11 @@ export const actions = {
     },
     async load ({ state, commit, dispatch }, forceRefresh = false) {
         if (state.loaded && (!forceRefresh)) return
-        let boards = await api.board.list({
+        let boards = await this.$api.board.list({
             order: 'parent_id.desc,weight.desc,time.asc' // 权重从高到低，时间从先到后
         })
 
-        if (boards.code === api.retcode.SUCCESS) {
+        if (boards.code === this.$api.retcode.SUCCESS) {
             let lst = []
             let infoMap = {}
 

@@ -8,22 +8,22 @@
                 <div class="ic-hr" style="margin: 10px 0px;"></div>
                 <div class="bottom" v-if="!loading">
                     <div style="font-weight: bold">
-                        <router-link :to="{ name: 'wiki_list' }">全部文章</router-link>
+                        <nuxt-link :to="{ name: 'wiki_list' }">全部文章</nuxt-link>
                     </div>
                     <div style="font-weight: bold">
-                        <router-link :to="{ name: 'wiki_random' }">随机页面</router-link>
+                        <nuxt-link :to="{ name: 'wiki_random' }">随机页面</nuxt-link>
                     </div>
 
                     <template v-if="isWikiAdmin">
                         <div class="ic-hr" style="margin: 10px 0px;"></div>
                         <div>
-                            <router-link :to="{ name: 'wiki_article_new' }">添加文章</router-link>
+                            <nuxt-link :to="{ name: 'wiki_article_new' }">添加文章</nuxt-link>
                         </div>
                         <div>
-                            <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</router-link>
+                            <nuxt-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</nuxt-link>
                         </div>
                         <div>
-                            <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.mainpageId }, query: { manage: true } }">编辑主页</router-link>
+                            <nuxt-link :to="{ name: 'wiki_article_edit', params: {'id': this.mainpageId }, query: { manage: true } }">编辑主页</nuxt-link>
                         </div>
                     </template>
                 </div>

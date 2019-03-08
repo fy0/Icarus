@@ -17,7 +17,7 @@
 
 <div class="ic-container forum-box">
     <div class="wrapper">
-        <div v-responsive.xs>
+        <div class="ic-xs ic-hidden">
             <!-- <i @click="showSlideMenu = !showSlideMenu" class="icarus icon-comment-multiple-out" style="position: fixed; top: 6px; left: 20px; font-size: 22px; z-index: 1; color: #777" /> -->
 
             <!-- xs 时的边栏 -->
@@ -28,22 +28,22 @@
             <transition enter-active-class="animated slideInLeft faster" leave-active-class="animated slideOutLeft">
                 <div v-if="showSlideMenu" class="left-nav bs4-xs" style="overflow-y: auto;">
                     <div class="left-nav-box">
-                        <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
+                        <nuxt-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</nuxt-link>
 
                         <div class="ul-boards">
-                            <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 21px">
+                            <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 21px">
                                 <div class="sign"></div>
                                 <span class="title">全部主题</span>
-                            </router-link>
+                            </nuxt-link>
 
                             <label v-if="isBoard" class="with-subboard-topic">
                                 <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                             </label>
                             <!-- <div style="margin-bottom: 3px;"></div> -->
-                            <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
+                            <nuxt-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
                                 <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                                 <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
-                            </router-link>
+                            </nuxt-link>
                         </div>
                     </div>
                 </div>
@@ -53,22 +53,22 @@
         <div class="left-nav ic-xs-hidden">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
-                <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
+                <nuxt-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</nuxt-link>
 
                 <div class="ul-boards">
-                    <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
+                    <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
                         <div class="sign"></div>
                         <span class="title">全部主题</span>
-                    </router-link>
+                    </nuxt-link>
 
                     <label v-if="isBoard" class="with-subboard-topic">
                         <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                     </label>
                     <!-- <div style="margin-bottom: 3px;"></div> -->
-                    <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
+                    <nuxt-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
                         <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                         <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
-                    </router-link>
+                    </nuxt-link>
                 </div>
             </div>
         </div>
@@ -121,23 +121,23 @@
                 <!-- 实际渲染条目 -->
                 <template v-else-if="topics.items.length">
                     <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
-                        <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
+                        <nuxt-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
                             <div class="title-recent">
                                 <avatar :user="i.user_id" :size="32" class="avatar" />
                                 <div class="right">
                                     <h2>
-                                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                                        <nuxt-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                             <span>{{i.title}}</span>
                                             <span v-if="i.state === POST_STATE.CLOSE">[关闭]</span>
-                                        </router-link>
+                                        </nuxt-link>
                                     </h2>
 
                                     <p class="topic-info">
-                                        <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
+                                        <nuxt-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
                                             <div :style="lineStyleBG(i.board_id)" class="sign"></div>
-                                            <span v-responsive.class class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
-                                        </router-link>
-                                        <user-link v-responsive.class class="author limit l2" :user="i.user_id" />
+                                            <span class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
+                                        </nuxt-link>
+                                        <user-link class="author limit l2" :user="i.user_id" />
                                         <span class="time"><ic-time :timestamp="i.edit_time || i.time"/></span>
                                     </p>
                                 </div>
@@ -167,14 +167,14 @@
                                     <span class="line" :style="lineStyle(i.board_id)"></span>
                                     <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
                                         <strong><i class="icon icarus icon-reply"></i><user-link :user="i.s.last_comment_id.user_id" />:</strong>
-                                        <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
+                                        <nuxt-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</nuxt-link>
                                     </div>
                                     <div class="post" v-else>无回复</div>
                                     <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
                                     <div v-else class="time">N/A</div>
                                 </div>
                             </div>
-                        </router-link>
+                        </nuxt-link>
                     </div>
                     <paginator v-if="isBoard" :page-info='topics' :route-name='"forum_board"' />
                     <paginator v-else :page-info='topics' :route-name='"forum_main"' />

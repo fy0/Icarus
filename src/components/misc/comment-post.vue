@@ -38,7 +38,7 @@
         <avatar :anonymous="true" class="avatar"></avatar>
         <div class="right-box">
             <div class="not-signin-content">
-                需要 <router-link :to="{ name: `account_signin` }">登录</router-link> 后方可回复, 如果你还没有账号，那么可以 <router-link :to="{ name: `account_signup` }">注册</router-link> 一个帐号。
+                需要 <nuxt-link :to="{ name: `account_signin` }">登录</nuxt-link> 后方可回复, 如果你还没有账号，那么可以 <nuxt-link :to="{ name: `account_signup` }">注册</nuxt-link> 一个帐号。
             </div>
         </div>
     </div>

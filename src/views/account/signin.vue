@@ -15,7 +15,7 @@
                 <div class="ic-btn success" @click.prevent="login">登 录</div>
             </div>
             <div class="ic-form-row">
-                <router-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</router-link>
+                <nuxt-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</nuxt-link>
             </div>
             <div v-if="false" class="ic-form-row three-auth">
                 <span class="title"> 第三方登录 </span>

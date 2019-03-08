@@ -23,8 +23,8 @@
                         </span>
                     </span>
                     <div>
-                        <router-link v-if="isWikiAdmin" :to="{ name: 'wiki_article_edit', params: {id: item.id}, query: { manage: true } }">[编辑]</router-link>
-                        <router-link :to="{ name: 'wiki_history', params: {id: item.id} }" style="margin-left: 5px">[历史]</router-link>
+                        <nuxt-link v-if="isWikiAdmin" :to="{ name: 'wiki_article_edit', params: {id: item.id}, query: { manage: true } }">[编辑]</nuxt-link>
+                        <nuxt-link :to="{ name: 'wiki_history', params: {id: item.id} }" style="margin-left: 5px">[历史]</nuxt-link>
                     </div>
                 </span>
             </div>

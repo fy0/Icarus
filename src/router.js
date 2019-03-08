@@ -93,24 +93,24 @@ export function createRouter () {
                 component: AccountNotif
             },
 
-            // // 论坛 - 主页面
-            // {
-            //     path: '/forum',
-            //     name: 'forum',
-            //     redirect: { name: 'forum_main', params: { page: 1 } }
-            // },
+            // 论坛 - 主页面
+            {
+                path: '/forum',
+                name: 'forum',
+                redirect: { name: 'forum_main', params: { page: 1 } }
+            },
             // // 论坛 - 板块列表
             // // {
             // //     path: '/forum/boards',
             // //     name: 'forum_boards',
             // //     component: ForumBoards
             // // },
-            // // 论坛 - 主面板
-            // {
-            //     path: '/r/:page(\\d+)',
-            //     name: 'forum_main',
-            //     component: ForumMain
-            // },
+            // 论坛 - 主面板
+            {
+                path: '/r/:page(\\d+)',
+                name: 'forum_main',
+                component: ForumMain
+            },
             // // 论坛 - 主面板 - 板块页面
             // {
             //     path: '/b/:id([a-fA-F0-9]+)/:page(\\d+)?/:name(.+)?',

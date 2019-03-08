@@ -4,11 +4,11 @@
 
     <div class="nav ic-xs-hidden">
         <span>
-            <router-link :to="{ name: 'forum' }">社区</router-link>
+            <nuxt-link :to="{ name: 'forum' }">社区</nuxt-link>
         </span>
         <span class="item-separator">/</span>
         <span>
-            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }" :title="topic.board_id.name">{{textLimit(topic.board_id.name, 8)}}</router-link>
+            <nuxt-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }" :title="topic.board_id.name">{{textLimit(topic.board_id.name, 8)}}</nuxt-link>
         </span>
         <span class="item-separator">/</span>
         <span>
@@ -22,11 +22,11 @@
         <div style="display: flex; justify-content: space-between;">
             <div style="display: flex; white-space: nowrap;">
                 <span>
-                    <router-link :to="{ name: 'forum' }">社区</router-link>
+                    <nuxt-link :to="{ name: 'forum' }">社区</nuxt-link>
                 </span>
                 <span class="item-separator">/</span>
                 <span style="display: flex">
-                    <router-link class="limit m8" :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
+                    <nuxt-link class="limit m8" :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</nuxt-link>
                 </span>
             </div>
             <div style="display:flex; flex-direction: column;">
@@ -96,7 +96,7 @@
                         <a class="furbtn furbtn-s furbtn-blue" follow="1"><i class="fa fa-star"></i> 取消关注</a>
                     </div>
 
-                    <p><router-link v-if="$user.data && (topic.user_id.id == $user.data.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
+                    <p><nuxt-link v-if="$user.data && (topic.user_id.id == $user.data.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</nuxt-link></p>
                     <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
                         <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
                         <p>历史编辑次数 {{topic.edit_count}} 次</p>

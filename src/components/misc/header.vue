@@ -1,7 +1,7 @@
 <template>
 <header class="ic-nav">
     <div class="ic-container ic-navbtns">
-        <router-link :to="{name: 'index'}" class="ic-brand-heading" @dbclick="flagClick">{{config.title}}</router-link>
+        <nuxt-link :to="{name: 'index'}" class="ic-brand-heading" @dbclick="flagClick">{{config.title}}</nuxt-link>
         <!-- <a class="ic-brand-heading" href="/">Icarus</a> -->
 
         <!-- 移动端搜索框 -->
@@ -18,25 +18,25 @@
         <transition name="custom" :enter-active-class="isXs ? 'animated fadeInRight':''">
             <div class="menu-lists" v-show="showNavmenuBtn">
                 <ul class="menu-list center">
-                    <router-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum', 'index')">
+                    <nuxt-link tag="li" class="menu-item" :to="{ name: 'forum' }" :class="navActive('forum', 'index')">
                         <a>论坛</a>
-                    </router-link>
+                    </nuxt-link>
                     <template v-if="$store.getters.BACKEND_CONFIG.WIKI_ENABLE">
-                        <router-link tag="li" class="menu-item" :to="{ name: 'wiki' }" :class="navActive('wiki')">
+                        <nuxt-link tag="li" class="menu-item" :to="{ name: 'wiki' }" :class="navActive('wiki')">
                             <a>百科</a>
-                        </router-link>
+                        </nuxt-link>
                     </template>
                     <li class="menu-item" v-if="false && isSiteAdmin"><a href="#">文档</a></li>
                     <li class="menu-item" v-if="false"><a href="#">聊天室</a></li>
-                    <router-link tag="li" v-if="userData" class="menu-item" :to="{ name: 'setting' }" :class="navActive('setting')">
+                    <nuxt-link tag="li" v-if="userData" class="menu-item" :to="{ name: 'setting' }" :class="navActive('setting')">
                         <a>设置</a>
-                    </router-link>
-                    <router-link tag="li" v-if="isSiteAdmin" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
+                    </nuxt-link>
+                    <nuxt-link tag="li" v-if="isSiteAdmin" class="menu-item" :to="{ name: 'admin' }" :class="navActive('admin')">
                         <a>管理</a>
-                    </router-link>
-                    <router-link v-if="isAboutPageEnable" tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
+                    </nuxt-link>
+                    <nuxt-link v-if="isAboutPageEnable" tag="li" class="menu-item" :to="{ name: 'about' }" :class="navActive('about')">
                         <a>关于</a>
-                    </router-link>
+                    </nuxt-link>
                 </ul>
 
                 <div class="search-box ic-xs-hidden" v-if="isSearchEnable">
@@ -46,12 +46,12 @@
 
                 <no-ssr>
                     <ul class="menu-list" v-if="$store.getters.isInited && (!userData)">
-                        <router-link tag="li" class="menu-item" :to="{ name: 'account_signup' }" :class="navActive('account_signup')">
+                        <nuxt-link tag="li" class="menu-item" :to="{ name: 'account_signup' }" :class="navActive('account_signup')">
                             <a>注册</a>
-                        </router-link>
-                        <router-link tag="li" class="menu-item" :to="{ name: 'account_signin' }" :class="navActive('account_signin')">
+                        </nuxt-link>
+                        <nuxt-link tag="li" class="menu-item" :to="{ name: 'account_signin' }" :class="navActive('account_signin')">
                             <a>登录</a>
-                        </router-link>
+                        </nuxt-link>
                     </ul>
 
                     <ul class="menu-list" v-if="userData">
@@ -61,13 +61,13 @@
                                 <span class="user-text limit">{{userData.nickname}}</span>
                             </user-link>
                         </li>
-                        <router-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
+                        <nuxt-link tag="li" class="menu-item" :to="{ name: 'account_notif' }" :class="navActive('account_signin')">
                             <a class="nav-icon" title="提醒">
                                 <i class="icarus icon-bell-ring" v-if="unread"></i>
                                 <ic-badge v-if="unread" style="margin-left: 6px">{{unread}}</ic-badge>
                                 <i v-else class="icarus icon-bell"></i>
                             </a>
-                        </router-link>
+                        </nuxt-link>
                         <li class="menu-item">
                             <a title="注销" href="javascript:void(0)" class="nav-icon" @click="signout"><i class="icarus icon-logout"></i></a>
                         </li>

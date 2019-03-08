@@ -7,7 +7,7 @@
                 <h1>[历史记录]{{article.title}}</h1>
                 <span style="font-size: 14px; float: right; text-align: right; flex-shrink: 0;">
                     <div v-if="article.ref">
-                        <router-link :to="{ name: 'wiki_article_by_ref', params: {ref: article.ref} }" style="margin-left: 5px">[返回原文]</router-link>
+                        <nuxt-link :to="{ name: 'wiki_article_by_ref', params: {ref: article.ref} }" style="margin-left: 5px">[返回原文]</nuxt-link>
                     </div>
                 </span>
             </div>

@@ -9,15 +9,15 @@
     <div v-if="topics && topics.items && topics.items.length">
         <ul class="ic-collection">
             <li class="item ic-collection-item" v-for="i in topics.items" :key="i.id">
-                <router-link class="title" :class="i.state === $misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                <nuxt-link class="title" :class="i.state === $misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                     <span>{{i.title}}</span>
                     <span class="icons">
                         <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272"></i>
                         <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
                     </span>
-                </router-link>
+                </nuxt-link>
                 <div class="info">
-                    <router-link class="board" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link> ·
+                    <nuxt-link class="board" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</nuxt-link> ·
                     <user-link :user="i.user_id" /> ·
                     <ic-time :timestamp="i.time" /> ·
                     <span>{{$misc.POST_STATE_TXT[i.state]}}</span> ·

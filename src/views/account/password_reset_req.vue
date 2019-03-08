@@ -19,7 +19,7 @@
             </div>
 
             <div class="ic-form-row">
-                <router-link class="lost-poasswrod" :to="{name: 'account_signin'}">返回登录</router-link>
+                <nuxt-link class="lost-poasswrod" :to="{name: 'account_signin'}">返回登录</nuxt-link>
             </div>
         </form>
     </div>

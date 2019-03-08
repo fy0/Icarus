@@ -35,7 +35,7 @@
                         <ic-timeline-item :key="i.id" v-for="i in tabs.topic.topics.items">
                             <span slot="time"><ic-time :timestamp="i.time"/></span>
                             <span slot="content">发表了一篇主题
-                                <router-link :to="{ name: 'forum_topic', params: {id: i.id} }">《{{i.title}}》</router-link>
+                                <nuxt-link :to="{ name: 'forum_topic', params: {id: i.id} }">《{{i.title}}》</nuxt-link>
                             </span>
                         </ic-timeline-item>
                     </ic-timeline>
@@ -50,7 +50,7 @@
                             <span slot="time"><ic-time :timestamp="i.time"></ic-time></span>
                             <span slot="content">发表了一条评论
                                 <div>
-                                    <router-link :to="{ name: 'forum_topic', params: {id: i.related_id} }">{{atConvert(i.content)}}</router-link>
+                                    <nuxt-link :to="{ name: 'forum_topic', params: {id: i.related_id} }">{{atConvert(i.content)}}</nuxt-link>
                                 </div>
                             </span>
                         </ic-timeline-item>
