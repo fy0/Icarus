@@ -314,8 +314,114 @@ import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
 // import ZingTouch from 'zingtouch'
 // import nprogress from 'nprogress/nprogress.js'
-import { BaseWrapper } from '@/wrap'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+
+class FetchCls extends BaseWrapper {
+    getBoardExInfoById (boardId) {
+        return this.$store.state.forum.exInfoMap[boardId] || {}
+    }
+
+    async fetchData () {
+        let baseQuery1 = {
+            select: 'id, time, edit_time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
+            loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
+        }
+        let baseQuery = _.cloneDeep(baseQuery1)
+        let params = this.$route.params
+        let page = 1
+
+        // 包含子板块内容
+        if (this.$storage.getUniversal('sbt')) {
+            this.withSubBoardTopic = true
+        }
+        this.withSubBoardTopicOptionReady = true
+
+        // 获取全局板块信息
+        await this.$store.dispatch('forum/load')
+
+        // 如果板块不存在
+        if (params.id && (!this.$store.state.forum.infoMap[params.id])) {
+            this.notFound = true
+            return
+        }
+
+        if (this.$store.state.forum.isSiteNew) {
+            this.$dialogs.setSiteNew(true)
+        } else {
+            if (this.$user.isNewUser) {
+                this.$dialogs.setUserNickname(true)
+            }
+        }
+
+        // 具体板块
+        if (this.$route.name === 'forum_board') {
+            // 若是要求包含子板块内容
+            if (this.$storage.getUniversal('sbt')) {
+                let lst = [params.id]
+                for (let i of this.getBoardExInfoById(params.id).subboardsAll) {
+                    lst.push(i.id)
+                }
+                baseQuery['board_id.in'] = JSON.stringify(lst)
+            } else {
+                baseQuery['board_id'] = params.id
+            }
+            page = params.page
+        } else {
+            baseQuery['sticky_weight.ne'] = 5
+            page = params.page
+        }
+
+        let query = this.$route.query
+        let order = 'weight.desc, update_time.desc' // 权重降序
+
+        if (query.type === '2' || query.type === 2) {
+            // 最近更新：更新时间降序
+            order = 'update_time.desc, time.desc'
+        }
+
+        if (query.type === '3' || query.type === 3) {
+            // 最近发布：发布时间降序
+            order = 'time.desc'
+        }
+
+        if (query.type === '4' || query.type === 4) {
+            // 最近回复：回复时间排序
+            // 好吧，这个好像暂时还实现不了
+            order = 'update_time.desc, time.desc'
+        }
+
+        if (this.isBoard) {
+            // 在板块模式下加入当前板块的置顶
+            order = 'sticky_weight.desc, ' + order
+        }
+
+        let retList = await this.$api.topic.list(Object.assign({
+            order: order
+        }, baseQuery), page)
+        if (retList.code === this.$api.retcode.SUCCESS) {
+            if (!this.isBoard && (!page || page === 1)) {
+                // 首页
+                let retStickyTopics = await this.$api.topic.list(Object.assign({
+                    sticky_weight: 5, // 全局置顶项
+                    order: order
+                }, baseQuery1))
+                if (retStickyTopics.code === this.$api.retcode.SUCCESS) {
+                    retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
+                }
+            }
+
+            this.topics = retList.data
+            this.loading = false
+            return
+        } else {
+            this.topics = { items: [] }
+        }
+
+        // $.message_by_code(retList.code)
+        this.loading = false
+    }
+}
 
 // let pageOneHack = function (to, from, next, store) {
 //     // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
@@ -455,11 +561,18 @@ export default {
         itemHover: function (id) {
             this.hoverId = id
         },
+        lineStyleById: function (boardId, key = 'border-left-color') {
+            let exInfo = this.getBoardExInfoById(boardId)
+            if (exInfo) {
+                return { [key]: exInfo.color }
+            }
+            return {}
+        },
         lineStyle: function (boardId, key = 'border-left-color') {
-            return $.lineStyleById(boardId, key)
+            return this.lineStyleById(boardId, key)
         },
         lineStyleBG: function (boardId) {
-            return $.lineStyleById(boardId, 'background-color')
+            return this.lineStyleById(boardId, 'background-color')
         },
         getBoardInfo: function (boardId) {
             return this.$store.state.forum.infoMap[boardId]
@@ -474,108 +587,6 @@ export default {
             let exinfo = this.$store.state.forum.exInfoMap[boardId]
             if (!exinfo) return []
             return exinfo.chain
-        },
-        fetchData: async function () {
-            this.$set(this, 'loading', true)
-            let baseQuery1 = {
-                select: 'id, time, edit_time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
-            }
-            let baseQuery = _.cloneDeep(baseQuery1)
-            let params = this.$route.params
-            let page = 1
-
-            // 包含子板块内容
-            if (this.$storage.getUniversal('sbt')) {
-                this.withSubBoardTopic = true
-            }
-            this.$nextTick(() => {
-                this.withSubBoardTopicOptionReady = true
-            })
-
-            // 获取全局板块信息
-            await this.$store.dispatch('forum/load')
-
-            // 如果板块不存在
-            if (params.id && (!this.$store.state.forum.infoMap[params.id])) {
-                this.notFound = true
-                return
-            }
-
-            if (this.isSiteNew) {
-                this.$dialogs.setSiteNew(true)
-            } else {
-                if (this.$user.isNewUser) {
-                    this.$dialogs.setUserNickname(true)
-                }
-            }
-
-            // 具体板块
-            if (this.isBoard) {
-                // 若是要求包含子板块内容
-                if (this.$storage.getUniversal('sbt')) {
-                    let lst = [params.id]
-                    for (let i of this.getBoardExInfoById(params.id).subboardsAll) {
-                        lst.push(i.id)
-                    }
-                    baseQuery['board_id.in'] = JSON.stringify(lst)
-                } else {
-                    baseQuery['board_id'] = params.id
-                }
-                page = params.page
-            } else {
-                baseQuery['sticky_weight.ne'] = 5
-                page = params.page
-            }
-
-            let query = this.$route.query
-            let order = 'weight.desc, update_time.desc' // 权重降序
-
-            if (query.type === '2' || query.type === 2) {
-                // 最近更新：更新时间降序
-                order = 'update_time.desc, time.desc'
-            }
-
-            if (query.type === '3' || query.type === 3) {
-                // 最近发布：发布时间降序
-                order = 'time.desc'
-            }
-
-            if (query.type === '4' || query.type === 4) {
-                // 最近回复：回复时间排序
-                // 好吧，这个好像暂时还实现不了
-                order = 'update_time.desc, time.desc'
-            }
-
-            if (this.isBoard) {
-                // 在板块模式下加入当前板块的置顶
-                order = 'sticky_weight.desc, ' + order
-            }
-
-            let retList = await this.$api.topic.list(Object.assign({
-                order: order
-            }, baseQuery), page)
-            if (retList.code === this.$api.retcode.SUCCESS) {
-                if (!this.isBoard && (!page || page === 1)) {
-                    // 首页
-                    let retStickyTopics = await this.$api.topic.list(Object.assign({
-                        sticky_weight: 5, // 全局置顶项
-                        order: order
-                    }, baseQuery1))
-                    if (retStickyTopics.code === this.$api.retcode.SUCCESS) {
-                        retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
-                    }
-                }
-
-                this.topics = retList.data
-                this.loading = false
-                return
-            } else {
-                this.topics = { items: [] }
-            }
-
-            // $.message_by_code(retList.code)
-            this.loading = false
         }
     },
     // beforeRouteEnter (to, from, next) {
@@ -592,130 +603,10 @@ export default {
     //     return next()
     // },
     asyncData: async function (ctx) {
-        console.log(11111111111)
-        // let data = {}
-        // let app = ctx.store.app
-
-        // let baseQuery1 = {
-        //     select: 'id, time, edit_time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-        //     loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
-        // }
-        // let baseQuery = _.cloneDeep(baseQuery1)
-        // let params = ctx.route.params
-        // let page = 1
-
-        // // 包含子板块内容
-        // if (app.$storage.getUniversal('sbt')) {
-        //     data.withSubBoardTopic = true
-        // }
-        // data.withSubBoardTopicOptionReady = true
-
-        // // 获取全局板块信息
-        // await ctx.store.dispatch('forum/load')
-
-        // // 如果板块不存在
-        // if (params.id && (!ctx.store.state.forum.infoMap[params.id])) {
-        //     data.notFound = true
-        //     return
-        // }
-
-        // if (ctx.store.state.forum.isSiteNew) {
-        //     app.$dialogs.setSiteNew(true)
-        // } else {
-        //     if (app.$user.isNewUser) {
-        //         app.$dialogs.setUserNickname(true)
-        //     }
-        // }
-
-        // // 具体板块
-        // if (ctx.route.name === 'forum_board') {
-        //     // 若是要求包含子板块内容
-        //     if (app.$storage.getUniversal('sbt')) {
-        //         let lst = [params.id]
-        //         for (let i of this.getBoardExInfoById(params.id).subboardsAll) {
-        //             lst.push(i.id)
-        //         }
-        //         baseQuery['board_id.in'] = JSON.stringify(lst)
-        //     } else {
-        //         baseQuery['board_id'] = params.id
-        //     }
-        //     page = params.page
-        // } else {
-        //     baseQuery['sticky_weight.ne'] = 5
-        //     page = params.page
-        // }
-
-        // let query = this.$route.query
-        // let order = 'weight.desc, update_time.desc' // 权重降序
-
-        // if (query.type === '2' || query.type === 2) {
-        //     // 最近更新：更新时间降序
-        //     order = 'update_time.desc, time.desc'
-        // }
-
-        // if (query.type === '3' || query.type === 3) {
-        //     // 最近发布：发布时间降序
-        //     order = 'time.desc'
-        // }
-
-        // if (query.type === '4' || query.type === 4) {
-        //     // 最近回复：回复时间排序
-        //     // 好吧，这个好像暂时还实现不了
-        //     order = 'update_time.desc, time.desc'
-        // }
-
-        // if (this.isBoard) {
-        //     // 在板块模式下加入当前板块的置顶
-        //     order = 'sticky_weight.desc, ' + order
-        // }
-
-        // let retList = await this.$api.topic.list(Object.assign({
-        //     order: order
-        // }, baseQuery), page)
-        // if (retList.code === this.$api.retcode.SUCCESS) {
-        //     if (!this.isBoard && (!page || page === 1)) {
-        //         // 首页
-        //         let retStickyTopics = await this.$api.topic.list(Object.assign({
-        //             sticky_weight: 5, // 全局置顶项
-        //             order: order
-        //         }, baseQuery1))
-        //         if (retStickyTopics.code === this.$api.retcode.SUCCESS) {
-        //             retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
-        //         }
-        //     }
-
-        //     this.topics = retList.data
-        //     this.loading = false
-        //     return
-        // } else {
-        //     this.topics = { items: [] }
-        // }
-
-        // // $.message_by_code(retList.code)
-        // this.loading = false
-        return { project: 'nuxt' }
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
-    // created: async function () {
-    //     await this.fetchData()
-
-    //     this.$nextTick(function () {
-    //         // $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
-    //         // let el = document.querySelector('.main')
-    //         // if (!el) return
-    //         // $.zt.unbind(el, 'swipe')
-    //         // $.zt.bind(el, 'swipe', (e) => {
-    //         //     let info = e.detail.data[0]
-    //         //     let d = info.currentDirection
-    //         //     if (d < 50 || d > 310) {
-    //         //         // 向右滑动
-    //         //         this.showSlideMenu = true
-    //         //     } else if (d > 130 && d < 230) {
-    //         //         // 向左滑动
-    //         //         this.showSlideMenu = false
-    //         //     }
-    //         // }, false)
-    //     })
-    // },
     watch: {
         // 如果路由有变化，会再次执行该方法
         // '$route': 'fetchData',

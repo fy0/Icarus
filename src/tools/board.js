@@ -1,14 +1,6 @@
 import Color from 'color'
 import murmurhash from 'murmurhash'
 
-let store = null
-
-if (process.browser) {
-    window.onNuxtReady(({ $store }) => {
-        store = $store
-    })
-}
-
 $.boardColor = function (board) {
     if (board.color) {
         try {
@@ -26,23 +18,4 @@ $.boardColor = function (board) {
 
 $.lineStyle = function (board, key = 'border-left-color') {
     return { [key]: $.boardColor(board) }
-}
-
-$.lineStyleById = function (boardId, key = 'border-left-color') {
-    let exInfo = $.getBoardExInfoById(boardId)
-    if (exInfo) {
-        return { [key]: exInfo.color }
-    }
-    return {}
-}
-
-$.getBoardInfoById = function (id) {
-    // 因为要在 computed 中使用，所以不能为 async
-    // if (!state.boards.loaded) await $.getBoardsInfo()
-    return store.state.forum.infoMap[id]
-}
-
-$.getBoardExInfoById = function (id) {
-    // if (!state.boards.loaded) await $.getBoardsInfo()
-    return store.state.forum.exInfoMap[id]
 }

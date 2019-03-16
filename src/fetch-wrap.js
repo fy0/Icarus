@@ -5,16 +5,20 @@ class BaseWrapper {
         this._data = {}
     }
 
+    get $route () {
+        return this.ctx.route
+    }
+
     get $store () {
+        return this.ctx.store
+    }
+
+    get $param () {
         return this.ctx.store
     }
 
     get $storage () {
         return this.$store.app.$storage
-    }
-
-    get $route () {
-        return this.ctx.route
     }
 }
 
@@ -27,18 +31,16 @@ let makeFetchWrapper = (cls) => {
                     if (name in target._data) {
                         return target._data[name]
                     }
-                    if (name in target.$route.app) {
-                        return target.$route.app[name]
+                    if (name in target.$store.app) {
+                        return target.$store.app[name]
                     }
                     if (name in target) {
                         return target[name]
                     }
                 },
-                set (target, name, value) {
+                set (target, name, value, receiver) {
                     target._data[name] = value
-                },
-                aaaa () {
-                    console.log(111)
+                    return true
                 }
             })
         }
@@ -46,4 +48,9 @@ let makeFetchWrapper = (cls) => {
     return FetchWrapper
 }
 
-export { BaseWrapper, makeFetchWrapper }
+let createFetchWrapper = (cls, ctx) => {
+    let WrapCls = makeFetchWrapper(cls)
+    return new WrapCls(ctx)
+}
+
+export { BaseWrapper, makeFetchWrapper, createFetchWrapper }
