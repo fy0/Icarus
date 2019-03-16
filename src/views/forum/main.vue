@@ -314,6 +314,7 @@ import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
 // import ZingTouch from 'zingtouch'
 // import nprogress from 'nprogress/nprogress.js'
+import { BaseWrapper } from '@/wrap'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
 // let pageOneHack = function (to, from, next, store) {
@@ -694,27 +695,27 @@ export default {
         // this.loading = false
         return { project: 'nuxt' }
     },
-    created: async function () {
-        await this.fetchData()
+    // created: async function () {
+    //     await this.fetchData()
 
-        this.$nextTick(function () {
-            // $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
-            // let el = document.querySelector('.main')
-            // if (!el) return
-            // $.zt.unbind(el, 'swipe')
-            // $.zt.bind(el, 'swipe', (e) => {
-            //     let info = e.detail.data[0]
-            //     let d = info.currentDirection
-            //     if (d < 50 || d > 310) {
-            //         // 向右滑动
-            //         this.showSlideMenu = true
-            //     } else if (d > 130 && d < 230) {
-            //         // 向左滑动
-            //         this.showSlideMenu = false
-            //     }
-            // }, false)
-        })
-    },
+    //     this.$nextTick(function () {
+    //         // $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
+    //         // let el = document.querySelector('.main')
+    //         // if (!el) return
+    //         // $.zt.unbind(el, 'swipe')
+    //         // $.zt.bind(el, 'swipe', (e) => {
+    //         //     let info = e.detail.data[0]
+    //         //     let d = info.currentDirection
+    //         //     if (d < 50 || d > 310) {
+    //         //         // 向右滑动
+    //         //         this.showSlideMenu = true
+    //         //     } else if (d > 130 && d < 230) {
+    //         //         // 向左滑动
+    //         //         this.showSlideMenu = false
+    //         //     }
+    //         // }, false)
+    //     })
+    // },
     watch: {
         // 如果路由有变化，会再次执行该方法
         // '$route': 'fetchData',
