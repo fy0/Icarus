@@ -99,6 +99,34 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+
+class FetchCls extends BaseWrapper {
+    async tabTopicLoad () {
+        let uid = this.user.id
+        let retList = await this.$api.topic.list({
+            user_id: uid,
+            order: 'time.desc',
+            loadfk: { 'user_id': null, 'board_id': null }
+        })
+        if (!this.tabs) this.tabs = { topic: { topics: null }, comment: { data: null } }
+        this.tabs.topic.topics = retList.data
+    }
+    async fetchData () {
+        let role = null
+        let params = this.$route.params
+
+        if (this.userData && (params.id === this.userData.id)) role = this.basicRole
+        let ret = await this.$api.user.get(params, role)
+
+        if (ret.code === this.$api.retcode.SUCCESS) {
+            this.user = ret.data
+            await this.tabTopicLoad()
+        } else {
+            this.$message.byCode(ret.code)
+        }
+    }
+}
 
 export default {
     data () {
@@ -143,20 +171,6 @@ export default {
                 loadfk: {}
             })
             this.tabs.comment.data = retList.data
-        },
-        fetchData: async function () {
-            let role = null
-            let params = this.$route.params
-
-            if (this.userData && (params.id === this.userData.id)) role = this.basicRole
-            let ret = await this.$api.user.get(params, role)
-
-            if (ret.code === this.$api.retcode.SUCCESS) {
-                this.user = ret.data
-                await this.tabTopicLoad()
-            } else {
-                this.$message.byCode(ret.code)
-            }
         }
     },
     watch: {
@@ -171,9 +185,11 @@ export default {
         }
     },
     created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+    },
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
     components: {
     }

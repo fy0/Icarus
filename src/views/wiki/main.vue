@@ -20,6 +20,27 @@
 import { mapState } from 'vuex'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+
+class FetchCls extends BaseWrapper {
+    async fetchData () {
+        let wrong = false
+
+        let ret = await this.$api.wiki.get({
+            flag: 2
+        }, this.$user.basicRole)
+
+        if (ret.code === this.$api.retcode.SUCCESS) {
+            this.mainpage = ret.data
+        } else {
+            wrong = ret
+        }
+
+        if (wrong) {
+            this.$message.byCode(wrong.code)
+        }
+    }
+}
 
 export default {
     data () {
@@ -32,28 +53,11 @@ export default {
         ...mapState(['config'])
     },
     methods: {
-        fetchData: async function () {
-            let wrong = false
-
-            let ret = await this.$api.wiki.get({
-                flag: 2
-            }, this.$user.basicRole)
-
-            if (ret.code === this.$api.retcode.SUCCESS) {
-                this.mainpage = ret.data
-            } else {
-                wrong = ret
-            }
-
-            if (wrong) {
-                this.$message.byCode(wrong.code)
-            }
-        }
     },
-    created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
     components: {
         WikiBase

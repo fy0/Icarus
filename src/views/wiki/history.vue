@@ -45,6 +45,51 @@
 import { mapState, mapGetters } from 'vuex'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+
+class FetchCls extends BaseWrapper {
+    async fetchData () {
+        let wrong = false
+        let params = this.$route.params
+        let pageNumber = params.page || 1
+
+        let getArticle = async () => {
+            let ret = await this.$api.wiki.get({
+                id: params.id,
+                select: ['id', 'title', 'ref']
+            }, this.basicRole)
+            if (ret.code === this.$api.retcode.SUCCESS) {
+                this.article = ret.data
+            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+                this.notFound = true
+            } else {
+                wrong = ret
+            }
+        }
+
+        let getHistory = async () => {
+            console.log(1111, this.$api.logManage, this.$api.user)
+            let ret = await this.$api.logManage.list({
+                related_id: params.id,
+                order: 'time.desc',
+                loadfk: { 'user_id': null }
+            }, pageNumber, null, this.basicRole)
+
+            if (ret.code === this.$api.retcode.SUCCESS) {
+                this.page = ret.data
+            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+                this.page.items = []
+            } else {
+                wrong = ret
+            }
+        }
+
+        await Promise.all([getHistory(), getArticle()])
+        if (wrong) {
+            this.$message.byCode(wrong.code)
+        }
+    }
+}
 
 export default {
     data () {
@@ -63,52 +108,13 @@ export default {
         ...mapGetters('user', ['basicRole'])
     },
     methods: {
-        fetchData: async function () {
-            let wrong = false
-            let params = this.$route.params
-            let pageNumber = params.page || 1
-
-            let getArticle = async () => {
-                let ret = await this.$api.wiki.get({
-                    id: params.id,
-                    select: ['id', 'title', 'ref']
-                }, this.basicRole)
-                if (ret.code === this.$api.retcode.SUCCESS) {
-                    this.article = ret.data
-                } else if (ret.code === this.$api.retcode.NOT_FOUND) {
-                    this.notFound = true
-                } else {
-                    wrong = ret
-                }
-            }
-
-            let getHistory = async () => {
-                console.log(1111, this.$api.logManage, this.$api.user)
-                let ret = await this.$api.logManage.list({
-                    related_id: params.id,
-                    order: 'time.desc',
-                    loadfk: { 'user_id': null }
-                }, pageNumber, null, this.basicRole)
-
-                if (ret.code === this.$api.retcode.SUCCESS) {
-                    this.page = ret.data
-                } else if (ret.code === this.$api.retcode.NOT_FOUND) {
-                    this.page.items = []
-                } else {
-                    wrong = ret
-                }
-            }
-
-            await Promise.all([getHistory(), getArticle()])
-            if (wrong) {
-                this.$message.byCode(wrong.code)
-            }
-        }
     },
     created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+    },
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
     components: {
         WikiBase

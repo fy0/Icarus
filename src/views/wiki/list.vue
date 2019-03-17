@@ -29,6 +29,32 @@
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 import { mapState, mapGetters } from 'vuex'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+
+class FetchCls extends BaseWrapper {
+    async fetchData () {
+        let wrong = false
+        let params = this.$route.params
+        let pageNumber = params.page || 1
+
+        let ret = await this.$api.wiki.list({
+            flag: null,
+            order: 'title.asc'
+        }, pageNumber, null, this.basicRole)
+
+        if (ret.code === this.$api.retcode.SUCCESS) {
+            this.page = ret.data
+        } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+            this.page.items = []
+        } else {
+            wrong = ret
+        }
+
+        if (wrong) {
+            this.$message.byCode(wrong.code)
+        }
+    }
+}
 
 export default {
     data () {
@@ -46,34 +72,10 @@ export default {
             'isWikiAdmin'
         ])
     },
-    methods: {
-        fetchData: async function () {
-            let wrong = false
-            let params = this.$route.params
-            let pageNumber = params.page || 1
-
-            let ret = await this.$api.wiki.list({
-                flag: null,
-                order: 'title.asc'
-            }, pageNumber, null, this.basicRole)
-
-            if (ret.code === this.$api.retcode.SUCCESS) {
-                this.page = ret.data
-            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
-                this.page.items = []
-            } else {
-                wrong = ret
-            }
-
-            if (wrong) {
-                this.$message.byCode(wrong.code)
-            }
-        }
-    },
-    created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
     components: {
         WikiBase

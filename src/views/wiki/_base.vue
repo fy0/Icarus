@@ -191,6 +191,9 @@ export default {
             }
         }
     },
+    async asyncData (ctx) {
+        // nuxt 组件中不能用asyncData，等等再想办法吧
+    },
     created: async function () {
         this.$store.commit('LOADING_INC', 1)
         await this.fetchData()

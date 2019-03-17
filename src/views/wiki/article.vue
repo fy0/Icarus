@@ -74,6 +74,31 @@ article > .title {
 import { mapState, mapGetters } from 'vuex'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+
+class FetchCls extends BaseWrapper {
+    async fetchData () {
+        let wrong = false
+        let params = this.$route.params
+        if (params.ref && (!/%\w/.test(params.ref))) {
+            params.ref = encodeURIComponent(params.ref)
+        }
+
+        let ret = await this.$api.wiki.get(Object.assign({
+            loadfk: { 'id': { as: 's' } }
+        }, params))
+        if (ret.code === this.$api.retcode.SUCCESS) {
+            this.item = ret.data
+        } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+        } else {
+            wrong = ret
+        }
+
+        if (wrong) {
+            this.$message.byCode(wrong.code)
+        }
+    }
+}
 
 export default {
     data () {
@@ -89,32 +114,13 @@ export default {
         ])
     },
     methods: {
-        fetchData: async function () {
-            let wrong = false
-            let params = this.$route.params
-            if (params.ref && (!/%\w/.test(params.ref))) {
-                params.ref = encodeURIComponent(params.ref)
-            }
-
-            let ret = await this.$api.wiki.get(Object.assign({
-                loadfk: { 'id': { as: 's' } }
-            }, params))
-            if (ret.code === this.$api.retcode.SUCCESS) {
-                this.item = ret.data
-            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
-            } else {
-                wrong = ret
-            }
-
-            if (wrong) {
-                this.$message.byCode(wrong.code)
-            }
-        }
     },
     created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+    },
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
     components: {
         WikiBase
