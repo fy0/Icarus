@@ -20,7 +20,7 @@ import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 
 // // import ForumBoards from '@/views/forum/boards.vue'
 import ForumMain from '@/views/forum/main.vue'
-// import ForumTopic from '@/views/forum/topic.vue'
+import ForumTopic from '@/views/forum/topic.vue'
 
 import WikiMain from '@/views/wiki/main.vue'
 import WikiEdit from '@/views/wiki/wiki-edit.vue'
@@ -129,12 +129,12 @@ export function createRouter () {
             //     name: 'forum_topic_edit',
             //     component: () => import(/* webpackChunkName: "topic-edit" */ '@/views/forum/topic-edit.vue')
             // },
-            // // 论坛 - 文章页面
-            // {
-            //     path: '/topic/:id([a-fA-F0-9]+)',
-            //     name: 'forum_topic',
-            //     component: ForumTopic
-            // },
+            // 论坛 - 文章页面
+            {
+                path: '/topic/:id([a-fA-F0-9]+)',
+                name: 'forum_topic',
+                component: ForumTopic
+            },
 
             // Wiki - 主页
             {
