@@ -602,6 +602,24 @@ export default {
     //     // }
     //     return next()
     // },
+    head () {
+        let title = ''
+        if (this.board) {
+            if (this.$route.params.page && this.$route.params.page > 1) {
+                title = `${this.board.name} - 第${this.$route.params.page}页 - ${this.$config.title}`
+            } else {
+                title = `${this.board.name} - ${this.$config.title}`
+            }
+        } else {
+            title = `全部主题 - ${this.$config.title}`
+        }
+        return {
+            title,
+            meta: [
+                { hid: 'description', name: 'description', content: 'My custom description' }
+            ]
+        }
+    },
     asyncData: async function (ctx) {
         let f = createFetchWrapper(FetchCls, ctx)
         await f.fetchData()
