@@ -75,15 +75,17 @@ module.exports = {
     */
     modules: [
         '@nuxtjs/router',
-        'nuxt-sass-resources-loader',
+        '@nuxtjs/style-resources',
         'nuxt-universal-storage'
     ],
     storage: {
     },
-    sassResources: [
-        '@/assets/css/variables.scss',
-        '@/assets/css/input.scss'
-    ],
+    styleResources: {
+        scss: [
+            '@/assets/css/variables.scss',
+            '@/assets/css/input.scss'
+        ]
+    },
 
     /*
     ** Build configuration

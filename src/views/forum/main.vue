@@ -606,12 +606,12 @@ export default {
         let title = ''
         if (this.board) {
             if (this.$route.params.page && this.$route.params.page > 1) {
-                title = `${this.board.name} - 第${this.$route.params.page}页 - ${this.$config.title}`
+                title = `${this.board.name} - 第${this.$route.params.page}页`
             } else {
-                title = `${this.board.name} - ${this.$config.title}`
+                title = `${this.board.name}`
             }
         } else {
-            title = `全部主题 - ${this.$config.title}`
+            title = `全部主题`
         }
         return {
             title,
@@ -620,7 +620,7 @@ export default {
             ]
         }
     },
-    asyncData: async function (ctx) {
+    async asyncData (ctx) {
         let f = createFetchWrapper(FetchCls, ctx)
         await f.fetchData()
         return f._data
@@ -637,7 +637,7 @@ export default {
             if (this.withSubBoardTopicOptionReady) {
                 this.$storage.removeUniversal('sbt')
                 if (newVal) this.$storage.setUniversal('sbt', 1)
-                await this.fetchData()
+                // await this.fetchData()
             }
         }
     },

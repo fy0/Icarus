@@ -60,6 +60,11 @@ export default {
     data () {
         return {}
     },
+    head () {
+        return {
+            titleTemplate: `%s - ${this.$config.title}`
+        }
+    },
     computed: {
         ...mapState([
             'config',

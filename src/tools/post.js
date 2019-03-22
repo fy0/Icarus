@@ -1,5 +1,3 @@
-import api from '../netapi.js'
-
 let store = null
 
 if (process.browser) {
@@ -34,11 +32,11 @@ $.getBasePostsByIDs = async function (func, items, role = null) {
     let doRequest = async (name, type, ex = []) => {
         let ids = idsByType[type]
         if (ids && ids.length) {
-            let retPost = await api[name].list({
+            let retPost = await this.api[name].list({
                 'id.in': JSON.stringify(ids),
                 'select': ['id', 'time', 'user_id'].concat(ex)
             }, 1, null, role)
-            if (retPost.code === api.retcode.SUCCESS) {
+            if (retPost.code === this.api.retcode.SUCCESS) {
                 for (let i of retPost.data.items) {
                     posts[i.id] = $.makePostLinkData(type, i)
                 }
