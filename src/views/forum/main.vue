@@ -120,21 +120,22 @@
 
                 <!-- 实际渲染条目 -->
                 <template v-else-if="topics.items.length">
-                    <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
-                        <nuxt-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
+                    <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseleave="itemHover(null)">
+                        <!-- <nuxt-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}"> -->
+                        <div class="board-item" :class="{'top-post': i.sticky_weight}" @click="$router.push({ name: 'forum_topic', params: {id: i.id} })">
                             <div class="title-recent">
-                                <avatar :user="i.user_id" :size="32" class="avatar" />
+                                <avatar @click.stop :user="i.user_id" :size="32" class="avatar" />
                                 <div class="right">
                                     <h2>
-                                        <nuxt-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                                        <nuxt-link @click.stop :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                             <span>{{i.title}}</span>
                                             <span v-if="i.state === POST_STATE.CLOSE">[关闭]</span>
                                         </nuxt-link>
                                     </h2>
 
-                                    <p class="topic-info">
+                                     <p @click.stop class="topic-info">
                                         <nuxt-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
-                                            <div :style="lineStyleBG(i.board_id)" class="sign"></div>
+                                            <span :style="lineStyleBG(i.board_id)" class="sign"></span>
                                             <span class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
                                         </nuxt-link>
                                         <user-link class="author limit l2" :user="i.user_id" />
@@ -142,13 +143,13 @@
                                     </p>
                                 </div>
 
-                                <span class="icons">
+                                <span @click.stop class="icons">
                                     <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
                                     <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                    <i v-if="$user.isForumAdmin && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage({ 'val': true, 'data': i })"></i>
+                                    <i v-if="$user.isForumAdmin && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.stop="setTopicManage({ 'val': true, 'data': i })"></i>
                                 </span>
 
-                                <div class="append-icons">
+                                <div @click.stop class="append-icons">
                                     <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                                 </div>
                             </div>
@@ -165,7 +166,7 @@
                                 </div>
                                 <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden">
                                     <span class="line" :style="lineStyle(i.board_id)"></span>
-                                    <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
+                                    <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id" @click.stop>
                                         <strong><i class="icon icarus icon-reply"></i><user-link :user="i.s.last_comment_id.user_id" />:</strong>
                                         <nuxt-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</nuxt-link>
                                     </div>
@@ -174,7 +175,8 @@
                                     <div v-else class="time">N/A</div>
                                 </div>
                             </div>
-                        </nuxt-link>
+                        </div>
+                        <!-- </nuxt-link> -->
                     </div>
                     <paginator v-if="isBoard" :page-info='topics' :route-name='"forum_board"' />
                     <paginator v-else :page-info='topics' :route-name='"forum_main"' />

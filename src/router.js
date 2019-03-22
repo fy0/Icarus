@@ -21,6 +21,7 @@ import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 // // import ForumBoards from '@/views/forum/boards.vue'
 import ForumMain from '@/views/forum/main.vue'
 import ForumTopic from '@/views/forum/topic.vue'
+import ForumTopicEdit from '@/views/forum/topic-edit.vue'
 
 import WikiMain from '@/views/wiki/main.vue'
 import WikiEdit from '@/views/wiki/wiki-edit.vue'
@@ -117,18 +118,20 @@ export function createRouter () {
                 name: 'forum_board',
                 component: ForumMain
             },
-            // // 论坛 - 主题新建
-            // {
-            //     path: '/topic/new',
-            //     name: 'forum_topic_new',
-            //     component: () => import(/* webpackChunkName: "topic-edit" */ '@/views/forum/topic-edit.vue')
-            // },
-            // // 论坛 - 主题编辑
-            // {
-            //     path: '/topic/edit/:id(\\S+)',
-            //     name: 'forum_topic_edit',
-            //     component: () => import(/* webpackChunkName: "topic-edit" */ '@/views/forum/topic-edit.vue')
-            // },
+            // 论坛 - 主题新建
+            {
+                path: '/topic/new',
+                name: 'forum_topic_new',
+                component: ForumTopicEdit
+                // component: () => import(/* webpackChunkName: "topic-edit" */ '@/views/forum/topic-edit.vue')
+            },
+            // 论坛 - 主题编辑
+            {
+                path: '/topic/edit/:id(\\S+)',
+                name: 'forum_topic_edit',
+                component: ForumTopicEdit
+                // component: () => import(/* webpackChunkName: "topic-edit" */ '@/views/forum/topic-edit.vue')
+            },
             // 论坛 - 文章页面
             {
                 path: '/topic/:id([a-fA-F0-9]+)',

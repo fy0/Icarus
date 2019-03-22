@@ -5,8 +5,7 @@ import Vue from 'vue'
 
 import 'normalize.css'
 import 'qiniu-js'
-// import 'animate.css'
-import 'nprogress/nprogress.css'
+import 'animate.css'
 
 // 加载动画组件
 import 'vue-loaders/dist/vue-loaders.css'

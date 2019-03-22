@@ -102,7 +102,6 @@ div.markdown-editor > div.editor-toolbar {
 <script>
 import { mapState, mapGetters } from 'vuex'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
-import nprogress from 'nprogress/nprogress.js'
 import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
 // import marked from '@/md.js'
@@ -259,7 +258,7 @@ export default {
         // 未登录跳转
         if (!this.$store.state.user.userData) {
             this.$store.commit('LOADING_SET', 0)
-            nprogress.done()
+            // nprogress.done()
             this.$message.error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
             return this.$router.push('/')
         }
