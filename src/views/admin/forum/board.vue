@@ -84,7 +84,6 @@ table {
 </style>
 
 <script>
-import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 import DialogBoardManage from '@/components/dialogs/board-manage.vue'
 
@@ -101,20 +100,20 @@ export default {
     },
     methods: {
         boardNew: async function () {
-            let ret = await api.board.new(this.boardNewInfo, this.$user.mainRole)
+            let ret = await this.$api.board.new(this.boardNewInfo, this.$user.mainRole)
             $.message_by_code(ret.code)
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.fetchData()
             }
         },
         fetchData: async function () {
-            let ret = await api.board.list({
+            let ret = await this.$api.board.list({
                 order: 'weight.desc,time.asc',
                 loadfk: { 'user_id': null }
                 // select: 'id, time, user_id, board_id, title, state',
             }, 1, null, this.$user.forumAdminRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.boardInfo = ret.data
                 for (let i of ret.data.items) {
                     this.boardsInfoDict[i.id] = i

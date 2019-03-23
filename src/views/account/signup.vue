@@ -104,7 +104,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import AccountSignupLegacy from '@/views/account/signup_legacy.vue'
 
 export default {
@@ -161,11 +160,11 @@ export default {
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
-                let ret = await api.user.requestSignupByEmail(info)
+                let ret = await this.$api.user.requestSignupByEmail(info)
 
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     this.regDone = true
-                } else if (ret.code === api.retcode.INVALID_POSTDATA) {
+                } else if (ret.code === this.$api.retcode.INVALID_POSTDATA) {
                     this.formErrors = ret.data
                 } else {
                     $.message_by_code(ret.code, ret.data)

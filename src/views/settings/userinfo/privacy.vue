@@ -27,7 +27,7 @@ export default {
     methods: {
         fetchData: async function () {
             // let params = this.$route.params
-            // let ret = await api.topic.get({
+            // let ret = await this.$api.topic.get({
             //     id: params.id,
             // })
         }

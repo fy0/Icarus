@@ -97,7 +97,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -146,18 +145,18 @@ export default {
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
-                let ret = await api.user.new(info)
+                let ret = await this.$api.user.new(info)
 
-                if (ret.code !== api.retcode.SUCCESS) {
+                if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
                     $.message_by_code(ret.code)
                 } else {
                     let userinfo = ret.data
                     if (ret.code === 0) {
-                        api.saveAccessToken(userinfo['access_token'])
+                        this.$api.saveAccessToken(userinfo['access_token'])
                         await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
-                        if (ret.code === api.retcode.SUCCESS) {
+                        if (ret.code === this.$api.retcode.SUCCESS) {
                             $.message_success('注册成功！')
                         } else {
                             $.message_by_code(ret.code)

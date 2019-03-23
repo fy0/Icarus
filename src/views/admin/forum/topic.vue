@@ -70,7 +70,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 
 export default {
@@ -83,12 +82,12 @@ export default {
     methods: {
         fetchData: async function () {
             let params = this.$route.params
-            let retList = await api.topic.list({
+            let retList = await this.$api.topic.list({
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 // select: 'id, time, user_id, board_id, title, state',
                 loadfk: { 'user_id': null, 'board_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
             }, params.page, null, this.$user.mainRole)
-            if (retList.code === api.retcode.SUCCESS) {
+            if (retList.code === this.$api.retcode.SUCCESS) {
                 this.topics = retList.data
             }
         }

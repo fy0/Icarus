@@ -144,7 +144,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
@@ -230,7 +229,7 @@ export default {
                 // 置顶
                 if (change.vSticky) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, this.$user.mainRole)
+                    let ret = await this.$api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('文章置顶设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -238,7 +237,7 @@ export default {
                 // 真正的提升下沉实现起来比较难，直接改变权重值吧
                 if (change.vWeight) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, this.$user.mainRole)
+                    let ret = await this.$api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('提升/下沉设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -246,7 +245,7 @@ export default {
                 // 文章状态
                 if (change.vState) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, this.$user.mainRole)
+                    let ret = await this.$api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('文章状态修改成功')
                     else $.message_by_code(ret.code)
                 }
@@ -254,7 +253,7 @@ export default {
                 // 文章可见性
                 if (change.vVisible) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] }, this.$user.mainRole)
+                    let ret = await this.$api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('文章可见性修改成功')
                     else $.message_by_code(ret.code)
                 }
@@ -262,7 +261,7 @@ export default {
                 // 积分奖励
                 if (change.vCredit) {
                     updateOne()
-                    let ret = await api.user.set({ id: this.topic.user_id }, {
+                    let ret = await this.$api.user.set({ id: this.topic.user_id }, {
                         'credit.incr': change.vCredit[1],
                         '$src': JSON.stringify({
                             'id': this.topic.id,
@@ -276,7 +275,7 @@ export default {
                 // 声望奖励
                 if (change.vRepute) {
                     updateOne()
-                    let ret = await api.user.set({ id: this.topic.user_id }, {
+                    let ret = await this.$api.user.set({ id: this.topic.user_id }, {
                         'repute.incr': change.vCredit[1],
                         '$src': JSON.stringify({
                             'id': this.topic.id,
@@ -290,7 +289,7 @@ export default {
                 // 优秀文章
                 if (change.vAwesome) {
                     updateOne()
-                    let ret = await api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, this.$user.mainRole)
+                    let ret = await this.$api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, this.$user.mainRole)
                     if (ret.code === 0) $.message_success('优秀文章设置成功')
                     else $.message_by_code(ret.code)
                 }
@@ -315,11 +314,11 @@ export default {
     watch: {
         'topicManage': async function (val) {
             if (val) {
-                let info = await api.topic.get({
+                let info = await this.$api.topic.get({
                     id: this.topicManageData.id
                 }, this.$user.mainRole)
 
-                if (info.code === api.retcode.SUCCESS) {
+                if (info.code === this.$api.retcode.SUCCESS) {
                     this.save = info.data
                     let topic = info.data
                     this.vSticky = topic.sticky_weight

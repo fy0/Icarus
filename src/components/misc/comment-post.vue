@@ -88,7 +88,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import anime from 'animejs'
 
 export default {
@@ -145,7 +144,7 @@ export default {
             this.commentInfo.related_id = this.item.id
             this.commentInfo.related_type = this.postType
             if (this.replyTo) this.commentInfo.reply_to_cmt_id = this.replyTo.id
-            let ret = await api.comment.new(this.commentInfo, 'user')
+            let ret = await this.$api.comment.new(this.commentInfo, 'user')
             $.message_by_code(ret.code, ret.data)
             if (ret.code === 0) {
                 this.editing = false

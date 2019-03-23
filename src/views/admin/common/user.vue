@@ -60,7 +60,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import swal from 'sweetalert2'
 import AdminBase from '../base/base.vue'
 
@@ -77,22 +76,22 @@ export default {
             let role = this.$user.mainRole
 
             if ($.regex.email.test(this.searchTxt)) {
-                let retList = await api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, role)
-                if (retList.code === api.retcode.SUCCESS) {
+                let retList = await this.$api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, null, role)
+                if (retList.code === this.$api.retcode.SUCCESS) {
                     this.page = retList.data
                     found = true
                 }
             } else {
                 if ($.regex.nickname.test(this.searchTxt)) {
-                    let retList = await api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, null, role)
-                    if (retList.code === api.retcode.SUCCESS) {
+                    let retList = await this.$api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, null, role)
+                    if (retList.code === this.$api.retcode.SUCCESS) {
                         this.page = retList.data
                         found = true
                     }
                 }
                 if ($.regex.id.test(this.searchTxt)) {
-                    let retList = await api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, null, role)
-                    if (retList.code === api.retcode.SUCCESS) {
+                    let retList = await this.$api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, null, role)
+                    if (retList.code === this.$api.retcode.SUCCESS) {
                         if (found) {
                             this.page.items.push(retList.data.items[0])
                         } else {
@@ -119,11 +118,11 @@ export default {
                     if (password === '') {
                         swal.showValidationError('密码不能为空。')
                     }
-                    return api.user.set({ id: user.id }, { password: await $.passwordHash(password) }, this.$user.mainRole)
+                    return this.$api.user.set({ id: user.id }, { password: await $.passwordHash(password) }, this.$user.mainRole)
                 }
             }).then((result) => {
                 if (result.value == null) return
-                if (result.value.code === api.retcode.SUCCESS) {
+                if (result.value.code === this.$api.retcode.SUCCESS) {
                     swal({
                         title: '操作成功！',
                         type: 'success'
@@ -148,11 +147,11 @@ export default {
                 confirmButtonText: '确定，我要重置',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
-                    return api.user.set({ id: user.id }, { 'key': '1' }, this.$user.mainRole)
+                    return this.$api.user.set({ id: user.id }, { 'key': '1' }, this.$user.mainRole)
                 }
             }).then((result) => {
                 if (result.value == null) return
-                if (result.value.code === api.retcode.SUCCESS) {
+                if (result.value.code === this.$api.retcode.SUCCESS) {
                     swal({
                         title: '如你所愿',
                         text: '',
@@ -169,10 +168,10 @@ export default {
         },
         fetchData: async function () {
             let params = this.$route.params
-            let retList = await api.user.list({
+            let retList = await this.$api.user.list({
                 order: 'id.desc'
             }, params.page, null, this.$user.mainRole)
-            if (retList.code === api.retcode.SUCCESS) {
+            if (retList.code === this.$api.retcode.SUCCESS) {
                 this.page = retList.data
             }
         }

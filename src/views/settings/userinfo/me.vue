@@ -208,8 +208,8 @@ export default {
         // resendActivationMail: async function () {
         //     if (this.sending) return
         //     this.sending = true
-        //     let ret = await api.user.resendActivationMail()
-        //     if (ret.code === api.retcode.SUCCESS) {
+        //     let ret = await this.$api.user.resendActivationMail()
+        //     if (ret.code === this.$api.retcode.SUCCESS) {
         //         $.message_success('激活邮件发送成功！请检查邮箱。')
         //     } else {
         //         $.message_error('发送失败，每30分钟只能发送一次。')

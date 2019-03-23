@@ -102,7 +102,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
@@ -128,13 +127,13 @@ export default {
             this.$store.commit('LOADING_INC', 1)
             let params = this.$route.query
             this.page.curPage = params.page
-            let ret = await api.notif.list({
+            let ret = await this.$api.notif.list({
                 receiver_id: this.$user.data.id,
                 order: 'time.desc'
                 // loadfk: {user_id: null, board_id: null}
             }, params.page)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 let userIds = new Set()
                 let manageInfoList = []
 
@@ -182,7 +181,7 @@ export default {
                 }
 
                 if (userIds.size > 0) {
-                    let users = await api.user.list({
+                    let users = await this.$api.user.list({
                         'id.in': JSON.stringify(new Array(...userIds)),
                         'select': 'id, nickname'
                     }, 1)
@@ -195,14 +194,14 @@ export default {
                 // let pageNumber = this.$route.query.page
                 // if (pageNumber) this.commentPage = parseInt(pageNumber)
 
-                let ret2 = await api.notif.setRead()
-                if (ret2.code === api.retcode.SUCCESS) {
+                let ret2 = await this.$api.notif.setRead()
+                if (ret2.code === this.$api.retcode.SUCCESS) {
                     // 会出现负数问题
                     // state.unread -= ret2.data
                     this.$store.commit('user/SET_UNREAD', 0)
                 }
             } else {
-                if (ret.code === api.retcode.NOT_FOUND) {
+                if (ret.code === this.$api.retcode.NOT_FOUND) {
                 } else {
                     $.message_by_code(ret.code)
                 }

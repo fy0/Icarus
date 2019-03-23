@@ -72,7 +72,6 @@
 
 <script>
 import { marked } from '@/md.js'
-import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 
 export default {
@@ -92,8 +91,8 @@ export default {
         changeState: async function (item, val) {
             let oldVal = item.state
             item.state = val
-            let ret = await api.comment.set({ id: item.id }, { state: val }, this.$user.mainRole)
-            if (ret.code !== api.retcode.SUCCESS) {
+            let ret = await this.$api.comment.set({ id: item.id }, { state: val }, this.$user.mainRole)
+            if (ret.code !== this.$api.retcode.SUCCESS) {
                 item.state = oldVal
             }
             $.message_by_code(ret.code)
@@ -101,15 +100,15 @@ export default {
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)
             let params = this.$route.params
-            // let ret = await api.topic.get({
+            // let ret = await this.$api.topic.get({
             //     id: params.id,
             // })
-            let ret = await api.comment.list({
+            let ret = await this.$api.comment.list({
                 loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } },
                 order: 'time.desc'
             }, params.page, null, this.$user.mainRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 let topicIds = []
 
                 for (let i of ret.data.items) {
@@ -119,7 +118,7 @@ export default {
                 }
 
                 this.postsOfComments = {}
-                let retTopic = await api.topic.list({ 'id.in': JSON.stringify(topicIds) }, 1)
+                let retTopic = await this.$api.topic.list({ 'id.in': JSON.stringify(topicIds) }, 1)
                 for (let i of retTopic.data.items) {
                     this.postsOfComments[i.id] = i
                 }

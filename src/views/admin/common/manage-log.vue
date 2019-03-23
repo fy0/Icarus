@@ -88,7 +88,6 @@
 
 <script>
 import { marked } from '@/md.js'
-import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
@@ -111,15 +110,15 @@ export default {
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)
             let params = this.$route.params
-            // let ret = await api.topic.get({
+            // let ret = await this.$api.topic.get({
             //     id: params.id,
             // })
-            let ret = await api.logManage.list({
+            let ret = await this.$api.logManage.list({
                 loadfk: { user_id: null },
                 order: 'time.desc'
             }, params.page, null, this.$user.mainRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.postsOfComments = await $.getBasePostsByIDs(async (i) => {
                     return [
                         {

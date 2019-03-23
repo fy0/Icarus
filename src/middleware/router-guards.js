@@ -5,11 +5,11 @@ export default async function ({ store, route, redirect, req }) {
     await store.dispatch('tryInitLoad')
 
     if (!store.state.misc) {
-        // let ret = await api.misc()
+        // let ret = await this.$api.misc()
         // store.commit('SET_MISC', ret.data)
 
         // if (process.browser) {
-        //     ret = await api.userInfo()
+        //     ret = await this.$api.userInfo()
         //     if (ret.code === 0) {
         //         store.commit('SET_USERDATA', ret.data)
         //     }

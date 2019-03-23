@@ -113,11 +113,11 @@ export const actions = {
         // this.$api.accessToken = this.$storage.getUniversal('t')
         // 尝试加载
         await dispatch('tryInitLoad')
-        // let ret = await api.misc()
+        // let ret = await this.$api.misc()
         // commit('SET_MISC', ret.data)
 
         // console.log(111, req.headers.cookie)
-        // ret = await api.userInfo2(req.headers)
+        // ret = await this.$api.userInfo2(req.headers)
         // if (ret.code === 0) {
         //     commit('SET_USERDATA', ret.data)
         // }
