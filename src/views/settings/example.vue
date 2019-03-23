@@ -1,6 +1,5 @@
 <template>
 <setting-base>
-    <div v-title>用户设置 - {{$config.title}}</div>
     <span>测试</span>
 </setting-base>
 </template>

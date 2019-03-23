@@ -11,12 +11,12 @@ import AccountNotif from '@/views/account/notif.vue'
 import AccountPasswordReset from '@/views/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
 
-// import Setting from '@/views/settings/setting.vue'
-// import SettingUserinfoMe from '@/views/settings/userinfo/me.vue'
-// import SettingUserinfoUpload from '@/views/settings/userinfo/upload.vue'
-// import SettingUserinfoPrivacy from '@/views/settings/userinfo/privacy.vue'
-// import SettingSecurityPassword from '@/views/settings/security/password.vue'
-// import SettingSecurityOAuth from '@/views/settings/security/oauth.vue'
+import Setting from '@/views/settings/setting.vue'
+import SettingUserinfoMe from '@/views/settings/userinfo/me.vue'
+import SettingUserinfoUpload from '@/views/settings/userinfo/upload.vue'
+import SettingUserinfoPrivacy from '@/views/settings/userinfo/privacy.vue'
+import SettingSecurityPassword from '@/views/settings/security/password.vue'
+import SettingSecurityOAuth from '@/views/settings/security/oauth.vue'
 
 // // import ForumBoards from '@/views/forum/boards.vue'
 import ForumMain from '@/views/forum/main.vue'
@@ -195,50 +195,50 @@ export function createRouter () {
                 component: WikiEdit
                 // component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
             },
-            // // Wiki - 派生
-            // // {
-            // //     path: '/wiki/fork/:id(\\S+)',
-            // //     name: 'wiki_article_fork',
-            // //     component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
-            // // },
+            // Wiki - 派生
+            // {
+            //     path: '/wiki/fork/:id(\\S+)',
+            //     name: 'wiki_article_fork',
+            //     component: () => import(/* webpackChunkName: "wiki-edit" */ '@/views/wiki/wiki-edit.vue')
+            // },
 
-            // // 设置
-            // {
-            //     path: '/setting',
-            //     name: 'setting',
-            //     redirect: { name: 'setting_user_me' },
-            //     component: Setting
-            // },
-            // // 设置 - 用户 - 个人信息
-            // {
-            //     path: '/setting/user/me',
-            //     name: 'setting_user_me',
-            //     component: SettingUserinfoMe
-            // },
-            // // 设置 - 用户 - 我的上传
-            // {
-            //     path: '/setting/user/upload',
-            //     name: 'setting_user_upload',
-            //     component: SettingUserinfoUpload
-            // },
-            // // 设置 - 用户 - 隐私设置
-            // {
-            //     path: '/setting/user/privacy',
-            //     name: 'setting_user_privacy',
-            //     component: SettingUserinfoPrivacy
-            // },
-            // // 设置 - 安全 - 修改密码
-            // {
-            //     path: '/setting/security/password',
-            //     name: 'setting_security_password',
-            //     component: SettingSecurityPassword
-            // },
-            // // 设置 - 安全 - 绑定账号（第三方登录）
-            // {
-            //     path: '/setting/security/oauth',
-            //     name: 'setting_security_oauth',
-            //     component: SettingSecurityOAuth
-            // },
+            // 设置
+            {
+                path: '/setting',
+                name: 'setting',
+                redirect: { name: 'setting_user_me' },
+                component: Setting
+            },
+            // 设置 - 用户 - 个人信息
+            {
+                path: '/setting/user/me',
+                name: 'setting_user_me',
+                component: SettingUserinfoMe
+            },
+            // 设置 - 用户 - 我的上传
+            {
+                path: '/setting/user/upload',
+                name: 'setting_user_upload',
+                component: SettingUserinfoUpload
+            },
+            // 设置 - 用户 - 隐私设置
+            {
+                path: '/setting/user/privacy',
+                name: 'setting_user_privacy',
+                component: SettingUserinfoPrivacy
+            },
+            // 设置 - 安全 - 修改密码
+            {
+                path: '/setting/security/password',
+                name: 'setting_security_password',
+                component: SettingSecurityPassword
+            },
+            // 设置 - 安全 - 绑定账号（第三方登录）
+            {
+                path: '/setting/security/oauth',
+                name: 'setting_security_oauth',
+                component: SettingSecurityOAuth
+            },
 
             // // 管理
             // {

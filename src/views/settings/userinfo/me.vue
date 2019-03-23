@@ -1,6 +1,5 @@
 <template>
 <setting-base>
-    <div v-title>个人信息 - 用户设置 - {{$config.title}}</div>
     <h3 class="ic-header">个人信息</h3>
 
     <div class="box">
@@ -186,6 +185,11 @@ export default {
             updating: false
         }
     },
+    head () {
+        return {
+            title: '个人信息 - 用户设置'
+        }
+    },
     computed: {
         user: function () {
             if (!this.userSave) {
@@ -200,10 +204,6 @@ export default {
     },
     methods: {
         fetchData: async function () {
-            // let params = this.$route.params
-            // let ret = await api.topic.get({
-            //     id: params.id,
-            // })
         },
         // resendActivationMail: async function () {
         //     if (this.sending) return
