@@ -28,43 +28,43 @@ $.message = function (type, text, timeout = 3000) {
     }
 }
 
-$.message_text = function (text, timeout = 3000) {
+this.$message.text = function (text, timeout = 3000) {
     $.message('default', text, timeout) // 蓝色
 }
 
-$.message_secondary = function (text, timeout = 3000) {
+this.$message.secondary = function (text, timeout = 3000) {
     $.message('secondary', text, timeout) // 灰色白字，很不明显
 }
 
-$.message_success = function (text, timeout = 3000) {
+this.$message.success = function (text, timeout = 3000) {
     $.message('success', text, timeout) // 绿色
 }
 
-$.message_warning = function (text, timeout = 3000) {
+this.$message.warning = function (text, timeout = 3000) {
     $.message('warning', text, timeout) // 黄色
 }
 
-$.message_error = function (text, timeout = 3000) {
+this.$message.error = function (text, timeout = 3000) {
     $.message('error', text, timeout) // 红色
 }
 
-$.message_by_code = function (code, data, text = null, timeout = 3000) {
+this.$message.byCode = function (code, data, text = null, timeout = 3000) {
     text = text || store.state.misc.retinfo_cn[code]
-    if (code === store.state.misc.retcode.SUCCESS) $.message_success(text, timeout)
+    if (code === store.state.misc.retcode.SUCCESS) this.$message.success(text, timeout)
     else if (code === store.state.misc.retcode.TOO_FREQUENT && data) {
-        $.message_error(`${text}，尚需等待 ${data} 秒`, timeout)
-    } else $.message_error(text, timeout)
+        this.$message.error(`${text}，尚需等待 ${data} 秒`, timeout)
+    } else this.$message.error(text, timeout)
 }
 
-$.message_by_form = function (code, data, alias, timeout = 6000) {
+this.$message.by_form = function (code, data, alias, timeout = 6000) {
     if (code) {
         for (let [k, errs] of Object.entries(data)) {
             for (let err of errs) {
                 let name = alias[k] || k
-                $.message_by_code(code, data, `${name}：${err}`, timeout)
+                this.$message.byCode(code, data, `${name}：${err}`, timeout)
             }
         }
     } else {
-        $.message_by_code(code, data, null, timeout)
+        this.$message.byCode(code, data, null, timeout)
     }
 }

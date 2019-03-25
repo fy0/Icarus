@@ -203,7 +203,7 @@ export default {
             } else {
                 if (ret.code === this.$api.retcode.NOT_FOUND) {
                 } else {
-                    $.message_by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 }
             }
             this.$store.commit('LOADING_DEC', 1)

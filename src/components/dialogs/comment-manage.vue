@@ -81,7 +81,7 @@ export default {
             //         this.user.group = this.user.group.toString()
             //         this.save = _.clone(this.user)
             //     } else {
-            //         $.message_by_code(info.code)
+            //         this.$message.byCode(info.code)
             //     }
             // }
         }

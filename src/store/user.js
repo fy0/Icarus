@@ -62,7 +62,7 @@ export const actions = {
         let ret = await this.$api.user.signout()
         if (ret.code === this.$api.retcode.SUCCESS || ret.code === this.$api.retcode.FAILED) {
             await dispatch('initLoad', null, { root: true })
-            $.message_success('登出成功')
+            this.$message.success('登出成功')
         }
     },
     // 获取当前用户信息
@@ -74,7 +74,7 @@ export const actions = {
         if (userInfo.code === this.$api.retcode.SUCCESS) {
             commit('SET_USER_DATA', userInfo.data)
         } else {
-            $.message_error('获取用户信息失败，可能是网络问题或者服务器无响应')
+            this.$message.error('获取用户信息失败，可能是网络问题或者服务器无响应')
         }
     },
     // 设置当前用户信息
@@ -86,7 +86,7 @@ export const actions = {
         let ret = await this.$api.user.set({ id: oldData.id }, updateData, 'user')
         if (ret.code === this.$api.retcode.SUCCESS) {
             await dispatch('apiGetUserData')
-            $.message_success('信息修改成功！')
+            this.$message.success('信息修改成功！')
         }
     }
 }

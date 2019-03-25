@@ -49,6 +49,14 @@ export default {
             mainpage: {}
         }
     },
+    head () {
+        return {
+            title: `百科`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科' }
+            ]
+        }
+    },
     computed: {
         ...mapState(['config'])
     },

@@ -1,7 +1,6 @@
 <template>
 <div>
     <wiki-base v-if="item">
-        <!-- <div v-title>{{ item.title }} - 百科 - {{config.title}}</div> -->
         <article class="box article ic-paper ic-z1">
             <div class="title">
                 <span>
@@ -105,6 +104,14 @@ export default {
         return {
             marked,
             item: null
+        }
+    },
+    head () {
+        return {
+            title: `${this.item.title} - 百科`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科文章页面' }
+            ]
         }
     },
     computed: {

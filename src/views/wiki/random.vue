@@ -27,6 +27,14 @@ export default {
             nothing: true
         }
     },
+    head () {
+        return {
+            title: `随便看看 - 百科`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科' }
+            ]
+        }
+    },
     methods: {
         fetchData: async function () {
             let ret = await this.$api.wiki.random()

@@ -145,7 +145,7 @@ export default {
             this.commentInfo.related_type = this.postType
             if (this.replyTo) this.commentInfo.reply_to_cmt_id = this.replyTo.id
             let ret = await this.$api.comment.new(this.commentInfo, 'user')
-            $.message_by_code(ret.code, ret.data)
+            this.$message.byCode(ret.code, ret.data)
             if (ret.code === 0) {
                 this.editing = false
                 this.replyTo = null

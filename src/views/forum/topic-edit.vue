@@ -143,7 +143,7 @@ export default {
             let successText
 
             if (!this.topicInfo.board_id) {
-                $.message_error('没有选择发布的板块，如果没有板块，请先在管理界面创建。')
+                this.$message.error('没有选择发布的板块，如果没有板块，请先在管理界面创建。')
                 return
             }
 
@@ -161,7 +161,7 @@ export default {
             if (this.is_edit) {
                 if (Object.keys(topicInfo).length <= 1) {
                     // 那个1是returning
-                    $.message_success('编辑成功！但编辑者并未进行任何改动。')
+                    this.$message.success('编辑成功！但编辑者并未进行任何改动。')
                     this.$router.push({ name: 'forum_topic', params: { id: this.topicInfo.id } })
                     this.loading = false
                     return
@@ -183,17 +183,17 @@ export default {
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
                 this.$router.push({ name: 'forum_topic', params: { id: topicId } })
-                $.message_success(successText)
+                this.$message.success(successText)
             } else if (ret.code === this.$api.retcode.INVALID_ROLE) {
-                $.message_error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
+                this.$message.error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
                 this.loading = false
             } else {
                 if (ret.code === this.$api.retcode.FAILED) {
                     this.formErrors = ret.data
-                    $.message_error('内容不符合要求，请根据输入框下方提示进行修改')
+                    this.$message.error('内容不符合要求，请根据输入框下方提示进行修改')
                 } else {
                     this.formErrors = {}
-                    $.message_by_code(ret.code, ret.data)
+                    this.$message.byCode(ret.code, ret.data)
                 }
                 // 注意：发布成功会跳转，故不做复位，失败则复位
                 this.loading = false
@@ -205,7 +205,7 @@ export default {
             this.asAdmin = this.$route.query.manage
 
             if (!this.$user.data) {
-                $.message_error('抱歉，无权访问此页面，请返回')
+                this.$message.error('抱歉，无权访问此页面，请返回')
                 return
             }
 
@@ -215,7 +215,7 @@ export default {
             }
             let ret = await this.$api.board.list(boardQueryParams)
             if (ret.code) {
-                $.message_by_code(ret.code)
+                this.$message.byCode(ret.code)
                 return
             }
             let boardList = ret.data.items
@@ -226,7 +226,7 @@ export default {
                     loadfk: { user_id: null, board_id: null }
                 })
                 if (ret.code) {
-                    $.message_error('抱歉，发生了错误')
+                    this.$message.error('抱歉，发生了错误')
                     return
                 }
 
@@ -274,7 +274,7 @@ export default {
     //     if (!store.state.user.userData) {
     //         store.commit('LOADING_SET', 0)
     //         // nprogress.done()
-    //         $.message_error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
+    //         this.$message.error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
     //         return next('/')
     //     }
     //     next()

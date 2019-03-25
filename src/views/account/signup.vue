@@ -167,12 +167,12 @@ export default {
                 } else if (ret.code === this.$api.retcode.INVALID_POSTDATA) {
                     this.formErrors = ret.data
                 } else {
-                    $.message_by_code(ret.code, ret.data)
+                    this.$message.byCode(ret.code, ret.data)
                 }
 
                 this.$store.commit('LOADING_DEC', 1)
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         }
     },

@@ -34,10 +34,10 @@ export default {
                 await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                 if (this.goLastPage) {
-                    $.message_success('登录成功，正在回到前页……')
+                    this.$message.success('登录成功，正在回到前页……')
                     this.$router.go(-1)
                 } else {
-                    $.message_success('登录成功，正在回到主页……')
+                    this.$message.success('登录成功，正在回到主页……')
                     this.$router.replace('/')
                     return
                 }

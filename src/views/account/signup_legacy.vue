@@ -149,7 +149,7 @@ export default {
 
                 if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
-                    $.message_by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 } else {
                     let userinfo = ret.data
                     if (ret.code === 0) {
@@ -157,18 +157,18 @@ export default {
                         await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                         if (ret.code === this.$api.retcode.SUCCESS) {
-                            $.message_success('注册成功！')
+                            this.$message.success('注册成功！')
                         } else {
-                            $.message_by_code(ret.code)
+                            this.$message.byCode(ret.code)
                         }
                     } else {
-                        $.message_error('注册失败！可能账号或昵称已经被注册')
+                        this.$message.error('注册失败！可能账号或昵称已经被注册')
                     }
                     this.$router.push({ name: 'forum', params: {} })
                 }
                 this.$store.commit('LOADING_DEC', 1)
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         }
     },

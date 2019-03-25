@@ -420,7 +420,7 @@ class FetchCls extends BaseWrapper {
             this.topics = { items: [] }
         }
 
-        // $.message_by_code(retList.code)
+        // this.$message.byCode(retList.code)
         this.loading = false
     }
 }

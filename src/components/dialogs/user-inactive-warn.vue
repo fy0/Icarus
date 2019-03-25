@@ -52,9 +52,9 @@ export default {
             await $.timeout(1000) // 先留着吧，我觉得一点即出结果体验也不好
             let ret = await this.$api.user.resendActivationMail()
             if (ret.code === this.$api.retcode.SUCCESS) {
-                $.message_success('激活邮件发送成功！请检查邮箱。')
+                this.$message.success('激活邮件发送成功！请检查邮箱。')
             } else {
-                $.message_error('发送失败，每30分钟只能发送一次。')
+                this.$message.error('发送失败，每30分钟只能发送一次。')
             }
             this.sending = false
         }

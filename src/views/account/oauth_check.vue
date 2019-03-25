@@ -116,14 +116,14 @@ export default {
                 let ret = await this.$api.user.new(this.info)
                 if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
-                    $.message_by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 } else {
                     let userinfo = ret.data
                     if (ret.code === 0) {
                         this.$api.saveAccessToken(userinfo['access_token'])
                         await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
-                        $.message_by_code(ret.code)
+                        this.$message.byCode(ret.code)
                         // 用户注册完之后顺便把对应内容发给 oauthUpdate 更新
                         this.info.id = userinfo.id
                         let retUpdate = await this.$api.Oauth.oauthUpdate(this.info)
@@ -135,12 +135,12 @@ export default {
                             return
                         }
                     } else {
-                        $.message_error('注册失败！可能账号或昵称已经被注册')
+                        this.$message.error('注册失败！可能账号或昵称已经被注册')
                     }
                     this.$router.push({ name: 'forum', params: {} })
                 }
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         },
         cancel: async function () {

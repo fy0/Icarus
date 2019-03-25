@@ -112,12 +112,12 @@ export default {
                 let ret = await this.$api.user.requestPasswordReset(this.info.nickname, this.info.email)
                 if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
-                    $.message_error('重置密码失败，请确认邮箱和昵称组合正确')
+                    this.$message.error('重置密码失败，请确认邮箱和昵称组合正确')
                 } else {
                     this.done = true
                 }
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
             this.requesting = false
         },

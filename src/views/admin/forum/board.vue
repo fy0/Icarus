@@ -101,7 +101,7 @@ export default {
     methods: {
         boardNew: async function () {
             let ret = await this.$api.board.new(this.boardNewInfo, this.$user.mainRole)
-            $.message_by_code(ret.code)
+            this.$message.byCode(ret.code)
             if (ret.code === this.$api.retcode.SUCCESS) {
                 this.fetchData()
             }
@@ -119,7 +119,7 @@ export default {
                     this.boardsInfoDict[i.id] = i
                 }
             } else {
-                // $.message_by_code(ret.code)
+                // this.$message.byCode(ret.code)
             }
         }
     },

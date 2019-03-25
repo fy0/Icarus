@@ -170,8 +170,8 @@ export default {
                 }
                 // 重新载入板块数据
                 await this.$store.dispatch('forum/load')
-                $.message_success('板块信息设置成功')
-            } else $.message_by_code(ret.code)
+                this.$message.success('板块信息设置成功')
+            } else this.$message.byCode(ret.code)
 
             this.quit()
         },
@@ -209,7 +209,7 @@ export default {
                         }
                     }
                 } else {
-                    $.message_by_code(info.code)
+                    this.$message.byCode(info.code)
                 }
             }
         }

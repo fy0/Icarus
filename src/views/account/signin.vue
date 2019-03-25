@@ -157,23 +157,23 @@ export default {
 
                     if (this.goLastPage) {
                         this.$store.commit('LOADING_DEC', 1)
-                        $.message_success('登录成功，正在回到前页……')
+                        this.$message.success('登录成功，正在回到前页……')
                         this.$router.go(-1)
                     } else {
                         this.$store.commit('LOADING_DEC', 1)
-                        $.message_success('登录成功，正在回到主页……')
+                        this.$message.age.success('登录成功，正在回到主页……')
                         this.$router.replace('/')
                         return
                     }
                 } else {
                     this.formErrors = ret.data
-                    $.message_by_code(ret.code)
+                    this.$message.age.by_code(ret.code)
                 }
                 // ret = await this.$api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
                 this.$store.commit('LOADING_DEC', 1)
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.age.error('请正确填写所有项目')
             }
         },
         github_url: async function () {

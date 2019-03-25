@@ -80,7 +80,7 @@ export const actions = {
         // 获取MISC信息
         let ret = await $.retryUntilSuccess(this.$api.misc)
         if (ret.code !== this.$api.retcode.SUCCESS) {
-            $.message_error(`服务器的返回异常，请刷新重试。`, 5000)
+            this.$message.error(`服务器的返回异常，请刷新重试。`, 5000)
             commit('SET_INITING', false)
             return
         }
@@ -92,7 +92,7 @@ export const actions = {
             await dispatch('user/apiGetUserData', miscUser.id)
 
             if (miscUser.daily_reward) {
-                $.message_success(`每日登陆，获得经验 ${miscUser.daily_reward['exp']} 点`, 5000)
+                this.$message.success(`每日登陆，获得经验 ${miscUser.daily_reward['exp']} 点`, 5000)
             }
         } else {
             // 未登录，清除现有信息（用于退出登录等场景）

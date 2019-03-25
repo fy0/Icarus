@@ -110,10 +110,10 @@ export default {
                     }
                 } else {
                     this.formErrors = ret.data
-                    $.message_error('重置密码失败')
+                    this.$message.error('重置密码失败')
                 }
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
             this.requesting = false
         },

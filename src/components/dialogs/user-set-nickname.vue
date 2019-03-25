@@ -88,7 +88,7 @@ export default {
 
             let ret = await this.$api.user.changeNickname(this.info.nickname)
             if (ret.code === this.$api.retcode.SUCCESS) {
-                $.message_success('修改成功！')
+                this.$message.success('修改成功！')
                 let newData = Object.assign({}, this.$user.data)
                 newData.nickname = ret.data.nickname
                 newData.change_nickname_chance = ret.data.change_nickname_chance

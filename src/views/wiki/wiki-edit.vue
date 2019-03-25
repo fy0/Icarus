@@ -6,7 +6,6 @@
     </redirecting>
     <div v-else class="ic-container">
         <div class="edit-page-title">
-            <!-- <div v-title>{{ isEdit ? '编辑文章' : '添加文章' }} - {{config.title}}</div> -->
             <h3 class="" v-if="!isEdit">添加文章</h3>
             <h3 class="" v-else>编辑文章<span v-if="asAdmin"> - 管理员模式</span></h3>
             <button class="ic-btn primary right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
@@ -125,6 +124,14 @@ export default {
                 title: [],
                 content: []
             }
+        }
+    },
+    head () {
+        return {
+            title: `${this.isEdit ? '编辑文章' : '添加文章'} - ${this.wikiInfo.title} - 百科`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科' }
+            ]
         }
     },
     computed: {

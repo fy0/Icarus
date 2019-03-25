@@ -230,32 +230,32 @@ export default {
                 if (change.vSticky) {
                     updateOne()
                     let ret = await this.$api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] }, this.$user.mainRole)
-                    if (ret.code === 0) $.message_success('文章置顶设置成功')
-                    else $.message_by_code(ret.code)
+                    if (ret.code === 0) this.$message.success('文章置顶设置成功')
+                    else this.$message.byCode(ret.code)
                 }
 
                 // 真正的提升下沉实现起来比较难，直接改变权重值吧
                 if (change.vWeight) {
                     updateOne()
                     let ret = await this.$api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] }, this.$user.mainRole)
-                    if (ret.code === 0) $.message_success('提升/下沉设置成功')
-                    else $.message_by_code(ret.code)
+                    if (ret.code === 0) this.$message.success('提升/下沉设置成功')
+                    else this.$message.byCode(ret.code)
                 }
 
                 // 文章状态
                 if (change.vState) {
                     updateOne()
                     let ret = await this.$api.topic.set({ id: this.topic.id }, { state: change.vState[1] }, this.$user.mainRole)
-                    if (ret.code === 0) $.message_success('文章状态修改成功')
-                    else $.message_by_code(ret.code)
+                    if (ret.code === 0) this.$message.success('文章状态修改成功')
+                    else this.$message.byCode(ret.code)
                 }
 
                 // 文章可见性
                 if (change.vVisible) {
                     updateOne()
                     let ret = await this.$api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] }, this.$user.mainRole)
-                    if (ret.code === 0) $.message_success('文章可见性修改成功')
-                    else $.message_by_code(ret.code)
+                    if (ret.code === 0) this.$message.success('文章可见性修改成功')
+                    else this.$message.byCode(ret.code)
                 }
 
                 // 积分奖励
@@ -268,8 +268,8 @@ export default {
                             'type': this.POST_TYPES.TOPIC
                         })
                     }, this.$user.mainRole)
-                    if (ret.code === 0) $.message_success('加分/扣分设置成功')
-                    else $.message_by_code(ret.code)
+                    if (ret.code === 0) this.$message.success('加分/扣分设置成功')
+                    else this.$message.byCode(ret.code)
                 }
 
                 // 声望奖励
@@ -282,16 +282,16 @@ export default {
                             'type': this.POST_TYPES.TOPIC
                         })
                     }, this.$user.mainRole)
-                    if (ret.code === 0) $.message_success('声望变更设置成功')
-                    else $.message_by_code(ret.code)
+                    if (ret.code === 0) this.$message.success('声望变更设置成功')
+                    else this.$message.byCode(ret.code)
                 }
 
                 // 优秀文章
                 if (change.vAwesome) {
                     updateOne()
                     let ret = await this.$api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 }, this.$user.mainRole)
-                    if (ret.code === 0) $.message_success('优秀文章设置成功')
-                    else $.message_by_code(ret.code)
+                    if (ret.code === 0) this.$message.success('优秀文章设置成功')
+                    else this.$message.byCode(ret.code)
                 }
 
                 // done
@@ -327,7 +327,7 @@ export default {
                     this.vAwesome = Boolean(topic.awesome)
                     this.stage = 1
                 } else {
-                    $.message_by_code(info.code, info)
+                    this.$message.byCode(info.code, info)
                 }
             }
         }

@@ -116,7 +116,7 @@ if (config.ws.enable) {
     // ws.conn.callback['notif.refresh'] = (data) => {
     //     if (data) {
     //         if (!state.unreadAlerted) {
-    //             // $.message_text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
+    //             // this.$message.text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
     //             state.unreadAlerted = true
     //         }
     //         Vue.set(state, 'unread', data)

@@ -1,7 +1,6 @@
 <template>
 <div>
     <wiki-base>
-        <!-- <div v-title>[历史记录]{{ article.title }} - 百科 - {{config.title}}</div> -->
         <div class="box ic-paper ic-z1">
             <div class="title">
                 <h1>[历史记录]{{article.title}}</h1>
@@ -100,6 +99,14 @@ export default {
             page: {
                 items: []
             }
+        }
+    },
+    head () {
+        return {
+            title: `[历史记录]${this.article.title} - 百科`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科文章编辑历史' }
+            ]
         }
     },
     computed: {

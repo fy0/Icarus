@@ -117,8 +117,8 @@ export default {
             let ret = await this.$api.user.set({ id: this.user.id }, data, this.$user.mainRole)
             if (ret.code === 0) {
                 this.$store.commit('dialog/WRITE_USER_MANAGE_DATA', data)
-                $.message_success('用户信息设置成功')
-            } else $.message_by_code(ret.code)
+                this.$message.success('用户信息设置成功')
+            } else this.$message.byCode(ret.code)
 
             this.$dialogs.setUserManage(false)
         },
@@ -136,7 +136,7 @@ export default {
                     this.user.group = this.user.group.toString()
                     this.save = _.clone(this.user)
                 } else {
-                    $.message_by_code(info.code)
+                    this.$message.byCode(info.code)
                 }
             }
         }

@@ -95,7 +95,7 @@ export default {
             if (ret.code !== this.$api.retcode.SUCCESS) {
                 item.state = oldVal
             }
-            $.message_by_code(ret.code)
+            this.$message.byCode(ret.code)
         },
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)

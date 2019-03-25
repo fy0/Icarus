@@ -48,9 +48,9 @@ export default {
                 this.regDone = true
             } else {
                 if (ret.code === this.$api.retcode.ALREADY_EXISTS) {
-                    $.message_error('帐户已经存在')
+                    this.$message.error('帐户已经存在')
                 } else {
-                    $.message_by_code(ret.code, ret.data)
+                    this.$message.byCode(ret.code, ret.data)
                 }
                 this.available = false
             }
