@@ -125,6 +125,14 @@ export default {
             signupLicense: this.$misc.BACKEND_CONFIG.SIGNUP_LICENSE_HTML
         }
     },
+    head () {
+        return {
+            title: '用户注册',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户注册' }
+            ]
+        }
+    },
     computed: {
         useLegacy: function () {
             return (!(this.$misc.BACKEND_CONFIG.EMAIL_ACTIVATION_ENABLE))

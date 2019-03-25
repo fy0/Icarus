@@ -1,6 +1,5 @@
 import './board.js'
 import './level.js'
-import './message.js'
 import './misc.js'
 import './post.js'
 import './time.js'

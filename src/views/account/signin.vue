@@ -123,6 +123,14 @@ export default {
             passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
         }
     },
+    head () {
+        return {
+            title: '用户登录',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户登录' }
+            ]
+        }
+    },
     computed: {
         checkEmail: function () {
             // let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
@@ -161,19 +169,19 @@ export default {
                         this.$router.go(-1)
                     } else {
                         this.$store.commit('LOADING_DEC', 1)
-                        this.$message.age.success('登录成功，正在回到主页……')
+                        this.$message.success('登录成功，正在回到主页……')
                         this.$router.replace('/')
                         return
                     }
                 } else {
                     this.formErrors = ret.data
-                    this.$message.age.by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 }
                 // ret = await this.$api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
                 this.$store.commit('LOADING_DEC', 1)
             } else {
-                this.$message.age.error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         },
         github_url: async function () {
