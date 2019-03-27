@@ -18,7 +18,14 @@ import SettingUserinfoPrivacy from '@/views/settings/userinfo/privacy.vue'
 import SettingSecurityPassword from '@/views/settings/security/password.vue'
 import SettingSecurityOAuth from '@/views/settings/security/oauth.vue'
 
-// // import ForumBoards from '@/views/forum/boards.vue'
+import Admin from '@/views/admin/admin.vue'
+import AdminForumBoard from '@/views/admin/forum/board.vue'
+import AdminForumTopic from '@/views/admin/forum/topic.vue'
+import AdminCommonUser from '@/views/admin/common/user.vue'
+import AdminCommonComment from '@/views/admin/common/comment.vue'
+import AdminCommonManageLog from '@/views/admin/common/manage-log.vue'
+
+// import ForumBoards from '@/views/forum/boards.vue'
 import ForumMain from '@/views/forum/main.vue'
 import ForumTopic from '@/views/forum/topic.vue'
 import ForumTopicEdit from '@/views/forum/topic-edit.vue'
@@ -240,43 +247,49 @@ export function createRouter () {
                 component: SettingSecurityOAuth
             },
 
-            // // 管理
-            // {
-            //     path: '/admin',
-            //     name: 'admin',
-            //     component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/admin.vue')
-            // },
-            // // 管理 - 社区 - 板块
-            // {
-            //     path: '/admin/forum/board',
-            //     name: 'admin_forum_board',
-            //     component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/forum/board.vue')
-            // },
-            // // 管理 - 社区 - 文章
-            // {
-            //     path: '/admin/forum/topic/:page(\\d+)?/:name(.+)?',
-            //     name: 'admin_forum_topic',
-            //     component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/forum/topic.vue')
-            // },
+            // 管理
+            {
+                path: '/admin',
+                name: 'admin',
+                component: Admin
+                // component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/admin.vue')
+            },
+            // 管理 - 社区 - 板块
+            {
+                path: '/admin/forum/board',
+                name: 'admin_forum_board',
+                component: AdminForumBoard
+                // component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/forum/board.vue')
+            },
+            // 管理 - 社区 - 文章
+            {
+                path: '/admin/forum/topic/:page(\\d+)?/:name(.+)?',
+                name: 'admin_forum_topic',
+                component: AdminForumTopic
+                // component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/forum/topic.vue')
+            },
 
-            // // 管理 - 综合 - 用户
-            // {
-            //     path: '/admin/common/user/:page(\\d+)?/:name(.+)?',
-            //     name: 'admin_common_user',
-            //     component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/common/user.vue')
-            // },
-            // // 管理 - 综合 - 评论
-            // {
-            //     path: '/admin/common/comment/:page(\\d+)?/:name(.+)?',
-            //     name: 'admin_common_comment',
-            //     component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/common/comment.vue')
-            // },
-            // // 管理 - 综合 - 管理日志
-            // {
-            //     path: '/admin/common/log/manage/:page(\\d+)?/:name(.+)?',
-            //     name: 'admin_common_manage_log',
-            //     component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/common/manage-log.vue')
-            // },
+            // 管理 - 综合 - 用户
+            {
+                path: '/admin/common/user/:page(\\d+)?/:name(.+)?',
+                name: 'admin_common_user',
+                component: AdminCommonUser
+                // component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/common/user.vue')
+            },
+            // 管理 - 综合 - 评论
+            {
+                path: '/admin/common/comment/:page(\\d+)?/:name(.+)?',
+                name: 'admin_common_comment',
+                component: AdminCommonComment
+                // component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/common/comment.vue')
+            },
+            // 管理 - 综合 - 管理日志
+            {
+                path: '/admin/common/log/manage/:page(\\d+)?/:name(.+)?',
+                name: 'admin_common_manage_log',
+                component: AdminCommonManageLog
+                // component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/common/manage-log.vue')
+            },
 
             // {
             //     path: '*',
