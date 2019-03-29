@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>板块管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">板块管理</h3>
 
     <table class="pure-table pure-table-horizontal" style="width: 100%">
@@ -96,6 +95,14 @@ export default {
             },
             boardInfo: {},
             boardsInfoDict: {}
+        }
+    },
+    head () {
+        return {
+            title: '板块管理 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '板块管理 - 管理界面' }
+            ]
         }
     },
     methods: {

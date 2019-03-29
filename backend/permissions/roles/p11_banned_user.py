@@ -10,5 +10,8 @@ banned_user = Ability('banned_user', {
         'last_check_in_time': (A.READ,),
         'check_in_his': (A.READ,),
         # 'key': ['query', 'read']
+    },
+    'notif': {
+        'receiver_id': (A.QUERY, A.READ)
     }
 }, based_on=visitor)

@@ -1,8 +1,10 @@
+let api = null
 let store = null
 
 if (process.browser) {
     window.onNuxtReady(({ $store }) => {
         store = $store
+        api = $store.app.$api
     })
 }
 
@@ -13,9 +15,13 @@ $.makePostLinkData = function (type, item) {
     return item
 }
 
-$.getBasePostsByIDs = async function (func, items, role = null) {
-    let PT = store.getters.POST_TYPES
+// 这些历史遗留问题有点难搞，拿不定主意是否放进vuex里
+// 先这样后面再想办法吧
+$.getBasePostsByIDs = async function (func, items, role = null, _api = null, _store = null) {
     let idsByType = {}
+    let localApi = _api || api
+    let localStore = _store || store
+    let PT = localStore.getters.POST_TYPES
 
     for (let i of items) {
         let infoLst = await func(i)
@@ -32,11 +38,11 @@ $.getBasePostsByIDs = async function (func, items, role = null) {
     let doRequest = async (name, type, ex = []) => {
         let ids = idsByType[type]
         if (ids && ids.length) {
-            let retPost = await this.api[name].list({
+            let retPost = await localApi[name].list({
                 'id.in': JSON.stringify(ids),
                 'select': ['id', 'time', 'user_id'].concat(ex)
             }, 1, null, role)
-            if (retPost.code === this.api.retcode.SUCCESS) {
+            if (retPost.code === localApi.retcode.SUCCESS) {
                 for (let i of retPost.data.items) {
                     posts[i.id] = $.makePostLinkData(type, i)
                 }

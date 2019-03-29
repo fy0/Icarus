@@ -1,7 +1,6 @@
 <template>
 <page-not-found v-if="!$user.isSiteAdmin"/>
 <div class="ic-container" v-else>
-    <div v-title>管理界面 - {{$config.title}}</div>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>

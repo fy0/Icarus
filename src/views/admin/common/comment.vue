@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>评论管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">评论管理</h3>
 
     <div v-if="page.items.length === 0" class="no-comment">目前尚未有评论</div>
@@ -80,6 +79,14 @@ export default {
             marked,
             page: { info: {}, items: [] },
             postsOfComments: {}
+        }
+    },
+    head () {
+        return {
+            title: '评论管理 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '评论管理 - 管理界面' }
+            ]
         }
     },
     methods: {

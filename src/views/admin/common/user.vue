@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>用户管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">用户管理</h3>
 
     <div class="search-box">
@@ -68,6 +67,14 @@ export default {
         return {
             searchTxt: '',
             page: {}
+        }
+    },
+    head () {
+        return {
+            title: '用户管理 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户管理 - 管理界面' }
+            ]
         }
     },
     methods: {

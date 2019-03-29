@@ -153,6 +153,7 @@
                                     <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                                 </div>
                             </div>
+
                             <div class="detail ic-xs-hidden">
                                 <div class="count-block">
                                     <div class="count">
@@ -348,7 +349,7 @@ class FetchCls extends BaseWrapper {
             return
         }
 
-        if (this.$store.state.forum.isSiteNew) {
+        if (this.$store.getters['forum/isSiteNew']) {
             this.$dialogs.setSiteNew(true)
         } else {
             if (this.$user.isNewUser) {
@@ -618,7 +619,7 @@ export default {
         return {
             title,
             meta: [
-                { hid: 'description', name: 'description', content: 'My custom description' }
+                { hid: 'description', name: 'description', content: '首页' }
             ]
         }
     },

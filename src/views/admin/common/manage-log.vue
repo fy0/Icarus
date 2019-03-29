@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>管理日志 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">管理日志</h3>
 
     <div v-if="page.items.length === 0" class="no-comment">目前没有日志</div>
@@ -99,6 +98,14 @@ export default {
             postsOfComments: {},
             MOP: this.$misc.MANAGE_OPERATION,
             MOPT: this.$misc.MANAGE_OPERATION_TXT
+        }
+    },
+    head () {
+        return {
+            title: '管理日志 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '管理日志 - 管理界面' }
+            ]
         }
     },
     methods: {

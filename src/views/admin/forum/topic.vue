@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>主题管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">主题管理</h3>
 
     <div class="search-box" v-if="false">
@@ -77,6 +76,14 @@ export default {
         return {
             searchTxt: '',
             topics: {}
+        }
+    },
+    head () {
+        return {
+            title: '主题管理 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '主题管理 - 管理界面' }
+            ]
         }
     },
     methods: {
