@@ -142,6 +142,8 @@ export default {
                         userIds.add(uid)
                     }
                     if (i.type === this.$misc.NOTIF_TYPE.MANAGE_INFO_ABOUT_ME) {
+                        // 跳过一种出问题的情况
+                        if (!i.data.value) continue
                         this.posts[i.related_id] = {
                             'id': i.related_id,
                             'post_type': i.related_type,
@@ -176,6 +178,8 @@ export default {
                         }
                     ]
                 }, manageInfoList)
+                // , null, this.$api, this.$store
+
                 for (let [k, v] of Object.entries(posts2)) {
                     this.posts[k] = v
                 }

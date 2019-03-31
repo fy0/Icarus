@@ -41,11 +41,13 @@ module.exports = {
             handler: function (req, res, next) {
                 let spaPaths = [
                     '/account/**',
-                    'notifications',
+                    '/notifications',
+                    '/notifications/**',
                     '/admin/**',
                     '/wiki/new',
                     '/wiki/edit/**',
-                    '/setting/**'
+                    '/setting/**',
+                    '/search/**'
                 ]
                 if (mm.some(req._parsedUrl.pathname, spaPaths)) {
                     res.spa = true

@@ -1,7 +1,5 @@
 <template>
 <div class="ic-container">
-    <div v-title v-if="queryText">搜索 - {{queryText}} - {{$config.title}}</div>
-    <div v-title v-else>搜索 - {{$config.title}}</div>
     <template v-if="tooFrequent">
         <span>搜索过于频繁，请稍后再试。还需等待{{needWait}}秒。</span>
     </template>
@@ -98,7 +96,6 @@
 </style>
 
 <script>
-
 export default {
     data () {
         return {
@@ -107,6 +104,14 @@ export default {
             info: {
                 hits: {}
             }
+        }
+    },
+    head () {
+        return {
+            title: this.queryText ? `搜索 - ${this.queryText}` : '搜索',
+            meta: [
+                { hid: 'description', name: 'description', content: '文章搜索页面' }
+            ]
         }
     },
     computed: {

@@ -31,7 +31,7 @@ class NOTIF_TYPE(StateObject):
     BE_BOOKMARKED        = 50  # 被收藏
     BE_LIKED             = 60  # 被赞
     BE_SENT_PM           = 70  # 被发私信
-    MANAGE_INFO_ABOUT_ME = 80  # 与我有关的管理操作
+    MANAGE_INFO_ABOUT_ME = 80  # 与当前用户有关的管理操作
     SYSTEM_MSG           = 100
 
 

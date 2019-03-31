@@ -37,6 +37,7 @@ import WikiList from '@/views/wiki/list.vue'
 import WikiRandom from '@/views/wiki/random.vue'
 import WikiHistory from '@/views/wiki/history.vue'
 
+import Search from '@/views/search.vue'
 import About from '@/views/about.vue'
 
 // 404 页面较为特殊，通常是以组件的形式被使用
@@ -296,12 +297,13 @@ export function createRouter () {
             //     component: NotFoundComponent
             // },
 
-            // // 搜索
-            // {
-            //     path: '/search',
-            //     name: 'search',
-            //     component: () => import(/* webpackChunkName: "search" */ '@/views/search.vue')
-            // },
+            // 搜索
+            {
+                path: '/search',
+                name: 'search',
+                component: Search
+                // component: () => import(/* webpackChunkName: "search" */ '@/views/search.vue')
+            },
 
             // 关于
             {
