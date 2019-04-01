@@ -38,11 +38,13 @@
                     <template v-if="i.note"> - {{i.note}}</template>
 
                     <span style="margin-left: 0.5em;" v-if="i.data.op === MOP.TOPIC_BOARD_MOVE">
+                        <template v-if="i.data.value">
                         <template>(</template>
                         <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value.change[0]]"/>
                         <template> -> </template>
                         <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value.change[1]]"/>
                         <template>)</template>
+                        </template>
                     </span>
                     <ManageLogItemDetail v-else :item="i.data" :simple="true" />
                 </div>

@@ -41,7 +41,7 @@ import Search from '@/views/search.vue'
 import About from '@/views/about.vue'
 
 // 404 页面较为特殊，通常是以组件的形式被使用
-// import NotFoundComponent from '@/components/404.vue'
+import NotFoundComponent from '@/components/404.vue'
 
 Vue.use(Router)
 
@@ -292,10 +292,10 @@ export function createRouter () {
                 // component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/common/manage-log.vue')
             },
 
-            // {
-            //     path: '*',
-            //     component: NotFoundComponent
-            // },
+            {
+                path: '*',
+                component: NotFoundComponent
+            },
 
             // 搜索
             {

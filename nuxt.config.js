@@ -47,6 +47,7 @@ module.exports = {
                     '/wiki/new',
                     '/wiki/edit/**',
                     '/setting/**',
+                    '/search',
                     '/search/**'
                 ]
                 if (mm.some(req._parsedUrl.pathname, spaPaths)) {

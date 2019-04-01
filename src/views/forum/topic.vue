@@ -18,7 +18,7 @@
     </div>
 
     <!-- 移动端使用独立的标题 -->
-    <div v-responsive.xs>
+    <div class="ic-xs ic-hidden">
         <div style="display: flex; justify-content: space-between;">
             <div style="display: flex; white-space: nowrap;">
                 <span>
