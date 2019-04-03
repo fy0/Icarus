@@ -14,8 +14,8 @@
     <my-footer class="footer"></my-footer>
     <no-ssr>
         <ic-gotop />
-        <msg-box />
     </no-ssr>
+    <msg-box />
 </div>
 </template>
 

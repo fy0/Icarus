@@ -107,11 +107,13 @@ export default {
         }
     },
     head () {
-        return {
-            title: `${this.item.title} - 百科`,
-            meta: [
-                { hid: 'description', name: 'description', content: '百科文章页面' }
-            ]
+        if (this.item) {
+            return {
+                title: `${this.item.title} - 百科`,
+                meta: [
+                    { hid: 'description', name: 'description', content: '百科文章页面' }
+                ]
+            }
         }
     },
     computed: {

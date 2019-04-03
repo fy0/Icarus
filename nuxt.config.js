@@ -39,15 +39,18 @@ module.exports = {
     serverMiddleware: [
         {
             handler: function (req, res, next) {
+                // 注：此处从简，因为例如/search*明显匹配了更多url，但并非关键
                 let spaPaths = [
                     '/account/**',
                     '/notifications',
+                    '/notifications*',
                     '/notifications/**',
                     '/admin/**',
                     '/wiki/new',
+                    '/wiki/new*',
                     '/wiki/edit/**',
                     '/setting/**',
-                    '/search',
+                    '/search*',
                     '/search/**'
                 ]
                 if (mm.some(req._parsedUrl.pathname, spaPaths)) {
