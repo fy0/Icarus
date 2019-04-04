@@ -120,7 +120,7 @@
 
                 <!-- 实际渲染条目 -->
                 <template v-else-if="topics.items.length">
-                    <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseleave="itemHover(null)">
+                    <div class="board-item-box" :key="i.global_sticky_flag ? `gs-${i.id}` : i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseleave="itemHover(null)">
                         <!-- <nuxt-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}"> -->
                         <div class="board-item" :class="{'top-post': i.sticky_weight}" @click="$router.push({ name: 'forum_topic', params: {id: i.id} })">
                             <div class="title-recent">
@@ -133,13 +133,17 @@
                                         </nuxt-link>
                                     </h2>
 
-                                     <p @click.stop class="topic-info">
-                                        <nuxt-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
-                                            <span :style="lineStyleBG(i.board_id)" class="sign"></span>
-                                            <span class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
-                                        </nuxt-link>
-                                        <user-link class="author limit l2" :user="i.user_id" />
-                                        <span class="time"><ic-time :timestamp="i.edit_time || i.time"/></span>
+                                    <p class="topic-info">
+                                        <span @click.stop>
+                                            <nuxt-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }" @click.stop>
+                                                <span :style="lineStyleBG(i.board_id)" class="sign"></span>
+                                                <span class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
+                                            </nuxt-link>
+                                        </span>
+                                        <span class="author limit l2" @click.stop>
+                                            <user-link :user="i.user_id" />
+                                        </span>
+                                        <span class="time" @click.stop><ic-time :timestamp="i.edit_time || i.time" /></span>
                                     </p>
                                 </div>
 
@@ -410,6 +414,9 @@ class FetchCls extends BaseWrapper {
                     order: order
                 }, baseQuery1))
                 if (retStickyTopics.code === this.$api.retcode.SUCCESS) {
+                    for (let i of retStickyTopics.data.items) {
+                        i.global_sticky_flag = true
+                    }
                     retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
                 }
             }
@@ -631,6 +638,10 @@ export default {
     watch: {
         // 如果路由有变化，会再次执行该方法
         // '$route': 'fetchData',
+        '$route': async function () {
+            // 暂时用强制刷新替代
+            window.history.go(0)
+        },
         'userData': async function (newVal) {
             // 用户登入登出后进行板块信息重载
             // TODO: 不理解为什么不执行
@@ -640,6 +651,8 @@ export default {
             if (this.withSubBoardTopicOptionReady) {
                 this.$storage.removeUniversal('sbt')
                 if (newVal) this.$storage.setUniversal('sbt', 1)
+                // 要重新抓取页面内容，这里先用强制刷新替代吧
+                window.history.go(0)
                 // await this.fetchData()
             }
         }

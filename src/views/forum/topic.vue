@@ -363,57 +363,57 @@ export default {
         // 注意：从这里观察出一个现象：
         // created 会比 mounted 早触发，但并不一定更早完成
         // await 占用时间的时候，挂载流程仍将继续
-        // if (!process.browser) return
-        // this.$nextTick(() => {
-        //     window.socialShare(this.$refs.share, {
-        //         title: `${this.topic.title} - ${this.config.title}`
-        //     })
+        if (!process.browser) return
+        this.$nextTick(() => {
+            // window['socialShare'](this.$refs.share, {
+            //     title: `${this.topic.title} - ${this.config.title}`
+            // })
 
-        //     // 右侧目录跟随滚动
-        //     let elTop = 0
-        //     let scrollHandle = (e) => {
-        //         let el = this.$refs.index
-        //         let el2 = this.$refs['comment-hr']
-        //         if (!el || !el2) {
-        //             window.removeEventListener('scroll', scrollHandle)
-        //             return
-        //         }
+            // 右侧目录跟随滚动
+            let elTop = 0
+            let scrollHandle = (e) => {
+                let el = this.$refs.index
+                let el2 = this.$refs['comment-hr']
+                if (!el || !el2) {
+                    window.removeEventListener('scroll', scrollHandle)
+                    return
+                }
 
-        //         // 目录，上不超过他自己所在的位置，下不超过评论分界线
-        //         let del = document.documentElement
-        //         let scrollTop = del.scrollTop
-        //         let end1 = del.offsetTop + del.clientHeight // 自身最底部（如果文章内容短而目录多，会发生目录伸到下面的情况）
-        //         let end2 = el2.offsetTop - el.clientHeight // 评论界限
-        //         let end = Math.max(end1, end2)
-        //         elTop = Math.max(el.offsetTop, elTop)
+                // 目录，上不超过他自己所在的位置，下不超过评论分界线
+                let del = document.documentElement
+                let scrollTop = del.scrollTop
+                let end1 = del.offsetTop + del.clientHeight // 自身最底部（如果文章内容短而目录多，会发生目录伸到下面的情况）
+                let end2 = el2.offsetTop - el.clientHeight // 评论界限
+                let end = Math.max(end1, end2)
+                elTop = Math.max(el.offsetTop, elTop)
 
-        //         this.indexSticky = scrollTop > elTop
+                this.indexSticky = scrollTop > elTop
 
-        //         // 超越最大边界
-        //         if (scrollTop >= end) {
-        //             el.style.transform = 'translateY(-' + (scrollTop - end) + 'px)'
-        //         } else {
-        //             el.style.transform = ''
-        //         }
-        //     }
+                // 超越最大边界
+                if (scrollTop >= end) {
+                    el.style.transform = 'translateY(-' + (scrollTop - end) + 'px)'
+                } else {
+                    el.style.transform = ''
+                }
+            }
 
-        //     window.addEventListener('scroll', scrollHandle)
+            window.addEventListener('scroll', scrollHandle)
 
-        //     let loop = () => {
-        //         if (!this.$refs.index) return
-        //         let scrollTop = document.documentElement.scrollTop
+            let loop = () => {
+                if (!this.$refs.index) return
+                let scrollTop = document.documentElement.scrollTop
 
-        //         for (let i = 0; i < this.topicIndex.length; i++) {
-        //             let el = document.getElementById(`til-${i + 1}`)
-        //             if (el.offsetTop >= (scrollTop - 5)) {
-        //                 this.indexActive = i
-        //                 break
-        //             }
-        //         }
-        //         setTimeout(loop, 100)
-        //     }
-        //     setTimeout(loop, 100)
-        // })
+                for (let i = 0; i < this.topicIndex.length; i++) {
+                    let el = document.getElementById(`til-${i + 1}`)
+                    if (el.offsetTop >= (scrollTop - 5)) {
+                        this.indexActive = i
+                        break
+                    }
+                }
+                setTimeout(loop, 100)
+            }
+            setTimeout(loop, 100)
+        })
     },
     async asyncData (ctx) {
         let f = createFetchWrapper(FetchCls, ctx)

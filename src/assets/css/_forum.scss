@@ -63,7 +63,7 @@
                 justify-items: flex-end;
                 margin: 0;
 
-                > .board-badge {
+                .board-badge {
                     color: $dark;
                     opacity: 0.6;
                     // background-color: $gray-400;
@@ -85,18 +85,18 @@
                     &:hover {
                         color: $dark;
                     }
+
+                    > .name, > .author {
+                        max-width: 5em;
+
+                        &.bs4-xl {
+                            max-width: 9em;
+                        }
+                    }
                 }
 
                 .author {
                     margin-right: 20px;
-                }
-
-                > .board-badge > .name, > .author {
-                    max-width: 5em;
-
-                    &.bs4-xl {
-                        max-width: 9em;
-                    }
                 }
             }
         }

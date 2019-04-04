@@ -1,7 +1,17 @@
 
-function createMessageBoard (ctx) {
-    let messageId = 1
+if (process.browser) {
+    window.onNuxtReady(async (ctx) => {
+        // 等浏览器端加载完毕后，延时关闭信息
+        let store = ctx.$store
+        for (let i of store.state.msgs) {
+            _.delay(() => {
+                store.commit('MESSAGE_REMOVE', i)
+            }, 3000)
+        }
+    })
+}
 
+function createMessageBoard (ctx) {
     class MessageBoard {
         text (text, type = 'default', timeout = 3000) {
             // type: default, secondary, success, warning, error
@@ -12,12 +22,14 @@ function createMessageBoard (ctx) {
                 'warning': 'am-alert-warning',
                 'error': 'am-alert-danger'
             }
-            let data = { type, text, class: convert[type], id: messageId++ }
+            let data = { type, text, class: convert[type] }
             if (ctx.store) {
                 ctx.store.commit('MESSAGE_PUSH', data)
-                _.delay(() => {
-                    ctx.store.commit('MESSAGE_REMOVE', data)
-                }, timeout)
+                if (process.browser) {
+                    _.delay(() => {
+                        ctx.store.commit('MESSAGE_REMOVE', data)
+                    }, timeout)
+                }
             }
         }
 

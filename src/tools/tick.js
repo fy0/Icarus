@@ -1,10 +1,11 @@
-// let api = null
+let api = null
 let store = null
 
 if (process.browser) {
-    window.onNuxtReady((ctx) => {
-        store = ctx.store
-        // api = ctx.$store.app.$api
+    window.onNuxtReady(async (ctx) => {
+        store = ctx.$store
+        api = ctx.$store.app.$api
+        await $.tickStart()
     })
 }
 
@@ -12,8 +13,8 @@ $.tickStart = async () => {
     if (process.server) return
     let tickHttp = async () => {
         let auid = localStorage.getItem('auid')
-        let ret = await this.$api.tick(auid)
-        if (ret.code === this.$api.retcode.SUCCESS) {
+        let ret = await api.tick(auid)
+        if (ret.code === api.retcode.SUCCESS) {
             if (store.state.user.userData) {
                 store.commit('user/SET_UNREAD', ret.data['notif_count'])
             } else {

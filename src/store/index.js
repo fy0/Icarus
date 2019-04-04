@@ -8,6 +8,7 @@ export const state = () => ({
     misc: null,
     loading: 0,
     msgs: [],
+    messageId: 1,
     online: 0,
 
     _initing: false
@@ -62,6 +63,7 @@ export const mutations = {
     },
     // MESSAGE
     MESSAGE_PUSH (state, info) {
+        info.id = state.messageId++
         state.msgs.push(info)
     },
     MESSAGE_REMOVE (state, info) {
