@@ -1,7 +1,5 @@
 <template>
 <div class="ic-container" v-if="topic.user_id">
-    <!-- <div v-title>{{ topic.title }} - {{topic.board_id.name}} - {{config.title}}</div> -->
-
     <div class="nav ic-xs-hidden">
         <span>
             <nuxt-link :to="{ name: 'forum' }">社区</nuxt-link>
@@ -63,7 +61,7 @@
 
                 <div style="display: flex; align-items: center;">
                     <span>分享：</span>
-                    <div ref="share" class="share-component" data-disabled="douban,tencent,linkedin,diandian,google,qq,facebook,twitter"></div>
+                    <social-share />
                 </div>
 
                 <p class="ic-hr-30" ref="comment-hr"></p>
@@ -269,9 +267,10 @@
 <script>
 import { marked, mdGetIndex } from '@/md.js'
 import { mapState, mapGetters, mapMutations } from 'vuex'
-import CommentList from '@/components/misc/comment-list.vue'
-import '@/assets/css/_forum.scss'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+import CommentList from '@/components/misc/comment-list.vue'
+import SocialShare from '@/components/misc/social-share.vue'
+import '@/assets/css/_forum.scss'
 
 class FetchCls extends BaseWrapper {
     async fetchData () {
@@ -313,6 +312,14 @@ export default {
             indexActive: -1,
             indexSticky: false,
             mlog: null
+        }
+    },
+    head () {
+        return {
+            title: `${this.topic.title} - ${this.topic.board_id.name}`,
+            meta: [
+                { hid: 'description', name: 'description', content: '文章' }
+            ]
         }
     },
     computed: {
@@ -365,10 +372,6 @@ export default {
         // await 占用时间的时候，挂载流程仍将继续
         if (!process.browser) return
         this.$nextTick(() => {
-            // window['socialShare'](this.$refs.share, {
-            //     title: `${this.topic.title} - ${this.config.title}`
-            // })
-
             // 右侧目录跟随滚动
             let elTop = 0
             let scrollHandle = (e) => {
@@ -423,6 +426,7 @@ export default {
     mounted: function () {
     },
     components: {
+        SocialShare,
         CommentList
     }
 }

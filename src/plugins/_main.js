@@ -15,11 +15,6 @@ Vue.use(VueLoaders)
 // import responsive from 'vue-responsive'
 // Vue.use(responsive)
 
-// // social share
-
-// import 'social-share.js/dist/js/social-share.min.js'
-// import 'social-share.js/dist/css/share.min.css'
-
 import '@/assets/css/base-ui.scss'
 import '@/assets/icons/iconfont.css'
 import '@/assets/css/_text.scss'
