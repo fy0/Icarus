@@ -95,12 +95,17 @@ class TestBaseView(UserViewMixin, BaseView):
             'NOTIF_TYPE': NOTIF_TYPE.to_dict(),
 
             'BACKEND_CONFIG': {
+                'SITE_NAME': config.SITE_NAME,
+                'SITE_LOGO_TEXT': config.SITE_LOGO_TEXT,
+                'SITE_TITLE_TEXT': config.SITE_TITLE_TEXT,
+                'SITE_URL': config.SITE_URL,
+                'SITE_CONTACT_EMAIL': config.SITE_CONTACT_EMAIL,
+
                 'ABOUT_PAGE_ENABLE': config.ABOUT_PAGE_ENABLE,
                 'ABOUT_CUSTOM_HTML': config.ABOUT_CUSTOM_HTML,
                 'SIGNUP_LICENSE_HTML': config.SIGNUP_LICENSE_HTML,
 
                 'FOOTER_EXTRA_HTML': config.FOOTER_EXTRA_HTML,
-                'SITE_CONTACT_EMAIL': config.SITE_CONTACT_EMAIL,
                 'USER_SECURE_AUTH_FRONTEND_SALT': config.USER_SECURE_AUTH_FRONTEND_SALT,
 
                 'WIKI_ENABLE': config.WIKI_ENABLE,

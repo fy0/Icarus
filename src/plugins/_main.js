@@ -21,7 +21,6 @@ import '@/assets/css/_text.scss'
 import '@/md.js'
 
 // import ws from '@/ws.js'
-import config from '@/config.js'
 // import store from '@/store/index.js'
 
 import PageNotFound from '@/components/404.vue'
@@ -85,40 +84,18 @@ Vue.component('dialog-user-inactive-warn', DialogUserInactiveWarn)
 Vue.component('dialog-user-set-nickname', DialogUserSetNickname)
 Vue.component('dialog-user-signout', DialogUserSignout)
 
-// 插件
-
-// Vue.directive('title', {
-//     inserted: function (el, binding) {
-//         document.title = el.innerText
-//         el.remove()
+// if (config.ws.enable) {
+//     ws.conn.callback['notif.refresh'] = (data) => {
+//         if (data) {
+//             if (!state.unreadAlerted) {
+//                 // this.$message.text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
+//                 state.unreadAlerted = true
+//             }
+//             Vue.set(state, 'unread', data)
+//         }
 //     }
-// })
 
-// Vue.directive('title-dynamic', {
-//     inserted: function (el, binding) {
-//         document.title = el.innerText
-//         el.remove()
-//     },
-//     update: function (el, binding) {
-//         document.title = el.innerText
-//         el.remove()
+//     ws.conn.callback['user.online'] = (data) => {
+//         Vue.set(state, 'userOnline', data)
 //     }
-// })
-
-// nprogress.configure({ showSpinner: false })
-
-if (config.ws.enable) {
-    // ws.conn.callback['notif.refresh'] = (data) => {
-    //     if (data) {
-    //         if (!state.unreadAlerted) {
-    //             // this.$message.text(`收到 ${data} 条新提醒，请点击右上角提醒按钮查看！`)
-    //             state.unreadAlerted = true
-    //         }
-    //         Vue.set(state, 'unread', data)
-    //     }
-    // }
-
-    // ws.conn.callback['user.online'] = (data) => {
-    //     Vue.set(state, 'userOnline', data)
-    // }
-}
+// }

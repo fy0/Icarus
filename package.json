@@ -35,7 +35,6 @@
     "micromatch": "^3.1.10",
     "murmurhash": "^0.0.2",
     "normalize.css": "^8.0.1",
-    "nprogress": "^0.2.0",
     "nuxt": "^2.5.1",
     "nuxt-universal-storage": "^0.2.0",
     "objectid-js": "^1.0.2patch1",

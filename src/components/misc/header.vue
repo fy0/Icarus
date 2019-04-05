@@ -1,7 +1,7 @@
 <template>
 <header class="ic-nav">
     <div class="ic-container ic-navbtns">
-        <nuxt-link :to="{name: 'index'}" class="ic-brand-heading" @dbclick="flagClick">{{config.title}}</nuxt-link>
+        <nuxt-link :to="{name: 'index'}" class="ic-brand-heading" @dbclick="flagClick">{{config.logoText}}</nuxt-link>
         <!-- <a class="ic-brand-heading" href="/">Icarus</a> -->
 
         <!-- 移动端搜索框 -->

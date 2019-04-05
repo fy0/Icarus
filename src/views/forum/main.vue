@@ -320,7 +320,6 @@ $left-nav-sign-padding: 10px;
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
 // import ZingTouch from 'zingtouch'
-// import nprogress from 'nprogress/nprogress.js'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 

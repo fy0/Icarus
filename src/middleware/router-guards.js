@@ -3,16 +3,4 @@ export default async function ({ store, route, redirect, req }) {
     store.commit('dialog/CLOSE_ALL')
     // 试图初始化全局数据
     await store.dispatch('tryInitLoad')
-
-    if (!store.state.misc) {
-        // let ret = await this.$api.misc()
-        // store.commit('SET_MISC', ret.data)
-
-        // if (process.browser) {
-        //     ret = await this.$api.userInfo()
-        //     if (ret.code === 0) {
-        //         store.commit('SET_USERDATA', ret.data)
-        //     }
-        // }
-    }
 }

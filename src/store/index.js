@@ -4,14 +4,21 @@ const debug = process.env.NODE_ENV !== 'production'
 export const strict = debug
 
 export const state = () => ({
-    config,
     misc: null,
     loading: 0,
     msgs: [],
     messageId: 1,
     online: 0,
+    _initing: false,
 
-    _initing: false
+    config: {
+        remote: config.remote,
+        ws: { enable: false },
+
+        siteName: 'Icarus',
+        title: 'Icarus',
+        logoText: 'Icarus'
+    }
 })
 
 export const getters = {
@@ -42,6 +49,9 @@ export const mutations = {
     // 设置
     SET_MISC (state, data) {
         state.misc = data
+        state.config.siteName = data.BACKEND_CONFIG.SITE_NAME
+        state.config.title = data.BACKEND_CONFIG.SITE_TITLE_TEXT
+        state.config.logoText = data.BACKEND_CONFIG.SITE_LOGO_TEXT
         this.$api.retcode = data.retcode
         this.$api.retinfo = data.retinfo_cn
     },

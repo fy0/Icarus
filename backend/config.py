@@ -10,7 +10,9 @@ from slim.utils import CustomID
 # 必填部分
 ##########################################
 
-SITE_NAME = 'Icarus'  # 站点名称
+SITE_NAME = 'Icarus' # 站点名称
+SITE_LOGO_TEXT = 'Icarus' # 左上LOGO文本
+SITE_TITLE_TEXT = 'Icarus' # 站点标题后缀文本
 SITE_URL = 'http://localhost:8080'  # 必填，站点地址，末尾不要带 /
 SITE_CONTACT_EMAIL = 'manage@mail.com'  # 必填，管理员联系邮箱，用于用户回报站点错误
 

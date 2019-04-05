@@ -20,18 +20,19 @@ Windows上直接使用Anaconda3或者官方版本。
 
 Linux上部分发行版（例如ArchLinux）天然满足要求。
 
-对于其他的发行版，首选方案是通过`pyenv`来安装和管理不同版本的Python：
+对于自带Python在3.6以下的发行版，可以通过`pyenv`来安装和管理不同版本的Python：
 
 ```bash
 curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 
-# 重新进入终端后，指定版本进行安装
-# 或者也可以选择这里不安装，到后面pipenv的时候会有选项自动安装。
+# 在终端输入以下命令
 pyenv update
 pyenv install 3.6
+# 此时会告诉你能够安装的3.6.x小版本，安装最新的一个就可以了
+pyenv install 3.6.x
 ```
 
-来源：https://github.com/pyenv/pyenv
+参考自：https://github.com/pyenv/pyenv
 
 或者使用包管理器安装，这是一个 Debian/Ubuntu 解决方案：
 
@@ -45,15 +46,21 @@ sudo su -c "curl https://bootstrap.pypa.io/get-pip.py | python3.6"
 
 ### 2. NodeJS
 
-建议使用LTS版本的 nodejs，通过包管理器安装：
+建议使用LTS版本的 nodejs，通过包管理器安装。官方参考文档：
 
 https://nodejs.org/en/download/package-manager/
 
+Ubuntu apt安装，执行以下命令：
+
 ```bash
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
+Centos/RH
+```bash
+curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+```
 
 ### 3. PostgreSQL
 
@@ -71,7 +78,7 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
 sudo apt-get update
 
 # 安装PostgreSQL，需要9.6以上版本
-sudo apt-get install -y postgresql-10
+sudo apt-get install -y postgresql-11
 ```
 
 装好之后做一些配置
