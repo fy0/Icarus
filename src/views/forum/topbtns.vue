@@ -4,12 +4,20 @@
         <div>
             <button class="ic-btn smoke outline btn-order" @blur="showOrderMenu = false" @click="showOrderMenu = !showOrderMenu">
                 <i class="icon icarus" :class="orders[0][1].icon"></i>
-                <template>{{orders[0][1].text}}</template>
+                <span class="ic-xs-hidden">{{orders[0][1].text}}</span>
+                <!-- 大概五像素的占位符，用来保证小屏幕下只显示图标时，::after不会换行 -->
+                <span>&nbsp;</span>
             </button>
             <div v-show="showOrderMenu" class="order-menu">
+                <button class="ic-btn smoke outline option ic-xs ic-hidden" @mousedown="changeOrderType(orders[0])">
+                    <i class="icon icarus" :class="orders[0][1].icon"></i>
+                    <span>{{orders[0][1].text}}</span>
+                    <span>&nbsp;</span>
+                </button>
                 <button class="ic-btn smoke outline option" @mousedown="changeOrderType(i[0])" v-for="i in orders.slice(1)" :key="i[0]">
                     <i class="icon icarus" :class="i[1].icon"></i>
-                    <template>{{i[1].text}}</template>
+                    <span>{{i[1].text}}</span>
+                    <span>&nbsp;</span>
                 </button>
             </div>
         </div>
@@ -127,7 +135,7 @@
         content: "\203A";
         position: absolute;
         transform: rotate(90deg);
-        margin-left: 9px;
+        margin-left: 5px;
         font-size: 24px;
     }
     border-width: 0.5px;
@@ -135,7 +143,7 @@
 }
 
 .ic-btn > .icon {
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .order-menu {

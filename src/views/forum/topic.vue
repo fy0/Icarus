@@ -17,7 +17,7 @@
 
     <!-- 移动端使用独立的标题 -->
     <div class="ic-xs ic-hidden">
-        <div style="display: flex; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; width: 100%">
             <div style="display: flex; white-space: nowrap;">
                 <span>
                     <nuxt-link :to="{ name: 'forum' }">社区</nuxt-link>
@@ -38,10 +38,8 @@
                 </div>
             </div>
         </div>
-
-        <h2>{{topic.title}}</h2>
-
     </div>
+    <h2 class="ic-xs ic-hidden">{{topic.title}}</h2>
 
     <div class="topic-box">
         <div class="main">
