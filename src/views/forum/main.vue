@@ -319,7 +319,6 @@ $left-nav-sign-padding: 10px;
 <script>
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
-// import ZingTouch from 'zingtouch'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
@@ -628,6 +627,27 @@ export default {
                 { hid: 'description', name: 'description', content: '首页' }
             ]
         }
+    },
+    created () {
+        if (!process.browser) return
+        this.$nextTick(function () {
+            let ZingTouch = require('zingtouch')
+            $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
+            let el = document.querySelector('.main')
+            if (!el) return
+            $.zt.unbind(el, 'swipe')
+            $.zt.bind(el, 'swipe', (e) => {
+                let info = e.detail.data[0]
+                let d = info.currentDirection
+                if (d < 50 || d > 310) {
+                    // 向右滑动
+                    this.showSlideMenu = true
+                } else if (d > 130 && d < 230) {
+                    // 向左滑动
+                    this.showSlideMenu = false
+                }
+            }, false)
+        })
     },
     async asyncData (ctx) {
         let f = createFetchWrapper(FetchCls, ctx)
