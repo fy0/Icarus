@@ -167,6 +167,7 @@ export default {
                         this.$store.commit('LOADING_DEC', 1)
                         this.$message.success('登录成功，正在回到前页……')
                         this.$router.go(-1)
+                        return
                     } else {
                         this.$store.commit('LOADING_DEC', 1)
                         this.$message.success('登录成功，正在回到主页……')

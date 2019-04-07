@@ -2,8 +2,7 @@
 <loading v-if="pageLoading"/>
 <div v-else class="ic-container">
     <div class="edit-page-title">
-        <div v-title>{{ is_edit ? '编辑主题' : '新建主题' }} - {{$config.title}}</div>
-        <h3 class="" v-if="!is_edit">新建主题</h3>
+        <h3 class="" v-if="!isEdit">新建主题</h3>
         <h3 class="" v-else>编辑主题<span v-if="asAdmin"> - 管理员模式</span></h3>
         <button class="ic-btn primary right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
     </div>
@@ -12,7 +11,7 @@
         <check-row :results="formErrors.title" :multi="true">
             <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
-        <check-row :results="formErrors.board_id" :multi="true" v-if="(!is_edit) || asAdmin">
+        <check-row :results="formErrors.board_id" :multi="true" v-if="(!isEdit) || asAdmin">
             <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
         <check-row :results="formErrors.content" :multi="true">
@@ -124,13 +123,21 @@ export default {
             }
         }
     },
+    head () {
+        return {
+            title: `${this.isEdit ? '编辑主题' : '新建主题'}`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科' }
+            ]
+        }
+    },
     computed: {
-        is_edit () {
+        isEdit () {
             return this.$route.name === 'forum_topic_edit'
         },
         postButtonText: function () {
             return this.loading ? '请等待'
-                : (this.is_edit ? '编辑' : '发布')
+                : (this.isEdit ? '编辑' : '发布')
         }
     },
     methods: {
@@ -158,7 +165,7 @@ export default {
                 'returning': true
             }, this.save)
 
-            if (this.is_edit) {
+            if (this.isEdit) {
                 if (Object.keys(topicInfo).length <= 1) {
                     // 那个1是returning
                     this.$message.success('编辑成功！但编辑者并未进行任何改动。')
@@ -220,7 +227,7 @@ export default {
             }
             let boardList = ret.data.items
 
-            if (this.is_edit) {
+            if (this.isEdit) {
                 let ret = await this.$api.topic.get({
                     id: params.id,
                     loadfk: { user_id: null, board_id: null }
@@ -244,7 +251,7 @@ export default {
             }
 
             if (boardList.length) {
-                if (!this.is_edit) {
+                if (!this.isEdit) {
                     // 若是新建，给一个默认板块
                     this.topicInfo.board_id = boardList[0].id
                     // 若指定了板块id，那么按设置来
@@ -288,7 +295,7 @@ export default {
         //     localStorage.removeItem('topic-post-cache-clear')
         // }
 
-        if (!this.is_edit) {
+        if (!this.isEdit) {
             // this.title = localStorage.getItem('topic-post-title') || ''
         }
     },
