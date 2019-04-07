@@ -89,6 +89,7 @@ module.exports = {
     styleResources: {
         scss: [
             '@/assets/css/variables.scss',
+            '@/assets/css/response.scss',
             '@/assets/css/input.scss'
         ]
     },
