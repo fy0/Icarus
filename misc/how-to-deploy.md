@@ -182,8 +182,8 @@ export default {
 ```
 
 ```bash
-nuxt build
-nuxt start
+npx nuxt build
+npx nuxt start
 ```
 
 随后是nginx的配置，当然你要首先安装它。
@@ -199,10 +199,10 @@ nuxt start
 ```bash
 sudo apt install nginx
 cd Icarus
-sudo cp misc/icarus-1port.conf /etc/nginx/conf.d/
+sudo cp misc/icarus.conf /etc/nginx/conf.d/
 ```
 
-随后编辑 /etc/nginx/conf.d/icarus-1port.conf，将
+随后编辑 /etc/nginx/conf.d/icarus.conf，将
 ```
 # root /home/{user}/Icarus/dist;
 ```
