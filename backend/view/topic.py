@@ -17,10 +17,8 @@ from slim.utils import to_bin, dict_filter_inplace
 from view import route, ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from wtforms.validators import StopValidation
-
 from view.mention import check_content_mention
-from permissions import permissions_add_all
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 def my_optional(form, field):
@@ -40,7 +38,7 @@ def board_check(form, field):
     if not board:
         raise ValidationError('板块不存在')
 
-    can_post_rank = 100 if set(form.view.current_user_roles) & {'forum_master', 'superuser', 'admin'} else 0
+    can_post_rank = 100 if set(form.view.roles) & {'forum_master', 'superuser', 'admin'} else 0
     if can_post_rank >= board.can_post_rank:
         return True
     raise ValidationError('没有权限选择此板块')
@@ -82,7 +80,7 @@ class TopicEditForm(ValidateForm):
 
 
 @route('topic')
-class TopicView(UserMixin, PeeweeView):
+class TopicView(UserViewMixin, PeeweeView):
     model = Topic
 
     @classmethod
@@ -91,11 +89,6 @@ class TopicView(UserMixin, PeeweeView):
         cls.add_soft_foreign_key('user_id', 'user')
         cls.add_soft_foreign_key('board_id', 'board')
         cls.add_soft_foreign_key('last_edit_user_id', 'user')
-
-    @classmethod
-    def permission_init(cls):
-        permission: Permissions = cls.permission
-        permissions_add_all(permission)
 
     async def prepare(self):
         self.do_mentions = None

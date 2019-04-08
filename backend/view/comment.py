@@ -18,23 +18,17 @@ from slim.utils import to_bin
 from view import route, ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from view.mention import check_content_mention
-from permissions import permissions_add_all
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 @route('comment')
-class CommentView(UserMixin, PeeweeView):
+class CommentView(UserViewMixin, PeeweeView):
     model = Comment
 
     @classmethod
     def ready(cls):
         cls.add_soft_foreign_key('user_id', 'user')
         cls.add_soft_foreign_key('reply_to_cmt_id', 'comment')
-
-    @classmethod
-    def permission_init(cls):
-        permission: Permissions = cls.permission
-        permissions_add_all(permission)
 
     @cooldown(config.COMMENT_NEW_COOLDOWN_BY_IP, b'ic_cd_comment_new_%b')
     @cooldown(config.COMMENT_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_comment_new_account_%b', unique_id_func=same_user)

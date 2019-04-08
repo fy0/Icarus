@@ -1,14 +1,12 @@
 <template>
 <div class="ic-container" v-if="topic.user_id">
-    <div v-title>{{ topic.title }} - {{topic.board_id.name}} - {{config.title}}</div>
-
     <div class="nav ic-xs-hidden">
         <span>
-            <router-link :to="{ name: 'forum' }">社区</router-link>
+            <nuxt-link :to="{ name: 'forum' }">社区</nuxt-link>
         </span>
         <span class="item-separator">/</span>
         <span>
-            <router-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }" :title="topic.board_id.name">{{textLimit(topic.board_id.name, 8)}}</router-link>
+            <nuxt-link :to="{ name: 'forum_board', params: {id: topic.board_id.id} }" :title="topic.board_id.name">{{textLimit(topic.board_id.name, 8)}}</nuxt-link>
         </span>
         <span class="item-separator">/</span>
         <span>
@@ -18,15 +16,15 @@
     </div>
 
     <!-- 移动端使用独立的标题 -->
-    <div v-responsive.xs>
-        <div style="display: flex; justify-content: space-between;">
+    <div class="ic-xs ic-hidden">
+        <div style="display: flex; justify-content: space-between; width: 100%">
             <div style="display: flex; white-space: nowrap;">
                 <span>
-                    <router-link :to="{ name: 'forum' }">社区</router-link>
+                    <nuxt-link :to="{ name: 'forum' }">社区</nuxt-link>
                 </span>
                 <span class="item-separator">/</span>
                 <span style="display: flex">
-                    <router-link class="limit m8" :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</router-link>
+                    <nuxt-link class="limit m8" :to="{ name: 'forum_board', params: {id: topic.board_id.id} }">{{topic.board_id.name}}</nuxt-link>
                 </span>
             </div>
             <div style="display:flex; flex-direction: column;">
@@ -40,10 +38,8 @@
                 </div>
             </div>
         </div>
-
-        <h2>{{topic.title}}</h2>
-
     </div>
+    <h2 class="ic-xs ic-hidden">{{topic.title}}</h2>
 
     <div class="topic-box">
         <div class="main">
@@ -63,7 +59,7 @@
 
                 <div style="display: flex; align-items: center;">
                     <span>分享：</span>
-                    <div ref="share" class="share-component" data-disabled="douban,tencent,linkedin,diandian,google,qq,facebook,twitter"></div>
+                    <social-share />
                 </div>
 
                 <p class="ic-hr-30" ref="comment-hr"></p>
@@ -96,7 +92,7 @@
                         <a class="furbtn furbtn-s furbtn-blue" follow="1"><i class="fa fa-star"></i> 取消关注</a>
                     </div>
 
-                    <p><router-link v-if="$user.data && (topic.user_id.id == $user.data.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</router-link></p>
+                    <p><nuxt-link v-if="$user.data && (topic.user_id.id == $user.data.id)" :to="{ name: 'forum_topic_edit', params: {id: topic.id} }">编辑文章</nuxt-link></p>
                     <div class="last-edit" v-if="topic.edit_time" style="font-size: 0.8em">
                         <p>此文章由 <user-link :user="topic.last_edit_user_id" /> 最后编辑于 <ic-time :timestamp="topic.edit_time" /></p>
                         <p>历史编辑次数 {{topic.edit_count}} 次</p>
@@ -269,9 +265,40 @@
 <script>
 import { marked, mdGetIndex } from '@/md.js'
 import { mapState, mapGetters, mapMutations } from 'vuex'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import CommentList from '@/components/misc/comment-list.vue'
-import api from '@/netapi.js'
+import SocialShare from '@/components/misc/social-share.vue'
 import '@/assets/css/_forum.scss'
+
+class FetchCls extends BaseWrapper {
+    async fetchData () {
+        let params = this.$route.params
+        let ret = await this.$api.topic.get({
+            id: params.id,
+            loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
+        }, this.$user.basicRole)
+
+        if (ret.code === this.$api.retcode.SUCCESS) {
+            let mlog = await this.$api.logManage.list({
+                related_id: ret.data.id,
+                order: 'time.desc',
+                loadfk: { 'user_id': null }
+            })
+            if (mlog.code === this.$api.retcode.SUCCESS) {
+                this.mlog = mlog.data
+            }
+
+            let pageNumber = this.$route.query.page
+            if (pageNumber) this.commentPage = parseInt(pageNumber)
+            this.topic = ret.data
+            this.topicIndex = mdGetIndex(ret.data.content)
+        } else {
+            if (ret.code !== this.$api.retcode.NOT_FOUND) {
+                this.$message.byCode(ret.code)
+            }
+        }
+    }
+}
 
 export default {
     data () {
@@ -283,6 +310,14 @@ export default {
             indexActive: -1,
             indexSticky: false,
             mlog: null
+        }
+    },
+    head () {
+        return {
+            title: `${this.topic.title} - ${this.topic.board_id.name}`,
+            meta: [
+                { hid: 'description', name: 'description', content: '文章' }
+            ]
         }
     },
     computed: {
@@ -313,31 +348,7 @@ export default {
             $.scrollTo(el)
         },
         fetchData: async function () {
-            let params = this.$route.params
-            let ret = await api.topic.get({
-                id: params.id,
-                loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
-            }, this.$user.basicRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
-                let mlog = await api.logManage.list({
-                    related_id: ret.data.id,
-                    order: 'time.desc',
-                    loadfk: { 'user_id': null }
-                })
-                if (mlog.code === api.retcode.SUCCESS) {
-                    this.mlog = mlog.data
-                }
-
-                let pageNumber = this.$route.query.page
-                if (pageNumber) this.commentPage = parseInt(pageNumber)
-                this.topic = ret.data
-                this.topicIndex = mdGetIndex(ret.data.content)
-            } else {
-                if (ret.code !== api.retcode.NOT_FOUND) {
-                    $.message_by_code(ret.code)
-                }
-            }
         },
         inCommentArea: function () {
             let el = this.$refs['comment-hr']
@@ -357,13 +368,8 @@ export default {
         // 注意：从这里观察出一个现象：
         // created 会比 mounted 早触发，但并不一定更早完成
         // await 占用时间的时候，挂载流程仍将继续
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
+        if (!process.browser) return
         this.$nextTick(() => {
-            window.socialShare(this.$refs.share, {
-                title: `${this.topic.title} - ${this.config.title}`
-            })
-
             // 右侧目录跟随滚动
             let elTop = 0
             let scrollHandle = (e) => {
@@ -409,12 +415,16 @@ export default {
             }
             setTimeout(loop, 100)
         })
-
-        this.$store.commit('LOADING_DEC', 1)
+    },
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
     mounted: function () {
     },
     components: {
+        SocialShare,
         CommentList
     }
 }

@@ -1,4 +1,11 @@
-import store from '@/store/index'
+// browser only
+let store = null
+
+if (process.browser) {
+    window.onNuxtReady(({ $store }) => {
+        store = $store
+    })
+}
 
 let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     const keyArray = Array.from(new Uint8Array(keyBuffer)) // key as byte array
@@ -39,7 +46,7 @@ $.passwordHashNative = async function (password, iterations = 1e5) {
 }
 
 $.passwordHash = (function () {
-    if (crypto.subtle && crypto.subtle.importKey) {
+    if (process.browser && crypto.subtle && crypto.subtle.importKey) {
         return $.passwordHashNative
     } else {
         return $.passwordHashAsmCrypto

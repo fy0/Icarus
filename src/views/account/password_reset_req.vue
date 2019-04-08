@@ -19,7 +19,7 @@
             </div>
 
             <div class="ic-form-row">
-                <router-link class="lost-poasswrod" :to="{name: 'account_signin'}">返回登录</router-link>
+                <nuxt-link class="lost-poasswrod" :to="{name: 'account_signin'}">返回登录</nuxt-link>
             </div>
         </form>
     </div>
@@ -71,7 +71,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -110,15 +109,15 @@ export default {
             if (this.requesting) return
             this.requesting = true
             if (this.checkNickname && this.checkEmail) {
-                let ret = await api.user.requestPasswordReset(this.info.nickname, this.info.email)
-                if (ret.code !== api.retcode.SUCCESS) {
+                let ret = await this.$api.user.requestPasswordReset(this.info.nickname, this.info.email)
+                if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
-                    $.message_error('重置密码失败，请确认邮箱和昵称组合正确')
+                    this.$message.error('重置密码失败，请确认邮箱和昵称组合正确')
                 } else {
                     this.done = true
                 }
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
             this.requesting = false
         },

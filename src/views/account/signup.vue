@@ -104,7 +104,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import AccountSignupLegacy from '@/views/account/signup_legacy.vue'
 
 export default {
@@ -124,6 +123,14 @@ export default {
             passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
             passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX,
             signupLicense: this.$misc.BACKEND_CONFIG.SIGNUP_LICENSE_HTML
+        }
+    },
+    head () {
+        return {
+            title: '用户注册',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户注册' }
+            ]
         }
     },
     computed: {
@@ -161,19 +168,19 @@ export default {
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
-                let ret = await api.user.requestSignupByEmail(info)
+                let ret = await this.$api.user.requestSignupByEmail(info)
 
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     this.regDone = true
-                } else if (ret.code === api.retcode.INVALID_POSTDATA) {
+                } else if (ret.code === this.$api.retcode.INVALID_POSTDATA) {
                     this.formErrors = ret.data
                 } else {
-                    $.message_by_code(ret.code, ret.data)
+                    this.$message.byCode(ret.code, ret.data)
                 }
 
                 this.$store.commit('LOADING_DEC', 1)
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         }
     },

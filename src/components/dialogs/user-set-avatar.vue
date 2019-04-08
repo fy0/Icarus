@@ -306,7 +306,6 @@ $i_h: 42px;
 <script>
 import { mapState } from 'vuex'
 import * as qiniu from 'qiniu-js'
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -490,7 +489,7 @@ export default {
         close: function () {
             this.image = ''
             this.imageResult = ''
-            this.$dialogs.setUserNickname(false)
+            this.$dialogs.setUserAvatar(false)
         },
         saveAvatarImage: async function () {
             this.loading = true
@@ -503,7 +502,7 @@ export default {
                     complete: (res) => {
                         // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                         // console.log('done', res)
-                        if (res.code === api.retcode.SUCCESS) {
+                        if (res.code === this.$api.retcode.SUCCESS) {
                             let newData = Object.assign({}, this.$user.data)
                             newData.avatar = res.data
                             this.$store.commit('user/SET_USER_DATA', newData)
@@ -514,7 +513,7 @@ export default {
                     }
                 })
             } else {
-                $.message_error('操作失败！可能是网络原因或帐户权限不够。')
+                this.$message.error('操作失败！可能是网络原因或帐户权限不够。')
                 this.loading = false
                 this.close()
             }

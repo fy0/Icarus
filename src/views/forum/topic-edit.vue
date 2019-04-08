@@ -2,8 +2,7 @@
 <loading v-if="pageLoading"/>
 <div v-else class="ic-container">
     <div class="edit-page-title">
-        <div v-title>{{ is_edit ? '编辑主题' : '新建主题' }} - {{$config.title}}</div>
-        <h3 class="" v-if="!is_edit">新建主题</h3>
+        <h3 class="" v-if="!isEdit">新建主题</h3>
         <h3 class="" v-else>编辑主题<span v-if="asAdmin"> - 管理员模式</span></h3>
         <button class="ic-btn primary right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
     </div>
@@ -12,7 +11,7 @@
         <check-row :results="formErrors.title" :multi="true">
             <input type="text" name="title" v-model="topicInfo.title" :placeholder="`这里填写标题，${$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${$misc.BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
         </check-row>
-        <check-row :results="formErrors.board_id" :multi="true" v-if="(!is_edit) || asAdmin">
+        <check-row :results="formErrors.board_id" :multi="true" v-if="(!isEdit) || asAdmin">
             <multiselect v-model="topicInfo.board_id" :allow-empty="false" :options="boardList" :custom-label="getSelectOptionName" placeholder="选择一个板块" style="z-index: 2" open-direction="bottom"></multiselect>
         </check-row>
         <check-row :results="formErrors.content" :multi="true">
@@ -96,9 +95,6 @@ div.markdown-editor > div.editor-toolbar {
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
-import store from '@/store/index'
-import api from '@/netapi.js'
-import nprogress from 'nprogress/nprogress.js'
 import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
 // import marked from '@/md.js'
@@ -127,13 +123,21 @@ export default {
             }
         }
     },
+    head () {
+        return {
+            title: `${this.isEdit ? '编辑主题' : '新建主题'}`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科' }
+            ]
+        }
+    },
     computed: {
-        is_edit () {
+        isEdit () {
             return this.$route.name === 'forum_topic_edit'
         },
         postButtonText: function () {
             return this.loading ? '请等待'
-                : (this.is_edit ? '编辑' : '发布')
+                : (this.isEdit ? '编辑' : '发布')
         }
     },
     methods: {
@@ -146,7 +150,7 @@ export default {
             let successText
 
             if (!this.topicInfo.board_id) {
-                $.message_error('没有选择发布的板块，如果没有板块，请先在管理界面创建。')
+                this.$message.error('没有选择发布的板块，如果没有板块，请先在管理界面创建。')
                 return
             }
 
@@ -161,24 +165,24 @@ export default {
                 'returning': true
             }, this.save)
 
-            if (this.is_edit) {
+            if (this.isEdit) {
                 if (Object.keys(topicInfo).length <= 1) {
                     // 那个1是returning
-                    $.message_success('编辑成功！但编辑者并未进行任何改动。')
+                    this.$message.success('编辑成功！但编辑者并未进行任何改动。')
                     this.$router.push({ name: 'forum_topic', params: { id: this.topicInfo.id } })
                     this.loading = false
                     return
                 }
 
                 if (this.asAdmin) {
-                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, this.$user.mainRole)
+                    ret = await this.$api.topic.set({ id: this.topicInfo.id }, topicInfo, this.$user.mainRole)
                 } else {
-                    ret = await api.topic.set({ id: this.topicInfo.id }, topicInfo, 'user')
+                    ret = await this.$api.topic.set({ id: this.topicInfo.id }, topicInfo, 'user')
                 }
                 successText = '编辑成功！已自动跳转至文章页面。'
                 topicId = this.topicInfo.id
             } else {
-                ret = await api.topic.new(topicInfo, 'user')
+                ret = await this.$api.topic.new(topicInfo, 'user')
                 successText = '发表成功！已自动跳转至文章页面。'
                 topicId = ret.data.id
             }
@@ -186,17 +190,17 @@ export default {
             if (ret.code === 0) {
                 localStorage.setItem('topic-post-cache-clear', 1)
                 this.$router.push({ name: 'forum_topic', params: { id: topicId } })
-                $.message_success(successText)
-            } else if (ret.code === api.retcode.INVALID_ROLE) {
-                $.message_error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
+                this.$message.success(successText)
+            } else if (ret.code === this.$api.retcode.INVALID_ROLE) {
+                this.$message.error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
                 this.loading = false
             } else {
-                if (ret.code === api.retcode.FAILED) {
+                if (ret.code === this.$api.retcode.FAILED) {
                     this.formErrors = ret.data
-                    $.message_error('内容不符合要求，请根据输入框下方提示进行修改')
+                    this.$message.error('内容不符合要求，请根据输入框下方提示进行修改')
                 } else {
                     this.formErrors = {}
-                    $.message_by_code(ret.code, ret.data)
+                    this.$message.byCode(ret.code, ret.data)
                 }
                 // 注意：发布成功会跳转，故不做复位，失败则复位
                 this.loading = false
@@ -208,7 +212,7 @@ export default {
             this.asAdmin = this.$route.query.manage
 
             if (!this.$user.data) {
-                $.message_error('抱歉，无权访问此页面，请返回')
+                this.$message.error('抱歉，无权访问此页面，请返回')
                 return
             }
 
@@ -216,20 +220,20 @@ export default {
             if (!this.$user.isForumAdmin) {
                 boardQueryParams['can_post_rank.<'] = 100
             }
-            let ret = await api.board.list(boardQueryParams)
+            let ret = await this.$api.board.list(boardQueryParams)
             if (ret.code) {
-                $.message_by_code(ret.code)
+                this.$message.byCode(ret.code)
                 return
             }
             let boardList = ret.data.items
 
-            if (this.is_edit) {
-                let ret = await api.topic.get({
+            if (this.isEdit) {
+                let ret = await this.$api.topic.get({
                     id: params.id,
                     loadfk: { user_id: null, board_id: null }
                 })
                 if (ret.code) {
-                    $.message_error('抱歉，发生了错误')
+                    this.$message.error('抱歉，发生了错误')
                     return
                 }
 
@@ -247,7 +251,7 @@ export default {
             }
 
             if (boardList.length) {
-                if (!this.is_edit) {
+                if (!this.isEdit) {
                     // 若是新建，给一个默认板块
                     this.topicInfo.board_id = boardList[0].id
                     // 若指定了板块id，那么按设置来
@@ -273,15 +277,15 @@ export default {
             this.pageLoading = false
         }
     },
-    beforeRouteEnter (to, from, next) {
-        if (!store.state.user.userData) {
-            store.commit('LOADING_SET', 0)
-            nprogress.done()
-            $.message_error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
-            return next('/')
-        }
-        next()
-    },
+    // beforeRouteEnter (to, from, next) {
+    //     if (!store.state.user.userData) {
+    //         store.commit('LOADING_SET', 0)
+    //         // nprogress.done()
+    //         this.$message.error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
+    //         return next('/')
+    //     }
+    //     next()
+    // },
     mounted: async function () {
         // if (localStorage.getItem('topic-post-cache-clear')) {
         //     // 我不知道为什么，在地址跳转前进行 storage 的清除工作，
@@ -291,11 +295,19 @@ export default {
         //     localStorage.removeItem('topic-post-cache-clear')
         // }
 
-        if (!this.is_edit) {
+        if (!this.isEdit) {
             // this.title = localStorage.getItem('topic-post-title') || ''
         }
     },
     created: async function () {
+        // 未登录跳转
+        if (!this.$store.state.user.userData) {
+            this.$store.commit('LOADING_SET', 0)
+            // nprogress.done()
+            this.$message.error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
+            return this.$router.push('/')
+        }
+
         await this.fetchData()
         let vm = this
 
@@ -326,7 +338,7 @@ export default {
                         complete: (ret) => {
                             // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                             // console.log('done', ret)
-                            if (ret.code === api.retcode.SUCCESS) {
+                            if (ret.code === this.$api.retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
                                 let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
                                 let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC

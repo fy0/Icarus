@@ -9,15 +9,15 @@
 </div>
 
 <!-- 刷新标题 -->
-<template v-if="board">
+<!-- <template v-if="board">
     <div v-title-dynamic v-if="$route.params.page && $route.params.page > 1">{{ board.name }} - 第{{$route.params.page}}页 - {{config.title}}</div>
     <div v-title-dynamic v-else>{{ board.name }} - {{config.title}}</div>
 </template>
-<div v-else v-title>全部主题 - {{config.title}}</div>
+<div v-else v-title>全部主题 - {{config.title}}</div> -->
 
 <div class="ic-container forum-box">
     <div class="wrapper">
-        <div v-responsive.xs>
+        <div class="ic-xs ic-hidden">
             <!-- <i @click="showSlideMenu = !showSlideMenu" class="icarus icon-comment-multiple-out" style="position: fixed; top: 6px; left: 20px; font-size: 22px; z-index: 1; color: #777" /> -->
 
             <!-- xs 时的边栏 -->
@@ -28,22 +28,22 @@
             <transition enter-active-class="animated slideInLeft faster" leave-active-class="animated slideOutLeft">
                 <div v-if="showSlideMenu" class="left-nav bs4-xs" style="overflow-y: auto;">
                     <div class="left-nav-box">
-                        <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
+                        <nuxt-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</nuxt-link>
 
                         <div class="ul-boards">
-                            <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 21px">
+                            <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 21px">
                                 <div class="sign"></div>
                                 <span class="title">全部主题</span>
-                            </router-link>
+                            </nuxt-link>
 
                             <label v-if="isBoard" class="with-subboard-topic">
                                 <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                             </label>
                             <!-- <div style="margin-bottom: 3px;"></div> -->
-                            <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
+                            <nuxt-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
                                 <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                                 <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
-                            </router-link>
+                            </nuxt-link>
                         </div>
                     </div>
                 </div>
@@ -53,22 +53,22 @@
         <div class="left-nav ic-xs-hidden">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
-                <router-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</router-link>
+                <nuxt-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</nuxt-link>
 
                 <div class="ul-boards">
-                    <router-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
+                    <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
                         <div class="sign"></div>
                         <span class="title">全部主题</span>
-                    </router-link>
+                    </nuxt-link>
 
                     <label v-if="isBoard" class="with-subboard-topic">
                         <ic-checkbox :size="14" v-model="withSubBoardTopic">包含子板块内容</ic-checkbox>
                     </label>
                     <!-- <div style="margin-bottom: 3px;"></div> -->
-                    <router-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
+                    <nuxt-link v-for="j in dymBoardList" :key="j.id" :class="{'subboard': j.parent_id}" class="item" :to="{ name: 'forum_board', params: {id: j.id}, query: $route.query }">
                         <div v-if="j.parent_id === null" class="sign" :style="lineStyleBG(j.id)"></div>
                         <span class="title" :style="boardNavStyle(j)">{{boardNavTitle(j)}}</span>
-                    </router-link>
+                    </nuxt-link>
                 </div>
             </div>
         </div>
@@ -120,38 +120,44 @@
 
                 <!-- 实际渲染条目 -->
                 <template v-else-if="topics.items.length">
-                    <div class="board-item-box" :key="i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseout="itemHover(null)">
-                        <router-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}">
+                    <div class="board-item-box" :key="i.global_sticky_flag ? `gs-${i.id}` : i.id" v-for="i in topics.items"  @mouseover="itemHover(i.id)" @mouseleave="itemHover(null)">
+                        <!-- <nuxt-link :to="{ name: 'forum_topic', params: {id: i.id} }" class="board-item" :class="{'top-post': i.sticky_weight}"> -->
+                        <div class="board-item" :class="{'top-post': i.sticky_weight}" @click="$router.push({ name: 'forum_topic', params: {id: i.id} })">
                             <div class="title-recent">
-                                <avatar :user="i.user_id" :size="32" class="avatar" />
+                                <avatar @click.stop :user="i.user_id" :size="32" class="avatar" />
                                 <div class="right">
                                     <h2>
-                                        <router-link :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                                        <nuxt-link @click.stop :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                                             <span>{{i.title}}</span>
                                             <span v-if="i.state === POST_STATE.CLOSE">[关闭]</span>
-                                        </router-link>
+                                        </nuxt-link>
                                     </h2>
 
                                     <p class="topic-info">
-                                        <router-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }">
-                                            <div :style="lineStyleBG(i.board_id)" class="sign"></div>
-                                            <span v-responsive.class class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
-                                        </router-link>
-                                        <user-link v-responsive.class class="author limit l2" :user="i.user_id" />
-                                        <span class="time"><ic-time :timestamp="i.edit_time || i.time"/></span>
+                                        <span @click.stop>
+                                            <nuxt-link class="board-badge" :to="{ name: 'forum_board', params: {id: i.board_id} }" @click.stop>
+                                                <span :style="lineStyleBG(i.board_id)" class="sign"></span>
+                                                <span class="name limit l2">{{boardBadgeTitleById(i.board_id)}}</span>
+                                            </nuxt-link>
+                                        </span>
+                                        <span class="author limit l2" @click.stop>
+                                            <user-link :user="i.user_id" />
+                                        </span>
+                                        <span class="time" @click.stop><ic-time :timestamp="i.edit_time || i.time" /></span>
                                     </p>
                                 </div>
 
-                                <span class="icons">
+                                <span @click.stop class="icons">
                                     <i v-if="i.awesome == 1" class="awesome icarus icon-diamond" title="优秀" @click.prevent></i>
                                     <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
-                                    <i v-if="$user.isForumAdmin && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.prevent="setTopicManage({ 'val': true, 'data': i })"></i>
+                                    <i v-if="$user.isForumAdmin && i.id === hoverId" class="manage icarus icon-39 animated rotateIn" title="管理" @click.stop="setTopicManage({ 'val': true, 'data': i })"></i>
                                 </span>
 
-                                <div class="append-icons">
+                                <div @click.stop class="append-icons">
                                     <i v-if="i.sticky_weight" class="icarus icon-pin" title="置顶" />
                                 </div>
                             </div>
+
                             <div class="detail ic-xs-hidden">
                                 <div class="count-block">
                                     <div class="count">
@@ -165,16 +171,17 @@
                                 </div>
                                 <div class="recent ic-xs-hidden ic-sm-hidden ic-md-hidden">
                                     <span class="line" :style="lineStyle(i.board_id)"></span>
-                                    <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id">
+                                    <div class="post" v-if="i.s.last_comment_id && i.s.last_comment_id.id" @click.stop>
                                         <strong><i class="icon icarus icon-reply"></i><user-link :user="i.s.last_comment_id.user_id" />:</strong>
-                                        <router-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</router-link>
+                                        <nuxt-link tag="div" class="post-content" :to="{ name: 'forum_topic', params: {id: i.s.last_comment_id.related_id} }">{{atConvert(i.s.last_comment_id.content)}}</nuxt-link>
                                     </div>
                                     <div class="post" v-else>无回复</div>
                                     <ic-time v-if="i.s.last_comment_id" class="time" :timestamp="i.s.last_comment_id.time" />
                                     <div v-else class="time">N/A</div>
                                 </div>
                             </div>
-                        </router-link>
+                        </div>
+                        <!-- </nuxt-link> -->
                     </div>
                     <paginator v-if="isBoard" :page-info='topics' :route-name='"forum_board"' />
                     <paginator v-else :page-info='topics' :route-name='"forum_main"' />
@@ -310,27 +317,133 @@ $left-nav-sign-padding: 10px;
 </style>
 
 <script>
-import store from '@/store/index'
-import api from '@/netapi.js'
 import '@/assets/css/_forum.scss'
 import TopBtns from './topbtns.vue'
-import ZingTouch from 'zingtouch'
-import nprogress from 'nprogress/nprogress.js'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
-let pageOneHack = function (to, from, next) {
-    // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
-    // 但似乎由于 nprogress 的存在，显得有点僵硬
-    if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
-        if (from.name === 'index') {
-            store.commit('LOADING_SET', 0)
-            nprogress.done()
-            return next(false)
-        }
-        return next({ name: 'index', query: to.query })
+class FetchCls extends BaseWrapper {
+    getBoardExInfoById (boardId) {
+        return this.$store.state.forum.exInfoMap[boardId] || {}
     }
-    next()
+
+    async fetchData () {
+        let baseQuery1 = {
+            select: 'id, time, edit_time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
+            loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
+        }
+        let baseQuery = _.cloneDeep(baseQuery1)
+        let params = this.$route.params
+        let page = 1
+
+        // 包含子板块内容
+        if (this.$storage.getUniversal('sbt')) {
+            this.withSubBoardTopic = true
+        }
+        this.withSubBoardTopicOptionReady = true
+
+        // 获取全局板块信息
+        await this.$store.dispatch('forum/load')
+
+        // 如果板块不存在
+        if (params.id && (!this.$store.state.forum.infoMap[params.id])) {
+            this.notFound = true
+            return
+        }
+
+        if (this.$store.getters['forum/isSiteNew']) {
+            this.$dialogs.setSiteNew(true)
+        } else {
+            if (this.$user.isNewUser) {
+                this.$dialogs.setUserNickname(true)
+            }
+        }
+
+        // 具体板块
+        if (this.$route.name === 'forum_board') {
+            // 若是要求包含子板块内容
+            if (this.$storage.getUniversal('sbt')) {
+                let lst = [params.id]
+                for (let i of this.getBoardExInfoById(params.id).subboardsAll) {
+                    lst.push(i.id)
+                }
+                baseQuery['board_id.in'] = JSON.stringify(lst)
+            } else {
+                baseQuery['board_id'] = params.id
+            }
+            page = params.page
+        } else {
+            baseQuery['sticky_weight.ne'] = 5
+            page = params.page
+        }
+
+        let query = this.$route.query
+        let order = 'weight.desc, update_time.desc' // 权重降序
+
+        if (query.type === '2' || query.type === 2) {
+            // 最近更新：更新时间降序
+            order = 'update_time.desc, time.desc'
+        }
+
+        if (query.type === '3' || query.type === 3) {
+            // 最近发布：发布时间降序
+            order = 'time.desc'
+        }
+
+        if (query.type === '4' || query.type === 4) {
+            // 最近回复：回复时间排序
+            // 好吧，这个好像暂时还实现不了
+            order = 'update_time.desc, time.desc'
+        }
+
+        if (this.isBoard) {
+            // 在板块模式下加入当前板块的置顶
+            order = 'sticky_weight.desc, ' + order
+        }
+
+        let retList = await this.$api.topic.list(Object.assign({
+            order: order
+        }, baseQuery), page)
+        if (retList.code === this.$api.retcode.SUCCESS) {
+            if (!this.isBoard && (!page || page === 1)) {
+                // 首页
+                let retStickyTopics = await this.$api.topic.list(Object.assign({
+                    sticky_weight: 5, // 全局置顶项
+                    order: order
+                }, baseQuery1))
+                if (retStickyTopics.code === this.$api.retcode.SUCCESS) {
+                    for (let i of retStickyTopics.data.items) {
+                        i.global_sticky_flag = true
+                    }
+                    retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
+                }
+            }
+
+            this.topics = retList.data
+            this.loading = false
+            return
+        } else {
+            this.topics = { items: [] }
+        }
+
+        // this.$message.byCode(retList.code)
+        this.loading = false
+    }
 }
+
+// let pageOneHack = function (to, from, next, store) {
+//     // 这一hack的目标是抹除 /r/1 的存在，使其与 / 看起来完全一致
+//     // 但似乎由于 nprogress 的存在，显得有点僵硬
+//     if (to.name === 'forum_main' && (to.params.page === '1' || to.params.page === 1)) {
+//         if (from.name === 'index') {
+//             store.commit('LOADING_SET', 0)
+//             nprogress.done()
+//             return next(false)
+//         }
+//         return next({ name: 'index', query: to.query })
+//     }
+//     next()
+// }
 
 export default {
     data () {
@@ -456,11 +569,18 @@ export default {
         itemHover: function (id) {
             this.hoverId = id
         },
+        lineStyleById: function (boardId, key = 'border-left-color') {
+            let exInfo = this.getBoardExInfoById(boardId)
+            if (exInfo) {
+                return { [key]: exInfo.color }
+            }
+            return {}
+        },
         lineStyle: function (boardId, key = 'border-left-color') {
-            return $.lineStyleById(boardId, key)
+            return this.lineStyleById(boardId, key)
         },
         lineStyleBG: function (boardId) {
-            return $.lineStyleById(boardId, 'background-color')
+            return this.lineStyleById(boardId, 'background-color')
         },
         getBoardInfo: function (boardId) {
             return this.$store.state.forum.infoMap[boardId]
@@ -475,127 +595,43 @@ export default {
             let exinfo = this.$store.state.forum.exInfoMap[boardId]
             if (!exinfo) return []
             return exinfo.chain
-        },
-        fetchData: async function () {
-            this.$set(this, 'loading', true)
-            let baseQuery1 = {
-                select: 'id, time, edit_time, user_id, board_id, title, state, awesome, weight, update_time, sticky_weight',
-                loadfk: { 'user_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
-            }
-            let baseQuery = _.cloneDeep(baseQuery1)
-            let params = this.$route.params
-            let page = 1
-
-            // 包含子板块内容
-            if (localStorage.getItem('sbt')) {
-                this.withSubBoardTopic = true
-            }
-            this.$nextTick(() => {
-                this.withSubBoardTopicOptionReady = true
-            })
-
-            // 获取全局板块信息
-            await this.$store.dispatch('forum/load')
-
-            // 如果板块不存在
-            if (params.id && (!this.$store.state.forum.infoMap[params.id])) {
-                this.notFound = true
-                return
-            }
-
-            if (this.isSiteNew) {
-                this.$dialogs.setSiteNew(true)
-            } else {
-                if (this.$user.isNewUser) {
-                    this.$dialogs.setUserNickname(true)
-                }
-            }
-
-            // 具体板块
-            if (this.isBoard) {
-                // 若是要求包含子板块内容
-                if (localStorage.getItem('sbt')) {
-                    let lst = [params.id]
-                    for (let i of this.getBoardExInfoById(params.id).subboardsAll) {
-                        lst.push(i.id)
-                    }
-                    baseQuery['board_id.in'] = JSON.stringify(lst)
-                } else {
-                    baseQuery['board_id'] = params.id
-                }
-                page = params.page
-            } else {
-                baseQuery['sticky_weight.ne'] = 5
-                page = params.page
-            }
-
-            let query = this.$route.query
-            let order = 'weight.desc, update_time.desc' // 权重降序
-
-            if (query.type === '2' || query.type === 2) {
-                // 最近更新：更新时间降序
-                order = 'update_time.desc, time.desc'
-            }
-
-            if (query.type === '3' || query.type === 3) {
-                // 最近发布：发布时间降序
-                order = 'time.desc'
-            }
-
-            if (query.type === '4' || query.type === 4) {
-                // 最近回复：回复时间排序
-                // 好吧，这个好像暂时还实现不了
-                order = 'update_time.desc, time.desc'
-            }
-
-            if (this.isBoard) {
-                // 在板块模式下加入当前板块的置顶
-                order = 'sticky_weight.desc, ' + order
-            }
-
-            let retList = await api.topic.list(Object.assign({
-                order: order
-            }, baseQuery), page)
-            if (retList.code === api.retcode.SUCCESS) {
-                if (!this.isBoard && (!page || page === 1)) {
-                    // 首页
-                    let retStickyTopics = await api.topic.list(Object.assign({
-                        sticky_weight: 5, // 全局置顶项
-                        order: order
-                    }, baseQuery1))
-                    if (retStickyTopics.code === api.retcode.SUCCESS) {
-                        retList.data.items = _.concat(retStickyTopics.data.items, retList.data.items)
-                    }
-                }
-
-                this.topics = retList.data
-                this.loading = false
-                return
-            } else {
-                this.topics = { items: [] }
-            }
-
-            // $.message_by_code(retList.code)
-            this.loading = false
         }
     },
-    beforeRouteEnter (to, from, next) {
-        return pageOneHack(to, from, next)
-    },
-    beforeRouteUpdate (to, from, next) {
-        return pageOneHack(to, from, next)
-    },
-    beforeRouteLeave (to, from, next) {
-        // if (to.name === 'forum_topic_new' && this.state.isInactiveUser()) {
-        //     state.dialog.userInactive = true
-        //     return false
-        // }
-        return next()
+    // beforeRouteEnter (to, from, next) {
+    //     return pageOneHack(to, from, next, store)
+    // },
+    // beforeRouteUpdate (to, from, next) {
+    //     return pageOneHack(to, from, next, store)
+    // },
+    // beforeRouteLeave (to, from, next) {
+    //     // if (to.name === 'forum_topic_new' && this.state.isInactiveUser()) {
+    //     //     state.dialog.userInactive = true
+    //     //     return false
+    //     // }
+    //     return next()
+    // },
+    head () {
+        let title = ''
+        if (this.board) {
+            if (this.$route.params.page && this.$route.params.page > 1) {
+                title = `${this.board.name} - 第${this.$route.params.page}页`
+            } else {
+                title = `${this.board.name}`
+            }
+        } else {
+            title = `全部主题`
+        }
+        return {
+            title,
+            meta: [
+                { hid: 'description', name: 'description', content: '首页' }
+            ]
+        }
     },
     created () {
-        this.fetchData()
-
+        if (!process.browser) return
         this.$nextTick(function () {
+            let ZingTouch = require('zingtouch')
             $.zt = $.zt || new ZingTouch.Region(document.body, false, false)
             let el = document.querySelector('.main')
             if (!el) return
@@ -613,9 +649,18 @@ export default {
             }, false)
         })
     },
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
+    },
     watch: {
         // 如果路由有变化，会再次执行该方法
-        '$route': 'fetchData',
+        // '$route': 'fetchData',
+        '$route': async function () {
+            // 暂时用强制刷新替代
+            window.history.go(0)
+        },
         'userData': async function (newVal) {
             // 用户登入登出后进行板块信息重载
             // TODO: 不理解为什么不执行
@@ -623,9 +668,11 @@ export default {
         },
         'withSubBoardTopic': async function (newVal, oldVal) {
             if (this.withSubBoardTopicOptionReady) {
-                localStorage.removeItem('sbt', newVal)
-                if (newVal) localStorage.setItem('sbt', 1)
-                await this.fetchData()
+                this.$storage.removeUniversal('sbt')
+                if (newVal) this.$storage.setUniversal('sbt', 1)
+                // 要重新抓取页面内容，这里先用强制刷新替代吧
+                window.history.go(0)
+                // await this.fetchData()
             }
         }
     },

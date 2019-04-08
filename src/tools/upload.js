@@ -1,5 +1,13 @@
-import api from '../netapi.js'
-import store from '@/store/index'
+// browser only
+let api = null
+let store = null
+
+if (process.browser) {
+    window.onNuxtReady(({ $store }) => {
+        store = $store
+        api = $store.app.$api
+    })
+}
 
 let uploadKeyTime = 0
 let uploadToken = ''

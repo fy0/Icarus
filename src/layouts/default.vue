@@ -1,18 +1,20 @@
 <template>
 <div id="app">
-    <div v-title>{{config.title}}</div>
+    <!-- <div v-title>{{config.title}}</div> -->
     <navbar class="header"></navbar>
 
     <div class="center" :class="{ 'gray': isWikiPage }">
         <loading v-if="loading" />
 
         <transition name="fade" mode="out-in">
-            <router-view class="main" :style="loading ? { 'display': 'none'} : {}"></router-view>
+            <nuxt class="main" :style="loading ? { 'display': 'none'} : {}" />
         </transition>
     </div>
 
     <my-footer class="footer"></my-footer>
-    <ic-gotop />
+    <no-ssr>
+        <ic-gotop />
+    </no-ssr>
     <msg-box />
 </div>
 </template>
@@ -23,17 +25,14 @@
     display: flex;
     flex-direction: column;
 }
-
 .center.gray {
     transition: background-color .3s ease;
     background-color: $gray-200;
 }
-
 .center {
     width: 100%;
     flex: 1;
     display: flex;
-
     > .main {
         flex: 1;
         width: 0%;
@@ -41,7 +40,6 @@
         padding-bottom: 15px;
     }
 }
-
 @media screen and (lt-rbp(sm)) {
     .center {
         .main {
@@ -61,6 +59,11 @@ export default {
     name: 'app',
     data () {
         return {}
+    },
+    head () {
+        return {
+            titleTemplate: `%s - ${this.$config.title}`
+        }
     },
     computed: {
         ...mapState([

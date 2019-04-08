@@ -67,7 +67,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -103,18 +102,18 @@ export default {
             this.requesting = true
             if (this.checkPassword && this.checkPassword2) {
                 let query = this.$route.query
-                let ret = await api.user.validatePasswordReset(query.uid, query.code, await $.passwordHash(this.info.password))
-                if (ret.code === api.retcode.SUCCESS) {
+                let ret = await this.$api.user.validatePasswordReset(query.uid, query.code, await $.passwordHash(this.info.password))
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     this.stage = 2
                     if (this.$user.data && this.$user.data.id === ret.data.id) {
                         this.$store.commit('user/RESET')
                     }
                 } else {
                     this.formErrors = ret.data
-                    $.message_error('重置密码失败')
+                    this.$message.error('重置密码失败')
                 }
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
             this.requesting = false
         },

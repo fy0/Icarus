@@ -1,7 +1,5 @@
 <template>
 <div class="ic-container">
-    <div v-title v-if="queryText">搜索 - {{queryText}} - {{$config.title}}</div>
-    <div v-title v-else>搜索 - {{$config.title}}</div>
     <template v-if="tooFrequent">
         <span>搜索过于频繁，请稍后再试。还需等待{{needWait}}秒。</span>
     </template>
@@ -98,8 +96,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
-
 export default {
     data () {
         return {
@@ -108,6 +104,14 @@ export default {
             info: {
                 hits: {}
             }
+        }
+    },
+    head () {
+        return {
+            title: this.queryText ? `搜索 - ${this.queryText}` : '搜索',
+            meta: [
+                { hid: 'description', name: 'description', content: '文章搜索页面' }
+            ]
         }
     },
     computed: {
@@ -132,11 +136,11 @@ export default {
         },
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)
-            let ret = await api.search.search(this.queryText)
-            if (ret.code === api.retcode.SUCCESS) {
+            let ret = await this.$api.search.search(this.queryText)
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.info = ret.data
                 this.tooFrequent = false
-            } else if (ret.code === api.retcode.TOO_FREQUENT) {
+            } else if (ret.code === this.$api.retcode.TOO_FREQUENT) {
                 this.info = { hits: {} }
                 this.tooFrequent = true
                 this.needWait = ret.data

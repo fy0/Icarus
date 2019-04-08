@@ -25,7 +25,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -41,17 +40,17 @@ export default {
             if (!(query.email && query.code)) return
             this.available = true
 
-            let ret = await api.user.signupByEmail(query.email, query.code)
-            if (ret.code === api.retcode.SUCCESS) {
+            let ret = await this.$api.user.signupByEmail(query.email, query.code)
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.text = '注册完成，正在进行收尾……'
-                api.saveAccessToken(ret.data.key)
+                this.$api.saveAccessToken(ret.data.key)
                 await this.$store.dispatch('user/apiGetUserData', ret.data.id)
                 this.regDone = true
             } else {
-                if (ret.code === api.retcode.ALREADY_EXISTS) {
-                    $.message_error('帐户已经存在')
+                if (ret.code === this.$api.retcode.ALREADY_EXISTS) {
+                    this.$message.error('帐户已经存在')
                 } else {
-                    $.message_by_code(ret.code, ret.data)
+                    this.$message.byCode(ret.code, ret.data)
                 }
                 this.available = false
             }

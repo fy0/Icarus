@@ -69,7 +69,7 @@ class MANAGE_OPERATION(StateObject):
 
 
 MOP = MANAGE_OPERATION  # alias
-_get_info = lambda v: (v.current_user.id, v.current_role) if v else (None, None)
+_get_info = lambda v: (v.current_user.id, v.current_request_role) if v else (None, None)
 
 
 def _gen_add_by_resource_changed(field, op):

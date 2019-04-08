@@ -1,6 +1,5 @@
 <template>
 <setting-base>
-    <div v-title>个人信息 - 用户设置 - {{$config.title}}</div>
     <h3 class="ic-header">个人信息</h3>
 
     <div class="box">
@@ -186,6 +185,11 @@ export default {
             updating: false
         }
     },
+    head () {
+        return {
+            title: '个人信息 - 用户设置'
+        }
+    },
     computed: {
         user: function () {
             if (!this.userSave) {
@@ -200,19 +204,15 @@ export default {
     },
     methods: {
         fetchData: async function () {
-            // let params = this.$route.params
-            // let ret = await api.topic.get({
-            //     id: params.id,
-            // })
         },
         // resendActivationMail: async function () {
         //     if (this.sending) return
         //     this.sending = true
-        //     let ret = await api.user.resendActivationMail()
-        //     if (ret.code === api.retcode.SUCCESS) {
-        //         $.message_success('激活邮件发送成功！请检查邮箱。')
+        //     let ret = await this.$api.user.resendActivationMail()
+        //     if (ret.code === this.$api.retcode.SUCCESS) {
+        //         this.$message.success('激活邮件发送成功！请检查邮箱。')
         //     } else {
-        //         $.message_error('发送失败，每30分钟只能发送一次。')
+        //         this.$message.error('发送失败，每30分钟只能发送一次。')
         //     }
         //     this.sending = false
         // },

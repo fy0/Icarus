@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 /* .forum-box {} */
 
 /* 版块单项 */
@@ -10,6 +12,7 @@
     // background-color: #f3f6f9;
     background-color: #e5effa;
     border-radius: 3px;
+    cursor: pointer;
 }
 
 .board-item {
@@ -61,7 +64,7 @@
                 justify-items: flex-end;
                 margin: 0;
 
-                > .board-badge {
+                .board-badge {
                     color: $dark;
                     opacity: 0.6;
                     // background-color: $gray-400;
@@ -83,18 +86,18 @@
                     &:hover {
                         color: $dark;
                     }
+
+                    > .name, > .author {
+                        max-width: 5em;
+
+                        &.bs4-xl {
+                            max-width: 9em;
+                        }
+                    }
                 }
 
                 .author {
                     margin-right: 20px;
-                }
-
-                > .board-badge > .name, > .author {
-                    max-width: 5em;
-
-                    &.bs4-xl {
-                        max-width: 9em;
-                    }
                 }
             }
         }

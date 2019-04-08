@@ -97,7 +97,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -146,30 +145,30 @@ export default {
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
-                let ret = await api.user.new(info)
+                let ret = await this.$api.user.new(info)
 
-                if (ret.code !== api.retcode.SUCCESS) {
+                if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
-                    $.message_by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 } else {
                     let userinfo = ret.data
                     if (ret.code === 0) {
-                        api.saveAccessToken(userinfo['access_token'])
+                        this.$api.saveAccessToken(userinfo['access_token'])
                         await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
-                        if (ret.code === api.retcode.SUCCESS) {
-                            $.message_success('注册成功！')
+                        if (ret.code === this.$api.retcode.SUCCESS) {
+                            this.$message.success('注册成功！')
                         } else {
-                            $.message_by_code(ret.code)
+                            this.$message.byCode(ret.code)
                         }
                     } else {
-                        $.message_error('注册失败！可能账号或昵称已经被注册')
+                        this.$message.error('注册失败！可能账号或昵称已经被注册')
                     }
                     this.$router.push({ name: 'forum', params: {} })
                 }
                 this.$store.commit('LOADING_DEC', 1)
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         }
     },

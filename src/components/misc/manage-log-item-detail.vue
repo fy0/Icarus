@@ -1,5 +1,6 @@
 <template>
-<span class="detail" style="margin-left: .5em">
+<span class="detail" style="margin-left: .5em" v-if="item.value">
+    <!-- 加这个 v-if 是遇到了一种源数据残缺的奇怪情况，可能是旧数据库在几次表结构与逻辑修改中累积的问题 -->
     <template v-if="getOP(item) === MOP.POST_STATE_CHANGE">
         <span v-if="simple">-> {{postStateTxt(item.value.change[1])}}</span>
         <span v-else>({{item.value.change.map(postStateTxt).join(' -> ')}})</span>

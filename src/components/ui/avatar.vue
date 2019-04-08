@@ -6,15 +6,15 @@
     <a class="sa-avatar" :style="style" v-if="placeholder">
     </a>
     <!-- 存在图像头像情况 -->
-    <router-link v-else-if="user && user.avatar" class="sa-avatar" :style="userStyle" :to="linkTo">
+    <nuxt-link v-else-if="user && user.avatar" class="sa-avatar" :style="userStyle" :to="linkTo">
         <div class="ic-paper paper" :class="`ic-z${depth}`" :style="userStyle">
             <img style="width: 100%;height:100%" :src="staticUrl(user.avatar)"/>
         </div>
-    </router-link>
+    </nuxt-link>
     <!-- 自动生成头像情况 -->
-    <router-link v-else class="sa-avatar" :style="style" :to="linkTo" >
+    <nuxt-link v-else class="sa-avatar" :style="style" :to="linkTo" >
         <div class="ic-paper paper" :class="`ic-z${depth}`">{{char}}</div>
-    </router-link>
+    </nuxt-link>
 </div>
 <!-- 不带链接情况 -->
 <div style="display: flex; padding:3px" v-else>

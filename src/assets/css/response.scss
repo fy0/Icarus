@@ -25,29 +25,29 @@
 /* < 576px */
 @media screen and (lt-rbp(sm)) {
     .ic-xs-hidden {display: none !important; }
-    .ic-xs { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
+    .ic-xs { display: unset; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 576px */
 @media screen and (gt-rbp(sm)) and (lt-rbp(md)) {
     .ic-sm-hidden { display: none !important; }
-    .ic-sm { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
+    .ic-sm { display: unset; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 768px */
 @media screen and (gt-rbp(md)) and (lt-rbp(lg)) {
     .ic-md-hidden { display: none !important; }
-    .ic-md { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
+    .ic-md { display: unset; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 1024px */
 @media screen and (gt-rbp(lg)) and (lt-rbp(xl)) {
     .ic-lg-hidden { display: none !important; }
-    .ic-lg { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
+    .ic-lg { display: unset; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }
 
 /* > 1280px */
 @media screen and (gt-rbp(xl)) {
     .ic-xl-hidden { display: none !important; }
-    .ic-xl { display: inherit; width: auto; height: auto; opacity: unset; visibility: inherit; }
+    .ic-xl { display: unset; width: auto; height: auto; opacity: unset; visibility: inherit; }
 }

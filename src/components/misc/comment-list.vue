@@ -119,7 +119,6 @@
 
 <script>
 import { marked } from '@/md.js'
-import api from '@/netapi.js'
 import CommentPost from './comment-post.vue'
 import anime from 'animejs'
 
@@ -189,14 +188,14 @@ export default {
                 }
             }
 
-            let ret = await api.comment.list({
+            let ret = await this.$api.comment.list({
                 related_id: this.item.id,
                 order: 'id.asc',
                 loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } }
             }, thePage)
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.page = ret.data
-            } else if (ret.code === api.retcode.NOT_FOUND) {
+            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
                 ;
             } else {
                 ;

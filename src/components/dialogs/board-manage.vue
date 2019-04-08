@@ -119,7 +119,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import Multiselect from 'vue-multiselect'
 import { mapState, mapGetters } from 'vuex'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
@@ -163,7 +162,7 @@ export default {
             }
 
             let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible', 'can_post_rank'])
-            let ret = await api.board.set({ id: this.board.id }, data, this.$user.mainRole, keys)
+            let ret = await this.$api.board.set({ id: this.board.id }, data, this.$user.mainRole, keys)
 
             if (ret.code === 0) {
                 if (this.boardManageData) {
@@ -171,8 +170,8 @@ export default {
                 }
                 // 重新载入板块数据
                 await this.$store.dispatch('forum/load')
-                $.message_success('板块信息设置成功')
-            } else $.message_by_code(ret.code)
+                this.$message.success('板块信息设置成功')
+            } else this.$message.byCode(ret.code)
 
             this.quit()
         },
@@ -186,19 +185,19 @@ export default {
     watch: {
         'boardManage': async function (val) {
             if (val) {
-                let info = await api.board.get({
+                let info = await this.$api.board.get({
                     id: this.boardManageData.id,
                     loadfk: { 'user_id': null }
                 }, this.$user.mainRole)
 
-                if (info.code === api.retcode.SUCCESS) {
+                if (info.code === this.$api.retcode.SUCCESS) {
                     this.board = info.data
                     this.save = _.clone(this.board)
 
-                    let ret = await api.board.list({
+                    let ret = await this.$api.board.list({
                         order: 'weight.desc,time.asc'
                     }, 1, null, this.$user.mainRole)
-                    if (ret.code === api.retcode.SUCCESS) {
+                    if (ret.code === this.$api.retcode.SUCCESS) {
                         // vue-select 目前不允许写 null，要再等一等
                         this.boardList = []
                         this.boardsInfoDict = {}
@@ -210,7 +209,7 @@ export default {
                         }
                     }
                 } else {
-                    $.message_by_code(info.code)
+                    this.$message.byCode(info.code)
                 }
             }
         }

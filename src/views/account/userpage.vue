@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container">
-    <div v-if="user.nickname" v-title>{{user.nickname}} - {{config.title}}</div>
+    <!-- <div v-if="user.nickname" v-title>{{user.nickname}} - {{config.title}}</div> -->
     <div class="userpage">
         <div class="left ic-xs-hidden">
             <avatar :user="user" :size="164" class="avatar"></avatar>
@@ -35,7 +35,7 @@
                         <ic-timeline-item :key="i.id" v-for="i in tabs.topic.topics.items">
                             <span slot="time"><ic-time :timestamp="i.time"/></span>
                             <span slot="content">发表了一篇主题
-                                <router-link :to="{ name: 'forum_topic', params: {id: i.id} }">《{{i.title}}》</router-link>
+                                <nuxt-link :to="{ name: 'forum_topic', params: {id: i.id} }">《{{i.title}}》</nuxt-link>
                             </span>
                         </ic-timeline-item>
                     </ic-timeline>
@@ -50,7 +50,7 @@
                             <span slot="time"><ic-time :timestamp="i.time"></ic-time></span>
                             <span slot="content">发表了一条评论
                                 <div>
-                                    <router-link :to="{ name: 'forum_topic', params: {id: i.related_id} }">{{atConvert(i.content)}}</router-link>
+                                    <nuxt-link :to="{ name: 'forum_topic', params: {id: i.related_id} }">{{atConvert(i.content)}}</nuxt-link>
                                 </div>
                             </span>
                         </ic-timeline-item>
@@ -99,7 +99,34 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import api from '@/netapi.js'
+import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+
+class FetchCls extends BaseWrapper {
+    async tabTopicLoad () {
+        let uid = this.user.id
+        let retList = await this.$api.topic.list({
+            user_id: uid,
+            order: 'time.desc',
+            loadfk: { 'user_id': null, 'board_id': null }
+        })
+        if (!this.tabs) this.tabs = { topic: { topics: null }, comment: { data: null } }
+        this.tabs.topic.topics = retList.data
+    }
+    async fetchData () {
+        let role = null
+        let params = this.$route.params
+
+        if (this.userData && (params.id === this.userData.id)) role = this.basicRole
+        let ret = await this.$api.user.get(params, role)
+
+        if (ret.code === this.$api.retcode.SUCCESS) {
+            this.user = ret.data
+            await this.tabTopicLoad()
+        } else {
+            this.$message.byCode(ret.code)
+        }
+    }
+}
 
 export default {
     data () {
@@ -129,7 +156,7 @@ export default {
         atConvert: $.atConvert2,
         tabTopicLoad: async function () {
             let uid = this.user.id
-            let retList = await api.topic.list({
+            let retList = await this.$api.topic.list({
                 user_id: uid,
                 order: 'time.desc',
                 loadfk: { 'user_id': null, 'board_id': null }
@@ -138,26 +165,12 @@ export default {
         },
         tabCommentLoad: async function () {
             let uid = this.user.id
-            let retList = await api.comment.list({
+            let retList = await this.$api.comment.list({
                 user_id: uid,
                 order: 'time.desc',
                 loadfk: {}
             })
             this.tabs.comment.data = retList.data
-        },
-        fetchData: async function () {
-            let role = null
-            let params = this.$route.params
-
-            if (this.userData && (params.id === this.userData.id)) role = this.basicRole
-            let ret = await api.user.get(params, role)
-
-            if (ret.code === api.retcode.SUCCESS) {
-                this.user = ret.data
-                await this.tabTopicLoad()
-            } else {
-                $.message_by_code(ret.code)
-            }
         }
     },
     watch: {
@@ -172,9 +185,11 @@ export default {
         }
     },
     created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
+    },
+    async asyncData (ctx) {
+        let f = createFetchWrapper(FetchCls, ctx)
+        await f.fetchData()
+        return f._data
     },
     components: {
     }

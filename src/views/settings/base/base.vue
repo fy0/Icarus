@@ -1,6 +1,5 @@
 <template>
 <div class="ic-container">
-    <div v-title>用户设置 - {{$config.title}}</div>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>
@@ -31,6 +30,14 @@ import Sidebar from './sidebar.vue'
 export default {
     data () {
         return {}
+    },
+    head () {
+        return {
+            title: '用户设置',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户设置页面' }
+            ]
+        }
     },
     components: {
         Sidebar

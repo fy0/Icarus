@@ -15,7 +15,7 @@
                 <div class="ic-btn success" @click.prevent="login">登 录</div>
             </div>
             <div class="ic-form-row">
-                <router-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</router-link>
+                <nuxt-link class="lost-poasswrod" :to="{name: 'account_password_reset_request'}">忘记密码？</nuxt-link>
             </div>
             <div v-if="false" class="ic-form-row three-auth">
                 <span class="title"> 第三方登录 </span>
@@ -110,8 +110,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
-
 export default {
     data () {
         return {
@@ -123,6 +121,14 @@ export default {
             formErrors: {},
             passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
             passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+        }
+    },
+    head () {
+        return {
+            title: '用户登录',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户登录' }
+            ]
         }
     },
     computed: {
@@ -150,37 +156,38 @@ export default {
             if (this.checkEmail && this.checkPassword) {
                 this.$store.commit('LOADING_INC', 1)
                 // 登录请求
-                let ret = await api.user.signin({
+                let ret = await this.$api.user.signin({
                     email: this.info.email,
                     password: await $.passwordHash(this.info.password)
                 })
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                     if (this.goLastPage) {
                         this.$store.commit('LOADING_DEC', 1)
-                        $.message_success('登录成功，正在回到前页……')
+                        this.$message.success('登录成功，正在回到前页……')
                         this.$router.go(-1)
+                        return
                     } else {
                         this.$store.commit('LOADING_DEC', 1)
-                        $.message_success('登录成功，正在回到主页……')
+                        this.$message.success('登录成功，正在回到主页……')
                         this.$router.replace('/')
                         return
                     }
                 } else {
                     this.formErrors = ret.data
-                    $.message_by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 }
-                // ret = await api.user.get({username: this.info.username}, 'test')
+                // ret = await this.$api.user.get({username: this.info.username}, 'test')
                 // console.log(ret)
                 this.$store.commit('LOADING_DEC', 1)
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         },
         github_url: async function () {
             // 获取url，然后跳转
-            let ghUrl = await api.Oauth.getUrl('github')
+            let ghUrl = await this.$api.Oauth.getUrl('github')
             window.open(ghUrl, '_blank')
             // console.log(ghUrl)
         }

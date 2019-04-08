@@ -1,12 +1,12 @@
+from app import app
 from permissions.roles import *
 from permissions.tables import *
 
 
-def permissions_add_all(permission):
-    permission.add(visitor)
-    permission.add(banned_user)
-    permission.add(inactive_user)
-    permission.add(normal_user)
-    permission.add(wiki_editor)
-    permission.add(superuser)
-    permission.add(admin)
+app.permission.add(visitor)
+app.permission.add(banned_user)
+app.permission.add(inactive_user)
+app.permission.add(normal_user)
+app.permission.add(wiki_editor)
+app.permission.add(superuser)
+app.permission.add(admin)

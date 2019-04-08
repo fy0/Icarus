@@ -7,19 +7,18 @@ from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import binhex
 from view import route
-from permissions import permissions_add_all
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 @route('upload')
-class UploadView(UserMixin, PeeweeView):
+class UploadView(UserViewMixin, PeeweeView):
     model = Upload
 
     @route.interface('POST')
     async def token(self):
         user = self.current_user
         if user:
-            if self.current_role in ('user', 'admin', 'superuser'):
+            if self.current_request_role in ('user', 'admin', 'superuser'):
                 type_name = 'avatar' if self.params.get('is_avatar', False) else None
                 return self.finish(RETCODE.SUCCESS, qn.get_token(user.id.hex(), type_name))
         self.finish(RETCODE.FAILED)
@@ -54,8 +53,3 @@ class UploadView(UserMixin, PeeweeView):
     @classmethod
     def ready(cls):
         pass
-
-    @classmethod
-    def permission_init(cls):
-        permission: Permissions = cls.permission
-        permissions_add_all(permission)

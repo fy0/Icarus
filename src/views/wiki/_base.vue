@@ -1,6 +1,6 @@
 <template>
 <div class="ic-container">
-    <div v-title>百科 - {{config.title}}</div>
+    <!-- <div v-title>百科 - {{config.title}}</div> -->
     <div class="wrapper">
         <div class="left-nav ic-xs-hidden">
             <div class="box ic-paper ic-z1">
@@ -8,22 +8,22 @@
                 <div class="ic-hr" style="margin: 10px 0px;"></div>
                 <div class="bottom" v-if="!loading">
                     <div style="font-weight: bold">
-                        <router-link :to="{ name: 'wiki_list' }">全部文章</router-link>
+                        <nuxt-link :to="{ name: 'wiki_list' }">全部文章</nuxt-link>
                     </div>
                     <div style="font-weight: bold">
-                        <router-link :to="{ name: 'wiki_random' }">随机页面</router-link>
+                        <nuxt-link :to="{ name: 'wiki_random' }">随机页面</nuxt-link>
                     </div>
 
                     <template v-if="isWikiAdmin">
                         <div class="ic-hr" style="margin: 10px 0px;"></div>
                         <div>
-                            <router-link :to="{ name: 'wiki_article_new' }">添加文章</router-link>
+                            <nuxt-link :to="{ name: 'wiki_article_new' }">添加文章</nuxt-link>
                         </div>
                         <div>
-                            <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</router-link>
+                            <nuxt-link :to="{ name: 'wiki_article_edit', params: {'id': this.sidebar.id }, query: { manage: true } }">编辑目录</nuxt-link>
                         </div>
                         <div>
-                            <router-link :to="{ name: 'wiki_article_edit', params: {'id': this.mainpageId }, query: { manage: true } }">编辑主页</router-link>
+                            <nuxt-link :to="{ name: 'wiki_article_edit', params: {'id': this.mainpageId }, query: { manage: true } }">编辑主页</nuxt-link>
                         </div>
                     </template>
                 </div>
@@ -141,7 +141,6 @@ $title-text-active-color: darken(#373434, 0);
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import api from '@/netapi.js'
 import { marked } from '@/md.js'
 
 export default {
@@ -155,8 +154,7 @@ export default {
     computed: {
         ...mapState(['config', 'loading']),
         ...mapGetters('user', [
-            'isWikiAdmin',
-            'basicRole'
+            'isWikiAdmin'
         ])
     },
     methods: {
@@ -164,23 +162,23 @@ export default {
             let wrong = false
 
             let getSidebar = async () => {
-                let ret = await api.wiki.get({
+                let ret = await this.$api.wiki.get({
                     flag: 1
-                }, this.basicRole)
+                }, this.$user.basicRole)
 
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     this.sidebar = ret.data
                 } else {
                     wrong = ret
                 }
             }
             let getMainPage = async () => {
-                let ret = await api.wiki.get({
+                let ret = await this.$api.wiki.get({
                     select: 'id',
                     flag: 2
-                }, this.basicRole)
+                }, this.$user.basicRole)
 
-                if (ret.code === api.retcode.SUCCESS) {
+                if (ret.code === this.$api.retcode.SUCCESS) {
                     this.mainpageId = ret.data.id
                 } else {
                     wrong = ret
@@ -189,9 +187,12 @@ export default {
             await Promise.all([getSidebar(), getMainPage()])
 
             if (wrong) {
-                $.message_by_code(wrong.code)
+                this.$message.byCode(wrong.code)
             }
         }
+    },
+    async asyncData (ctx) {
+        // nuxt 组件中不能用asyncData，等等再想办法吧
     },
     created: async function () {
         this.$store.commit('LOADING_INC', 1)

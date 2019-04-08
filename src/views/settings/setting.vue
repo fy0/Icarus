@@ -1,6 +1,5 @@
 <template>
 <setting-base>
-    <div v-title>用户设置 - {{$config.title}}</div>
     <span>测试。以后来个仪表盘什么的</span>
 </setting-base>
 </template>
@@ -16,10 +15,18 @@ export default {
     data () {
         return {}
     },
+    head () {
+        return {
+            title: '用户设置',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户设置页面' }
+            ]
+        }
+    },
     methods: {
         fetchData: async function () {
             // let params = this.$route.params
-            // let ret = await api.topic.get({
+            // let ret = await this.$api.topic.get({
             //     id: params.id,
             // })
         }

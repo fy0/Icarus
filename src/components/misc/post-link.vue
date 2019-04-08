@@ -4,49 +4,49 @@
     <!-- 用户 -->
     <template v-if="type === POST_TYPES.USER">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
-        <router-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="getPostTitle(item, 'nickname')">
+        <nuxt-link :to="{ name: 'account_userpage', params: {id: item.id} }" :title="getPostTitle(item, 'nickname')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'nickname')) || '错误的值'}}</template>
                 <span v-if="goto">🔗</span>
             </template>
             <slot v-else />
-        </router-link>
+        </nuxt-link>
     </template>
 
     <!-- 板块 -->
     <template v-else-if="type === POST_TYPES.BOARD">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
-        <router-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="getPostTitle(item, 'name')">
+        <nuxt-link :to="{ name: 'forum_board', params: {id: item.id} }" :title="getPostTitle(item, 'name')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'name')) || '错误的值'}}</template>
                 <span v-if="goto">📮</span> <!--💬-->
             </template>
             <slot v-else />
-        </router-link>
+        </nuxt-link>
     </template>
 
     <!-- 主题 -->
     <template v-else-if="type === POST_TYPES.TOPIC">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
-        <router-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="getPostTitle(item, 'title')">
+        <nuxt-link :to="{ name: 'forum_topic', params: {id: item.id} }" :title="getPostTitle(item, 'title')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'title')) || '错误的值'}}</template>
                 <span v-if="goto">📝</span>
             </template>
             <slot v-else />
-        </router-link>
+        </nuxt-link>
     </template>
 
     <!-- 百科 -->
     <template v-else-if="type === POST_TYPES.WIKI">
         <span v-if="showType" class="type-name" :class="{'bold': typeBold}">{{POST_TYPES_TXT[type]}}</span>
-        <router-link :to="{ name: ('wiki_article_by_' + (item.ref ? 'ref' : 'id')), params: {ref: item.ref, id: item.id} }" :title="getPostTitle(item, 'title')">
+        <nuxt-link :to="{ name: ('wiki_article_by_' + (item.ref ? 'ref' : 'id')), params: {ref: item.ref, id: item.id} }" :title="getPostTitle(item, 'title')">
             <template v-if="!useSlot">
                 <template>{{text(getPostTitle(item, 'title')) || '错误的值'}}</template>
                 <span v-if="goto">📝</span>
             </template>
             <slot v-else />
-        </router-link>
+        </nuxt-link>
     </template>
 
     <!-- 评论 -->

@@ -38,11 +38,13 @@
                     <template v-if="i.note"> - {{i.note}}</template>
 
                     <span style="margin-left: 0.5em;" v-if="i.data.op === MOP.TOPIC_BOARD_MOVE">
+                        <template v-if="i.data.value">
                         <template>(</template>
                         <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value.change[0]]"/>
                         <template> -> </template>
                         <post-link :goto="false" :type="POST_TYPES.BOARD" :item="posts[i.data.value.change[1]]"/>
                         <template>)</template>
+                        </template>
                     </span>
                     <ManageLogItemDetail v-else :item="i.data" :simple="true" />
                 </div>
@@ -102,7 +104,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
@@ -128,13 +129,13 @@ export default {
             this.$store.commit('LOADING_INC', 1)
             let params = this.$route.query
             this.page.curPage = params.page
-            let ret = await api.notif.list({
+            let ret = await this.$api.notif.list({
                 receiver_id: this.$user.data.id,
                 order: 'time.desc'
                 // loadfk: {user_id: null, board_id: null}
-            }, params.page)
+            }, params.page, null, this.$user.basicRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 let userIds = new Set()
                 let manageInfoList = []
 
@@ -143,6 +144,8 @@ export default {
                         userIds.add(uid)
                     }
                     if (i.type === this.$misc.NOTIF_TYPE.MANAGE_INFO_ABOUT_ME) {
+                        // 跳过一种出问题的情况
+                        if (!i.data.value) continue
                         this.posts[i.related_id] = {
                             'id': i.related_id,
                             'post_type': i.related_type,
@@ -177,12 +180,14 @@ export default {
                         }
                     ]
                 }, manageInfoList)
+                // , null, this.$api, this.$store
+
                 for (let [k, v] of Object.entries(posts2)) {
                     this.posts[k] = v
                 }
 
                 if (userIds.size > 0) {
-                    let users = await api.user.list({
+                    let users = await this.$api.user.list({
                         'id.in': JSON.stringify(new Array(...userIds)),
                         'select': 'id, nickname'
                     }, 1)
@@ -195,16 +200,16 @@ export default {
                 // let pageNumber = this.$route.query.page
                 // if (pageNumber) this.commentPage = parseInt(pageNumber)
 
-                let ret2 = await api.notif.setRead()
-                if (ret2.code === api.retcode.SUCCESS) {
+                let ret2 = await this.$api.notif.setRead()
+                if (ret2.code === this.$api.retcode.SUCCESS) {
                     // 会出现负数问题
                     // state.unread -= ret2.data
                     this.$store.commit('user/SET_UNREAD', 0)
                 }
             } else {
-                if (ret.code === api.retcode.NOT_FOUND) {
+                if (ret.code === this.$api.retcode.NOT_FOUND) {
                 } else {
-                    $.message_by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 }
             }
             this.$store.commit('LOADING_DEC', 1)

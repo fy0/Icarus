@@ -1,6 +1,5 @@
 <template>
 <setting-base>
-    <div v-title>修改密码 - 用户设置 - {{$config.title}}</div>
     <h3 class="ic-header">修改密码</h3>
     <form class="ic-form">
         <check-row :flex="true" :results="formErrors.old_password" :check="true" :text='checkPasswordText'>
@@ -59,7 +58,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import SettingBase from '../base/base.vue'
 
 export default {
@@ -75,6 +73,14 @@ export default {
             formErrors: {},
             passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
             passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX
+        }
+    },
+    head () {
+        return {
+            title: '修改密码 - 用户设置',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户设置页面' }
+            ]
         }
     },
     computed: {
@@ -98,21 +104,21 @@ export default {
                 info.password = await $.passwordHash(info.password)
                 info.password2 = await $.passwordHash(info.password2)
                 info.old_password = await $.passwordHash(info.old_password)
-                let ret = await api.user.changePassword(info)
+                let ret = await this.$api.user.changePassword(info)
 
-                if (ret.code !== api.retcode.SUCCESS) {
+                if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
-                    $.message_error('修改密码失败')
+                    this.$message.error('修改密码失败')
                 } else {
-                    api.saveAccessToken(ret.data)
-                    $.message_by_code(ret.code)
+                    this.$api.saveAccessToken(ret.data)
+                    this.$message.byCode(ret.code)
                     this.info.old_password = ''
                     this.info.password = ''
                     this.info.password2 = ''
                     this.info.verify = ''
                 }
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         }
     },

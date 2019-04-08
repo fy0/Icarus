@@ -26,3 +26,5 @@ selenium-debug.log
 # Others
 bak/
 src/assets/icons/
+.nuxt
+package-lock.json

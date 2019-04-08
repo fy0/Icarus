@@ -28,5 +28,6 @@ normal_user = Ability('user', {
         'key': (A.READ, A.QUERY),
         'size': (A.READ,),
         'type_name': (A.READ, A.QUERY),
-    })
+    }),
+    'notif': A.ALL
 }, based_on=inactive_user)

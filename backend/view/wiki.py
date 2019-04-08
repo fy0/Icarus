@@ -15,8 +15,7 @@ from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from view import route, cooldown, same_user, ValidateForm, run_in_thread
 from wtforms import validators as va, StringField, IntegerField
-from permissions import permissions_add_all
-from view.user import UserMixin
+from view.user import UserViewMixin
 
 
 class WikiNewForm(ValidateForm):
@@ -48,7 +47,7 @@ class WikiEditForm(ValidateForm):
 
 
 @route('wiki')
-class WikiView(UserMixin, PeeweeView):
+class WikiView(UserViewMixin, PeeweeView):
     """
     文档有一个简单的版本设定，但忽略任何并发导致的同步问题
     """
@@ -58,11 +57,6 @@ class WikiView(UserMixin, PeeweeView):
     def ready(cls):
         cls.add_soft_foreign_key('id', 'post_stats')
         cls.add_soft_foreign_key('user_id', 'user')
-
-    @classmethod
-    def permission_init(cls):
-        permission: Permissions = cls.permission
-        permissions_add_all(permission)
 
     @route.interface('GET')
     async def random(self):

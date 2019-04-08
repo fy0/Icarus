@@ -39,13 +39,20 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import api from '@/netapi.js'
 import SettingBase from '../base/base.vue'
 
 export default {
     data () {
         return {
             page: []
+        }
+    },
+    head () {
+        return {
+            title: '我的上传 - 用户设置',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户设置页面' }
+            ]
         }
     },
     computed: {
@@ -63,18 +70,18 @@ export default {
             this.$store.commit('LOADING_INC', 1)
             // let params = this.$route.query
             // this.page.curPage = params.page
-            // let ret = await api.upload.token('user')
+            // let ret = await this.$api.upload.token('user')
 
-            let ret = await api.upload.list({
+            let ret = await this.$api.upload.list({
                 'type_name.is': null
             }, 1, null, this.basicRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.page = ret.data
             //     // let pageNumber = this.$route.query.page
             //     // if (pageNumber) this.commentPage = parseInt(pageNumber)
             } else {
-                $.message_by_code(ret.code)
+                this.$message.byCode(ret.code)
             }
             this.$store.commit('LOADING_DEC', 1)
         }

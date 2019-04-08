@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>板块管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">板块管理</h3>
 
     <table class="pure-table pure-table-horizontal" style="width: 100%">
@@ -84,7 +83,6 @@ table {
 </style>
 
 <script>
-import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 import DialogBoardManage from '@/components/dialogs/board-manage.vue'
 
@@ -99,28 +97,36 @@ export default {
             boardsInfoDict: {}
         }
     },
+    head () {
+        return {
+            title: '板块管理 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '板块管理 - 管理界面' }
+            ]
+        }
+    },
     methods: {
         boardNew: async function () {
-            let ret = await api.board.new(this.boardNewInfo, this.$user.mainRole)
-            $.message_by_code(ret.code)
-            if (ret.code === api.retcode.SUCCESS) {
+            let ret = await this.$api.board.new(this.boardNewInfo, this.$user.mainRole)
+            this.$message.byCode(ret.code)
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.fetchData()
             }
         },
         fetchData: async function () {
-            let ret = await api.board.list({
+            let ret = await this.$api.board.list({
                 order: 'weight.desc,time.asc',
                 loadfk: { 'user_id': null }
                 // select: 'id, time, user_id, board_id, title, state',
             }, 1, null, this.$user.forumAdminRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.boardInfo = ret.data
                 for (let i of ret.data.items) {
                     this.boardsInfoDict[i.id] = i
                 }
             } else {
-                // $.message_by_code(ret.code)
+                // this.$message.byCode(ret.code)
             }
         }
     },

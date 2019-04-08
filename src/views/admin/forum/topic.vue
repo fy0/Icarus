@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>主题管理 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">主题管理</h3>
 
     <div class="search-box" v-if="false">
@@ -9,15 +8,15 @@
     <div v-if="topics && topics.items && topics.items.length">
         <ul class="ic-collection">
             <li class="item ic-collection-item" v-for="i in topics.items" :key="i.id">
-                <router-link class="title" :class="i.state === $misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
+                <nuxt-link class="title" :class="i.state === $misc.POST_STATE.DEL ? 'del-line' : ''" :title="i.title" :to="{ name: 'forum_topic', params: {id: i.id} }">
                     <span>{{i.title}}</span>
                     <span class="icons">
                         <i v-if="i.awesome == 1" class="icarus icon-diamond" title="优秀" style="color: #e57272"></i>
                         <i v-if="false" class="icarus icon-crown" title="精华" style="color: #e8a85d"></i>
                     </span>
-                </router-link>
+                </nuxt-link>
                 <div class="info">
-                    <router-link class="board" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</router-link> ·
+                    <nuxt-link class="board" :to="{ name: 'forum_board', params: {id: i.board_id.id} }">{{i.board_id.name}}</nuxt-link> ·
                     <user-link :user="i.user_id" /> ·
                     <ic-time :timestamp="i.time" /> ·
                     <span>{{$misc.POST_STATE_TXT[i.state]}}</span> ·
@@ -70,7 +69,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 
 export default {
@@ -80,15 +78,23 @@ export default {
             topics: {}
         }
     },
+    head () {
+        return {
+            title: '主题管理 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '主题管理 - 管理界面' }
+            ]
+        }
+    },
     methods: {
         fetchData: async function () {
             let params = this.$route.params
-            let retList = await api.topic.list({
+            let retList = await this.$api.topic.list({
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 // select: 'id, time, user_id, board_id, title, state',
                 loadfk: { 'user_id': null, 'board_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
             }, params.page, null, this.$user.mainRole)
-            if (retList.code === api.retcode.SUCCESS) {
+            if (retList.code === this.$api.retcode.SUCCESS) {
                 this.topics = retList.data
             }
         }

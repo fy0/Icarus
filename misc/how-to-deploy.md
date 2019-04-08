@@ -20,18 +20,23 @@ Windows上直接使用Anaconda3或者官方版本。
 
 Linux上部分发行版（例如ArchLinux）天然满足要求。
 
-对于其他的发行版，首选方案是通过`pyenv`来安装和管理不同版本的Python：
+对于自带Python在3.6以下的发行版，可以通过`pyenv`来安装和管理不同版本的Python：
 
 ```bash
 curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 
-# 重新进入终端后，指定版本进行安装
-# 或者也可以选择这里不安装，到后面pipenv的时候会有选项自动安装。
+# 在终端输入以下命令
 pyenv update
 pyenv install 3.6
+# 此时会告诉你能够安装的3.6.x小版本，安装最新的一个就可以了
+# 注意安装时间会有点长，这里是下载源码包进行编译的，下载源码包慢有办法解决
+# 搜一下就好了，这里不赘述。编译安装慢请耐心等待（注意编译时没有回显，只是CPU占用很高）
+pyenv install 3.6.x
+# 最后切换到 python 3.6 环境
+pyenv local 3.6.x
 ```
 
-来源：https://github.com/pyenv/pyenv
+参考自：https://github.com/pyenv/pyenv
 
 或者使用包管理器安装，这是一个 Debian/Ubuntu 解决方案：
 
@@ -45,15 +50,21 @@ sudo su -c "curl https://bootstrap.pypa.io/get-pip.py | python3.6"
 
 ### 2. NodeJS
 
-建议使用LTS版本的 nodejs，通过包管理器安装：
+建议使用LTS版本的 nodejs，通过包管理器安装。官方参考文档：
 
 https://nodejs.org/en/download/package-manager/
 
+Ubuntu apt安装，执行以下命令：
+
 ```bash
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
+Centos/RH
+```bash
+curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+```
 
 ### 3. PostgreSQL
 
@@ -71,7 +82,7 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
 sudo apt-get update
 
 # 安装PostgreSQL，需要9.6以上版本
-sudo apt-get install -y postgresql-10
+sudo apt-get install -y postgresql-11
 ```
 
 装好之后做一些配置
@@ -99,15 +110,14 @@ Windows上可以使用[微软提供的二进制版本](https://github.com/Micros
 建议使用 pipenv 进行部署，首先切到backend目录，执行：
 
 ```bash
-sudo pip3.6 install pipenv
+# 首先记得用pipenv切到3.6环境
+sudo pip install pipenv
 pipenv install
 ```
 
 不过有个问题就是 pipenv 太慢，总是在 Locking。
 
 可以灵活使用 `--skip-lock` 参数跳过 Locking 阶段。
-
-或者使用requirements.txt进行比较传统的安装。
 
 > 特别地，在Windows上安装aioredis库时可能会遇到依赖的hiredis包无法安装的问题  
 > 如果是anaconda用户，那么可以使用：  
@@ -142,20 +152,15 @@ cd Icarus
 npm install
 ```
 
-迫于安装时间过长，国内可以使用cnpm：
-```bash
-npm install -g cnpm --registry=https://registry.npm.taobao.org
-cnpm install
-```
-
 如果只是开发环境下看看效果，那么在后端已经跑起来的情况下：
 ```bash
 npm run serve
 ```
 然后在浏览器中查看即可。
 
+如果需要部署，那么请参考下一节。
 
-## 扩展篇：Nginx部署
+## 扩展篇：配置 Nginx
 
 如果需要配置外部访问（注意！只是开发则不需要），可以按如下步骤操作：
 
@@ -166,7 +171,6 @@ npm run serve
 首先，在 Icarus 目录下新建一个 private.js，并按照下例进行填写：
 
 ```js
-// 单端口方案
 var host = window.location.host
 
 export default {
@@ -178,9 +182,9 @@ export default {
 ```
 
 ```bash
-npm run build
+npx nuxt build
+npx nuxt start
 ```
-生成dist目录备用。
 
 随后是nginx的配置，当然你要首先安装它。
 
@@ -195,10 +199,10 @@ npm run build
 ```bash
 sudo apt install nginx
 cd Icarus
-sudo cp misc/icarus-1port.conf /etc/nginx/conf.d/
+sudo cp misc/icarus.conf /etc/nginx/conf.d/
 ```
 
-随后编辑 /etc/nginx/conf.d/icarus-1port.conf，将
+随后编辑 /etc/nginx/conf.d/icarus.conf，将
 ```
 # root /home/{user}/Icarus/dist;
 ```

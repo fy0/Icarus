@@ -16,10 +16,18 @@ export default {
     data () {
         return {}
     },
+    head () {
+        return {
+            title: '隐私设置 - 用户设置',
+            meta: [
+                { hid: 'description', name: 'description', content: '用户设置页面' }
+            ]
+        }
+    },
     methods: {
         fetchData: async function () {
             // let params = this.$route.params
-            // let ret = await api.topic.get({
+            // let ret = await this.$api.topic.get({
             //     id: params.id,
             // })
         }

@@ -1,6 +1,5 @@
 <template>
 <admin-base>
-    <div v-title>管理日志 - 管理界面 - {{$config.title}}</div>
     <h3 class="ic-header">管理日志</h3>
 
     <div v-if="page.items.length === 0" class="no-comment">目前没有日志</div>
@@ -88,7 +87,6 @@
 
 <script>
 import { marked } from '@/md.js'
-import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
@@ -102,6 +100,14 @@ export default {
             MOPT: this.$misc.MANAGE_OPERATION_TXT
         }
     },
+    head () {
+        return {
+            title: '管理日志 - 管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '管理日志 - 管理界面' }
+            ]
+        }
+    },
     methods: {
         toMonth: function (ts) {
             let date = new Date()
@@ -111,15 +117,15 @@ export default {
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)
             let params = this.$route.params
-            // let ret = await api.topic.get({
+            // let ret = await this.$api.topic.get({
             //     id: params.id,
             // })
-            let ret = await api.logManage.list({
+            let ret = await this.$api.logManage.list({
                 loadfk: { user_id: null },
                 order: 'time.desc'
             }, params.page, null, this.$user.mainRole)
 
-            if (ret.code === api.retcode.SUCCESS) {
+            if (ret.code === this.$api.retcode.SUCCESS) {
                 this.postsOfComments = await $.getBasePostsByIDs(async (i) => {
                     return [
                         {

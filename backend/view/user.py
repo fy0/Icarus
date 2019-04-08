@@ -1,10 +1,9 @@
 import json
 import os
-import re
 import time
 import peewee
 import config
-from typing import Dict, Type, List
+from typing import Dict, List
 from lib import mail
 from model import db
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
@@ -12,20 +11,19 @@ from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
 from model.post_stats import post_stats_new
 from slim.base.sqlquery import SQLValuesToWrite
-from slim.base.user import BaseUser, BaseAccessTokenUserMixin
+from slim.base.user import BaseAccessTokenUserViewMixin
 from slim.retcode import RETCODE
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin
 from view import route, ValidateForm, cooldown, same_user, get_fuzz_ip
-from wtforms import StringField, validators as va, ValidationError
-from slim.base.permission import Permissions, DataRecord
-from permissions import permissions_add_all
+from wtforms import StringField, validators as va
+from slim.base.permission import DataRecord
 from view.user_signup_legacy import UserLegacyView
 from view.user_validate_form import RequestSignupByEmailForm, SigninByEmailForm, SigninByNicknameForm, PasswordForm, \
     NicknameForm
 
 
-class UserMixin(BaseAccessTokenUserMixin):
+class UserViewMixin(BaseAccessTokenUserViewMixin):
     def teardown_user_key(self):
         u: User = self.current_user
         u.key = None
@@ -65,13 +63,8 @@ async def same_email_post(view):
 
 
 @route('user')
-class UserView(UserMixin, UserLegacyView):
+class UserView(UserViewMixin, UserLegacyView):
     model = User
-
-    @classmethod
-    def permission_init(cls):
-        permission: Permissions = cls.permission
-        permissions_add_all(permission)
 
     @route.interface('POST')
     @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP, b'ic_cd_user_request_reset_password_%b')
@@ -195,7 +188,7 @@ class UserView(UserMixin, UserLegacyView):
         if uid and self.current_user and (uid == self.current_user.id.hex()):
             if self.ret_val['code'] == RETCODE.SUCCESS:
                 data = self.ret_val['data']
-                data['roles'] = self.current_user_roles
+                data['roles'] = self.roles
                 data['main_role'] = self.current_user.main_role
                 self.finish(RETCODE.SUCCESS, data)
 

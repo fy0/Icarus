@@ -1,32 +1,33 @@
 <template>
-<loading v-if="loading"/>
-<redirecting v-else-if="!isWikiAdmin" class="ic-container box">
-    <span>抱歉，你的账号没有权限访问这个页面</span>
-</redirecting>
-<div v-else class="ic-container">
-    <div class="edit-page-title">
-        <div v-title>{{ isEdit ? '编辑文章' : '添加文章' }} - {{config.title}}</div>
-        <h3 class="" v-if="!isEdit">添加文章</h3>
-        <h3 class="" v-else>编辑文章<span v-if="asAdmin"> - 管理员模式</span></h3>
-        <button class="ic-btn primary right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
-    </div>
-
-    <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
-        <check-row :results="formErrors.title" :multi="true">
-            <input type="text" name="title" v-model="wikiInfo.title" :placeholder="`这里填写标题，${BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
-        </check-row>
-
-        <check-row :results="formErrors.ref" :multi="true" v-if="!save.flag">
-            <input type="text" v-model="wikiInfo.ref" :placeholder="`这里是这篇文章的URL地址，若为abc，地址将为/wiki/r/abc，不填则与标题相同`">
-        </check-row>
-
-        <check-row :results="formErrors.content" :multi="true">
-            <markdown-editor ref="editor" v-model="wikiInfo.content" rows="15" autofocus></markdown-editor>
-        </check-row>
-        <div class="ic-form-row">
-            <button class="ic-btn primary" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
+<div>
+    <loading v-if="loading"/>
+    <redirecting v-else-if="!isWikiAdmin" class="ic-container box">
+        <span>抱歉，你的账号没有权限访问这个页面</span>
+    </redirecting>
+    <div v-else class="ic-container">
+        <div class="edit-page-title">
+            <h3 class="" v-if="!isEdit">添加文章</h3>
+            <h3 class="" v-else>编辑文章<span v-if="asAdmin"> - 管理员模式</span></h3>
+            <button class="ic-btn primary right-top-btn" type="primary" :loading="loading" @click="send">{{postButtonText}}</button>
         </div>
-    </form>
+
+        <form class="ic-form" id="form_topic" method="POST" @submit.prevent="send">
+            <check-row :results="formErrors.title" :multi="true">
+                <input type="text" name="title" v-model="wikiInfo.title" :placeholder="`这里填写标题，${BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MIN} - ${BACKEND_CONFIG.TOPIC_TITLE_LENGTH_MAX} 字`">
+            </check-row>
+
+            <check-row :results="formErrors.ref" :multi="true" v-if="!save.flag">
+                <input type="text" v-model="wikiInfo.ref" :placeholder="`这里是这篇文章的URL地址，若为abc，地址将为/wiki/r/abc，不填则与标题相同`">
+            </check-row>
+
+            <check-row :results="formErrors.content" :multi="true">
+                <markdown-editor ref="editor" v-model="wikiInfo.content" rows="15" autofocus></markdown-editor>
+            </check-row>
+            <div class="ic-form-row">
+                <button class="ic-btn primary" style="float: right" type="primary" :loading="loading">{{postButtonText}}</button>
+            </div>
+        </form>
+    </div>
 </div>
 </template>
 
@@ -98,11 +99,8 @@ div.markdown-editor > div.editor-toolbar {
 </style>
 
 <script>
-import store from '@/store/index'
 import { mapState, mapGetters } from 'vuex'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
-import api from '@/netapi.js'
-import nprogress from 'nprogress/nprogress.js'
 import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
 // import marked from '@/md.js'
@@ -126,6 +124,14 @@ export default {
                 title: [],
                 content: []
             }
+        }
+    },
+    head () {
+        return {
+            title: `${this.isEdit ? '编辑文章' : '添加文章'} - ${this.wikiInfo.title} - 百科`,
+            meta: [
+                { hid: 'description', name: 'description', content: '百科' }
+            ]
         }
     },
     computed: {
@@ -160,7 +166,7 @@ export default {
 
             let wikiInfo = $.objDiff(this.wikiInfo, this.save)
             if (Object.keys(wikiInfo).length <= 0) {
-                $.message_success('编辑成功！但编辑者并未进行任何改动。')
+                this.$message.success('编辑成功！但编辑者并未进行任何改动。')
                 if (this.save.flag) {
                     this.$router.push({ name: 'wiki' })
                 } else {
@@ -174,13 +180,13 @@ export default {
             wikiInfo.returning = true
 
             if (this.isEdit) {
-                ret = await api.wiki.set({ id: this.wikiInfo.id }, wikiInfo, role)
+                ret = await this.$api.wiki.set({ id: this.wikiInfo.id }, wikiInfo, role)
             } else {
                 if (this.action === 'fork') {
                     wikiInfo['root_id'] = this.wikiInfo.root_id
                 }
                 // return
-                ret = await api.wiki.new(wikiInfo, role)
+                ret = await this.$api.wiki.new(wikiInfo, role)
             }
             successText = '编辑成功！已自动跳转至文章页面。'
 
@@ -192,20 +198,20 @@ export default {
                 } else {
                     this.$router.push({ name: 'wiki_article_by_id', params: { id: wikiId } })
                 }
-                $.message_success(successText)
-            } else if (ret.code === api.retcode.INVALID_ROLE) {
-                $.message_error('当前用户身份无此权限')
+                this.$message.success(successText)
+            } else if (ret.code === this.$api.retcode.INVALID_ROLE) {
+                this.$message.error('当前用户身份无此权限')
                 this.working = false
-            } else if (ret.code === api.retcode.ALREADY_EXISTS) {
-                $.message_error('指定的URL地址已经存在')
+            } else if (ret.code === this.$api.retcode.ALREADY_EXISTS) {
+                this.$message.error('指定的URL地址已经存在')
                 this.working = false
             } else {
-                if (ret.code === api.retcode.FAILED) {
+                if (ret.code === this.$api.retcode.FAILED) {
                     this.formErrors = ret.data
-                    $.message_error('内容不符合要求，请根据输入框下方提示进行修改')
+                    this.$message.error('内容不符合要求，请根据输入框下方提示进行修改')
                 } else {
                     this.formErrors = {}
-                    $.message_by_code(ret.code, ret.data)
+                    this.$message.byCode(ret.code, ret.data)
                 }
                 // 注意：发布成功会跳转，故不做复位，失败则复位
                 this.working = false
@@ -218,18 +224,18 @@ export default {
             this.asAdmin = true // 普通用户无法进入编辑页面
 
             if (!this.wikiEditRole) {
-                $.message_error('抱歉，无权访问此页面，请返回')
+                this.$message.error('抱歉，无权访问此页面，请返回')
                 return
             }
 
             if (this.action !== 'new') {
-                let ret = await api.wiki.get({
+                let ret = await this.$api.wiki.get({
                     id: params.id,
                     loadfk: { user_id: null }
                 })
 
                 if (ret.code) {
-                    $.message_error('抱歉，发生了错误')
+                    this.$message.error('抱歉，发生了错误')
                     return
                 }
 
@@ -241,15 +247,6 @@ export default {
 
             this.loading = false
         }
-    },
-    beforeRouteEnter (to, from, next) {
-        if (!store.state.user.userData) {
-            store.commit('LOADING_SET', 0)
-            nprogress.done()
-            $.message_error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
-            return next('/')
-        }
-        next()
     },
     mounted: async function () {
         // if (localStorage.getItem('topic-post-cache-clear')) {
@@ -265,6 +262,14 @@ export default {
         }
     },
     created: async function () {
+        // 未登录跳转
+        if (!this.$store.state.user.userData) {
+            this.$store.commit('LOADING_SET', 0)
+            // nprogress.done()
+            this.$message.error('在登录后才能发帖。请登录账号，如果没有账号，先注册一个。')
+            return this.$router.push('/')
+        }
+
         await this.fetchData()
 
         let func = async () => {
@@ -296,7 +301,7 @@ export default {
                         complete: (ret) => {
                             // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                             // console.log('done', ret)
-                            if (ret.code === api.retcode.SUCCESS) {
+                            if (ret.code === this.$api.retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
                                 let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
                                 let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
@@ -326,7 +331,10 @@ export default {
                 setTimeout(func, 500)
             }
         }
-        setTimeout(func, 500)
+
+        if (process.browser) {
+            setTimeout(func, 500)
+        }
     },
     watch: {
         'wikiInfo.ref': function (val, oldVal) {

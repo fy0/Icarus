@@ -15,6 +15,14 @@ export default {
     data () {
         return {}
     },
+    head () {
+        return {
+            title: '管理界面',
+            meta: [
+                { hid: 'description', name: 'description', content: '管理页面' }
+            ]
+        }
+    },
     components: {
         AdminBase
     }

@@ -11,7 +11,6 @@
 </style>
 
 <script>
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -29,16 +28,16 @@ export default {
     methods: {
         check: async function (code) {
             // console.log('check', code)
-            let ret = await api.Oauth.send(code) // 拿到oauth返回的code，交给 api - get_user_data
+            let ret = await this.$api.Oauth.send(code) // 拿到oauth返回的code，交给 api - get_user_data
             // 判断返回值，跳转到主页或者补全信息界面
-            if (ret['code'] === api.retcode.SUCCESS) {
+            if (ret['code'] === this.$api.retcode.SUCCESS) {
                 await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                 if (this.goLastPage) {
-                    $.message_success('登录成功，正在回到前页……')
+                    this.$message.success('登录成功，正在回到前页……')
                     this.$router.go(-1)
                 } else {
-                    $.message_success('登录成功，正在回到主页……')
+                    this.$message.success('登录成功，正在回到主页……')
                     this.$router.replace('/')
                     return
                 }

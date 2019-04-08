@@ -14,12 +14,12 @@ from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, sync_call
 from view import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
-from view.user import UserMixin
+from view.user import UserViewMixin
 from view.ws import WSR
 
 
 @route('notif')
-class NotificationView(UserMixin, PeeweeView):
+class NotificationView(UserViewMixin, PeeweeView):
     model = Notification
 
     @classmethod

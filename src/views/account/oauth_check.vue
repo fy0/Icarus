@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import api from '@/netapi.js'
 
 export default {
     data () {
@@ -114,21 +113,21 @@ export default {
                 return
             }
             if (this.checkPassword && this.checkPassword2 && this.checkEmail && this.checkNickname) {
-                let ret = await api.user.new(this.info)
-                if (ret.code !== api.retcode.SUCCESS) {
+                let ret = await this.$api.user.new(this.info)
+                if (ret.code !== this.$api.retcode.SUCCESS) {
                     this.formErrors = ret.data
-                    $.message_by_code(ret.code)
+                    this.$message.byCode(ret.code)
                 } else {
                     let userinfo = ret.data
                     if (ret.code === 0) {
-                        api.saveAccessToken(userinfo['access_token'])
+                        this.$api.saveAccessToken(userinfo['access_token'])
                         await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
-                        $.message_by_code(ret.code)
+                        this.$message.byCode(ret.code)
                         // 用户注册完之后顺便把对应内容发给 oauthUpdate 更新
                         this.info.id = userinfo.id
-                        let retUpdate = await api.Oauth.oauthUpdate(this.info)
-                        if (retUpdate === api.retcode.SUCCESS) {
+                        let retUpdate = await this.$api.Oauth.oauthUpdate(this.info)
+                        if (retUpdate === this.$api.retcode.SUCCESS) {
                             alert('信息录入成功')
                             this.$router.go('/')
                         } else {
@@ -136,12 +135,12 @@ export default {
                             return
                         }
                     } else {
-                        $.message_error('注册失败！可能账号或昵称已经被注册')
+                        this.$message.error('注册失败！可能账号或昵称已经被注册')
                     }
                     this.$router.push({ name: 'forum', params: {} })
                 }
             } else {
-                $.message_error('请正确填写所有项目')
+                this.$message.error('请正确填写所有项目')
             }
         },
         cancel: async function () {

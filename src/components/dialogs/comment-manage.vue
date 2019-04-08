@@ -74,14 +74,14 @@ export default {
     watch: {
         'commentManage': async function (val) {
             // if (val) {
-            //     let info = await api.user.get({id: state.dialog.userManageData.id}, 'admin')
-            //     if (info.code === api.retcode.SUCCESS) {
+            //     let info = await this.$api.user.get({id: state.dialog.userManageData.id}, 'admin')
+            //     if (info.code === this.$api.retcode.SUCCESS) {
             //         this.user = info.data
             //         this.user.state = this.user.state.toString()
             //         this.user.group = this.user.group.toString()
             //         this.save = _.clone(this.user)
             //     } else {
-            //         $.message_by_code(info.code)
+            //         this.$message.byCode(info.code)
             //     }
             // }
         }

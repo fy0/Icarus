@@ -12,12 +12,12 @@ license: https://github.com/F-loat/vue-simplemde/blob/master/LICENSE
 <script>
 import { marked } from '@/md.js'
 import Prism from 'prismjs'
-import SimpleMDE from 'easymde/src/js/easymde.js'
+// import SimpleMDE from 'easymde/src/js/easymde.js'
 import 'easymde/dist/easymde.min.css'
 
-SimpleMDE.prototype.markdown = function (text) {
-    return marked(text)
-}
+// SimpleMDE.prototype.markdown = function (text) {
+//     return marked(text)
+// }
 
 export default {
     name: 'markdown-editor',
@@ -50,6 +50,12 @@ export default {
     },
     methods: {
         initialize () {
+            let SimpleMDE = require('easymde/src/js/easymde.js')
+
+            SimpleMDE.prototype.markdown = function (text) {
+                return marked(text)
+            }
+
             const configs = Object.assign({
                 element: this.$el.firstElementChild,
                 initialValue: this.value,
