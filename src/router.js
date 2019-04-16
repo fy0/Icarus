@@ -5,11 +5,12 @@ import AccountSignin from '@/views/account/signin.vue'
 import AccountSignup from '@/views/account/signup.vue'
 import AccountSignupByEmailDone from '@/views/account/signup_by_email_done.vue'
 import AccountUserPage from '@/views/account/userpage.vue'
-import AccountNotif from '@/views/account/notif.vue'
 // import AccountOAuth from '@/views/account/oauth.vue'
 // import AccountOAuthCheck from '@/views/account/oauth_check.vue'
 import AccountPasswordReset from '@/views/account/password_reset.vue'
 import AccountPasswordResetRequest from '@/views/account/password_reset_req.vue'
+
+import AccountNotif from '@/views/user-center/notif.vue'
 
 import Setting from '@/views/settings/setting.vue'
 import SettingUserinfoMe from '@/views/settings/userinfo/me.vue'

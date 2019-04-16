@@ -31,7 +31,7 @@
                         <nuxt-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</nuxt-link>
 
                         <div class="ul-boards">
-                            <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 21px">
+                            <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}">
                                 <div class="sign"></div>
                                 <span class="title">全部主题</span>
                             </nuxt-link>
@@ -53,10 +53,10 @@
         <div class="left-nav ic-xs-hidden">
             <div class="left-nav-box">
                 <!-- <span class="post-new-topic">板块列表</span> -->
-                <nuxt-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</nuxt-link>
+                <!-- <nuxt-link class="ic-btn primary post-new-topic" @mouseover.native="mouseOverPostNewBtn = true" @mouseleave.native="mouseOverPostNewBtn = false" :style="postNewTopicStyle" :to="{ name: 'forum_topic_new', params: {'board_id': boardId } }">发表主题</nuxt-link> -->
 
                 <div class="ul-boards">
-                    <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}" style="margin-top: 22px">
+                    <nuxt-link :to="{ name: 'index', query: $route.query}" class="item" :class="{'showAll': !isBoard}">
                         <div class="sign"></div>
                         <span class="title">全部主题</span>
                     </nuxt-link>
@@ -213,7 +213,7 @@
     display: flex;
 
     .left-nav {
-        flex: 5 1 0%;
+        flex: 4 1 0%;
         max-width: $page-left-max-width;
     }
 
@@ -230,7 +230,7 @@
     }
 
     .right {
-        flex: 19 1 0%;
+        flex: 20 1 0%;
     }
 }
 

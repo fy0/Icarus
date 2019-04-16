@@ -1,5 +1,5 @@
 <template>
-<div class="ic-container">
+<user-center-base>
     <h3 class="ic-header-no-line">用户提醒</h3>
     <ic-timeline v-if="page.items">
         <ic-timeline-item v-for="i in page.items" :key="i.id">
@@ -82,7 +82,7 @@
     </ic-timeline>
     <div v-else class="empty">尚未有任何提醒</div>
     <paginator :page-info='page' :route-name='"account_notif"' :link-method="'query'" />
-</div>
+</user-center-base>
 </template>
 
 <style lang="scss" scoped>
@@ -104,6 +104,7 @@
 </style>
 
 <script>
+import UserCenterBase from './base/base.vue'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
@@ -216,6 +217,7 @@ export default {
         }
     },
     components: {
+        UserCenterBase,
         ManageLogItemDetail
     },
     watch: {
