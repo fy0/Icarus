@@ -110,6 +110,7 @@ UPLOAD_QINIU_IMAGE_STYLE_TOPIC = ''  # 文章页面图片所用的七牛图片�
     time.sleep(1)
     print('%s generated.\n' % private_path)
     print('Please edit private.py before run main.py again.')
+    print('Deploy document: https://github.com/fy0/Icarus/blob/master/misc/how-to-deploy.md')
     for i in range(1, 4):
         time.sleep(1)
         print('%d ' % i, end='')
