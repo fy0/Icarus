@@ -55,9 +55,9 @@ export default {
         ok: async function () {
             if (this.quiting) return
             this.quiting = true
-            this.$store.dispatch('user/apiSignout')
+            await this.$store.dispatch('user/apiSignout')
             // 更新板块信息 - 退出登录
-            await dispatch('forum/load')
+            await this.$store.dispatch('forum/load')
             // TODO: 这里先假设退出登录一定会成功吧
             this.$router.replace('/')
             this.quiting = false
