@@ -161,7 +161,10 @@ export default {
                     password: await $.passwordHash(this.info.password)
                 })
                 if (ret.code === this.$api.retcode.SUCCESS) {
+                    // 刷新用户信息
                     await this.$store.dispatch('user/apiGetUserData', ret.data.id)
+                    // 更新板块信息 - 登录
+                    await this.$store.dispatch('forum/load')
 
                     if (this.goLastPage) {
                         this.$store.commit('LOADING_DEC', 1)

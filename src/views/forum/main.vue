@@ -664,7 +664,8 @@ export default {
         'userData': async function (newVal) {
             // 用户登入登出后进行板块信息重载
             // TODO: 不理解为什么不执行
-            await this.$store.dispatch('forum/load')
+            // 注：已在其它地方处理
+            // await this.$store.dispatch('forum/load')
         },
         'withSubBoardTopic': async function (newVal, oldVal) {
             if (this.withSubBoardTopicOptionReady) {

@@ -45,6 +45,8 @@ export default {
                 this.text = '注册完成，正在进行收尾……'
                 this.$api.saveAccessToken(ret.data.key)
                 await this.$store.dispatch('user/apiGetUserData', ret.data.id)
+                // 更新板块信息 - 注册
+                await this.$store.dispatch('forum/load')
                 this.regDone = true
             } else {
                 if (ret.code === this.$api.retcode.ALREADY_EXISTS) {
