@@ -171,12 +171,17 @@ npm run serve
 首先，在 Icarus 目录下新建一个 private.js，并按照下例进行填写：
 
 ```js
-var host = window.location.host
+var host = '127.0.0.1:9999' // 服务端渲染访问的本地后端地址
+
+if (process.browser) {
+    // 浏览器中API访问的后端地址
+    host = window.location.host
+}
 
 export default {
     remote: {
-        API_SERVER: '//' + host,
-        WS_SERVER: 'ws://' + host + '/ws',
+        API_SERVER: 'http://' + host,
+        WS_SERVER: 'ws://' + host + '/ws'
     }
 }
 ```
@@ -190,11 +195,7 @@ npx nuxt start
 
 我已经写好了配置文件的模板，只要简单改改放进配置目录就可以了。
 
-这里使用的是单端口绑定前后端，整站使用 9001 向外网提供服务（但后端仍要对内开一个端口）。
-
-在将前端静态目录映射到`/`的同时，将后端所在的9999端口映射到`/api`。
-
-这样前端页面访问 `/api` 就是访问后端了，也不存在跨域问题。
+这里使用的是单端口绑定前后端，整站使用 9001 向外网提供服务。
 
 ```bash
 sudo apt install nginx
