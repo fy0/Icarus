@@ -2,7 +2,7 @@
 from slim.base.permission import Ability, A, DataRecord
 from permissions.roles.p10_visitor import visitor
 
-inactive_user = Ability('inactive_user', {
+inactive_user = Ability({
     'user': {
         'nickname': (A.QUERY, A.READ),
         'group': (A.READ,),

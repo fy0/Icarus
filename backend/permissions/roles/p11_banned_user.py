@@ -2,7 +2,7 @@ from slim.base.permission import Ability, A
 from permissions.roles.p10_visitor import visitor
 
 # 除了访问自己的用户信息之外，与visitor平权
-banned_user = Ability('banned_user', {
+banned_user = Ability({
     'user': {
         'nickname': (A.QUERY, A.READ),
         'group': (A.READ,),

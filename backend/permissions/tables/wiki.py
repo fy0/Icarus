@@ -1,3 +1,5 @@
+from typing import Set
+
 from model.board import Board
 from permissions.roles import *
 from model._post import POST_STATE, POST_VISIBLE
@@ -10,7 +12,7 @@ post_visible_work('wiki_article')
 
 
 # 非登录不能查看内容的正文
-def check_remove_content_for_select(ability, user, action, record: DataRecord, available_columns: list):
+def check_remove_content_for_select(ability, user, action, record: DataRecord, available_columns: Set):
     if user:
         if record.get('visible') == POST_VISIBLE.CONTENT_IF_LOGIN:
             available_columns.remove('content')

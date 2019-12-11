@@ -10,7 +10,7 @@ from model.redis import RK_USER_ACTIVE_TIME_ZSET, redis, RK_USER_ANON_ACTIVE_TIM
 from model.user import USER_GROUP
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
-from slim.utils import to_hex
+from slim.utils import to_hex, get_bytes_from_blob
 from view import route
 from view.user import UserViewMixin
 from view.ws import WSR
@@ -47,7 +47,7 @@ class TestBaseView(UserViewMixin, BaseView):
             data['notif_count'] = c
 
             # 更新在线时间
-            await redis.zadd(RK_USER_ACTIVE_TIME_ZSET, now, user.id.tobytes())
+            await redis.zadd(RK_USER_ACTIVE_TIME_ZSET, now, get_bytes_from_blob(user.id))
         else:
             # TODO: 后面再给auid加几个随机数
             auid = self.params.get('auid', None)

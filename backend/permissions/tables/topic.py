@@ -1,10 +1,12 @@
+from typing import Set
+
 from model.board import Board
 from permissions.roles import *
 from model._post import POST_STATE, POST_VISIBLE
 from permissions.tables._vars import post_visible_work
 from slim.base.permission import Ability, A, DataRecord
 from slim.base.sqlquery import SQLQueryInfo, SQL_OP
-
+from slim.utils import get_bytes_from_blob
 
 post_visible_work('topic')
 
@@ -38,7 +40,7 @@ def ignore_hide_board(ability: Ability, user, query: 'SQLQueryInfo'):
         visible_limit = POST_VISIBLE.USER_ONLY
 
     # TODO: 以后这种请求加cache
-    ignored_board_ids = [x.id.tobytes() for x in Board.select(Board.id).where(~(
+    ignored_board_ids = [get_bytes_from_blob(x.id) for x in Board.select(Board.id).where(~(
         (Board.state > POST_STATE.APPLY) &
         (Board.visible > POST_VISIBLE.HIDE) &
         (Board.visible < visible_limit)
@@ -54,9 +56,9 @@ normal_user.add_query_condition('topic', func=ignore_hide_board)
 
 
 # 不准其他用户写入当前用户的文章
-def check_is_users_post(ability, user, action, record: DataRecord, available_columns: list):
+def check_is_users_post(ability, user, action, record: DataRecord, available_columns: Set):
     if user:
-        if record.get('user_id') != user.id:
+        if record.get('user_id') != get_bytes_from_blob(user.id):
             available_columns.clear()
     return True
 

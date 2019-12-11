@@ -13,7 +13,7 @@ from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_
     RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID, RK_USER_REG_CODE_BY_EMAIL, \
     RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL, RK_USER_REG_PASSWORD
 from slim.base.user import BaseUser
-from slim.utils import StateObject, to_hex, to_bin
+from slim.utils import StateObject, to_hex, to_bin, get_bytes_from_blob
 from model import BaseModel, MyTimestampField, CITextField, db, INETField, SerialField
 
 
@@ -296,8 +296,8 @@ class User(PostModel, BaseUser):
             self.exp += 5
             self.save()
 
-            ManageLog.add_by_credit_changed_sys(self.id.tobytes(), credit, self.credit, note='每日签到')
-            ManageLog.add_by_exp_changed_sys(self.id.tobytes(), exp, self.exp, note='每日签到')
+            ManageLog.add_by_credit_changed_sys(get_bytes_from_blob(self.id), credit, self.credit, note='每日签到')
+            ManageLog.add_by_exp_changed_sys(get_bytes_from_blob(self.id), exp, self.exp, note='每日签到')
 
             return {
                 'credit': 5,
@@ -315,7 +315,7 @@ class User(PostModel, BaseUser):
             exp = self.exp
             self.exp += 5
             self.save()
-            ManageLog.add_by_exp_changed_sys(self.id.tobytes(), exp, self.exp, note='每日登录')
+            ManageLog.add_by_exp_changed_sys(get_bytes_from_blob(self.id), exp, self.exp, note='每日登录')
             return {'exp': 5}
 
     def _auth_base(self, password_text):
@@ -327,11 +327,11 @@ class User(PostModel, BaseUser):
         dk = hashlib.pbkdf2_hmac(
             config.PASSWORD_SECURE_HASH_FUNC_NAME,
             password_text.encode('utf-8'),
-            self.salt.tobytes(),
+            get_bytes_from_blob(self.salt),
             config.PASSWORD_SECURE_HASH_ITERATIONS,
         )
 
-        if self.password.tobytes() == dk:
+        if get_bytes_from_blob(self.password) == dk:
             return self
 
     @classmethod
@@ -347,7 +347,7 @@ class User(PostModel, BaseUser):
         return u._auth_base(password_text)
 
     def __repr__(self):
-        return '<User id:%x nickname:%r>' % (int.from_bytes(self.id.tobytes(), 'big'), self.nickname)
+        return '<User id:%x nickname:%r>' % (int.from_bytes(get_bytes_from_blob(self.id), 'big'), self.nickname)
 
     @classmethod
     def get_post_type(cls):

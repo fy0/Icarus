@@ -110,7 +110,6 @@ class TopicView(UserViewMixin, PeeweeView):
 
     def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
         record = records[0]
-        print(22222, raw_post)
         form = TopicEditForm(**raw_post)
         form.view = self
         if not form.validate():

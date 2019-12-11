@@ -18,7 +18,7 @@ def merge_post_permissions_of_visitor(d):
     return base
 
 
-visitor = Ability(None, {
+visitor = Ability({
     'topic': merge_post_permissions_of_visitor({
         'title': (A.READ,),
         'board_id': (A.QUERY, A.READ),
@@ -81,34 +81,12 @@ visitor = Ability(None, {
 
     # 以下并非post类型
     'post_stats': {
+        '*': {A.READ},
         'id': (A.READ, A.QUERY),
-        'post_type': (A.READ,),
-
-        'last_comment_id': (A.READ,),
-        'last_edit_user_id': (A.READ,),
-        'last_edit_time': (A.READ,),
-        'update_time': (A.READ,),
-
-        'click_count': (A.READ,),
-        'edit_count': (A.READ,),
-        'comment_count': (A.READ,),
-        'topic_count': (A.READ,),
-        'follow_count': (A.READ,),
-        'bookmark_count': (A.READ,),
-        'upvote_count': (A.READ,),
-        'downvote_count': (A.READ,),
-        'thank_count': (A.READ,),
-        'vote_weight': (A.READ,),
     },
     'manage_log': {
-        'id': (A.READ,),
-        'user_id': (A.READ,),
-        'role': (A.READ,),
-        'time': (A.READ,),
-        'related_type': (A.READ,),
+        '*': {A.READ},
+        'related_type': (A.READ, A.QUERY),
         'related_id': (A.READ, A.QUERY),
-        'operation': (A.READ,),
-        'value': (A.READ,),
-        'note': (A.READ,)
     }
 })

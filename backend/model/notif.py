@@ -20,7 +20,7 @@ from model._post import POST_STATE, POST_TYPES
 from model.comment import Comment
 from model.user import User
 from slim import json_ex_dumps
-from slim.utils import StateObject, to_bin
+from slim.utils import StateObject, to_bin, get_bytes_from_blob
 
 
 class NOTIF_TYPE(StateObject):
@@ -206,7 +206,7 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
     info2 = POST_TYPES.get_post_title_by_list(*moves)
 
     for i in ret_items:
-        t = info.get(i['related_id'].tobytes(), None)
+        t = info.get(get_bytes_from_blob(i['related_id']), None)
         if t: i['data']['title'] = t
 
         if i['related_type'] == POST_TYPES.COMMENT:

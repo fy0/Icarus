@@ -14,7 +14,7 @@ from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from slim.utils import to_bin
+from slim.utils import to_bin, get_bytes_from_blob
 from view import route, ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from view.mention import check_content_mention
@@ -97,7 +97,7 @@ class CommentView(UserViewMixin, PeeweeView):
             # 创建提醒
             loc = [record['related_type'], record['related_id']]
             # record['related_id']: memoryview
-            loc_title = POST_TYPES.get_post_title_by_list(loc)[record['related_id'].tobytes()]
+            loc_title = POST_TYPES.get_post_title_by_list(loc)[get_bytes_from_blob(record['related_id'])]
             related = [POST_TYPES.COMMENT, record['id']]
             self.do_mentions(record['user_id'], loc_title, loc, related)
 

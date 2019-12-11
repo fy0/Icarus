@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import app
 from model.redis import redis
-from slim.utils import get_ioloop
+from slim.utils import get_ioloop, get_bytes_from_blob
 
 route = app.app.route
 thread_executor = ThreadPoolExecutor()
@@ -44,7 +44,7 @@ async def get_ip(view: BaseView) -> bytes:
 
 async def same_user(view: BaseView) -> Union[bytes, None]:
     if view.current_user:
-        return view.current_user.id.tobytes()
+        return get_bytes_from_blob(view.current_user.id)
 
     view.finish(RETCODE.PERMISSION_DENIED)
 

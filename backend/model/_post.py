@@ -10,6 +10,7 @@ from peewee import *
 from slim.base.sqlquery import DataRecord
 
 from config import POST_ID_GENERATOR
+from slim.utils import get_bytes_from_blob
 from slim.utils.customid import CustomID
 from slim.utils.state_obj import StateObject
 from model import BaseModel, MyTimestampField
@@ -121,7 +122,7 @@ class POST_TYPES(StateObject):
 
             # 按分类分别执行查询
             for i in m.select(*fields).where(m.id.in_(id_lst)):
-                ret[i.id.tobytes()] = i.get_title()
+                ret[get_bytes_from_blob(i.id)] = i.get_title()
 
         return ret
 

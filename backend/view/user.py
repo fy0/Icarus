@@ -3,7 +3,7 @@ import os
 import time
 import peewee
 import config
-from typing import Dict, List
+from typing import Dict, List, Type, Union
 from lib import mail
 from model import db
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
@@ -11,10 +11,11 @@ from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
 from model.post_stats import post_stats_new
 from slim.base.sqlquery import SQLValuesToWrite
-from slim.base.user import BaseAccessTokenUserViewMixin
+from slim.base.user import BaseAccessTokenUserViewMixin, BaseUser, BaseUserViewMixin
+from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from model.user import User, USER_GROUP
-from slim.utils import to_hex, to_bin
+from slim.utils import to_hex, to_bin, get_bytes_from_blob
 from view import route, ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va
 from slim.base.permission import DataRecord
@@ -24,15 +25,21 @@ from view.user_validate_form import RequestSignupByEmailForm, SigninByEmailForm,
 
 
 class UserViewMixin(BaseAccessTokenUserViewMixin):
-    def teardown_user_key(self):
+    @property
+    def user_cls(self) -> Type[BaseUser]:
+        return User
+
+    def get_user_by_token(self: Union['BaseUserViewMixin', 'BaseView'], token) -> Type[BaseUser]:
+        try: return User.get_by_key(to_bin(token))
+        except: pass
+
+    def setup_user_token(self: Union['BaseUserViewMixin', 'BaseView'], user_id, key=None, expires=30):
+        pass
+
+    def teardown_user_token(self: Union['BaseUserViewMixin', 'BaseView'], token=None):
         u: User = self.current_user
         u.key = None
         u.save()
-
-    def get_user_by_key(self, key):
-        if not key: return
-        try: return User.get_by_key(to_bin(key))
-        except: pass
 
 
 class ChangePasswordForm(ValidateForm):
@@ -176,7 +183,7 @@ class UserView(UserViewMixin, UserLegacyView):
         if u:
             expires = 30 if 'remember' in data else None
             u.refresh_key()
-            self.setup_user_key(u.key, expires)
+            self.setup_user_token(u.id, u.key, expires)
             self.finish(RETCODE.SUCCESS, {'id': u.id, 'access_token': u.key})
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
@@ -328,7 +335,7 @@ class UserView(UserViewMixin, UserLegacyView):
 
         times = 3
         success = False
-        u.nickname = nprefix + to_hex(u.id.tobytes())
+        u.nickname = nprefix + to_hex(get_bytes_from_blob(u.id))
 
         # 尝试填充用户名
         while times >= 0:

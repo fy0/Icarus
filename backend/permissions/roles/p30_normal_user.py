@@ -2,7 +2,7 @@ from permissions.roles.p10_visitor import merge_post_permissions_of_visitor
 from permissions.roles.p20_inactive_user import inactive_user
 from slim.base.permission import Ability, A, DataRecord
 
-normal_user = Ability('user', {
+normal_user = Ability({
     'user': {
         'nickname': (A.QUERY, A.READ),
         'group': (A.READ,),
@@ -14,6 +14,7 @@ normal_user = Ability('user', {
     },
     'topic': {
         'title': (A.READ, A.CREATE, A.WRITE),
+        'user_id': (A.READ, A.CREATE, A.WRITE),
         'board_id': (A.QUERY, A.READ, A.CREATE),
         'content': (A.READ, A.CREATE, A.WRITE),
     },
