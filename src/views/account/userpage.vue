@@ -112,6 +112,7 @@ class FetchCls extends BaseWrapper {
         if (!this.tabs) this.tabs = { topic: { topics: null }, comment: { data: null } }
         this.tabs.topic.topics = retList.data
     }
+
     async fetchData () {
         let role = null
         let params = this.$route.params

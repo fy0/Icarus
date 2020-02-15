@@ -40,17 +40,17 @@ export const actions = {
             return []
         }
 
-        let theLst = ((boardId) => {
-            let lst = [boardId]
+        const theLst = ((boardId) => {
+            const lst = [boardId]
             if (!boardId) return lst
-            let infoMap = state.infoMap
+            const infoMap = state.infoMap
             if (!Object.keys(infoMap).length) return lst
             while (true) {
                 if (!infoMap[boardId]) {
                     // 板块父级因权限原因不可见，斩断计算链就行了
                     return []
                 }
-                let pid = infoMap[boardId].parent_id
+                const pid = infoMap[boardId].parent_id
                 if (!pid) break
                 lst.push(pid)
                 boardId = pid
@@ -58,21 +58,21 @@ export const actions = {
             return lst
         })(boardId)
 
-        commit('SET_BOARD_EXINFO_CHAIN', { 'id': boardId, 'data': theLst })
+        commit('SET_BOARD_EXINFO_CHAIN', { id: boardId, data: theLst })
     },
     async load ({ state, commit, dispatch }, forceRefresh = false) {
         if (state.loaded && (!forceRefresh)) return
-        let boards = await this.$api.board.list({
+        const boards = await this.$api.board.list({
             order: 'parent_id.desc,weight.desc,time.asc' // 权重从高到低，时间从先到后
         })
 
         if (boards.code === this.$api.retcode.SUCCESS) {
-            let lst = []
-            let infoMap = {}
+            const lst = []
+            const infoMap = {}
 
-            for (let i of boards.data.items) {
-                let subboards = []
-                for (let j of boards.data.items) {
+            for (const i of boards.data.items) {
+                const subboards = []
+                for (const j of boards.data.items) {
                     if (j.parent_id === i.id) subboards.push(j)
                 }
 
@@ -81,15 +81,15 @@ export const actions = {
                     lst.push(i)
                 }
 
-                let color = $.boardColor(i)
+                const color = $.boardColor(i)
                 commit('SET_BOARD_EXINFO', {
-                    'id': i.id,
-                    'data': {
-                        'subboards': subboards,
-                        'subboardsAll': [],
-                        'color': color,
+                    id: i.id,
+                    data: {
+                        subboards: subboards,
+                        subboardsAll: [],
+                        color: color,
                         // darken 10% when hover
-                        'colorHover': Color(color).darken(0.1).string()
+                        colorHover: Color(color).darken(0.1).string()
                     }
                 })
             }
@@ -97,11 +97,11 @@ export const actions = {
             commit('SET_BOARD_MANY_INFO', { lst, infoMap, rawLst: boards.data.items })
             commit('SET_LOADED', true)
 
-            for (let i of boards.data.items) {
-                let exInfo = state.exInfoMap[i.id]
+            for (const i of boards.data.items) {
+                const exInfo = state.exInfoMap[i.id]
                 // 构造 subboardsAll
-                let func = (subboards) => {
-                    for (let j of subboards) {
+                const func = (subboards) => {
+                    for (const j of subboards) {
                         exInfo.subboardsAll.push(j)
                         func(state.exInfoMap[j.id].subboards)
                     }

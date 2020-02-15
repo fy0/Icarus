@@ -78,6 +78,7 @@ export default {
                     (name !== 'wiki_article_new' && name !== 'wiki_article_edit')
                 )
             }
+            return false
         }
     },
     components: {

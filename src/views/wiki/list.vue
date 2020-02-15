@@ -67,7 +67,7 @@ export default {
     },
     head () {
         return {
-            title: `文章列表 - 百科`,
+            title: '文章列表 - 百科',
             meta: [
                 { hid: 'description', name: 'description', content: '百科文章列表' }
             ]

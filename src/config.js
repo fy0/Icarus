@@ -1,7 +1,7 @@
 // let hostname = window.location.hostname
-let hostname = 'localhost'
+const hostname = 'localhost'
 
-let config = {
+const config = {
     remote: {
         API_SERVER: `http://${hostname}:9999`,
         WS_SERVER: `ws://${hostname}:9999/ws`,
@@ -10,8 +10,8 @@ let config = {
 }
 
 try {
-    let pri = require('../private.js')
-    for (let k of Object.keys(config.remote)) {
+    const pri = require('../private.js')
+    for (const k of Object.keys(config.remote)) {
         config.remote[k] = pri.default.remote[k] || config.remote[k]
     }
     config.title = pri.default.title || config.title

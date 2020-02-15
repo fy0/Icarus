@@ -7,12 +7,12 @@ $.boardColor = function (board) {
             return Color(board.color).string()
         } catch (error) {
             try {
-                let c = '#' + board.color
+                const c = '#' + board.color
                 return Color(c).string()
             } catch (error) {}
         }
     }
-    let bgColor = murmurhash.v3(board.name).toString(16).slice(0, 6)
+    const bgColor = murmurhash.v3(board.name).toString(16).slice(0, 6)
     return '#' + bgColor
 }
 

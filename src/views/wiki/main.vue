@@ -51,7 +51,7 @@ export default {
     },
     head () {
         return {
-            title: `百科`,
+            title: '百科',
             meta: [
                 { hid: 'description', name: 'description', content: '百科' }
             ]

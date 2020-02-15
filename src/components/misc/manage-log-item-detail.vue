@@ -22,7 +22,10 @@
 export default {
     props: {
         item: {},
-        simple: false
+        simple: {
+            type: Boolean,
+            default: false
+        }
     },
     data () {
         return {

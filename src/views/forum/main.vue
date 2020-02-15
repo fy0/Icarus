@@ -484,11 +484,13 @@ export default {
         board: function () {
             let bid = this.boardId
             if (bid) return this.getBoardInfo(bid)
+            return null
         },
         boardId: function () {
             if (this.isBoard) {
                 return this.$route.params.id
             }
+            return null
         },
         dymBoardList: function () {
             let lst = []
@@ -619,7 +621,7 @@ export default {
                 title = `${this.board.name}`
             }
         } else {
-            title = `全部主题`
+            title = '全部主题'
         }
         return {
             title,

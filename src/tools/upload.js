@@ -18,18 +18,18 @@ $.staticUrl = function (key) {
 
 $.asyncGetUploadToken = async function (isAvatarUpload = false) {
     if (isAvatarUpload) {
-        let ret = await api.upload.token('user', isAvatarUpload)
+        const ret = await api.upload.token('user', isAvatarUpload)
         if (ret.code === api.retcode.SUCCESS) {
             return ret.data
         }
         return null
     }
 
-    let offset = store.getters.BACKEND_CONFIG.UPLOAD_QINIU_DEADLINE_OFFSET - 2 * 60
-    let now = Date.parse(new Date()) / 1000
+    const offset = store.getters.BACKEND_CONFIG.UPLOAD_QINIU_DEADLINE_OFFSET - 2 * 60
+    const now = Date.parse(new Date()) / 1000
     // 若 token 的有效时间降至，那么申请一个新的（2min余量）
     if ((now - uploadKeyTime) > offset) {
-        let ret = await api.upload.token('user')
+        const ret = await api.upload.token('user')
         if (ret.code === api.retcode.SUCCESS) {
             uploadKeyTime = now
             uploadToken = ret.data

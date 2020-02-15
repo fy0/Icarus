@@ -4,13 +4,13 @@ import config from './config.js'
 axios.defaults.retry = 2
 axios.defaults.retryDelay = 300
 
-let remote = config.remote
+const remote = config.remote
 const backend = axios.create({
     baseURL: remote.API_SERVER,
     timeout: 5000,
     withCredentials: true,
     headers: {
-        'Accept': 'application/json'
+        Accept: 'application/json'
     }
 })
 
@@ -23,8 +23,8 @@ backend.interceptors.response.use(function (response) {
 })
 
 function paramSerialize (obj) {
-    let str = []
-    for (let i of Object.keys(obj)) {
+    const str = []
+    for (const i of Object.keys(obj)) {
         str.push(encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]))
     }
     return str.join('&')
@@ -32,8 +32,8 @@ function paramSerialize (obj) {
 
 function buildFormData (obj) {
     if (!obj) return
-    let formData = new FormData()
-    for (let [k, v] of Object.entries(obj)) {
+    const formData = new FormData()
+    for (const [k, v] of Object.entries(obj)) {
         formData.append(k, v)
     }
     return formData
@@ -45,8 +45,8 @@ function filterValues (filter, data) {
     else if (_.isSet(filter)) keys = filter
     else if (_.isFunction(filter)) return filter(data)
 
-    let ret = {}
-    for (let i of Object.keys(data)) {
+    const ret = {}
+    for (const i of Object.keys(data)) {
         if (keys.has(i)) {
             ret[i] = data[i]
         }
@@ -65,17 +65,17 @@ export function createAPIRequester (ctx) {
     }
 
     async function doRequest (url, method, params, data = null, role = null) {
-        let headers = {}
-        let token = getAccessToken()
+        const headers = {}
+        const token = getAccessToken()
 
         if (token) {
             // 设置 access token
-            headers['AccessToken'] = token
+            headers.AccessToken = token
         }
 
         if (role) {
             // 不然的话服务器回收到一个 'null' 的 str
-            headers['Role'] = role
+            headers.Role = role
         }
 
         if (params) url += `?${paramSerialize(params)}`
@@ -135,7 +135,7 @@ export function createAPIRequester (ctx) {
 
     class UserViewRequest extends SlimViewRequest {
         async signin (data) {
-            let ret = await npost(`${this.urlPrefix}/signin`, null, data)
+            const ret = await npost(`${this.urlPrefix}/signin`, null, data)
             if (ret.code === retcode.SUCCESS) {
                 saveAccessToken(ret.data.access_token)
             }
@@ -193,9 +193,9 @@ export function createAPIRequester (ctx) {
 
     class UploadViewRequest extends SlimViewRequest {
         async token (role, isAvatar) {
-            let params = {}
+            const params = {}
             if (isAvatar) {
-                params['is_avatar'] = isAvatar
+                params.is_avatar = isAvatar
             }
             return npost(`${this.urlPrefix}/token`, params, null, role)
         }
@@ -217,45 +217,47 @@ export function createAPIRequester (ctx) {
     class Oauth {
         async getUrl (website) {
             if (website === 'github') {
-                let info = await nget(`/api/user/oauth/get_oauth_url`)
-                return info['data']['url']
+                const info = await nget('/api/user/oauth/get_oauth_url')
+                return info.data.url
             } else if (website === 'qq') {
                 return nget()
             } else if (website === 'sina') {
                 return nget()
             }
         }
+
         async oauthUpdate (userdata) {
-            let ret = await npost(`/api/user/oauth/update`, null, userdata, null)
+            const ret = await npost('/api/user/oauth/update', null, userdata, null)
             if (ret.code === retcode.SUCCESS) {
                 return retcode.SUCCESS
             }
             return retcode.FAILED
         }
+
         async send (code) {
-            let ret = await nget(`/api/user/oauth/get_user_data`, { 'code': code })
+            const ret = await nget('/api/user/oauth/get_user_data', { code: code })
             if (ret.code !== retcode.FAILED) {
-                let oauthState = ret['data']['state']
+                const oauthState = ret.data.state
                 if (oauthState === 50) {
-                    if (ret['code'] === retcode.SUCCESS) {
+                    if (ret.code === retcode.SUCCESS) {
                         saveAccessToken(ret.data.access_token)
                         return ret
                     }
                 } else {
-                    return { 'code': -1, 'data': ret }
+                    return { code: -1, data: ret }
                 }
             } else {
-                return { 'code': retcode.FAILED, 'data': null }
+                return { code: retcode.FAILED, data: null }
             }
         }
     }
 
-    let retcode = {
+    const retcode = {
         SUCCESS: 0,
         FAILED: -255
     }
 
-    let retinfo = {
+    const retinfo = {
         [retcode.SUCCESS]: '操作已成功完成'
     }
 
@@ -267,12 +269,12 @@ export function createAPIRequester (ctx) {
 
         /** 获取综合信息 */
         misc: async function () {
-            return nget(`/api/misc/info`)
+            return nget('/api/misc/info')
         },
 
         /** 周期请求 */
         tick: async function (auid) {
-            return nget(`/api/misc/tick`, { auid })
+            return nget('/api/misc/tick', { auid })
         },
 
         user: new UserViewRequest('user'),

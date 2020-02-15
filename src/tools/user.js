@@ -7,7 +7,7 @@ if (process.browser) {
     })
 }
 
-let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
+const _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     const keyArray = Array.from(new Uint8Array(keyBuffer)) // key as byte array
     const saltArray = Array.from(new Uint8Array(saltUint8)) // salt as byte array
 
@@ -22,20 +22,20 @@ let _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
 }
 
 $.passwordHashAsmCrypto = async function (password, iterations = 1e5) {
-    let asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ 'asmcrypto.js/dist_es8/pbkdf2/pbkdf2-hmac-sha512.js')
-    let asmCrypto = await asmCryptoLoader()
-    let salt = store.getters.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
-    let enc = new TextEncoder()
+    const asmCryptoLoader = () => import(/* webpackChunkName: "hash-polyfill" */ 'asmcrypto.js/dist_es8/pbkdf2/pbkdf2-hmac-sha512.js')
+    const asmCrypto = await asmCryptoLoader()
+    const salt = store.getters.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    const enc = new TextEncoder()
     const pwUtf8 = enc.encode(password) // encode pw as UTF-8
     const saltUint8 = enc.encode(salt)
-    let keyBuffer = asmCrypto.Pbkdf2HmacSha512(pwUtf8, saltUint8, iterations, 32)
+    const keyBuffer = asmCrypto.Pbkdf2HmacSha512(pwUtf8, saltUint8, iterations, 32)
     return _passwordResultToText(keyBuffer, saltUint8, iterations)
 }
 
 $.passwordHashNative = async function (password, iterations = 1e5) {
-    let salt = store.getters.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
-    let crypto = window.crypto || window.msCrypto // for IE 11
-    let enc = new TextEncoder()
+    const salt = store.getters.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
+    const crypto = window.crypto || window.msCrypto // for IE 11
+    const enc = new TextEncoder()
     const pwUtf8 = enc.encode(password) // encode pw as UTF-8
     const pwKey = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveBits']) // create pw key
     const saltUint8 = enc.encode(salt)
@@ -54,7 +54,7 @@ $.passwordHash = (function () {
 })()
 
 $.checkEmail = function (email) {
-    let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+    const mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
     return mail.test(email)
 }
 
@@ -69,6 +69,6 @@ $.checkNickname = function (nickname) {
         return true
     }
     // 长度小于4，检查其中汉字数量
-    let m = nickname.match(/[\u4e00-\u9fa5]/gi)
+    const m = nickname.match(/[\u4e00-\u9fa5]/gi)
     if (m && m.length >= 2) return true
 }

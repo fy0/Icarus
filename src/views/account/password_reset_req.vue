@@ -98,6 +98,7 @@ export default {
             // 长度小于4，检查其中汉字数量
             let m = this.info.nickname.match(/[\u4e00-\u9fa5]/gi)
             if (m && m.length >= 2) return true
+            return false
         },
         checkEmail: function () {
             let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/

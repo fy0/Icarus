@@ -77,59 +77,59 @@ import '@/assets/css/_manage.scss'
 
 export default {
     props: {
-        'value': {
+        value: {
             type: Boolean,
             default: false
         },
-        'customClass': {
+        customClass: {
             type: String,
             default: ''
         },
-        'title': {
+        title: {
             type: String,
             default: '标题'
         },
-        'showClose': {
+        showClose: {
             type: Boolean,
             default: true
         },
-        'allowOutsideClose': {
+        allowOutsideClose: {
             type: Boolean,
             default: true
         },
-        'showOK': {
+        showOK: {
             type: Boolean,
             default: true
         },
-        'showCancel': {
+        showCancel: {
             type: Boolean,
             default: true
         },
-        'confirmText': {
+        confirmText: {
             type: String,
             default: '确定'
         },
-        'cancelText': {
+        cancelText: {
             type: String,
             default: '取消'
         },
-        'onConfirm': {
+        onConfirm: {
             type: Function,
             default: null
         },
-        'onCancel': {
+        onCancel: {
             type: Function,
             default: null
         },
-        'onClose': {
+        onClose: {
             type: Function,
             default: null
         },
-        'animation': {
+        animation: {
             type: String,
             default: 'default'
         },
-        'width': {
+        width: {
             type: String,
             default: '768px'
         }
@@ -140,7 +140,7 @@ export default {
     computed: {
         BoxStyle: function () {
             return {
-                'width': this.width,
+                width: this.width,
                 'max-width': this.width
             }
         }

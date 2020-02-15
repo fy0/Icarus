@@ -147,7 +147,7 @@ export default {
     methods: {
         getSelectOptionName (id) {
             if (!this.boardsInfoDict[id]) return '无'
-            let { name, brief } = this.boardsInfoDict[id]
+            const { name, brief } = this.boardsInfoDict[id]
             return `${name} — [${brief}]`
         },
         handleChange (value) {

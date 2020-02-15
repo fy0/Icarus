@@ -24,9 +24,9 @@ class Tween {
     start () {
         this.running = true
         let firstTime = null
-        let opts = this.opts
+        const opts = this.opts
 
-        let func = (ts) => {
+        const func = (ts) => {
             if (!this.running) return
             firstTime = firstTime || ts
             if (ts >= firstTime + opts.duration) {
@@ -34,9 +34,9 @@ class Tween {
                 return
             }
 
-            let elapsed = ts - firstTime
+            const elapsed = ts - firstTime
             if (opts.tick) {
-                let val = opts.easing(elapsed, opts.start, opts.end - opts.start, opts.duration)
+                const val = opts.easing(elapsed, opts.start, opts.end - opts.start, opts.duration)
                 opts.tick(val)
             }
             this.frame = requestAnimationFrame(func)
@@ -75,7 +75,7 @@ $.timeout = function (delay) {
  * @return {Object}        Return a new object who represent the diff
  */
 $.objDiff = function (object, base) {
-    let changes = function (object, base) {
+    const changes = function (object, base) {
         return _.transform(object, (result, value, key) => {
             if (!_.isEqual(value, base[key])) {
                 result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value

@@ -22,10 +22,10 @@ class BaseWrapper {
     }
 }
 
-let makeFetchWrapper = (cls) => {
-    let FetchWrapper = new Proxy(cls, {
+const makeFetchWrapper = (cls) => {
+    const FetchWrapper = new Proxy(cls, {
         construct (Target, args) {
-            let ins = new Target(...args)
+            const ins = new Target(...args)
             return new Proxy(ins, {
                 get (target, name) {
                     if (name in target._data) {
@@ -48,8 +48,8 @@ let makeFetchWrapper = (cls) => {
     return FetchWrapper
 }
 
-let createFetchWrapper = (cls, ctx) => {
-    let WrapCls = makeFetchWrapper(cls)
+const createFetchWrapper = (cls, ctx) => {
+    const WrapCls = makeFetchWrapper(cls)
     return new WrapCls(ctx)
 }
 

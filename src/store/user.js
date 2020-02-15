@@ -10,7 +10,7 @@ export const getters = {
     // 是否新注册用户
     isNewUser: (state, getters) => {
         if (!state.userData) return
-        let ts = new Date().getTime() / 1000
+        const ts = new Date().getTime() / 1000
         if ((state.userData.is_new_user) && (ts - state.userData.time < 24 * 60 * 60)) {
             return true
         }
@@ -18,7 +18,7 @@ export const getters = {
 
     roles: (state, getters) => getters._userData.roles,
     basicRole: (state, getters) => state.userData ? 'user' : null,
-    mainRole: (state, getters) => getters._userData['main_role'],
+    mainRole: (state, getters) => getters._userData.main_role,
     forumAdminRole: (state, getters) => {
         if (getters.isSiteAdmin) {
             return getters.mainRole
@@ -59,7 +59,7 @@ export const mutations = {
 export const actions = {
     // 退出登录
     async apiSignout ({ dispatch }) {
-        let ret = await this.$api.user.signout()
+        const ret = await this.$api.user.signout()
         if (ret.code === this.$api.retcode.SUCCESS || ret.code === this.$api.retcode.FAILED) {
             await dispatch('initLoad', null, { root: true })
             this.$message.success('登出成功')
@@ -70,7 +70,7 @@ export const actions = {
         if (!uid) uid = getters._userData.id
         if (!uid) return
 
-        let userInfo = await this.$api.user.get({ id: uid }, 'user')
+        const userInfo = await this.$api.user.get({ id: uid }, 'user')
         if (userInfo.code === this.$api.retcode.SUCCESS) {
             commit('SET_USER_DATA', userInfo.data)
         } else {
@@ -79,11 +79,11 @@ export const actions = {
     },
     // 设置当前用户信息
     async apiSetUserData ({ state, getters, dispatch }, newData) {
-        let oldData = state.userData
-        let updateData = $.objDiff(newData, oldData)
-        delete updateData['avatar'] // 头像的更新是独立的，参见BUG12
+        const oldData = state.userData
+        const updateData = $.objDiff(newData, oldData)
+        delete updateData.avatar // 头像的更新是独立的，参见BUG12
         if (Object.keys(updateData).length === 0) return
-        let ret = await this.$api.user.set({ id: oldData.id }, updateData, 'user')
+        const ret = await this.$api.user.set({ id: oldData.id }, updateData, 'user')
         if (ret.code === this.$api.retcode.SUCCESS) {
             await dispatch('apiGetUserData')
             this.$message.success('信息修改成功！')

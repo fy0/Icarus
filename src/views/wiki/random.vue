@@ -29,7 +29,7 @@ export default {
     },
     head () {
         return {
-            title: `随便看看 - 百科`,
+            title: '随便看看 - 百科',
             meta: [
                 { hid: 'description', name: 'description', content: '百科' }
             ]

@@ -24,7 +24,11 @@ module.exports = {
     // allow paren-less arrow functions
     'arrow-parens': 0,
     // allow async-await
-    'generator-star-spacing': 0
+    'generator-star-spacing': 0,
+
+    'prefer-const': 0,
+    'quote-props': 0,
+    'dot-notation': 0
   },
   'globals': {
       '$': true,

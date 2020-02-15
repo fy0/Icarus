@@ -1,6 +1,6 @@
-let fibMemo = {}
-let levelExp = []
-let levelAllExp = []
+const fibMemo = {}
+const levelExp = []
+const levelAllExp = []
 
 function fib (num, memo) {
     if (fibMemo[num]) return fibMemo[num]
@@ -11,7 +11,7 @@ function fib (num, memo) {
 }
 
 $.getLevelExp = function (level) {
-    if (level < 1) return { 'level': 0, 'all': 0 }
+    if (level < 1) return { level: 0, all: 0 }
     level -= 1
     if (levelExp.length <= level) {
         for (let i = levelExp.length; i <= level; i++) {
@@ -24,19 +24,19 @@ $.getLevelExp = function (level) {
         }
     }
     return {
-        'level': levelExp[level],
-        'all': levelAllExp[level]
+        level: levelExp[level],
+        all: levelAllExp[level]
     }
 }
 
 $.getLevelByExp = function (exp) {
     for (let i = 1; ;i++) {
-        let val = $.getLevelExp(i)
+        const val = $.getLevelExp(i)
         if (exp < val.all || i === 255) {
             return {
-                'cur': exp - $.getLevelExp(i - 1).all,
-                'level': i,
-                'exp': val
+                cur: exp - $.getLevelExp(i - 1).all,
+                level: i,
+                exp: val
             }
         }
     }

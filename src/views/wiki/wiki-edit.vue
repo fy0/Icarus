@@ -149,6 +149,7 @@ export default {
             if (this.$route.name === 'wiki_article_edit') return 'edit'
             if (this.$route.name === 'wiki_article_fork') return 'fork'
             if (this.$route.name === 'wiki_article_new') return 'new'
+            return '404'
         },
         postButtonText: function () {
             return this.working ? '请等待'

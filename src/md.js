@@ -25,7 +25,7 @@ import 'prismjs/components/prism-ruby.js'
 import 'prismjs/components/prism-sql.js'
 import 'prismjs/components/prism-nginx.js'
 
-let renderer = new baseMarked.Renderer()
+const renderer = new baseMarked.Renderer()
 
 renderer.code = function (code, lang, escaped) {
     if (lang === 'rb') lang = 'ruby'
@@ -44,12 +44,12 @@ renderer.code = function (code, lang, escaped) {
     }
 
     if (!escaped) {
-        let langText = this.options.langPrefix + escape(lang, true)
+        const langText = this.options.langPrefix + escape(lang, true)
         return `<pre class="${langText}"><code class="${langText}">` +
         code + '\n</code></pre>\n'
     }
 
-    let langText = this.options.langPrefix + escape(lang, true)
+    const langText = this.options.langPrefix + escape(lang, true)
     return `<pre class="${langText}"><code class="${langText}">` +
         (escaped ? code : escape(code, true)) +
         '\n</code></pre>\n'
@@ -57,7 +57,7 @@ renderer.code = function (code, lang, escaped) {
 
 // 这是为了在 renderer 中获取 parser 实例继而获得当前 token 所做的 hack
 baseMarked.Parser.parse = function (src, options) {
-    let parser = new baseMarked.Parser(options)
+    const parser = new baseMarked.Parser(options)
     parser.renderer.headingCount = undefined
     parser.renderer._parser = parser
     return parser.parse(src)
@@ -67,7 +67,7 @@ renderer.heading = function (text, level, rawtext) {
     this.headingCount = this.headingCount ? this.headingCount + 1 : 1
 
     if (this.options.headerIds) {
-        let pf = this.options.headerPrefix
+        const pf = this.options.headerPrefix
         return `<h${level} id="${pf}${this.headingCount}">${text}</h${level}>\n`
     }
 
@@ -88,7 +88,7 @@ renderer.image = function (href, title, text) {
     return `<div class="img-center">${out}</div>`
 }
 
-let myOpt = {
+const myOpt = {
     renderer: renderer,
     gfm: true,
     tables: true,
@@ -101,7 +101,7 @@ let myOpt = {
     langPrefix: 'language-',
     highlight: function (code, lang) {
         if (lang) {
-            let stdlang = lang.toLowerCase()
+            const stdlang = lang.toLowerCase()
             if (Prism.languages[stdlang]) {
                 return Prism.highlight(code, Prism.languages[stdlang])
             }
@@ -112,15 +112,15 @@ let myOpt = {
 export function marked (text, options, callback) {
     // 文章编辑页面的simplemde会覆盖掉marked的设置
     baseMarked.setOptions(myOpt)
-    let html = baseMarked(text, options, callback)
+    const html = baseMarked(text, options, callback)
     return $.atConvert(html)
 }
 
 export function mdGetIndex (text, options) {
     if (!text) return []
     const tokens = baseMarked.lexer(text, options)
-    let headings = []
-    for (let t of tokens) {
+    const headings = []
+    for (const t of tokens) {
         if (t.type === 'heading') {
             headings.push(t)
         }

@@ -1,7 +1,7 @@
 import ObjectId from 'objectid-js'
 import config from './config.js'
 
-let remote = config.remote
+const remote = config.remote
 let reconnectTimeout = 3000
 
 function getAccessToken () {
@@ -21,7 +21,7 @@ class WebsocketConnection {
     async connect (wsurl) {
         return new Promise((resolve, reject) => {
             // Create WebSocket connection.
-            let socket = new WebSocket(wsurl)
+            const socket = new WebSocket(wsurl)
             this.wsurl = wsurl
             this.socket = socket
 
@@ -46,7 +46,7 @@ class WebsocketConnection {
             // Listen for messages
             socket.addEventListener('message', (ev) => {
                 if (ev.data === 'ws.pong') return
-                let [rid, data] = JSON.parse(ev.data)
+                const [rid, data] = JSON.parse(ev.data)
                 if (this.rid_callback[rid]) {
                     // 虽然 data 可能是任意类型，但不用担心取 .code 会报错
                     if (data.code === 1) { // WS_DONE
@@ -78,10 +78,10 @@ class WebsocketConnection {
 
     async signin () {
         // 设置 access token
-        let authMode = config.remote.authMode
+        const authMode = config.remote.authMode
         if ((authMode === 'access_token') || (authMode === 'access_token_in_params')) {
-            let token = getAccessToken()
-            let ret = await this.execute('signin', { 'access_token': token })
+            const token = getAccessToken()
+            const ret = await this.execute('signin', { access_token: token })
             if (ret === 0) {
                 // 登录成功
             }
@@ -94,14 +94,14 @@ class WebsocketConnection {
 
     async execute (command, data, onProgress) {
         return new Promise((resolve, reject) => {
-            let rid = (new ObjectId()).toString()
+            const rid = (new ObjectId()).toString()
             this.rid_callback[rid] = { func: onProgress, done: (data) => { resolve(data) } }
             this.socket.send(JSON.stringify([rid, command, data]))
         })
     }
 }
 
-let conn = new WebsocketConnection()
+const conn = new WebsocketConnection()
 if (config.ws.enable) {
     conn.connect(remote.WS_SERVER).then(() => {
         console.log('websocket 已连接')

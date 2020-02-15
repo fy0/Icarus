@@ -2,8 +2,8 @@
 if (process.browser) {
     window.onNuxtReady(async (ctx) => {
         // 等浏览器端加载完毕后，延时关闭信息
-        let store = ctx.$store
-        for (let i of store.state.msgs) {
+        const store = ctx.$store
+        for (const i of store.state.msgs) {
             _.delay(() => {
                 store.commit('MESSAGE_REMOVE', i)
             }, 3000)
@@ -15,14 +15,14 @@ function createMessageBoard (ctx) {
     class MessageBoard {
         text (text, type = 'default', timeout = 3000) {
             // type: default, secondary, success, warning, error
-            let convert = {
-                'default': '',
-                'secondary': 'am-alert-secondary',
-                'success': 'am-alert-success',
-                'warning': 'am-alert-warning',
-                'error': 'am-alert-danger'
+            const convert = {
+                default: '',
+                secondary: 'am-alert-secondary',
+                success: 'am-alert-success',
+                warning: 'am-alert-warning',
+                error: 'am-alert-danger'
             }
-            let data = { type, text, class: convert[type] }
+            const data = { type, text, class: convert[type] }
             if (ctx.store) {
                 ctx.store.commit('MESSAGE_PUSH', data)
                 if (process.browser) {
@@ -59,9 +59,9 @@ function createMessageBoard (ctx) {
 
         byForm (code, data, alias, timeout = 6000) {
             if (code) {
-                for (let [k, errs] of Object.entries(data)) {
-                    for (let err of errs) {
-                        let name = alias[k] || k
+                for (const [k, errs] of Object.entries(data)) {
+                    for (const err of errs) {
+                        const name = alias[k] || k
                         this.byCode(code, data, `${name}：${err}`, timeout)
                     }
                 }

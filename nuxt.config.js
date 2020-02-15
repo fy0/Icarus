@@ -40,7 +40,7 @@ module.exports = {
         {
             handler: function (req, res, next) {
                 // 注：此处从简，因为例如/search*明显匹配了更多url，但并非关键
-                let spaPaths = [
+                const spaPaths = [
                     '/account/**',
                     '/notifications',
                     '/notifications*',
@@ -82,7 +82,7 @@ module.exports = {
     modules: [
         '@nuxtjs/router',
         '@nuxtjs/style-resources',
-        'nuxt-universal-storage'
+        '@nuxtjs/universal-storage'
     ],
     storage: {
     },
@@ -109,10 +109,10 @@ module.exports = {
 
         plugins: [
             new webpack.ProvidePlugin({
-                '_': path.resolve(__dirname, './src/tools/lodash.js')
+                _: path.resolve(__dirname, './src/tools/lodash.js')
             }),
             new webpack.ProvidePlugin({
-                '$': path.resolve(__dirname, './src/tools/_merge.js')
+                $: path.resolve(__dirname, './src/tools/_merge.js')
             })
         ],
 

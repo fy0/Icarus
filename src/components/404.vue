@@ -66,7 +66,7 @@ export default {
         }
     },
     watch: {
-        'countdown': function (val) {
+        countdown: function (val) {
             this.second = val
             this.fetchData()
         }

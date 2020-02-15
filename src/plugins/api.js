@@ -2,6 +2,6 @@
 import { createAPIRequester } from '@/netapi'
 
 export default (ctx, inject) => {
-    let api = createAPIRequester(ctx)
+    const api = createAPIRequester(ctx)
     inject('api', api)
 }
