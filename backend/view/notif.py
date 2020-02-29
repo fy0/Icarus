@@ -5,10 +5,10 @@ from model.notif import Notification
 from model.post_stats import post_stats_do_comment
 from model.topic import Topic
 from slim.base.ws import WSRouter
+from slim.ext.decorator import timer
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model._post import POST_TYPES
-from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, sync_call
@@ -23,11 +23,11 @@ class NotificationView(UserViewMixin, PeeweeView):
     model = Notification
 
     @classmethod
-    def interface(cls):
-        super().interface()
-        cls.discard('new')
-        cls.discard('set')
-        cls.discard('delete')
+    def interface_register(cls):
+        super().interface_register()
+        cls.unregister('new')
+        cls.unregister('set')
+        cls.unregister('delete')
 
     @classmethod
     def ready(cls):
@@ -62,7 +62,7 @@ class NotificationView(UserViewMixin, PeeweeView):
         self.finish(RETCODE.FAILED)
 
 
-@app.timer(config.NOTIF_FETCH_COOLDOWN + 1, exit_when=None)
+@timer(config.NOTIF_FETCH_COOLDOWN + 1, exit_when=None)
 async def notif_refresh():
     for user, conns in WSR.users.items():
         r = Notification.refresh(user.id)

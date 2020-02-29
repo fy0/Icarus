@@ -9,6 +9,7 @@ from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.redis import RK_USER_ACTIVE_TIME_ZSET, redis, RK_USER_ANON_ACTIVE_TIME_ZSET
 from model.user import USER_GROUP
 from slim.base.view import BaseView
+from slim.ext.decorator import timer
 from slim.retcode import RETCODE
 from slim.utils import to_hex, get_bytes_from_blob
 from view import route
@@ -16,7 +17,7 @@ from view.user import UserViewMixin
 from view.ws import WSR
 
 
-@app.timer(10, exit_when=None)
+@timer(10, exit_when=None)
 async def user_online():
     for ws in WSR.connections:
         if not ws.closed:

@@ -45,52 +45,55 @@ class UserLegacyView(PeeweeView):
             return self.finish(RETCODE.FAILED, '此接口未开放')
         return await super().new()
 
-    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
-        # 必须存在以下值：
-        # email password nickname
-        # 自动填充或改写以下值：
-        # id password salt group state key key_time time
-        if not config.USER_ALLOW_SIGNUP:
-            return self.finish(RETCODE.FAILED, '注册未开放')
+    async def before_insert(self, values_lst: List[SQLValuesToWrite]):
+        raw_post = await self.post_data()
+        for values in values_lst:
+            # 必须存在以下值：
+            # email password nickname
+            # 自动填充或改写以下值：
+            # id password salt group state key key_time time
+            if not config.USER_ALLOW_SIGNUP:
+                return self.finish(RETCODE.FAILED, '注册未开放')
 
-        form = SignupFormLegacy(**raw_post)
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
+            form = SignupFormLegacy(**raw_post)
+            if not form.validate():
+                return self.finish(RETCODE.FAILED, form.errors)
 
-        if not config.POST_ID_GENERATOR == config.AutoGenerator:
-            uid = User.gen_id().to_bin()
-            values['id'] = uid
+            if not config.POST_ID_GENERATOR == config.AutoGenerator:
+                uid = User.gen_id().to_bin()
+                values['id'] = uid
 
-        values['email'] = values['email'].lower()
+            values['email'] = values['email'].lower()
 
-        ret = User.gen_password_and_salt(raw_post['password'])
-        values.update(ret)
+            ret = User.gen_password_and_salt(raw_post['password'])
+            values.update(ret)
 
-        if 'group' not in values:
-            # 如果无权限，那此时即使带着 group 参数也被刷掉了，直接设为 normal 即可
-            values['group'] = USER_GROUP.NORMAL
+            if 'group' not in values:
+                # 如果无权限，那此时即使带着 group 参数也被刷掉了，直接设为 normal 即可
+                values['group'] = USER_GROUP.NORMAL
 
-        if 'state' not in values:
-            values['state'] = POST_STATE.NORMAL
+            if 'state' not in values:
+                values['state'] = POST_STATE.NORMAL
 
-        # 注册IP地址
-        values['ip_registered'] = await get_fuzz_ip(self)
+            # 注册IP地址
+            values['ip_registered'] = await get_fuzz_ip(self)
 
-        values['is_new_user'] = False  # 目前的代表了是否重设过昵称，但在legacy模式中注册时即设置好了昵称
-        values['change_nickname_chance'] = 0
+            values['is_new_user'] = False  # 目前的代表了是否重设过昵称，但在legacy模式中注册时即设置好了昵称
+            values['change_nickname_chance'] = 0
 
-        values.update(User.gen_key())
-        values['time'] = int(time.time())
-        self._key = values['key']
+            values.update(User.gen_key())
+            values['time'] = int(time.time())
+            self._key = values['key']
 
-    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
-        if record['number'] == 1:
-            u = User.get(User.id == record['id'])
-            u.group = USER_GROUP.ADMIN
-            u.save()
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+        for record in records:
+            if record['number'] == 1:
+                u = User.get(User.id == record['id'])
+                u.group = USER_GROUP.ADMIN
+                u.save()
 
-        # 添加统计记录
-        post_stats_new(POST_TYPES.USER, record['id'])
-        UserNotifLastInfo.new(record['id'])
+            # 添加统计记录
+            post_stats_new(POST_TYPES.USER, record['id'])
+            UserNotifLastInfo.new(record['id'])
 
-        record['access_token'] = self._key
+            record['access_token'] = self._key

@@ -10,7 +10,6 @@ from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, 
 from model.topic import Topic
 from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
-from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, dict_filter_inplace
@@ -108,7 +107,8 @@ class TopicView(UserViewMixin, PeeweeView):
         for i in records:
             self._val_bak = [i['id'], i['board_id']]
 
-    def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+    async def before_update(self, values: SQLValuesToWrite, records: List[DataRecord]):
+        raw_post = await self.post_data()
         record = records[0]
         form = TopicEditForm(**raw_post)
         form.view = self
@@ -131,8 +131,9 @@ class TopicView(UserViewMixin, PeeweeView):
             values['edit_time'] = int(time.time())
             values['last_edit_user_id'] = self.current_user.id
 
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
-        for old_record, record in zip(old_records, records):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
+                           new_records: List[DataRecord]):
+        for old_record, record in zip(old_records, new_records):
             manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
                 self, column, op, POST_TYPES.TOPIC, values, old_record, record
             )
@@ -160,34 +161,37 @@ class TopicView(UserViewMixin, PeeweeView):
             if config.SEARCH_ENABLE:
                 run_in_thread(esdb.es_update_topic, record['id'])
 
-    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
-        form = TopicNewForm(**raw_post)
-        form.view = self
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
-        values['user_id'] = self.current_user.id
+    async def before_insert(self, values_lst: List[SQLValuesToWrite]):
+        raw_post = await self.post_data()
+        for values in values_lst:
+            form = TopicNewForm(**raw_post)
+            form.view = self
+            if not form.validate():
+                return self.finish(RETCODE.FAILED, form.errors)
+            values['user_id'] = self.current_user.id
 
-        # 以下通用
-        if not config.POST_ID_GENERATOR == config.AutoGenerator:
-            values['id'] = config.POST_ID_GENERATOR().digest()
-        values['time'] = int(time.time())
-        values['weight'] = await Topic.weight_gen()
-        values['update_time'] = int(time.time())
+            # 以下通用
+            if not config.POST_ID_GENERATOR == config.AutoGenerator:
+                values['id'] = config.POST_ID_GENERATOR().digest()
+            values['time'] = int(time.time())
+            values['weight'] = await Topic.weight_gen()
+            values['update_time'] = int(time.time())
 
-        # 主题不再支持 @
-        # values['content'], self.do_mentions = check_content_mention(values['content'])
+            # 主题不再支持 @
+            # values['content'], self.do_mentions = check_content_mention(values['content'])
 
-    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
-        # if self.do_mentions:
-        #     self.do_mentions(record['user_id'], POST_TYPES.TOPIC, record['id'], {
-        #         'title': record['title'],
-        #     })
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+        for record in records:
+            # if self.do_mentions:
+            #     self.do_mentions(record['user_id'], POST_TYPES.TOPIC, record['id'], {
+            #         'title': record['title'],
+            #     })
 
-        # 添加统计记录
-        post_stats_topic_new(record['board_id'], record['id'])
+            # 添加统计记录
+            post_stats_topic_new(record['board_id'], record['id'])
 
-        if config.SEARCH_ENABLE:
-            run_in_thread(esdb.es_update_topic, record['id'])
+            if config.SEARCH_ENABLE:
+                run_in_thread(esdb.es_update_topic, record['id'])
 
 '''
 from slim.utils.debug import Debug 

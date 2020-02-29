@@ -11,7 +11,6 @@ from slim.base.sqlquery import SQLValuesToWrite, DataRecord
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
-from slim.base.view import SQLQueryInfo
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, get_bytes_from_blob
@@ -38,75 +37,77 @@ class CommentView(UserViewMixin, PeeweeView):
     async def prepare(self):
         self.do_mentions = None
 
-    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
-        relate_type = values.get('related_type', None)
-        if not (relate_type and relate_type in POST_TYPES.values()):
-            return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
-
-        try:
-            cid = config.POST_ID_GENERATOR(values['related_id'])
-            post = POST_TYPES.get_post(relate_type, cid)
-
-            if not post:
+    async def before_insert(self, values_lst: List[SQLValuesToWrite]):
+        for values in values_lst:
+            relate_type = values.get('related_type', None)
+            if not (relate_type and relate_type in POST_TYPES.values()):
                 return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
-            if relate_type == POST_TYPES.TOPIC:
-                if post.state == POST_STATE.CLOSE:
-                    return self.finish(RETCODE.INVALID_POSTDATA, "无法评论指定内容")
-                elif post.visible in (POST_VISIBLE.HIDE,):
+            try:
+                cid = config.POST_ID_GENERATOR(values['related_id'])
+                post = POST_TYPES.get_post(relate_type, cid)
+
+                if not post:
                     return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
-        except TypeError:
-            return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
+                if relate_type == POST_TYPES.TOPIC:
+                    if post.state == POST_STATE.CLOSE:
+                        return self.finish(RETCODE.INVALID_POSTDATA, "无法评论指定内容")
+                    elif post.visible in (POST_VISIBLE.HIDE,):
+                        return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
-        if 'content' not in values or not values['content']:
-            return self.finish(RETCODE.INVALID_POSTDATA, "评论内容不能为空")
-
-        if 'reply_to_cmt_id' in values:
-            try:
-                rtid = config.POST_ID_GENERATOR(values['reply_to_cmt_id'])
             except TypeError:
-                return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
-            c: Comment = Comment.get_by_pk(rtid.to_bin())
+                return self.finish(RETCODE.INVALID_POSTDATA, "被评论的内容不存在")
 
-            if not c:
-                return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
-            if c.related_id != post.id:
-                return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
+            if 'content' not in values or not values['content']:
+                return self.finish(RETCODE.INVALID_POSTDATA, "评论内容不能为空")
 
-            values['reply_to_cmt_id'] = rtid.to_bin()
+            if 'reply_to_cmt_id' in values:
+                try:
+                    rtid = config.POST_ID_GENERATOR(values['reply_to_cmt_id'])
+                except TypeError:
+                    return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
+                c: Comment = Comment.get_by_pk(rtid.to_bin())
 
-        if not isinstance(config.LONG_ID_GENERATOR, config.AutoGenerator):
-            values['id'] = config.LONG_ID_GENERATOR().to_bin()
-        values['related_id'] = cid.to_bin()
-        values['related_type'] = int(values['related_type'])
-        values['user_id'] = self.current_user.id
-        values['time'] = int(time.time())
-        values['content'], self.do_mentions = check_content_mention(values['content'])
+                if not c:
+                    return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
+                if c.related_id != post.id:
+                    return self.finish(RETCODE.INVALID_POSTDATA, "指定被回复的内容不存在")
 
-        if relate_type == POST_TYPES.TOPIC:
-            post: Topic
-            await post.weight_inc()
+                values['reply_to_cmt_id'] = rtid.to_bin()
 
-    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
-        post_stats_do_comment(record['related_type'], record['related_id'], record['id'])
-        post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
-        Comment.update(post_number=post_number).where(Comment.id == record['id']).execute()
+            if not isinstance(config.LONG_ID_GENERATOR, config.AutoGenerator):
+                values['id'] = config.LONG_ID_GENERATOR().to_bin()
+            values['related_id'] = cid.to_bin()
+            values['related_type'] = int(values['related_type'])
+            values['user_id'] = self.current_user.id
+            values['time'] = int(time.time())
+            values['content'], self.do_mentions = check_content_mention(values['content'])
 
-        if self.do_mentions:
-            # 创建提醒
-            loc = [record['related_type'], record['related_id']]
-            # record['related_id']: memoryview
-            loc_title = POST_TYPES.get_post_title_by_list(loc)[get_bytes_from_blob(record['related_id'])]
-            related = [POST_TYPES.COMMENT, record['id']]
-            self.do_mentions(record['user_id'], loc_title, loc, related)
+            if relate_type == POST_TYPES.TOPIC:
+                post: Topic
+                await post.weight_inc()
 
-        if config.SEARCH_ENABLE:
-            run_in_thread(esdb.es_update_comment, record['id'])
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+        for record in records:
+            post_stats_do_comment(record['related_type'], record['related_id'], record['id'])
+            post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
+            Comment.update(post_number=post_number).where(Comment.id == record['id']).execute()
 
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord],
-                     records: List[DataRecord]):
-        for old_record, record in zip(old_records, records):
+            if self.do_mentions:
+                # 创建提醒
+                loc = [record['related_type'], record['related_id']]
+                # record['related_id']: memoryview
+                loc_title = POST_TYPES.get_post_title_by_list(loc)[get_bytes_from_blob(record['related_id'])]
+                related = [POST_TYPES.COMMENT, record['id']]
+                self.do_mentions(record['user_id'], loc_title, loc, related)
+
+            if config.SEARCH_ENABLE:
+                run_in_thread(esdb.es_update_comment, record['id'])
+
+    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
+                           new_records: List[DataRecord]):
+        for old_record, record in zip(old_records, new_records):
             # 管理日志：修改评论状态
             ManageLog.add_by_post_changed(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.COMMENT,
                                           values, old_record, record)

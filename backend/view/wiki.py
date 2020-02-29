@@ -81,14 +81,16 @@ class WikiView(UserViewMixin, PeeweeView):
     async def new(self):
         return await super().new()
 
-    async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+    async def before_update(self, values: SQLValuesToWrite, records: List[DataRecord]):
+        raw_post = await self.post_data()
         record = records[0]
         form = WikiEditForm(**raw_post)
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
 
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
-        for old_record, record in zip(old_records, records):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
+                           new_records: List[DataRecord]):
+        for old_record, record in zip(old_records, new_records):
             manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
                 self, column, op, POST_TYPES.WIKI, values, old_record, record
             )
@@ -109,23 +111,26 @@ class WikiView(UserViewMixin, PeeweeView):
             if config.SEARCH_ENABLE:
                 run_in_thread(esdb.es_update_wiki, record['id'])
 
-    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
-        form = WikiNewForm(**raw_post)
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
+    async def before_insert(self, values_lst: List[SQLValuesToWrite]):
+        raw_post = await self.post_data()
+        for values in values_lst:
+            form = WikiNewForm(**raw_post)
+            if not form.validate():
+                return self.finish(RETCODE.FAILED, form.errors)
 
-        values['time'] = int(time.time())
-        values['user_id'] = self.current_user.id
+            values['time'] = int(time.time())
+            values['user_id'] = self.current_user.id
 
-        ref = values.get('ref', '').strip()
-        if not ref: ref = values['title']
-        values['ref'] = quote(ref).replace('/', '')
+            ref = values.get('ref', '').strip()
+            if not ref: ref = values['title']
+            values['ref'] = quote(ref).replace('/', '')
 
-    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
-        # 添加统计记录
-        post_stats_new(POST_TYPES.WIKI, record['id'])
-        # 添加创建记录
-        ManageLog.post_new(self, POST_TYPES.WIKI, record)
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+        for record in records:
+            # 添加统计记录
+            post_stats_new(POST_TYPES.WIKI, record['id'])
+            # 添加创建记录
+            ManageLog.post_new(self, POST_TYPES.WIKI, record)
 
-        if config.SEARCH_ENABLE:
-            run_in_thread(esdb.es_update_wiki, record['id'])
+            if config.SEARCH_ENABLE:
+                run_in_thread(esdb.es_update_wiki, record['id'])

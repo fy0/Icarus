@@ -7,11 +7,11 @@ from slim.base.view import BaseView
 from ipaddress import IPv4Address, IPv6Address
 from concurrent.futures import ThreadPoolExecutor
 
-import app
+from app import app
 from model.redis import redis
 from slim.utils import get_ioloop, get_bytes_from_blob
 
-route = app.app.route
+route = app.route
 thread_executor = ThreadPoolExecutor()
 
 

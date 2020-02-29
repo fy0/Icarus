@@ -36,18 +36,20 @@ class BoardView(PeeweeView, UserViewMixin):
         cls.add_soft_foreign_key('user_id', 'user')
         cls.add_soft_foreign_key('parent_id', 'board')
 
-    async def before_insert(self, raw_post: Dict, values: SQLValuesToWrite):
-        form = BoardForm(**values)
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
+    async def before_insert(self, values_lst: List[SQLValuesToWrite]):
+        for values in values_lst:
+            form = BoardForm(**values)
+            if not form.validate():
+                return self.finish(RETCODE.FAILED, form.errors)
 
-        if not config.POST_ID_GENERATOR == config.AutoGenerator:
-            values['id'] = config.POST_ID_GENERATOR().digest()
-        values['time'] = int(time.time())
-        values['user_id'] = self.current_user.id
+            if not config.POST_ID_GENERATOR == config.AutoGenerator:
+                values['id'] = config.POST_ID_GENERATOR().digest()
+            values['time'] = int(time.time())
+            values['user_id'] = self.current_user.id
 
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
-        for old_record, record in zip(old_records, records):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
+                           new_records: List[DataRecord]):
+        for old_record, record in zip(old_records, new_records):
             # 注：此处记录不考虑可写不可读的情况。代码比较丑陋，后面改吧
             o = old_record.to_dict()
             n = record.to_dict()
@@ -66,9 +68,10 @@ class BoardView(PeeweeView, UserViewMixin):
             ManageLog.new(self.current_user, self.current_request_role, POST_TYPES.BOARD, record['id'],
                           record['user_id'], MOP.BOARD_INFO_CHANGE, [o, n])
 
-    async def after_insert(self, raw_post: Dict, values: SQLValuesToWrite, record: DataRecord):
-        # 添加统计记录
-        post_stats_new(POST_TYPES.BOARD, record['id'])
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+        for record in records:
+            # 添加统计记录
+            post_stats_new(POST_TYPES.BOARD, record['id'])
 
-        # 管理日志：新建板块
-        ManageLog.post_new(self, POST_TYPES.BOARD, record)
+            # 管理日志：新建板块
+            ManageLog.post_new(self, POST_TYPES.BOARD, record)

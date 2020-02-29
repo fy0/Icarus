@@ -22,6 +22,7 @@ from slim.base.permission import DataRecord
 from view.user_signup_legacy import UserLegacyView
 from view.user_validate_form import RequestSignupByEmailForm, SigninByEmailForm, SigninByNicknameForm, PasswordForm, \
     NicknameForm
+from view.validate.user import ValidatePasswordResetPost
 
 
 class UserViewMixin(BaseAccessTokenUserViewMixin):
@@ -103,10 +104,18 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
+    @route.interface('GET', summary='测试专用1', va_query=ValidatePasswordResetPost)
+    async def test1(self):
+        pass
+
+    @route.interface('POST', summary='测试专用2', va_query=ValidatePasswordResetPost, va_post=ValidatePasswordResetPost)
+    async def test2(self):
+        pass
+
+    @route.interface('POST', summary='密码重置验证', va_post=ValidatePasswordResetPost)
     async def validate_password_reset(self):
         """
-        验证忘记密码
+        忘记密码后，进入重设流程时，通过此接口提交校验码和新密码
         :return:
         """
         post = await self.post_data()
@@ -207,7 +216,9 @@ class UserView(UserViewMixin, UserLegacyView):
             post['password'] = '00'
         await super().set()
 
-    async def before_update(self, raw_post: Dict, values: SQLValuesToWrite, records: List[DataRecord]):
+    async def before_update(self, values: SQLValuesToWrite, records: List[DataRecord]):
+        raw_post = await self.post_data()
+
         if 'password' in raw_post:
             ret = User.gen_password_and_salt(self.new_pass)
             values.update(ret)
@@ -215,8 +226,10 @@ class UserView(UserViewMixin, UserLegacyView):
         if 'key' in raw_post:
             values.update(User.gen_key())
 
-    def after_update(self, raw_post: Dict, values: SQLValuesToWrite, old_records: List[DataRecord], records: List[DataRecord]):
-        for old_record, record in zip(old_records, records):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
+                           new_records: List[DataRecord]):
+        raw_post = await self.post_data()
+        for old_record, record in zip(old_records, new_records):
             manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
                 self, column, op, POST_TYPES.USER, values, old_record, record
             )

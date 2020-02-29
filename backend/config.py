@@ -18,7 +18,7 @@ SITE_CONTACT_EMAIL = 'manage@mail.com'  # 必填，管理员联系邮箱，用�
 
 HOST = '127.0.0.1'
 PORT = 9999
-DEBUG_LEVEL = logging.DEBUG
+DEBUG_LEVEL = logging.INFO
 CORS_OPTIONS = CORSOptions('*', allow_credentials=True, expose_headers='*', allow_headers='*')
 
 DATABASE_URI = 'postgresql://postgres@localhost/icarus'  # 必填

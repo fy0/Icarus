@@ -41,7 +41,7 @@ MAIN_ROLE_ORDER = ['admin', 'superuser', 'user', 'inactive_user', 'banned_user',
 class User(PostModel, BaseUser):
     email = TextField(index=True, unique=True, null=True, default=None)
     phone = TextField(index=True, unique=True, null=True, default=None)  # 大陆地区
-    nickname = CITextField(index=True, unique=True, null=True)  # CITextField
+    nickname = CITextField(index=True, unique=True, null=True, help_text='用户昵称')  # CITextField
     password = BlobField()
     salt = BlobField()  # auto
     biology = TextField(null=True)  # 简介

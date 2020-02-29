@@ -3,6 +3,8 @@ import asyncio
 from app import app
 from lib import mail, qn
 from model.redis import init as redis_init
+from slim import Application
+from slim.ext.openapi.main import get_openapi
 from slim.utils import get_ioloop
 import config
 
@@ -11,14 +13,16 @@ if __name__ == '__main__':
     import view._views
     import permissions
 
-    loop = get_ioloop()
-    if config.EMAIL_ENABLE:
-        asyncio.ensure_future(mail.init(loop), loop=loop)
+    async def on_startup():
+        loop = get_ioloop()
 
-    co_redis = redis_init(loop)
-    loop.run_until_complete(co_redis)
+        if config.EMAIL_ENABLE:
+            asyncio.ensure_future(mail.init(loop), loop=loop)
 
-    if config.UPLOAD_ENABLE:
-        qn.init()
+        await redis_init(loop)
 
+        if config.UPLOAD_ENABLE:
+            qn.init()
+
+    app.on_startup.append(on_startup)
     app.run(host=config.HOST, port=config.PORT)
