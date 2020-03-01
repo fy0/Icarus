@@ -12,10 +12,10 @@ from model._post import POST_TYPES
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, sync_call
-from view import route, ValidateForm
+from api import route, ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
-from view.user import UserViewMixin
-from view.ws import WSR
+from api.user import UserViewMixin
+from api.ws import WSR
 
 
 @route('notif')

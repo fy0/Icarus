@@ -16,20 +16,16 @@ from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin, get_bytes_from_blob
-from view import route, ValidateForm, cooldown, same_user, get_fuzz_ip
+from api import route, ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va
 from slim.base.permission import DataRecord
-from view.user_signup_legacy import UserLegacyView
-from view.user_validate_form import RequestSignupByEmailForm, SigninByEmailForm, SigninByNicknameForm, PasswordForm, \
+from api.user_signup_legacy import UserLegacyView
+from api.user_validate_form import RequestSignupByEmailForm, SigninByEmailForm, SigninByNicknameForm, PasswordForm, \
     NicknameForm
-from view.validate.user import ValidatePasswordResetPost
+from api.validate.user import ValidatePasswordResetPost, ChangePasswordDataModel
 
 
 class UserViewMixin(BaseAccessTokenUserViewMixin):
-    @property
-    def user_cls(self) -> Type[BaseUser]:
-        return User
-
     def get_user_by_token(self: Union['BaseUserViewMixin', 'BaseView'], token) -> Type[BaseUser]:
         try: return User.get_by_key(to_bin(token))
         except: pass
@@ -41,18 +37,6 @@ class UserViewMixin(BaseAccessTokenUserViewMixin):
         u: User = self.current_user
         u.key = None
         u.save()
-
-
-class ChangePasswordForm(ValidateForm):
-    old_password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
-
-    password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
 
 
 class ResetPasswordForm(ValidateForm):
@@ -147,17 +131,15 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
+    @route.interface('POST', va_post=ChangePasswordDataModel)
     @cooldown(config.USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_change_password_account_%b', unique_id_func=same_user)
     async def change_password(self):
         if self.current_user:
-            post = await self.post_data()
-            form = ChangePasswordForm(**post)
-            if not form.validate():
-                return self.finish(RETCODE.FAILED, form.errors)
+            vpost: ChangePasswordDataModel = self._.validated_post
+
             u: User = self.current_user
-            if User.auth_by_mail(u.email, post['old_password']):
-                u.set_password(post['password'])
+            if User.auth_by_mail(u.email, vpost.old_password):
+                u.set_password(vpost.password)
                 k = u.refresh_key()
                 self.finish(RETCODE.SUCCESS, k['key'])
             else:

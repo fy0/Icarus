@@ -14,10 +14,10 @@ from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, get_bytes_from_blob
-from view import route, ValidateForm, cooldown, same_user, run_in_thread
+from api import route, ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField, ValidationError
-from view.mention import check_content_mention
-from view.user import UserViewMixin
+from api.mention import check_content_mention
+from api.user import UserViewMixin
 
 
 @route('comment')

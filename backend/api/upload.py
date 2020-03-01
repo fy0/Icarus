@@ -6,8 +6,8 @@ from slim.base.permission import Permissions
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import binhex
-from view import route
-from view.user import UserViewMixin
+from api import route
+from api.user import UserViewMixin
 
 
 @route('upload')

@@ -1,5 +1,5 @@
 from slim.retcode import RETCODE
-from view.ws import WSR
+from api.ws import WSR
 
 
 @WSR.route('chat.test')

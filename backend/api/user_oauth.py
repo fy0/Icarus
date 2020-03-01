@@ -16,8 +16,8 @@ from model import db
 from model._post import POST_STATE
 from model.user import User
 from model.user_oauth import UserOAuth
-from view import route
-from view.user import UserViewMixin
+from api import route
+from api.user import UserViewMixin
 
 
 @route('user/oauth')

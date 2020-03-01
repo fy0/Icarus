@@ -13,9 +13,9 @@ from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from view import route, cooldown, same_user, ValidateForm, run_in_thread
+from api import route, cooldown, same_user, ValidateForm, run_in_thread
 from wtforms import validators as va, StringField, IntegerField
-from view.user import UserViewMixin
+from api.user import UserViewMixin
 
 
 class WikiNewForm(ValidateForm):

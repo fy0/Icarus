@@ -1,7 +1,7 @@
 import re
 import config
 from model.user import User
-from view import ValidateForm
+from api import ValidateForm
 from wtforms import StringField, validators as va, ValidationError
 
 

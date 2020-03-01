@@ -4,8 +4,8 @@ from slim.retcode import RETCODE
 
 import config
 from slim.base.view import BaseView
-from view import route, cooldown, thread_executor, run_in_thread
-from view.user import UserViewMixin
+from api import route, cooldown, thread_executor, run_in_thread
+from api.user import UserViewMixin
 
 
 @route('search')

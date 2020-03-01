@@ -1,7 +1,7 @@
 from model.user import User
 from slim.base.ws import WSRouter
 from slim.utils import to_bin
-from view import route
+from api import route
 
 
 @route('/ws')

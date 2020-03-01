@@ -12,9 +12,9 @@ from slim.base.view import BaseView
 from slim.ext.decorator import timer
 from slim.retcode import RETCODE
 from slim.utils import to_hex, get_bytes_from_blob
-from view import route
-from view.user import UserViewMixin
-from view.ws import WSR
+from api import route
+from api.user import UserViewMixin
+from api.ws import WSR
 
 
 @timer(10, exit_when=None)

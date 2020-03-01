@@ -13,11 +13,11 @@ from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, dict_filter_inplace
-from view import route, ValidateForm, cooldown, same_user, run_in_thread
+from api import route, ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from wtforms.validators import StopValidation
-from view.mention import check_content_mention
-from view.user import UserViewMixin
+from api.mention import check_content_mention
+from api.user import UserViewMixin
 
 
 def my_optional(form, field):
