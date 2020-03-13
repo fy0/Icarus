@@ -1,4 +1,4 @@
-slim==0.5.0a4
+slim==0.5.2
 aiohttp==3.3
 aiohttp-cors==0.7.0
 peewee==3.7

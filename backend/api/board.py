@@ -1,6 +1,8 @@
 import time
 import config
 from typing import Mapping, Dict, List
+
+from app import app
 from model._post import POST_TYPES
 from model.post_stats import post_stats_new
 from slim.base.permission import Permissions, DataRecord
@@ -25,7 +27,7 @@ class BoardForm(ValidateForm):
     desc = StringField('详细说明', validators=[va.Length(0, 1024)])
 
 
-@route('board')
+@app.route.view('board')
 class BoardView(PeeweeView, UserViewMixin):
     model = Board
     LIST_PAGE_SIZE = -1
