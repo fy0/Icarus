@@ -118,7 +118,7 @@ class FetchCls extends BaseWrapper {
         let params = this.$route.params
 
         if (this.userData && (params.id === this.userData.id)) role = this.basicRole
-        let ret = await this.$api.user.get(params, role)
+        let ret = await this.$api.user.get(params, { role })
 
         if (ret.code === this.$api.retcode.SUCCESS) {
             this.user = ret.data

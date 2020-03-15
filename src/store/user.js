@@ -70,9 +70,12 @@ export const actions = {
         if (!uid) uid = getters._userData.id
         if (!uid) return
 
-        const userInfo = await this.$api.user.get({ id: uid }, 'user')
+        const userInfo = await this.$api.user.get({ id: uid }, { role: 'user' })
         if (userInfo.code === this.$api.retcode.SUCCESS) {
             commit('SET_USER_DATA', userInfo.data)
+            this.$api.getDefaultRole = () => {
+                return this.$user.mainRole
+            }
         } else {
             this.$message.error('获取用户信息失败，可能是网络问题或者服务器无响应')
         }
@@ -83,7 +86,7 @@ export const actions = {
         const updateData = $.objDiff(newData, oldData)
         delete updateData.avatar // 头像的更新是独立的，参见BUG12
         if (Object.keys(updateData).length === 0) return
-        const ret = await this.$api.user.set({ id: oldData.id }, updateData, 'user')
+        const ret = await this.$api.user.set({ id: oldData.id }, updateData, { role: 'user' })
         if (ret.code === this.$api.retcode.SUCCESS) {
             await dispatch('apiGetUserData')
             this.$message.success('信息修改成功！')

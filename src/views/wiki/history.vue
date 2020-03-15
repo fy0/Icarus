@@ -56,7 +56,7 @@ class FetchCls extends BaseWrapper {
             let ret = await this.$api.wiki.get({
                 id: params.id,
                 select: ['id', 'title', 'ref']
-            }, this.basicRole)
+            }, { role: this.basicRole })
             if (ret.code === this.$api.retcode.SUCCESS) {
                 this.article = ret.data
             } else if (ret.code === this.$api.retcode.NOT_FOUND) {
@@ -67,12 +67,11 @@ class FetchCls extends BaseWrapper {
         }
 
         let getHistory = async () => {
-            console.log(1111, this.$api.logManage, this.$api.user)
             let ret = await this.$api.logManage.list({
                 related_id: params.id,
                 order: 'time.desc',
                 loadfk: { 'user_id': null }
-            }, pageNumber, null, this.basicRole)
+            }, pageNumber, { role: this.basicRole })
 
             if (ret.code === this.$api.retcode.SUCCESS) {
                 this.page = ret.data

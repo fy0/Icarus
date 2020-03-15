@@ -133,7 +133,7 @@ export default {
                 receiver_id: this.$user.data.id,
                 order: 'time.desc'
                 // loadfk: {user_id: null, board_id: null}
-            }, params.page, null, this.$user.basicRole)
+            }, params.page, { role: this.$user.basicRole })
 
             if (ret.code === this.$api.retcode.SUCCESS) {
                 let userIds = new Set()

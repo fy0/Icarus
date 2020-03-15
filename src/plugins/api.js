@@ -1,5 +1,4 @@
-// import Vue from 'vue'
-import { createAPIRequester } from '@/netapi'
+import { createAPIRequester } from '../api/main'
 
 export default (ctx, inject) => {
     const api = createAPIRequester(ctx)

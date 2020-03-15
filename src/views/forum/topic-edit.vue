@@ -175,14 +175,14 @@ export default {
                 }
 
                 if (this.asAdmin) {
-                    ret = await this.$api.topic.set({ id: this.topicInfo.id }, topicInfo, this.$user.mainRole)
+                    ret = await this.$api.topic.set({ id: this.topicInfo.id }, topicInfo)
                 } else {
-                    ret = await this.$api.topic.set({ id: this.topicInfo.id }, topicInfo, 'user')
+                    ret = await this.$api.topic.set({ id: this.topicInfo.id }, topicInfo, { role: 'user' })
                 }
                 successText = '编辑成功！已自动跳转至文章页面。'
                 topicId = this.topicInfo.id
             } else {
-                ret = await this.$api.topic.new(topicInfo, 'user')
+                ret = await this.$api.topic.new(topicInfo, { role: 'user' })
                 successText = '发表成功！已自动跳转至文章页面。'
                 topicId = ret.data.id
             }

@@ -276,7 +276,7 @@ class FetchCls extends BaseWrapper {
         let ret = await this.$api.topic.get({
             id: params.id,
             loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
-        }, this.$user.basicRole)
+        }, { role: this.$user.basicRole })
 
         if (ret.code === this.$api.retcode.SUCCESS) {
             let mlog = await this.$api.logManage.list({

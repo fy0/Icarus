@@ -123,7 +123,7 @@ export default {
             let ret = await this.$api.logManage.list({
                 loadfk: { user_id: null },
                 order: 'time.desc'
-            }, params.page, null, this.$user.mainRole)
+            }, params.page)
 
             if (ret.code === this.$api.retcode.SUCCESS) {
                 this.postsOfComments = await $.getBasePostsByIDs(async (i) => {

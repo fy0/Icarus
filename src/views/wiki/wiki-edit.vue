@@ -181,13 +181,13 @@ export default {
             wikiInfo.returning = true
 
             if (this.isEdit) {
-                ret = await this.$api.wiki.set({ id: this.wikiInfo.id }, wikiInfo, role)
+                ret = await this.$api.wiki.set({ id: this.wikiInfo.id }, wikiInfo, { role })
             } else {
                 if (this.action === 'fork') {
                     wikiInfo['root_id'] = this.wikiInfo.root_id
                 }
                 // return
-                ret = await this.$api.wiki.new(wikiInfo, role)
+                ret = await this.$api.wiki.new(wikiInfo, { role })
             }
             successText = '编辑成功！已自动跳转至文章页面。'
 

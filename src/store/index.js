@@ -90,7 +90,7 @@ export const actions = {
         if (state._initing) return
         commit('SET_INITING', true)
         // 获取MISC信息
-        const ret = await $.retryUntilSuccess(this.$api.misc)
+        const ret = await this.$api.misc()
         if (ret.code !== this.$api.retcode.SUCCESS) {
             this.$message.error('服务器的返回异常，请刷新重试。', 5000)
             commit('SET_INITING', false)

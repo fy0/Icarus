@@ -93,7 +93,7 @@ export default {
                 order: 'sticky_weight.desc,weight.desc,time.desc',
                 // select: 'id, time, user_id, board_id, title, state',
                 loadfk: { 'user_id': null, 'board_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
-            }, params.page, null, this.$user.mainRole)
+            }, params.page)
             if (retList.code === this.$api.retcode.SUCCESS) {
                 this.topics = retList.data
             }

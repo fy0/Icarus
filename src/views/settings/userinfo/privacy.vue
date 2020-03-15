@@ -9,7 +9,6 @@
 </style>
 
 <script>
-// import api from '@/netapi.js'
 import SettingBase from '../base/base.vue'
 
 export default {

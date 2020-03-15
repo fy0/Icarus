@@ -1,4 +1,4 @@
-import { TokenStoreNuxt, newRequestClient, SlimSQLAPI } from 'slim-tools/build/main'
+import { TokenStoreNuxt, newRequestClient, SlimSQLAPI } from 'slim-tools'
 import config from '@/config'
 import { retcode, retinfo } from './misc'
 import { UserAPI, NotifAPI, UploadAPI, SearchAPI, WikiAPI } from './apis'
@@ -8,30 +8,46 @@ let client = newRequestClient(config.remote.API_SERVER)
 export function createAPIRequester (ctx) {
     let ts = new TokenStoreNuxt(ctx)
 
-    return {
+    let getRole = () => {
+        return data.getDefaultRole()
+    }
+
+    let data = {
         retcode,
         retinfo,
-        accessToken: null, // 需在初始化时进行设置
+        getDefaultRole: () => {},
 
         /** 获取综合信息 */
         misc: async function () {
-            return client.request('/api/misc/info', 'GET')
+            let token = ts.getAccessToken()
+            let headers = {}
+            if (token) headers['AccessToken'] = token
+            return client.request({ url: '/api/misc/info', method: 'GET', headers })
         },
 
         /** 周期请求 */
         tick: async function (auid) {
-            return client.request('/api/misc/tick', 'GET', { params: { auid } })
+            let token = ts.getAccessToken()
+            let headers = {}
+            if (token) headers['AccessToken'] = token
+            return client.request({ url: '/api/misc/tick', method: 'GET', headers })
         },
 
-        user: new UserAPI(client, ts, '/api/user'),
-        board: new SlimSQLAPI(client, ts, '/api/board'),
-        topic: new SlimSQLAPI(client, ts, '/api/topic'),
-        stats: new SlimSQLAPI(client, ts, '/api/stats'),
-        comment: new SlimSQLAPI(client, ts, '/api/comment'),
-        notif: new NotifAPI(client, ts, '/api/notif'),
-        upload: new UploadAPI(client, ts, '/api/upload'),
-        logManage: new SlimSQLAPI(client, ts, '/api/log/manage'),
-        wiki: new WikiAPI(client, ts, '/api/wiki'),
-        search: new SearchAPI(client, ts, '/api/search')
+        saveAccessToken (t) {
+            ts.saveAccessToken(t)
+        },
+
+        user: new UserAPI(client, ts, '/api/user', getRole),
+        board: new SlimSQLAPI(client, ts, '/api/board', getRole),
+        topic: new SlimSQLAPI(client, ts, '/api/topic', getRole),
+        stats: new SlimSQLAPI(client, ts, '/api/stats', getRole),
+        comment: new SlimSQLAPI(client, ts, '/api/comment', getRole),
+        notif: new NotifAPI(client, ts, '/api/notif', getRole),
+        upload: new UploadAPI(client, ts, '/api/upload', getRole),
+        logManage: new SlimSQLAPI(client, ts, '/api/log/manage', getRole),
+        wiki: new WikiAPI(client, ts, '/api/wiki', getRole),
+        search: new SearchAPI(client, ts, '/api/search', getRole)
     }
+
+    return data
 }

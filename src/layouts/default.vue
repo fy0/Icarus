@@ -35,7 +35,7 @@
     display: flex;
     > .main {
         flex: 1;
-        width: 0%;
+        width: 100%;
         padding-top: 25px;
         padding-bottom: 15px;
     }

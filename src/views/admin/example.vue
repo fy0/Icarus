@@ -8,7 +8,6 @@
 </style>
 
 <script>
-// import api from '@/netapi.js'
 import AdminBase from '../base/base.vue'
 
 export default {

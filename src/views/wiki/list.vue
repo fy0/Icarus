@@ -40,7 +40,7 @@ class FetchCls extends BaseWrapper {
         let ret = await this.$api.wiki.list({
             flag: null,
             order: 'title.asc'
-        }, pageNumber, null, this.basicRole)
+        }, pageNumber, { role: this.basicRole })
 
         if (ret.code === this.$api.retcode.SUCCESS) {
             this.page = ret.data

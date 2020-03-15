@@ -74,7 +74,7 @@ export default {
 
             let ret = await this.$api.upload.list({
                 'type_name.is': null
-            }, 1, null, this.basicRole)
+            }, 1, { role: this.basicRole })
 
             if (ret.code === this.$api.retcode.SUCCESS) {
                 this.page = ret.data

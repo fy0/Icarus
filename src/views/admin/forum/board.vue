@@ -107,7 +107,7 @@ export default {
     },
     methods: {
         boardNew: async function () {
-            let ret = await this.$api.board.new(this.boardNewInfo, this.$user.mainRole)
+            let ret = await this.$api.board.new(this.boardNewInfo)
             this.$message.byCode(ret.code)
             if (ret.code === this.$api.retcode.SUCCESS) {
                 this.fetchData()
@@ -118,7 +118,7 @@ export default {
                 order: 'weight.desc,time.asc',
                 loadfk: { 'user_id': null }
                 // select: 'id, time, user_id, board_id, title, state',
-            }, 1, null, this.$user.forumAdminRole)
+            }, 1, { role: this.$user.forumAdminRole })
 
             if (ret.code === this.$api.retcode.SUCCESS) {
                 this.boardInfo = ret.data

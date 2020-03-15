@@ -114,7 +114,7 @@ export default {
             if (data.state) data.state = Number(data.state)
             if (data.group) data.group = Number(data.group)
 
-            let ret = await this.$api.user.set({ id: this.user.id }, data, this.$user.mainRole)
+            let ret = await this.$api.user.set({ id: this.user.id }, data)
             if (ret.code === 0) {
                 this.$store.commit('dialog/WRITE_USER_MANAGE_DATA', data)
                 this.$message.success('用户信息设置成功')
@@ -129,7 +129,7 @@ export default {
     watch: {
         'userManage': async function (val) {
             if (val) {
-                let info = await this.$api.user.get({ id: this.userManageData.id }, this.$user.mainRole)
+                let info = await this.$api.user.get({ id: this.userManageData.id })
                 if (info.code === this.$api.retcode.SUCCESS) {
                     this.user = info.data
                     this.user.state = this.user.state.toString()

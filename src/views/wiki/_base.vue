@@ -164,7 +164,7 @@ export default {
             let getSidebar = async () => {
                 let ret = await this.$api.wiki.get({
                     flag: 1
-                }, this.$user.basicRole)
+                }, { role: this.$user.basicRole })
 
                 if (ret.code === this.$api.retcode.SUCCESS) {
                     this.sidebar = ret.data
@@ -176,7 +176,7 @@ export default {
                 let ret = await this.$api.wiki.get({
                     select: 'id',
                     flag: 2
-                }, this.$user.basicRole)
+                }, { role: this.$user.basicRole })
 
                 if (ret.code === this.$api.retcode.SUCCESS) {
                     this.mainpageId = ret.data.id

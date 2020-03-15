@@ -40,7 +40,6 @@
 </style>
 
 <script>
-// import api from '@/netapi.js'
 import Dialog from './_dialog.vue'
 import { mapState, mapGetters } from 'vuex'
 
