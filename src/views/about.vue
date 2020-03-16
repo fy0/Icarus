@@ -11,8 +11,10 @@
 <style scoped>
 </style>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
     data () {
         return {}
     },
@@ -31,5 +33,5 @@ export default {
     },
     created () {
     }
-}
+})
 </script>

@@ -49,6 +49,7 @@
     "zingtouch": "^1.0.6"
   },
   "devDependencies": {
+    "@nuxt/typescript-build": "^0.6.0",
     "@nuxtjs/eslint-config": "^2.0.2",
     "@nuxtjs/eslint-module": "^1.1.0",
     "@vue/eslint-config-standard": "^5.1.2",

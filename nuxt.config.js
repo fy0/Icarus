@@ -84,6 +84,7 @@ module.exports = {
         '@nuxtjs/style-resources',
         '@nuxtjs/universal-storage'
     ],
+    buildModules: ['@nuxt/typescript-build'],
     storage: {
     },
     styleResources: {
