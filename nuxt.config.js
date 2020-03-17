@@ -84,7 +84,10 @@ module.exports = {
         '@nuxtjs/style-resources',
         '@nuxtjs/universal-storage'
     ],
-    buildModules: ['@nuxt/typescript-build'],
+    buildModules: [
+        '@nuxt/typescript-build',
+        "nuxt-typed-vuex"
+    ],
     storage: {
     },
     styleResources: {
@@ -115,6 +118,10 @@ module.exports = {
             new webpack.ProvidePlugin({
                 $: path.resolve(__dirname, './src/tools/_merge.js')
             })
+        ],
+
+        transpile: [
+            /typed-vuex/,
         ],
 
         extend (config, ctx) {
