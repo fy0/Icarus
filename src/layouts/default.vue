@@ -49,42 +49,57 @@
 }
 </style>
 
-<script>
-import Navbar from '@/components/misc/header.vue'
-import MyFooter from '@/components/misc/footer.vue'
-import MsgBox from '@/components/misc/msgbox.vue'
-import { mapState } from 'vuex'
+<script lang="ts">
+import {
+  Component,
+  Prop,
+  Vue
+} from "nuxt-property-decorator"
 
-export default {
-    name: 'app',
-    data () {
-        return {}
-    },
-    head () {
-        return {
-            titleTemplate: `%s - ${this.$config.title}`
-        }
-    },
-    computed: {
-        ...mapState([
-            'config',
-            'loading'
-        ]),
-        isWikiPage: function () {
-            let name = this.$route.name
-            if (name) {
-                return name === 'wiki' || (
-                    name.startsWith('wiki_') &&
-                    (name !== 'wiki_article_new' && name !== 'wiki_article_edit')
-                )
-            }
-            return false
-        }
-    },
-    components: {
-        Navbar,
-        MyFooter,
-        MsgBox
+@Component({})
+export default class Card extends Vue {
+    test () {
     }
 }
 </script>
+
+// <script lang="ts">
+// import Vue from "vue"
+// import Navbar from '@/components/misc/header.vue'
+// import MyFooter from '@/components/misc/footer.vue'
+// import MsgBox from '@/components/misc/msgbox.vue'
+// import { mapState } from 'vuex'
+
+// export default Vue.extend({
+//     name: 'app',
+//     data () {
+//         return {}
+//     },
+//     head () {
+//         return {
+//             titleTemplate: `%s - ${this.$config.title}`
+//         }
+//     },
+//     computed: {
+//         ...mapState([
+//             'config',
+//             'loading'
+//         ]),
+//         isWikiPage: function () {
+//             let name = this.$route.name
+//             if (name) {
+//                 return name === 'wiki' || (
+//                     name.startsWith('wiki_') &&
+//                     (name !== 'wiki_article_new' && name !== 'wiki_article_edit')
+//                 )
+//             }
+//             return false
+//         }
+//     },
+//     components: {
+//         Navbar,
+//         MyFooter,
+//         MsgBox
+//     }
+// })
+// </script>

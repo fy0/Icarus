@@ -28,7 +28,6 @@ export default Vue.extend({
     },
     computed: {
         customAbout: function () {
-            this.$api
             return this.$store.getters.BACKEND_CONFIG.ABOUT_CUSTOM_HTML
         }
     },
