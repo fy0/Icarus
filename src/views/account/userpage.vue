@@ -98,6 +98,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import { mapState, mapGetters } from 'vuex'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 
@@ -120,7 +121,7 @@ class FetchCls extends BaseWrapper {
         if (this.userData && (params.id === this.userData.id)) role = this.basicRole
         let ret = await this.$api.user.get(params, { role })
 
-        if (ret.code === this.$api.retcode.SUCCESS) {
+        if (ret.code === retcode.SUCCESS) {
             this.user = ret.data
             await this.tabTopicLoad()
         } else {

@@ -142,6 +142,7 @@ $title-text-active-color: darken(#373434, 0);
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { marked } from '@/md.js'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -166,7 +167,7 @@ export default {
                     flag: 1
                 }, { role: this.$user.basicRole })
 
-                if (ret.code === this.$api.retcode.SUCCESS) {
+                if (ret.code === retcode.SUCCESS) {
                     this.sidebar = ret.data
                 } else {
                     wrong = ret
@@ -178,7 +179,7 @@ export default {
                     flag: 2
                 }, { role: this.$user.basicRole })
 
-                if (ret.code === this.$api.retcode.SUCCESS) {
+                if (ret.code === retcode.SUCCESS) {
                     this.mainpageId = ret.data.id
                 } else {
                     wrong = ret

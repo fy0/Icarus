@@ -11,7 +11,6 @@ from app import app
 from model.redis import redis
 from slim.utils import get_ioloop, get_bytes_from_blob
 
-route = app.route
 thread_executor = ThreadPoolExecutor()
 
 

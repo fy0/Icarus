@@ -10,7 +10,7 @@ from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.user import User, USER_GROUP
-from api import route, ValidateForm, cooldown, same_user, get_fuzz_ip
+from api import ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va, ValidationError
 from slim.base.permission import Permissions, DataRecord
 from api.user_validate_form import nickname_check

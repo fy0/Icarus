@@ -3,6 +3,7 @@ from urllib.parse import quote
 from typing import Dict, List
 from peewee import fn
 import config
+from app import app
 from lib.textdiff import diff
 from model import esdb
 from model._post import POST_TYPES
@@ -13,7 +14,7 @@ from slim.base.permission import Permissions, DataRecord
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
-from api import route, cooldown, same_user, ValidateForm, run_in_thread
+from api import cooldown, same_user, ValidateForm, run_in_thread
 from wtforms import validators as va, StringField, IntegerField
 from api.user import UserViewMixin
 
@@ -46,7 +47,7 @@ class WikiEditForm(ValidateForm):
     # ])
 
 
-@route('wiki')
+@app.route.view('wiki')
 class WikiView(UserViewMixin, PeeweeView):
     """
     文档有一个简单的版本设定，但忽略任何并发导致的同步问题
@@ -58,7 +59,7 @@ class WikiView(UserViewMixin, PeeweeView):
         cls.add_soft_foreign_key('id', 'post_stats')
         cls.add_soft_foreign_key('user_id', 'user')
 
-    @route.interface('GET')
+    @app.route.interface('GET')
     async def random(self):
         wa = WikiArticle.get_random_one()
         if wa:

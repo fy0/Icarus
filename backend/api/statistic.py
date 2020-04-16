@@ -1,12 +1,13 @@
+from app import app
 from model.comment import Comment
 from model.post_stats import PostStats
 from slim.base.permission import Permissions
 from slim.support.peewee import PeeweeView
-from api import route, ValidateForm
+from api import ValidateForm
 from api.user import UserViewMixin
 
 
-@route('stats', None)
+@app.route.view('stats', None)
 class StatsView(UserViewMixin, PeeweeView):
     model = PostStats
 

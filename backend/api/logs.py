@@ -1,10 +1,10 @@
+from app import app
 from model.manage_log import ManageLog
 from slim.base.permission import Permissions
 from slim.support.peewee import PeeweeView
-from api import route
 
 
-@route('log/manage')
+@app.route.view('log/manage')
 class LogManageView(PeeweeView):
     model = ManageLog
 

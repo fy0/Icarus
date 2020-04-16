@@ -10,7 +10,7 @@ from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from model.board import Board
-from api import route, ValidateForm
+from api import ValidateForm
 from wtforms import StringField, validators as va
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from api.user import UserViewMixin

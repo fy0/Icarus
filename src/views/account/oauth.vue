@@ -11,6 +11,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -30,7 +31,7 @@ export default {
             // console.log('check', code)
             let ret = await this.$api.Oauth.send(code) // 拿到oauth返回的code，交给 api - get_user_data
             // 判断返回值，跳转到主页或者补全信息界面
-            if (ret['code'] === this.$api.retcode.SUCCESS) {
+            if (ret['code'] === retcode.SUCCESS) {
                 await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
                 if (this.goLastPage) {

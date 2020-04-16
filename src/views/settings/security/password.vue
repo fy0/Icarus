@@ -59,6 +59,7 @@
 
 <script>
 import SettingBase from '../base/base.vue'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -106,7 +107,7 @@ export default {
                 info.old_password = await $.passwordHash(info.old_password)
                 let ret = await this.$api.user.changePassword(info)
 
-                if (ret.code !== this.$api.retcode.SUCCESS) {
+                if (ret.code !== retcode.SUCCESS) {
                     this.formErrors = ret.data
                     this.$message.error('修改密码失败')
                 } else {

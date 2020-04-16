@@ -86,6 +86,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import { marked } from '@/md.js'
 import AdminBase from '../base/base.vue'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
@@ -125,7 +126,7 @@ export default {
                 order: 'time.desc'
             }, params.page)
 
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.postsOfComments = await $.getBasePostsByIDs(async (i) => {
                     return [
                         {

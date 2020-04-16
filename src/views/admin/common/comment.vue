@@ -70,6 +70,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import { marked } from '@/md.js'
 import AdminBase from '../base/base.vue'
 
@@ -99,7 +100,7 @@ export default {
             let oldVal = item.state
             item.state = val
             let ret = await this.$api.comment.set({ id: item.id }, { state: val })
-            if (ret.code !== this.$api.retcode.SUCCESS) {
+            if (ret.code !== retcode.SUCCESS) {
                 item.state = oldVal
             }
             this.$message.byCode(ret.code)
@@ -115,7 +116,7 @@ export default {
                 order: 'time.desc'
             }, params.page)
 
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 let topicIds = []
 
                 for (let i of ret.data.items) {

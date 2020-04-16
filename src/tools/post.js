@@ -1,6 +1,8 @@
 let api = null
 let store = null
 
+import { retcode } from 'slim-tools'
+
 if (process.browser) {
     window.onNuxtReady(({ $store }) => {
         store = $store
@@ -42,7 +44,7 @@ $.getBasePostsByIDs = async function (func, items, role = null, _api = null, _st
                 'id.in': JSON.stringify(ids),
                 select: ['id', 'time', 'user_id'].concat(ex)
             }, 1, null, role)
-            if (retPost.code === localApi.retcode.SUCCESS) {
+            if (retPost.code === retcode.SUCCESS) {
                 for (const i of retPost.data.items) {
                     posts[i.id] = $.makePostLinkData(type, i)
                 }

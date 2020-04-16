@@ -1,4 +1,6 @@
 import json
+
+from app import app
 from lib import qn
 from model.upload import Upload
 from model.user import User
@@ -6,15 +8,14 @@ from slim.base.permission import Permissions
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import binhex
-from api import route
 from api.user import UserViewMixin
 
 
-@route('upload')
+@app.route.view('upload')
 class UploadView(UserViewMixin, PeeweeView):
     model = Upload
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def token(self):
         user = self.current_user
         if user:
@@ -23,7 +24,7 @@ class UploadView(UserViewMixin, PeeweeView):
                 return self.finish(RETCODE.SUCCESS, qn.get_token(user.id.hex(), type_name))
         self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def qn_callback(self):
         ua = self.headers.get('User-Agent', None)
         if not (ua and ua.startswith('qiniu-callback')):

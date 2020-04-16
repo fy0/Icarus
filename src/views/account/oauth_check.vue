@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -114,7 +115,7 @@ export default {
             }
             if (this.checkPassword && this.checkPassword2 && this.checkEmail && this.checkNickname) {
                 let ret = await this.$api.user.new(this.info)
-                if (ret.code !== this.$api.retcode.SUCCESS) {
+                if (ret.code !== retcode.SUCCESS) {
                     this.formErrors = ret.data
                     this.$message.byCode(ret.code)
                 } else {
@@ -127,7 +128,7 @@ export default {
                         // 用户注册完之后顺便把对应内容发给 oauthUpdate 更新
                         this.info.id = userinfo.id
                         let retUpdate = await this.$api.Oauth.oauthUpdate(this.info)
-                        if (retUpdate === this.$api.retcode.SUCCESS) {
+                        if (retUpdate === retcode.SUCCESS) {
                             alert('信息录入成功')
                             this.$router.go('/')
                         } else {

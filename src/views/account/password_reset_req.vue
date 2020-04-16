@@ -111,7 +111,7 @@ export default {
             this.requesting = true
             if (this.checkNickname && this.checkEmail) {
                 let ret = await this.$api.user.requestPasswordReset(this.info.nickname, this.info.email)
-                if (ret.code !== this.$api.retcode.SUCCESS) {
+                if (ret.code !== retcode.SUCCESS) {
                     this.formErrors = ret.data
                     this.$message.error('重置密码失败，请确认邮箱和昵称组合正确')
                 } else {

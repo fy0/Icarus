@@ -110,6 +110,8 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
+
 export default {
     data () {
         return {
@@ -160,7 +162,7 @@ export default {
                     email: this.info.email,
                     password: await $.passwordHash(this.info.password)
                 })
-                if (ret.code === this.$api.retcode.SUCCESS) {
+                if (ret.code === retcode.SUCCESS) {
                     // 刷新用户信息
                     await this.$store.dispatch('user/apiGetUserData', ret.data.id)
                     // 更新板块信息 - 登录

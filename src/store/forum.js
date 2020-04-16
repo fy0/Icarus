@@ -1,4 +1,5 @@
 import Color from 'color'
+import { retcode } from 'slim-tools'
 
 export const state = () => ({
     // 暂时没有能力修改这些了
@@ -66,7 +67,7 @@ export const actions = {
             order: 'parent_id.desc,weight.desc,time.asc' // 权重从高到低，时间从先到后
         }, 1)
 
-        if (boards.code === this.$api.retcode.SUCCESS) {
+        if (boards.code === retcode.SUCCESS) {
             const lst = []
             const infoMap = {}
 

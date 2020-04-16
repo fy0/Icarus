@@ -104,6 +104,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import AccountSignupLegacy from '@/views/account/signup_legacy.vue'
 
 export default {
@@ -170,9 +171,9 @@ export default {
                 info.password2 = await $.passwordHash(info.password2)
                 let ret = await this.$api.user.requestSignupByEmail(info)
 
-                if (ret.code === this.$api.retcode.SUCCESS) {
+                if (ret.code === retcode.SUCCESS) {
                     this.regDone = true
-                } else if (ret.code === this.$api.retcode.INVALID_POSTDATA) {
+                } else if (ret.code === retcode.INVALID_POSTDATA) {
                     this.formErrors = ret.data
                 } else {
                     this.$message.byCode(ret.code, ret.data)

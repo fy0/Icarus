@@ -1,3 +1,5 @@
+import { retcode } from 'slim-tools'
+
 let api = null
 let store = null
 
@@ -14,7 +16,7 @@ $.tickStart = async () => {
     const tickHttp = async () => {
         const auid = localStorage.getItem('auid')
         const ret = await api.tick(auid)
-        if (ret.code === api.retcode.SUCCESS) {
+        if (ret.code === retcode.SUCCESS) {
             if (store.state.user.userData) {
                 store.commit('user/SET_UNREAD', ret.data.notif_count)
             } else {

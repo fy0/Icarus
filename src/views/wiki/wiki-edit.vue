@@ -105,6 +105,7 @@ import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
 // import marked from '@/md.js'
 import './../forum/topic-edit-fa.js'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -200,14 +201,14 @@ export default {
                     this.$router.push({ name: 'wiki_article_by_id', params: { id: wikiId } })
                 }
                 this.$message.success(successText)
-            } else if (ret.code === this.$api.retcode.INVALID_ROLE) {
+            } else if (ret.code === retcode.INVALID_ROLE) {
                 this.$message.error('当前用户身份无此权限')
                 this.working = false
-            } else if (ret.code === this.$api.retcode.ALREADY_EXISTS) {
+            } else if (ret.code === retcode.ALREADY_EXISTS) {
                 this.$message.error('指定的URL地址已经存在')
                 this.working = false
             } else {
-                if (ret.code === this.$api.retcode.FAILED) {
+                if (ret.code === retcode.FAILED) {
                     this.formErrors = ret.data
                     this.$message.error('内容不符合要求，请根据输入框下方提示进行修改')
                 } else {
@@ -302,7 +303,7 @@ export default {
                         complete: (ret) => {
                             // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                             // console.log('done', ret)
-                            if (ret.code === this.$api.retcode.SUCCESS) {
+                            if (ret.code === retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
                                 let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
                                 let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC

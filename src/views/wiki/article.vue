@@ -74,6 +74,7 @@ import { mapState, mapGetters } from 'vuex'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+import { retcode } from 'slim-tools'
 
 class FetchCls extends BaseWrapper {
     async fetchData () {
@@ -86,9 +87,9 @@ class FetchCls extends BaseWrapper {
         let ret = await this.$api.wiki.get(Object.assign({
             loadfk: { 'id': { as: 's' } }
         }, params))
-        if (ret.code === this.$api.retcode.SUCCESS) {
+        if (ret.code === retcode.SUCCESS) {
             this.item = ret.data
-        } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+        } else if (ret.code === retcode.NOT_FOUND) {
         } else {
             wrong = ret
         }

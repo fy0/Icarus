@@ -4,6 +4,8 @@ import time
 import peewee
 import config
 from typing import Dict, List, Type, Union
+
+from app import app
 from lib import mail
 from model import db
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
@@ -16,7 +18,7 @@ from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from model.user import User, USER_GROUP
 from slim.utils import to_hex, to_bin, get_bytes_from_blob
-from api import route, ValidateForm, cooldown, same_user, get_fuzz_ip
+from api import ValidateForm, cooldown, same_user, get_fuzz_ip
 from wtforms import StringField, validators as va
 from slim.base.permission import DataRecord
 from api.user_signup_legacy import UserLegacyView
@@ -54,11 +56,11 @@ async def same_email_post(view):
         return post['email'].lower().encode('utf-8')
 
 
-@route('user')
+@app.route.view('user')
 class UserView(UserViewMixin, UserLegacyView):
     model = User
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP, b'ic_cd_user_request_reset_password_%b')
     @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_request_reset_password_account_%b', unique_id_func=same_email_post)
     async def request_password_reset(self):
@@ -88,15 +90,15 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('GET', summary='测试专用1', va_query=ValidatePasswordResetPost)
+    @app.route.interface('GET', summary='测试专用1', va_query=ValidatePasswordResetPost)
     async def test1(self):
         pass
 
-    @route.interface('POST', summary='测试专用2', va_query=ValidatePasswordResetPost, va_post=ValidatePasswordResetPost)
+    @app.route.interface('POST', summary='测试专用2', va_query=ValidatePasswordResetPost, va_post=ValidatePasswordResetPost)
     async def test2(self):
         pass
 
-    @route.interface('POST', summary='密码重置验证', va_post=ValidatePasswordResetPost)
+    @app.route.interface('POST', summary='密码重置验证', va_post=ValidatePasswordResetPost)
     async def validate_password_reset(self):
         """
         忘记密码后，进入重设流程时，通过此接口提交校验码和新密码
@@ -122,7 +124,7 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def check_in(self):
         """ 签到 """
         if self.current_user:
@@ -131,7 +133,7 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('POST', va_post=ChangePasswordDataModel)
+    @app.route.interface('POST', va_post=ChangePasswordDataModel)
     @cooldown(config.USER_CHANGE_PASSWORD_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_change_password_account_%b', unique_id_func=same_user)
     async def change_password(self):
         if self.current_user:
@@ -147,7 +149,7 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.PERMISSION_DENIED)
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def signout(self):
         if self.current_user:
             self.teardown_user_key()
@@ -155,7 +157,7 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     @cooldown(config.USER_SIGNIN_COOLDOWN_BY_IP, b'ic_cd_user_signin_%b')
     @cooldown(config.USER_SIGNIN_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_signin_account_%b', unique_id_func=same_email_post)
     async def signin(self):
@@ -252,7 +254,7 @@ class UserView(UserViewMixin, UserLegacyView):
             return self.finish(RETCODE.FAILED, '此接口未开放')
         return await super().new()
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
     async def request_signup_by_email(self):
         """
@@ -277,7 +279,7 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.FAILED, '此接口未开放')
 
-    @route.interface('GET')
+    @app.route.interface('GET')
     async def check_reg_code_by_email(self):
         """ 检查与邮件关联的激活码是否可用 """
         pw = await User.check_reg_code_by_email(self.params['email'], self.params['code'])
@@ -358,7 +360,7 @@ class UserView(UserViewMixin, UserLegacyView):
 
         return u
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def signup_by_email(self):
         """ 确认并创建账户 """
         data = await self.post_data()
@@ -379,7 +381,7 @@ class UserView(UserViewMixin, UserLegacyView):
             if self.is_finished: return
             self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def change_nickname(self):
         u = self.current_user
         if not u:

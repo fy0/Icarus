@@ -306,6 +306,7 @@ $i_h: 42px;
 <script>
 import { mapState } from 'vuex'
 import * as qiniu from 'qiniu-js'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -502,7 +503,7 @@ export default {
                     complete: (res) => {
                         // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                         // console.log('done', res)
-                        if (res.code === this.$api.retcode.SUCCESS) {
+                        if (res.code === retcode.SUCCESS) {
                             let newData = Object.assign({}, this.$user.data)
                             newData.avatar = res.data
                             this.$store.commit('user/SET_USER_DATA', newData)

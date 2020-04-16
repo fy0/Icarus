@@ -99,6 +99,7 @@ import * as qiniu from 'qiniu-js'
 import Objectid from 'objectid-js'
 // import marked from '@/md.js'
 import './topic-edit-fa.js'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -191,11 +192,11 @@ export default {
                 localStorage.setItem('topic-post-cache-clear', 1)
                 this.$router.push({ name: 'forum_topic', params: { id: topicId } })
                 this.$message.success(successText)
-            } else if (ret.code === this.$api.retcode.INVALID_ROLE) {
+            } else if (ret.code === retcode.INVALID_ROLE) {
                 this.$message.error('抱歉，您的账户为未激活账户，无法发表主题，请检查邮件。若未收到，请在设置界面重新发送激活邮件。')
                 this.loading = false
             } else {
-                if (ret.code === this.$api.retcode.FAILED) {
+                if (ret.code === retcode.FAILED) {
                     this.formErrors = ret.data
                     this.$message.error('内容不符合要求，请根据输入框下方提示进行修改')
                 } else {
@@ -338,7 +339,7 @@ export default {
                         complete: (ret) => {
                             // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
                             // console.log('done', ret)
-                            if (ret.code === this.$api.retcode.SUCCESS) {
+                            if (ret.code === retcode.SUCCESS) {
                                 // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
                                 let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
                                 let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC

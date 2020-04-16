@@ -2,6 +2,7 @@ import time
 import config
 from typing import Dict, List
 
+from app import app
 from model import esdb
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_do_comment
@@ -14,13 +15,13 @@ from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, get_bytes_from_blob
-from api import route, ValidateForm, cooldown, same_user, run_in_thread
+from api import ValidateForm, cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from api.mention import check_content_mention
 from api.user import UserViewMixin
 
 
-@route('comment')
+@app.route.view('comment')
 class CommentView(UserViewMixin, PeeweeView):
     model = Comment
 

@@ -67,6 +67,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -103,7 +104,7 @@ export default {
             if (this.checkPassword && this.checkPassword2) {
                 let query = this.$route.query
                 let ret = await this.$api.user.validatePasswordReset(query.uid, query.code, await $.passwordHash(this.info.password))
-                if (ret.code === this.$api.retcode.SUCCESS) {
+                if (ret.code === retcode.SUCCESS) {
                     this.stage = 2
                     if (this.$user.data && this.$user.data.id === ret.data.id) {
                         this.$store.commit('user/RESET')

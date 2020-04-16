@@ -42,6 +42,7 @@
 <script>
 import Dialog from './_dialog.vue'
 import { mapState, mapGetters } from 'vuex'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -74,7 +75,7 @@ export default {
         'commentManage': async function (val) {
             // if (val) {
             //     let info = await this.$api.user.get({id: state.dialog.userManageData.id}, 'admin')
-            //     if (info.code === this.$api.retcode.SUCCESS) {
+            //     if (info.code === retcode.SUCCESS) {
             //         this.user = info.data
             //         this.user.state = this.user.state.toString()
             //         this.user.group = this.user.group.toString()

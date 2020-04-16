@@ -121,6 +121,7 @@
 import { marked } from '@/md.js'
 import CommentPost from './comment-post.vue'
 import anime from 'animejs'
+import { retcode } from 'slim-tools'
 
 export default {
     props: {
@@ -193,9 +194,9 @@ export default {
                 order: 'id.asc',
                 loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } }
             }, thePage)
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.page = ret.data
-            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+            } else if (ret.code === retcode.NOT_FOUND) {
                 ;
             } else {
                 ;

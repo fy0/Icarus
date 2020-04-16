@@ -145,6 +145,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -318,7 +319,7 @@ export default {
                     id: this.topicManageData.id
                 })
 
-                if (info.code === this.$api.retcode.SUCCESS) {
+                if (info.code === retcode.SUCCESS) {
                     this.save = info.data
                     let topic = info.data
                     this.vSticky = topic.sticky_weight

@@ -123,6 +123,7 @@ import Multiselect from 'vue-multiselect'
 import { mapState, mapGetters } from 'vuex'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import '@/assets/css/_manage.scss'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -190,14 +191,14 @@ export default {
                     loadfk: { 'user_id': null }
                 })
 
-                if (info.code === this.$api.retcode.SUCCESS) {
+                if (info.code === retcode.SUCCESS) {
                     this.board = info.data
                     this.save = _.clone(this.board)
 
                     let ret = await this.$api.board.list({
                         order: 'weight.desc,time.asc'
                     }, 1)
-                    if (ret.code === this.$api.retcode.SUCCESS) {
+                    if (ret.code === retcode.SUCCESS) {
                         // vue-select 目前不允许写 null，要再等一等
                         this.boardList = []
                         this.boardsInfoDict = {}

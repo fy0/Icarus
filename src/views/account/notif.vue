@@ -104,6 +104,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
@@ -135,7 +136,7 @@ export default {
                 // loadfk: {user_id: null, board_id: null}
             }, params.page, { role: this.$user.basicRole })
 
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 let userIds = new Set()
                 let manageInfoList = []
 
@@ -201,13 +202,13 @@ export default {
                 // if (pageNumber) this.commentPage = parseInt(pageNumber)
 
                 let ret2 = await this.$api.notif.setRead()
-                if (ret2.code === this.$api.retcode.SUCCESS) {
+                if (ret2.code === retcode.SUCCESS) {
                     // 会出现负数问题
                     // state.unread -= ret2.data
                     this.$store.commit('user/SET_UNREAD', 0)
                 }
             } else {
-                if (ret.code === this.$api.retcode.NOT_FOUND) {
+                if (ret.code === retcode.NOT_FOUND) {
                 } else {
                     this.$message.byCode(ret.code)
                 }

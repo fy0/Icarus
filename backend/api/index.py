@@ -12,19 +12,19 @@ from slim.base.view import BaseView
 from slim.ext.decorator import timer
 from slim.retcode import RETCODE
 from slim.utils import to_hex, get_bytes_from_blob
-from api import route
 from api.user import UserViewMixin
-from api.ws import WSR
+# from api.ws import WSR
 
-
+'''
 @timer(10, exit_when=None)
 async def user_online():
     for ws in WSR.connections:
         if not ws.closed:
             await ws.send_json(['user.online', len(WSR.count)])
+'''
 
 
-@route('misc')
+@app.route.view('misc')
 class TestBaseView(UserViewMixin, BaseView):
     @classmethod
     def interface(cls):

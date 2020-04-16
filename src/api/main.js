@@ -1,6 +1,5 @@
 import { TokenStoreNuxt, newRequestClient, SlimSQLAPI } from 'slim-tools'
 import config from '@/config'
-import { retcode, retinfo } from './misc'
 import { UserAPI, NotifAPI, UploadAPI, SearchAPI, WikiAPI } from './apis'
 
 let client = newRequestClient(config.remote.API_SERVER)
@@ -13,8 +12,6 @@ export function createAPIRequester (ctx) {
     }
 
     let data = {
-        retcode,
-        retinfo,
         getDefaultRole: () => {},
 
         /** 获取综合信息 */

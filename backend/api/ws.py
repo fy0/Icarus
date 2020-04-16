@@ -1,10 +1,9 @@
 from model.user import User
 from slim.base.ws import WSRouter
 from slim.utils import to_bin
-from api import route
 
-
-@route('/ws')
+'''
+@route.websocket('/ws')
 class WSR(WSRouter):
     def teardown_user_key(self):
         u: User = self.current_user
@@ -15,3 +14,4 @@ class WSR(WSRouter):
         if not key: return
         try: return User.get_by_key(to_bin(key))
         except: pass
+'''

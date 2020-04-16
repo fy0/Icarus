@@ -171,6 +171,8 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
+
 export default {
     props: {
         board: null
@@ -224,7 +226,7 @@ export default {
         },
         checkIn: async function () {
             let ret = await this.$api.user.checkIn()
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 let newData = Object.assign({}, this.$user.data)
                 newData['last_check_in_time'] = ret.data.time
                 newData['check_in_his'] = ret.data.check_in_his

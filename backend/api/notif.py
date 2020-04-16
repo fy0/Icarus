@@ -12,13 +12,13 @@ from model._post import POST_TYPES
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from slim.utils import to_bin, sync_call
-from api import route, ValidateForm
+from api import ValidateForm
 from wtforms import validators as va, StringField, IntegerField, ValidationError
 from api.user import UserViewMixin
-from api.ws import WSR
+# from api.ws import WSR
 
 
-@route('notif')
+@app.route.view('notif')
 class NotificationView(UserViewMixin, PeeweeView):
     model = Notification
 
@@ -35,21 +35,21 @@ class NotificationView(UserViewMixin, PeeweeView):
         # cls.add_soft_foreign_key('reply_to_cmt_id', 'comment')
         pass
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def set_read(self):
         if self.current_user:
             c = self.model.set_read(self.current_user.id)
             return self.finish(RETCODE.SUCCESS, c)
         self.finish(RETCODE.FAILED)
 
-    @route.interface('GET')
+    @app.route.interface('GET')
     async def count(self):
         if self.current_user:
             c = self.model.count(self.current_user.id)
             return self.finish(RETCODE.SUCCESS, c)
         self.finish(RETCODE.FAILED)
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def refresh(self):
         """
         由 misc/tick 替代，此方法弃用

@@ -45,6 +45,7 @@ import { mapState, mapGetters } from 'vuex'
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+import { retcode } from 'slim-tools'
 
 class FetchCls extends BaseWrapper {
     async fetchData () {
@@ -57,9 +58,9 @@ class FetchCls extends BaseWrapper {
                 id: params.id,
                 select: ['id', 'title', 'ref']
             }, { role: this.basicRole })
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.article = ret.data
-            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+            } else if (ret.code === retcode.NOT_FOUND) {
                 this.notFound = true
             } else {
                 wrong = ret
@@ -73,9 +74,9 @@ class FetchCls extends BaseWrapper {
                 loadfk: { 'user_id': null }
             }, pageNumber, { role: this.basicRole })
 
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.page = ret.data
-            } else if (ret.code === this.$api.retcode.NOT_FOUND) {
+            } else if (ret.code === retcode.NOT_FOUND) {
                 this.page.items = []
             } else {
                 wrong = ret

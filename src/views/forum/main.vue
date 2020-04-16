@@ -318,6 +318,7 @@ $left-nav-sign-padding: 10px;
 
 <script>
 import '@/assets/css/_forum.scss'
+import { retcode } from 'slim-tools'
 import TopBtns from './topbtns.vue'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
@@ -404,14 +405,14 @@ class FetchCls extends BaseWrapper {
         let retList = await this.$api.topic.list(Object.assign({
             order: order
         }, baseQuery), page)
-        if (retList.code === this.$api.retcode.SUCCESS) {
+        if (retList.code === retcode.SUCCESS) {
             if (!this.isBoard && (!page || page === 1)) {
                 // 首页
                 let retStickyTopics = await this.$api.topic.list(Object.assign({
                     sticky_weight: 5, // 全局置顶项
                     order: order
                 }, baseQuery1))
-                if (retStickyTopics.code === this.$api.retcode.SUCCESS) {
+                if (retStickyTopics.code === retcode.SUCCESS) {
                     for (let i of retStickyTopics.data.items) {
                         i.global_sticky_flag = true
                     }

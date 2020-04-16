@@ -25,6 +25,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -41,7 +42,7 @@ export default {
             this.available = true
 
             let ret = await this.$api.user.signupByEmail(query.email, query.code)
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.text = '注册完成，正在进行收尾……'
                 this.$api.saveAccessToken(ret.data.key)
                 await this.$store.dispatch('user/apiGetUserData', ret.data.id)
@@ -49,7 +50,7 @@ export default {
                 await this.$store.dispatch('forum/load')
                 this.regDone = true
             } else {
-                if (ret.code === this.$api.retcode.ALREADY_EXISTS) {
+                if (ret.code === retcode.ALREADY_EXISTS) {
                     this.$message.error('帐户已经存在')
                 } else {
                     this.$message.byCode(ret.code, ret.data)

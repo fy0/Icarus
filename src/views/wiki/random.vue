@@ -19,6 +19,7 @@
 <script>
 import { marked } from '@/md.js'
 import WikiBase from './_base.vue'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -38,7 +39,7 @@ export default {
     methods: {
         fetchData: async function () {
             let ret = await this.$api.wiki.random()
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.nothing = false
                 this.$nextTick(() => {
                     this.$router.replace({

@@ -1,16 +1,17 @@
+from app import app
 from model import esdb
 from model._post import POST_VISIBLE
 from slim.retcode import RETCODE
 
 import config
 from slim.base.view import BaseView
-from api import route, cooldown, thread_executor, run_in_thread
+from api import cooldown, thread_executor, run_in_thread
 from api.user import UserViewMixin
 
 
-@route('search')
+@app.route.view('search')
 class TestBaseView(UserViewMixin, BaseView):
-    @route.interface('POST')
+    @app.route.interface('POST')
     @cooldown(config.SEARCH_COOLDOWN_BY_IP, b'ic_cd_search_cooldown_by_ip_%b')
     async def search(self):
         post = await self.post_data()

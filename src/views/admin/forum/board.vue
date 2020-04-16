@@ -83,6 +83,7 @@ table {
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import AdminBase from '../base/base.vue'
 import DialogBoardManage from '@/components/dialogs/board-manage.vue'
 
@@ -109,7 +110,7 @@ export default {
         boardNew: async function () {
             let ret = await this.$api.board.new(this.boardNewInfo)
             this.$message.byCode(ret.code)
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.fetchData()
             }
         },
@@ -120,7 +121,7 @@ export default {
                 // select: 'id, time, user_id, board_id, title, state',
             }, 1, { role: this.$user.forumAdminRole })
 
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.boardInfo = ret.data
                 for (let i of ret.data.items) {
                     this.boardsInfoDict[i.id] = i

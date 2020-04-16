@@ -269,6 +269,7 @@ import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import CommentList from '@/components/misc/comment-list.vue'
 import SocialShare from '@/components/misc/social-share.vue'
 import '@/assets/css/_forum.scss'
+import { retcode } from 'slim-tools'
 
 class FetchCls extends BaseWrapper {
     async fetchData () {
@@ -278,13 +279,13 @@ class FetchCls extends BaseWrapper {
             loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
         }, { role: this.$user.basicRole })
 
-        if (ret.code === this.$api.retcode.SUCCESS) {
+        if (ret.code === retcode.SUCCESS) {
             let mlog = await this.$api.logManage.list({
                 related_id: ret.data.id,
                 order: 'time.desc',
                 loadfk: { 'user_id': null }
             })
-            if (mlog.code === this.$api.retcode.SUCCESS) {
+            if (mlog.code === retcode.SUCCESS) {
                 this.mlog = mlog.data
             }
 
@@ -293,7 +294,7 @@ class FetchCls extends BaseWrapper {
             this.topic = ret.data
             this.topicIndex = mdGetIndex(ret.data.content)
         } else {
-            if (ret.code !== this.$api.retcode.NOT_FOUND) {
+            if (ret.code !== retcode.NOT_FOUND) {
                 this.$message.byCode(ret.code)
             }
         }

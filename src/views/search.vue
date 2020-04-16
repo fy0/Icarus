@@ -96,6 +96,8 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
+
 export default {
     data () {
         return {
@@ -137,10 +139,10 @@ export default {
         fetchData: async function () {
             this.$store.commit('LOADING_INC', 1)
             let ret = await this.$api.search.search(this.queryText)
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.info = ret.data
                 this.tooFrequent = false
-            } else if (ret.code === this.$api.retcode.TOO_FREQUENT) {
+            } else if (ret.code === retcode.TOO_FREQUENT) {
                 this.info = { hits: {} }
                 this.tooFrequent = true
                 this.needWait = ret.data

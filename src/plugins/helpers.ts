@@ -1,6 +1,25 @@
+import { Store, GetterTree } from "vuex/types/index"
+
 /* eslint-disable no-new-wrappers */
 
+declare module 'vue/types/vue' {
+    interface Vue {
+        $misc: any
+        $config: any
+        $user: any
+        $dialogs: any
+    }
+}
+
 class UserHelperGetters {
+    _user: any
+    _getters: GetterTree<any, any>
+
+    constructor (store: Store<any>) {
+        this._user = store.state.user
+        this._getters = store.getters
+    }
+
     get data () { return this._user.userData }
     get unread () { return this._user.unread }
 
@@ -18,50 +37,52 @@ class UserHelperGetters {
 }
 
 class DialogsHelperGetters {
-    setBoardManage (val, data) {
+    _store: Store<any>
+
+    constructor (store: Store<any>) {
+        this._store = store
+    }
+
+    setBoardManage (val: any, data: any) {
         this._store.commit('dialog/SET_BOARD_MANAGE', { val, data })
     }
 
-    setCommentManage (val, data) {
+    setCommentManage (val: any, data: any) {
         this._store.commit('dialog/SET_COMMENT_MANAGE', { val, data })
     }
 
-    setTopicManage (val, data) {
+    setTopicManage (val: any, data: any) {
         this._store.commit('dialog/SET_TOPIC_MANAGE', { val, data })
     }
 
-    setUserAvatar (val, data) {
+    setUserAvatar (val: any, data: any) {
         this._store.commit('dialog/SET_USER_AVATAR', { val, data })
     }
 
-    setSiteNew (val) {
+    setSiteNew (val: any) {
         this._store.commit('dialog/SET_SITE_NEW', { val })
     }
 
-    setUserManage (val, data) {
+    setUserManage (val: any, data: any) {
         this._store.commit('dialog/SET_USER_MANAGE', { val, data })
     }
 
-    setUserNickname (val) {
+    setUserNickname (val: any) {
         this._store.commit('dialog/SET_USER_NICKANME', { val })
     }
 
-    setUserInactive (val) {
+    setUserInactive (val: any) {
         this._store.commit('dialog/SET_USER_INACTIVE', { val })
     }
 
-    setUserSignout (val) {
+    setUserSignout (val: any) {
         this._store.commit('dialog/SET_USER_SIGNOUT', { val })
     }
 }
 
-export default (ctx, inject) => {
-    const uhg = new UserHelperGetters()
-    const dhg = new DialogsHelperGetters()
-
-    dhg._store = ctx.store
-    uhg._user = ctx.store.state.user
-    uhg._getters = ctx.store.getters
+export default (ctx: any, inject: any) => {
+    const uhg = new UserHelperGetters(ctx.store)
+    const dhg = new DialogsHelperGetters(ctx.store)
 
     inject('misc', new Proxy(new String('state.misc proxy'), {
         get: (target, name) => ctx.store.state.misc[name]

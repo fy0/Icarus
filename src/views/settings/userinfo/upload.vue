@@ -40,6 +40,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import SettingBase from '../base/base.vue'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -76,7 +77,7 @@ export default {
                 'type_name.is': null
             }, 1, { role: this.basicRole })
 
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.page = ret.data
             //     // let pageNumber = this.$route.query.page
             //     // if (pageNumber) this.commentPage = parseInt(pageNumber)

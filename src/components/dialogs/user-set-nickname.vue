@@ -52,6 +52,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -87,7 +88,7 @@ export default {
             this.sending = true
 
             let ret = await this.$api.user.changeNickname(this.info.nickname)
-            if (ret.code === this.$api.retcode.SUCCESS) {
+            if (ret.code === retcode.SUCCESS) {
                 this.$message.success('修改成功！')
                 let newData = Object.assign({}, this.$user.data)
                 newData.nickname = ret.data.nickname
@@ -96,7 +97,7 @@ export default {
                 this.$store.commit('user/SET_USER_DATA', newData)
                 this.sending = false
                 return true
-            } else if (ret.code === this.$api.retcode.INVALID_POSTDATA) {
+            } else if (ret.code === retcode.INVALID_POSTDATA) {
                 this.formErrors = ret.data
             }
             this.sending = false

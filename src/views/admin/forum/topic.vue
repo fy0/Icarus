@@ -69,6 +69,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import AdminBase from '../base/base.vue'
 
 export default {
@@ -94,7 +95,7 @@ export default {
                 // select: 'id, time, user_id, board_id, title, state',
                 loadfk: { 'user_id': null, 'board_id': null, 'id': { 'as': 's', loadfk: { 'last_comment_id': { 'loadfk': { 'user_id': null } } } } }
             }, params.page)
-            if (retList.code === this.$api.retcode.SUCCESS) {
+            if (retList.code === retcode.SUCCESS) {
                 this.topics = retList.data
             }
         }

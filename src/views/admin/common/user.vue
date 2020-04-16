@@ -60,6 +60,7 @@
 
 <script>
 import swal from 'sweetalert2'
+import { retcode } from 'slim-tools'
 import AdminBase from '../base/base.vue'
 
 export default {
@@ -84,21 +85,21 @@ export default {
 
             if ($.regex.email.test(this.searchTxt)) {
                 let retList = await this.$api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, { role })
-                if (retList.code === this.$api.retcode.SUCCESS) {
+                if (retList.code === retcode.SUCCESS) {
                     this.page = retList.data
                     found = true
                 }
             } else {
                 if ($.regex.nickname.test(this.searchTxt)) {
                     let retList = await this.$api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, { role })
-                    if (retList.code === this.$api.retcode.SUCCESS) {
+                    if (retList.code === retcode.SUCCESS) {
                         this.page = retList.data
                         found = true
                     }
                 }
                 if ($.regex.id.test(this.searchTxt)) {
                     let retList = await this.$api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, { role })
-                    if (retList.code === this.$api.retcode.SUCCESS) {
+                    if (retList.code === retcode.SUCCESS) {
                         if (found) {
                             this.page.items.push(retList.data.items[0])
                         } else {
@@ -129,7 +130,7 @@ export default {
                 }
             }).then((result) => {
                 if (result.value == null) return
-                if (result.value.code === this.$api.retcode.SUCCESS) {
+                if (result.value.code === retcode.SUCCESS) {
                     swal({
                         title: '操作成功！',
                         type: 'success'
@@ -158,7 +159,7 @@ export default {
                 }
             }).then((result) => {
                 if (result.value == null) return
-                if (result.value.code === this.$api.retcode.SUCCESS) {
+                if (result.value.code === retcode.SUCCESS) {
                     swal({
                         title: '如你所愿',
                         text: '',
@@ -178,7 +179,7 @@ export default {
             let retList = await this.$api.user.list({
                 order: 'id.desc'
             }, params.page)
-            if (retList.code === this.$api.retcode.SUCCESS) {
+            if (retList.code === retcode.SUCCESS) {
                 this.page = retList.data
             }
         }

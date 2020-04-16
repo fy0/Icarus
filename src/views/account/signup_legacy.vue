@@ -97,6 +97,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 
 export default {
     data () {
@@ -147,7 +148,7 @@ export default {
                 info.password2 = await $.passwordHash(info.password2)
                 let ret = await this.$api.user.new(info)
 
-                if (ret.code !== this.$api.retcode.SUCCESS) {
+                if (ret.code !== retcode.SUCCESS) {
                     this.formErrors = ret.data
                     this.$message.byCode(ret.code)
                 } else {
@@ -156,7 +157,7 @@ export default {
                         this.$api.saveAccessToken(userinfo['access_token'])
                         await this.$store.dispatch('user/apiGetUserData', ret.data.id)
 
-                        if (ret.code === this.$api.retcode.SUCCESS) {
+                        if (ret.code === retcode.SUCCESS) {
                             this.$message.success('注册成功！')
                         } else {
                             this.$message.byCode(ret.code)

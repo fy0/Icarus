@@ -2,6 +2,8 @@
 let api = null
 let store = null
 
+import { retcode } from 'slim-tools'
+
 if (process.browser) {
     window.onNuxtReady(({ $store }) => {
         store = $store
@@ -19,7 +21,7 @@ $.staticUrl = function (key) {
 $.asyncGetUploadToken = async function (isAvatarUpload = false) {
     if (isAvatarUpload) {
         const ret = await api.upload.token('user', isAvatarUpload)
-        if (ret.code === api.retcode.SUCCESS) {
+        if (ret.code === retcode.SUCCESS) {
             return ret.data
         }
         return null
@@ -30,7 +32,7 @@ $.asyncGetUploadToken = async function (isAvatarUpload = false) {
     // 若 token 的有效时间降至，那么申请一个新的（2min余量）
     if ((now - uploadKeyTime) > offset) {
         const ret = await api.upload.token('user')
-        if (ret.code === api.retcode.SUCCESS) {
+        if (ret.code === retcode.SUCCESS) {
             uploadKeyTime = now
             uploadToken = ret.data
         } else {

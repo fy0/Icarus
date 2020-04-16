@@ -60,7 +60,7 @@ export const actions = {
     // 退出登录
     async apiSignout ({ dispatch }) {
         const ret = await this.$api.user.signout()
-        if (ret.code === this.$api.retcode.SUCCESS || ret.code === this.$api.retcode.FAILED) {
+        if (ret.code === retcode.SUCCESS || ret.code === retcode.FAILED) {
             await dispatch('initLoad', null, { root: true })
             this.$message.success('登出成功')
         }
@@ -71,7 +71,7 @@ export const actions = {
         if (!uid) return
 
         const userInfo = await this.$api.user.get({ id: uid }, { role: 'user' })
-        if (userInfo.code === this.$api.retcode.SUCCESS) {
+        if (userInfo.code === retcode.SUCCESS) {
             commit('SET_USER_DATA', userInfo.data)
             this.$api.getDefaultRole = () => {
                 return this.$user.mainRole
@@ -87,7 +87,7 @@ export const actions = {
         delete updateData.avatar // 头像的更新是独立的，参见BUG12
         if (Object.keys(updateData).length === 0) return
         const ret = await this.$api.user.set({ id: oldData.id }, updateData, { role: 'user' })
-        if (ret.code === this.$api.retcode.SUCCESS) {
+        if (ret.code === retcode.SUCCESS) {
             await dispatch('apiGetUserData')
             this.$message.success('信息修改成功！')
         }

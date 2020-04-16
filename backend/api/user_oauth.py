@@ -5,6 +5,7 @@ import string
 import aiohttp
 import time
 
+from app import app
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
 from aioauth_client import GithubClient
@@ -16,11 +17,10 @@ from model import db
 from model._post import POST_STATE
 from model.user import User
 from model.user_oauth import UserOAuth
-from api import route
 from api.user import UserViewMixin
 
 
-@route('user/oauth')
+@app.route.view('user/oauth')
 class UserOAuthView(UserViewMixin, PeeweeView):
     model = UserOAuth
 
@@ -29,12 +29,12 @@ class UserOAuthView(UserViewMixin, PeeweeView):
         client_secret='config.CLIENT_SECRET'
     )
 
-    @route.interface('GET')
+    @app.route.interface('GET')
     async def get_oauth_url(self):
         authorize_url = self.github.get_authorize_url(scope="user:email")
         self.finish(RETCODE.SUCCESS, {'state': 0, 'url': authorize_url})
 
-    @route.interface('GET')
+    @app.route.interface('GET')
     async def get_user_data(self):
         code = self.params
         print(code)
@@ -80,7 +80,7 @@ class UserOAuthView(UserViewMixin, PeeweeView):
         else:
             self.finish(RETCODE.NOT_FOUND)
 
-    @route.interface('POST')
+    @app.route.interface('POST')
     async def update(self):
         post = await self.post_data()
         print('提交的更新内容', post)

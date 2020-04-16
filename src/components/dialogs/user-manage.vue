@@ -89,6 +89,7 @@
 </style>
 
 <script>
+import { retcode } from 'slim-tools'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
@@ -130,7 +131,7 @@ export default {
         'userManage': async function (val) {
             if (val) {
                 let info = await this.$api.user.get({ id: this.userManageData.id })
-                if (info.code === this.$api.retcode.SUCCESS) {
+                if (info.code === retcode.SUCCESS) {
                     this.user = info.data
                     this.user.state = this.user.state.toString()
                     this.user.group = this.user.group.toString()
