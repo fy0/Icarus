@@ -1,4 +1,4 @@
 declare module 'vue-loaders' {
-    import Vue from 'vue'
-    export default Vue
+    import { PluginObject } from "vue"
+    export default PluginObject
 }

@@ -8,7 +8,9 @@ const debug = process.env.NODE_ENV !== 'production'
 export const strict = debug
 
 export const state = (): RootState => ({
-  misc: {} as any,
+  misc: {
+    BACKEND_CONFIG: {}
+  } as any,
   loading: 0,
   msgs: [],
   messageId: 1,
