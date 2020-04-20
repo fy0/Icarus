@@ -15,7 +15,7 @@
   },
   "config": {
     "nuxt": {
-      "port": "8080"
+      "port": "8081"
     }
   },
   "dependencies": {
@@ -41,7 +41,7 @@
     "objectid-js": "^1.0.2patch1",
     "prismjs": "^1.15.0",
     "qiniu-js": "^2.5.3",
-    "slim-tools": "^0.1.3",
+    "slim-tools": "^0.1.5",
     "social-share.js": "^1.0.16",
     "sweetalert2": "^9.7.2",
     "vue-loaders": "^3.3.0",

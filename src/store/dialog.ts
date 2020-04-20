@@ -1,11 +1,11 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
 
 @Module({
-  name 'dialogmodule',
-  stateFactory true,
-  namespaced true
+  // name: 'dialog',
+  stateFactory: true,
+  namespaced: true
 })
-class DialogModule extends VuexModule {
+export default class DialogModule extends VuexModule {
   // 主题管理
   topicManage = false
   topicManageData = null
@@ -32,71 +32,82 @@ class DialogModule extends VuexModule {
 
   // 主题管理
   @Mutation
-  SET_TOPIC_MANAGE ({ val, data } = {}) {
+  SET_TOPIC_MANAGE ({ val, data }: any) {
     this.topicManage = val
     this.topicManageData = data
   }
 
   // 板块管理
-  SET_BOARD_MANAGE ({ val, data }) {
+  @Mutation
+  SET_BOARD_MANAGE ({ val, data }: any) {
     this.boardManage = val
     this.boardManageData = data
   }
 
   // 用户管理
-  SET_USER_MANAGE ({ val, data }) {
+  @Mutation
+  SET_USER_MANAGE ({ val, data }: any) {
     this.userManage = val
     this.userManageData = data
   }
 
   // 评论管理
-  SET_COMMENT_MANAGE ({ val, data }) {
+  @Mutation
+  SET_COMMENT_MANAGE ({ val, data }: any) {
     this.commentManage = val
     this.commentManageData = data
   }
 
   // 设置头像对话框
-  SET_USER_AVATAR ({ val, data }) {
+  @Mutation
+  SET_USER_AVATAR ({ val, data }: any) {
     this.userSetAvatar = val
     this.userSetAvatarData = data
   }
 
   // 新站点提示对话框
-  SET_SITE_NEW ({ val }) {
+  @Mutation
+  SET_SITE_NEW ({ val }: any) {
     this.siteNew = val
   }
 
   // 未激活提示
-  SET_USER_INACTIVE ({ val }) {
+  @Mutation
+  SET_USER_INACTIVE ({ val }: any) {
     this.userInactive = val
   }
 
   // 设置用户昵称
-  SET_USER_NICKANME ({ val }) {
+  @Mutation
+  SET_USER_NICKANME ({ val }: any) {
     this.userSetNickname = val
   }
 
   // 用户登出确认
-  SET_USER_SIGNOUT ({ val }) {
+  @Mutation
+  SET_USER_SIGNOUT ({ val }: any) {
     this.userSignout = val
   }
 
   // 写入板块信息
-  WRITE_BOARD_MANAGE_DATA (data) {
+  @Mutation
+  WRITE_BOARD_MANAGE_DATA (data: any) {
     if (this.boardManageData) {
       Object.assign(this.boardManageData, data)
     }
   }
 
   // 写入板块信息
-  WRITE_USER_MANAGE_DATA (data) {
+  @Mutation
+  WRITE_USER_MANAGE_DATA (data: any) {
     if (this.userManageData) {
       Object.assign(this.userManageData, data)
     }
   }
 
   // 关闭所有
-  CLOSE_ALL (state) {
+  @Mutation
+  CLOSE_ALL () {
     this.topicManage = false
     this.boardManage = false
     this.userManage = false

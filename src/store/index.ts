@@ -1,6 +1,10 @@
+/**
+ * 介绍一下nuxt的规则
+ * store下文件名，是module的name，export default的内容用于创建module实例
+ */
 import config from '@/config'
 import { retcode } from 'slim-tools'
-import { GetterTree, MutationTree, ActionTree, ActionContext } from "vuex"
+import { GetterTree, MutationTree, ActionTree, ActionContext, Store } from "vuex"
 import { Context as AppContext } from "@nuxt/types"
 import { RootState, BackendConfigMisc } from '../types/state/root'
 
@@ -95,11 +99,12 @@ interface Actions<S, R> extends ActionTree<S, R> {
 }
 
 export const actions: Actions<RootState, RootState> = {
-  async nuxtServerInit({ commit, dispatch }, context) {
+  async nuxtServerInit({ state, dispatch }, context) {
     // 设置初始 access token
     // this.$api.accessToken = this.$storage.getUniversal('t')
     // 尝试加载
     await dispatch('tryInitLoad')
+
     // let ret = await this.$api.misc()
     // commit('SET_MISC', ret.data)
 

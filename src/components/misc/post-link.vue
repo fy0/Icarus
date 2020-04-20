@@ -84,7 +84,9 @@ export default {
     },
     props: {
         item: {},
-        type: null,
+        type: {
+            default: null
+        },
         showType: {
             default: false
         },

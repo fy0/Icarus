@@ -1,4 +1,4 @@
 declare module 'vue-loaders' {
-    import { PluginObject } from "vue"
-    export default PluginObject
+  import { PluginFunction } from 'vue'
+  let install: PluginFunction<any>
 }
