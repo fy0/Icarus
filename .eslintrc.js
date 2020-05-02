@@ -31,7 +31,7 @@ module.exports = {
     'dot-notation': 0
   },
   'globals': {
-      '$': true,
-      '_': true
+    '$': true,
+    '_': true
   }
 }

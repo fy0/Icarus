@@ -1,5 +1,5 @@
-// import * as _ from "lodash"
+import * as lodash from 'lodash'
 
-// declare module "lodash" {
-//     export = _;
-// }
+declare global { // 全局变量设置
+  const _: lodash.LoDashStatic
+}
