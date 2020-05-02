@@ -41,7 +41,7 @@ export default {
             if (!(query.email && query.code)) return
             this.available = true
 
-            let ret = await this.$api.user.signupByEmail(query.email, query.code)
+            let ret = await this.$api.user.signupConfirmByEmail(query.email, query.code)
             if (ret.code === retcode.SUCCESS) {
                 this.text = '注册完成，正在进行收尾……'
                 this.$api.saveAccessToken(ret.data.key)

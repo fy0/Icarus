@@ -173,7 +173,7 @@ class TopicView(UserViewMixin, PeeweeView):
             values['user_id'] = self.current_user.id
 
             # 以下通用
-            if not config.POST_ID_GENERATOR == config.AutoGenerator:
+            if not config.POST_ID_GENERATOR == config.SQLSerialGenerator:
                 values['id'] = config.POST_ID_GENERATOR().digest()
             values['time'] = int(time.time())
             values['weight'] = await Topic.weight_gen()

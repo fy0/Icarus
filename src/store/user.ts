@@ -94,6 +94,7 @@ export default class UserModule extends VuexModule {
   }
 
   // 获取当前用户信息
+  @Action
   async apiGetUserData (uid: any) {
     let { commit } = this.context
     if (!uid) uid = this._userData.id
@@ -103,7 +104,7 @@ export default class UserModule extends VuexModule {
     if (userInfo.code === retcode.SUCCESS) {
       commit('SET_USER_DATA', userInfo.data)
       $api.getDefaultRole = () => {
-        return this.$user.mainRole
+        return this.mainRole
       }
     } else {
       this.$message.error('获取用户信息失败，可能是网络问题或者服务器无响应')

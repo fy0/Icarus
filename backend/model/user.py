@@ -2,7 +2,10 @@
 import hmac
 import os
 import time
-from typing import Union
+import traceback
+from typing import Union, Optional
+
+import peewee
 from peewee import *
 from playhouse.postgres_ext import ArrayField
 import config
@@ -57,8 +60,6 @@ class User(PostModel, BaseUser):
     is_board_moderator = BooleanField(default=False, index=True)  # 是否为版主
     is_forum_master = BooleanField(default=False, index=True)  # 超版
 
-    key = BlobField(index=True, null=True)
-    key_time = MyTimestampField()  # 最后登录时间
     access_time = MyTimestampField(null=True, default=None)  # 最后访问时间，以misc为准吧
     last_check_in_time = MyTimestampField(null=True, default=None)  # 上次签到时间
     check_in_his = IntegerField(default=0)  # 连续签到天数
@@ -82,6 +83,51 @@ class User(PostModel, BaseUser):
         db_table = 'user'
 
     #object_type = OBJECT_TYPES.USER
+
+    @classmethod
+    def new(cls, nickname, password, extra_values=None, *, auto_nickname=False, is_for_tests=True) -> Optional['User']:
+        values = {
+            'nickname': nickname,
+            'is_new_user': True
+            # 'is_for_tests': is_for_tests
+        }
+
+        values.update(extra_values)
+        cls.append_post_id(values)
+
+        info = cls.gen_password_and_salt(password)
+        values.update(info)
+
+        try:
+            uid = cls.insert(values).execute()
+            u: User = cls.get_by_pk(uid)
+
+            uchanged = False
+            # 如果是第一个用户，那么自动为管理员
+            if u.number == 1:
+                u.group = USER_GROUP.ADMIN
+                uchanged = True
+
+            # 注册成功后，如果要求自动设置用户名，那么修改用户名
+            if auto_nickname:
+                nprefix = config.USER_NICKNAME_AUTO_PREFIX + '_'
+                u.change_nickname_chance = 1
+                u.nickname = nprefix + uid.to_hex()
+                uchanged = True
+
+            if uchanged:
+                u.save()
+
+            return u
+        except peewee.IntegrityError:
+            traceback.print_exc()
+            db.rollback()
+            # if e.args[0].startswith('duplicate key | 错误:  重复键违反唯一约束'):
+            #     return
+            # 此处似乎无从得知，数据库会返回什么样的文本，应该是和语言相关
+            # 那么姑且假定 IntegrityError 都是唯一性约束
+        except peewee.DatabaseError:
+            db.rollback()
 
     @classmethod
     def find_by_nicknames(cls, names):
@@ -129,10 +175,6 @@ class User(PostModel, BaseUser):
         return ret
 
     @classmethod
-    def gen_id(cls):
-        return config.POST_ID_GENERATOR()
-
-    @classmethod
     def gen_password_and_salt(cls, password_text):
         salt = os.urandom(32)
         dk = hashlib.pbkdf2_hmac(
@@ -142,27 +184,6 @@ class User(PostModel, BaseUser):
             config.PASSWORD_SECURE_HASH_ITERATIONS,
         )
         return {'password': dk, 'salt': salt}
-
-    @classmethod
-    def gen_key(cls):
-        key = os.urandom(16)
-        key_time = int(time.time())
-        return {'key': key, 'key_time': key_time}
-
-    def refresh_key(self):
-        count = 0
-        while count < 10:
-            with db.atomic():
-                try:
-                    k = self.gen_key()
-                    self.key = k['key']
-                    self.key_time = k['key_time']
-                    self.save()
-                    return k
-                except DatabaseError:
-                    count += 1
-                    db.rollback()
-        raise ValueError("generate key failed")
 
     @classmethod
     def get_by_key(cls, key):
@@ -195,7 +216,7 @@ class User(PostModel, BaseUser):
         await pipe.execute()
 
     @classmethod
-    async def check_reg_code_by_email(cls, email, code):
+    async def check_reg_code_by_email(cls, email, code: Union[str, bytes]):
         """
         检查账户激活码是否可用
         :param uid:
@@ -335,16 +356,16 @@ class User(PostModel, BaseUser):
             return self
 
     @classmethod
-    def auth_by_mail(cls, email, password_text):
+    def auth_by_mail(cls, email, password_text) -> ["User", bool]:
         try: u = cls.get(cls.email == email)
-        except DoesNotExist: return False
-        return u._auth_base(password_text)
+        except DoesNotExist: return None, False
+        return u, u._auth_base(password_text)
 
     @classmethod
-    def auth_by_nickname(cls, nickname, password_text):
-        try: u = cls.get(cls.nickname == nickname)
-        except DoesNotExist: return False
-        return u._auth_base(password_text)
+    def auth_by_username(cls, username, password_text) -> ["User", bool]:
+        try: u = cls.get(cls.username == username)
+        except DoesNotExist: return None, False
+        return u, u._auth_base(password_text)
 
     def __repr__(self):
         return '<User id:%x nickname:%r>' % (int.from_bytes(get_bytes_from_blob(self.id), 'big'), self.nickname)

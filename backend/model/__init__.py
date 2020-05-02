@@ -1,3 +1,5 @@
+import time
+
 from . import redis
 from slim.utils import async_run
 import config
@@ -65,3 +67,19 @@ class BaseModel(peewee.Model):
     @classmethod
     def exists_by_pk(cls, value):
         return cls.select().where(cls._meta.primary_key == value).exists()
+
+
+def get_time():
+    return int(time.time())
+
+
+class StdModel(BaseModel):
+    id = peewee.BlobField(primary_key=True)
+    time = peewee.BigIntegerField(index=True, default=get_time)
+    deleted_at = peewee.BigIntegerField(null=True, index=True)
+
+    is_for_tests = peewee.BooleanField(default=False, help_text='单元测试专属账号，单元测试结束后删除')
+
+
+class StdUserModel(StdModel):
+    user_id = peewee.BlobField(index=True, null=True, help_text='创建者用户ID')

@@ -45,7 +45,7 @@ class MessageBoard {
     this.text(text, MessageType.error, timeout) // 红色
   }
 
-  byCode (code: number, data: any, text: string | null = null, timeout = 3000) {
+  byCode (code: number, data: any = null, text: string | null = null, timeout = 3000) {
     text = text || (retinfo_cn as any)[code]
     if (code === retcode.SUCCESS) this.success(text, timeout)
     else if (code === retcode.TOO_FREQUENT && data) {

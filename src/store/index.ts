@@ -7,6 +7,7 @@ import { retcode } from 'slim-tools'
 import { GetterTree, MutationTree, ActionTree, ActionContext, Store } from "vuex"
 import { Context as AppContext } from "@nuxt/types"
 import { RootState, BackendConfigMisc } from '../types/state/root'
+import { $api } from '../plugins/api'
 
 const debug = process.env.NODE_ENV !== 'production'
 export const strict = debug
@@ -99,14 +100,14 @@ interface Actions<S, R> extends ActionTree<S, R> {
 }
 
 export const actions: Actions<RootState, RootState> = {
-  async nuxtServerInit({ state, dispatch }, context) {
+  async nuxtServerInit({ state, commit, dispatch }, context) {
     // 设置初始 access token
     // this.$api.accessToken = this.$storage.getUniversal('t')
     // 尝试加载
     await dispatch('tryInitLoad')
 
-    // let ret = await this.$api.misc()
-    // commit('SET_MISC', ret.data)
+    let ret = await $api.misc()
+    commit('SET_MISC', ret.data)
 
     // console.log(111, req.headers.cookie)
     // ret = await this.$api.userInfo2(req.headers)
@@ -119,7 +120,7 @@ export const actions: Actions<RootState, RootState> = {
     if (state._initing) return
     commit('SET_INITING', true)
     // 获取MISC信息
-    const ret = await this.$api.misc()
+    let ret = await $api.misc()
     if (ret.code !== retcode.SUCCESS) {
       this.$message.error('服务器的返回异常，请刷新重试。', 5000)
       commit('SET_INITING', false)

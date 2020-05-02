@@ -1,3 +1,4 @@
+import binascii
 import json
 import os
 import time
@@ -12,33 +13,51 @@ from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.notif import UserNotifLastInfo
 from model._post import POST_TYPES, POST_STATE
 from model.post_stats import post_stats_new
+from model.user_token import UserToken
+from slim import D
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.base.user import BaseAccessTokenUserViewMixin, BaseUser, BaseUserViewMixin
 from slim.base.view import BaseView
 from slim.retcode import RETCODE
 from model.user import User, USER_GROUP
-from slim.utils import to_hex, to_bin, get_bytes_from_blob
-from api import ValidateForm, cooldown, same_user, get_fuzz_ip
+from slim.support.peewee import PeeweeView
+from slim.utils import to_hex, to_bin, get_bytes_from_blob, sentinel
+from api import ValidateForm, cooldown, same_user, get_fuzz_ip, run_in_thread
 from wtforms import StringField, validators as va
 from slim.base.permission import DataRecord
-from api.user_signup_legacy import UserLegacyView
-from api.user_validate_form import RequestSignupByEmailForm, SigninByEmailForm, SigninByNicknameForm, PasswordForm, \
-    NicknameForm
-from api.validate.user import ValidatePasswordResetPost, ChangePasswordDataModel
+from api.user_validate_form import PasswordForm, NicknameForm
+from api.validate.user import ValidatePasswordResetPost, ChangePasswordDataModel, SignupDirectDataModel, \
+    SignupConfirmByEmailDataModel, SignupRequestByEmailDataModel, SigninDataModel, ChangeNicknameDataModel
 
 
 class UserViewMixin(BaseAccessTokenUserViewMixin):
+    """ 用户Mixin，用于与View """
     def get_user_by_token(self: Union['BaseUserViewMixin', 'BaseView'], token) -> Type[BaseUser]:
-        try: return User.get_by_key(to_bin(token))
-        except: pass
+        t = UserToken.get_by_token(token)
+        if t: return User.get_by_pk(t.user_id)
 
-    def setup_user_token(self: Union['BaseUserViewMixin', 'BaseView'], user_id, key=None, expires=30):
-        pass
+    async def setup_user_token(self, user_id, key=None, expires=30):
+        """ setup user token """
+        t = UserToken.new(user_id)
+        await t.init(self)
+        return t
 
-    def teardown_user_token(self: Union['BaseUserViewMixin', 'BaseView'], token=None):
+    def teardown_user_token(self: Union['BaseUserViewMixin', 'BaseView'], token=sentinel):
+        """ invalidate the token here"""
         u: User = self.current_user
-        u.key = None
-        u.save()
+        if u:
+            if token is None:
+                # clear all tokens
+                UserToken.delete().where(UserToken.user_id == u.id).execute()
+                return
+
+            if token is sentinel:
+                # clear current token
+                try:
+                    token = to_bin(self.get_user_token())
+                except binascii.Error:
+                    return
+            UserToken.delete().where(UserToken.user_id == u.id, UserToken.id == token).execute()
 
 
 class ResetPasswordForm(ValidateForm):
@@ -57,7 +76,7 @@ async def same_email_post(view):
 
 
 @app.route.view('user')
-class UserView(UserViewMixin, UserLegacyView):
+class UserView(UserViewMixin, PeeweeView):
     model = User
 
     @app.route.interface('POST')
@@ -89,14 +108,6 @@ class UserView(UserViewMixin, UserLegacyView):
                 self.finish(RETCODE.FAILED)
         else:
             self.finish(RETCODE.FAILED)
-
-    @app.route.interface('GET', summary='测试专用1', va_query=ValidatePasswordResetPost)
-    async def test1(self):
-        pass
-
-    @app.route.interface('POST', summary='测试专用2', va_query=ValidatePasswordResetPost, va_post=ValidatePasswordResetPost)
-    async def test2(self):
-        pass
 
     @app.route.interface('POST', summary='密码重置验证', va_post=ValidatePasswordResetPost)
     async def validate_password_reset(self):
@@ -149,35 +160,37 @@ class UserView(UserViewMixin, UserLegacyView):
         else:
             self.finish(RETCODE.PERMISSION_DENIED)
 
-    @app.route.interface('POST')
+    @app.route.interface('POST', summary='登出')
     async def signout(self):
         if self.current_user:
-            self.teardown_user_key()
+            self.teardown_user_token(self.current_user)
             self.finish(RETCODE.SUCCESS)
         else:
             self.finish(RETCODE.FAILED)
 
-    @app.route.interface('POST')
+    @app.route.interface('POST', va_post=SigninDataModel)
     @cooldown(config.USER_SIGNIN_COOLDOWN_BY_IP, b'ic_cd_user_signin_%b')
     @cooldown(config.USER_SIGNIN_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_signin_account_%b', unique_id_func=same_email_post)
     async def signin(self):
-        data = await self.post_data()
+        vpost: SigninDataModel = self._.validated_post
 
-        form_email = SigninByEmailForm(**data)
-        form_nickname = SigninByNicknameForm(**data)
-
-        if form_email.validate():
-            u = User.auth_by_mail(data['email'], data['password'])
-        elif form_nickname.validate():
-            u = User.auth_by_nickname(data['email'], data['password'])
+        # check auth method
+        if vpost.email:
+            field_value = vpost.email
+            auth_method = User.auth_by_mail
+        elif vpost.username:
+            field_value = vpost.username
+            auth_method = User.auth_by_username
         else:
-            return self.finish(RETCODE.FAILED, form_email.errors)
+            return self.finish(RETCODE.FAILED, msg='必须提交用户名或邮箱中的一个作为登录凭据')
 
-        if u:
-            expires = 30 if 'remember' in data else None
-            u.refresh_key()
-            self.setup_user_token(u.id, u.key, expires)
-            self.finish(RETCODE.SUCCESS, {'id': u.id, 'access_token': u.key})
+        # auth and generate access token
+        user, success = await run_in_thread(auth_method, field_value, vpost.password)
+
+        if user:
+            # expires = 30 if 'remember' in data else None
+            t: UserToken = await self.setup_user_token(user.id)
+            self.finish(RETCODE.SUCCESS, {'id': user.id, 'access_token': t.get_token()})
         else:
             self.finish(RETCODE.FAILED, '登录失败！')
 
@@ -206,9 +219,6 @@ class UserView(UserViewMixin, UserLegacyView):
         if 'password' in raw_post:
             ret = User.gen_password_and_salt(self.new_pass)
             values.update(ret)
-
-        if 'key' in raw_post:
-            values.update(User.gen_key())
 
     async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
                            new_records: List[DataRecord]):
@@ -250,13 +260,14 @@ class UserView(UserViewMixin, UserLegacyView):
 
     @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
     async def new(self):
+        return self.finish(RETCODE.FAILED)
         if config.EMAIL_ACTIVATION_ENABLE:
             return self.finish(RETCODE.FAILED, '此接口未开放')
         return await super().new()
 
-    @app.route.interface('POST')
+    @app.route.interface('POST', va_post=SignupRequestByEmailDataModel, summary='注册申请（邮箱）')
     @cooldown(config.USER_SIGNUP_COOLDOWN_BY_IP, b'ic_cd_user_signup_%b', cd_if_unsuccessed=10)
-    async def request_signup_by_email(self):
+    async def signup_request_by_email(self):
         """
         提交邮件注册请求
         :return:
@@ -266,136 +277,72 @@ class UserView(UserViewMixin, UserLegacyView):
 
         # 发送注册邮件
         if config.EMAIL_ACTIVATION_ENABLE:
-            data = await self.post_data()
-
-            form = RequestSignupByEmailForm(**data)
-            if not form.validate():
-                return self.finish(RETCODE.INVALID_POSTDATA, form.errors)
-
-            email = form['email'].data.lower()
-            code = await User.gen_reg_code_by_email(email, form['password'].data)
-            await mail.send_reg_code_email(email, code)
+            vpost: SignupRequestByEmailDataModel = self._.validated_post
+            code = await User.gen_reg_code_by_email(vpost.email, vpost.password)
+            await mail.send_reg_code_email(vpost.email, code)
             self.finish(RETCODE.SUCCESS)
         else:
             self.finish(RETCODE.FAILED, '此接口未开放')
 
-    @app.route.interface('GET')
+    @app.route.interface('GET', va_query=SignupConfirmByEmailDataModel, summary='检查注册码和邮箱是否匹配')
     async def check_reg_code_by_email(self):
         """ 检查与邮件关联的激活码是否可用 """
-        pw = await User.check_reg_code_by_email(self.params['email'], self.params['code'])
+        vquery: SignupConfirmByEmailDataModel = self._.validated_query
+        pw = await User.check_reg_code_by_email(vquery.email, vquery.code)
         self.finish(RETCODE.SUCCESS if pw else RETCODE.FAILED)
 
-    async def create_user(self, password, email=None, phone=None) -> User:
-        values = {}
-        nprefix = config.USER_NICKNAME_AUTO_PREFIX + '_'
-
-        if config.POST_ID_GENERATOR != config.AutoGenerator:
-            # 若不使用数据库生成id
-            uid = User.gen_id()
-            values['id'] = uid.to_bin()
-            values['nickname'] = nprefix + uid.to_hex()
-
-        values['is_new_user'] = True
-        values['change_nickname_chance'] = 1
-
-        if email:
-            values['email'] = email.lower()
-
-        if phone:
-            values['phone'] = phone
-
-        # 密码
-        ret = User.gen_password_and_salt(password)
-        values.update(ret)
-
-        values['group'] = USER_GROUP.NORMAL
-        values['state'] = POST_STATE.NORMAL
-
-        # 注册IP地址
-        values['ip_registered'] = await get_fuzz_ip(self)
-
-        # 生成 access_token
-        values.update(User.gen_key())
-        values['time'] = int(time.time())
-
-        try:
-            uid = User.insert(values).execute()
-            u = User.get_by_pk(uid)
-        except peewee.IntegrityError as e:
-            db.rollback()
-            if e.args[0].startswith('duplicate key'):
-                return self.finish(RETCODE.ALREADY_EXISTS)
-            return self.finish(RETCODE.FAILED)
-        except peewee.DatabaseError:
-            db.rollback()
-            return self.finish(RETCODE.FAILED)
-
-        times = 3
-        success = False
-        u.nickname = nprefix + to_hex(get_bytes_from_blob(u.id))
-
-        # 尝试填充用户名
-        while times >= 0:
-            try:
-                if u.number == 1:
-                    u.group = USER_GROUP.ADMIN
-                u.save()
-                success = True
-                break
-            except peewee.DatabaseError:
-                db.rollback()
-                times -= 1
-                u.nickname = nprefix + to_hex(os.urandom(8))
-
-        if not success:
-            return self.finish(RETCODE.FAILED)
-
-        # 清理现场
-        if email:
-            await User.reg_code_cleanup(email)
-
-        # 添加统计记录
-        post_stats_new(POST_TYPES.USER, u.id)
-        UserNotifLastInfo.new(u.id)
-
-        return u
-
-    @app.route.interface('POST')
-    async def signup_by_email(self):
+    @app.route.interface('POST', va_post=SignupConfirmByEmailDataModel, summary='注册确认（邮箱）')
+    async def signup_confirm_by_email(self):
         """ 确认并创建账户 """
-        data = await self.post_data()
+        vpost: SignupConfirmByEmailDataModel = self._.validated_post
 
-        if 'code' not in data or 'email' not in data:
-            return self.finish(RETCODE.INVALID_POSTDATA)
+        password = await User.check_reg_code_by_email(vpost.email, vpost.code)
+        if not password:
+            return self.finish(RETCODE.FAILED, '验证码不正确')
 
-        email = data['email'].lower()
-        pw = await User.check_reg_code_by_email(email, data['code'])
-        if not pw:
-            return self.finish(RETCODE.FAILED)
+        u = User.new(None, password, {'email': vpost.email}, auto_nickname=True)
+        await self.signup_cleanup(u)
 
-        u = await self.create_user(pw, email=email)
+    @app.route.interface('POST', va_post=SignupDirectDataModel, summary='注册（直接形式）')
+    async def signup_by_direct(self):
+        if self.current_user:
+            return self.finish(RETCODE.PERMISSION_DENIED)  # 已登录用户凑什么热闹
 
-        if pw and u:
-            self.finish(RETCODE.SUCCESS, {'key': u.key, 'id': u.id})
+        vpost: SignupDirectDataModel = self._.validated_post
+        extra_values = {
+            'email': vpost.email,
+            'ip_registered': await get_fuzz_ip(self)
+        }
+
+        u = User.new(vpost.nickname, vpost.password, extra_values=extra_values, is_for_tests=False, auto_nickname=False)
+        await self.signup_cleanup(u)
+
+    async def signup_cleanup(self, u):
+        if u:
+            # 添加统计记录
+            post_stats_new(POST_TYPES.USER, u.id)
+            UserNotifLastInfo.new(u.id)
+
+            if u.email:
+                await User.reg_code_cleanup(u.email)
+
+            t: UserToken = await self.setup_user_token(u.id)
+            self.finish(RETCODE.SUCCESS, {'id': u.id, 'access_token': t.get_token()})
         else:
-            if self.is_finished: return
             self.finish(RETCODE.FAILED)
 
-    @app.route.interface('POST')
+    @app.route.interface('POST', va_post=ChangeNicknameDataModel, summary='使用改名卡修改昵称')
     async def change_nickname(self):
-        u = self.current_user
+        u: User = self.current_user
         if not u:
             return self.finish(RETCODE.PERMISSION_DENIED)
 
-        post = await self.post_data()
-        form = NicknameForm(**post)
-        if not form.validate():
-            return self.finish(RETCODE.INVALID_POSTDATA, form.errors)
+        vpost: ChangeNicknameDataModel = self._.validated_post
 
         if u.change_nickname_chance > 0:
             try:
                 old_nickname = u.nickname
-                u.nickname = form['nickname'].data
+                u.nickname = vpost.nickname
                 u.change_nickname_chance -= 1
                 u.is_new_user = False
                 u.save()

@@ -1,17 +1,19 @@
 import { TokenStoreNuxt, newRequestClient, SlimSQLAPI } from 'slim-tools'
 import config from '@/config'
-import { UserAPI, NotifAPI, UploadAPI, SearchAPI, WikiAPI } from './apis'
+import { UserAPI, NotifAPI, UploadAPI, SearchAPI, WikiAPI, MiscAPI } from './apis'
 import { Context } from '@nuxt/types'
 import { AxiosResponse } from 'axios'
 
 let client = newRequestClient(config.remote.API_SERVER)
 
 export interface APIInterface {
+  // misc: MiscAPI,
   misc: any,
   tick: any,
   getDefaultRole: any,
   // misc: Promise<AxiosResponse<any>>,
   // tick: Promise<AxiosResponse<any>>,
+  saveAccessToken: any, // function
 
   user: UserAPI,
   board: SlimSQLAPI,
@@ -55,6 +57,7 @@ export function createAPIRequester (ctx: Context): APIInterface {
       ts.saveAccessToken(t)
     },
 
+    // misc: new MiscAPI(client, ts, '/api/misc', getRole),
     user: new UserAPI(client, ts, '/api/user', getRole),
     board: new SlimSQLAPI(client, ts, '/api/board', getRole),
     topic: new SlimSQLAPI(client, ts, '/api/topic', getRole),

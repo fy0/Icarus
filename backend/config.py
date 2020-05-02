@@ -148,7 +148,7 @@ UPLOAD_QINIU_IMAGE_STYLE_TOPIC = ''  # 文章页面图片所用的七牛图片�
 ##########################################
 
 
-class AutoGenerator:
+class SQLSerialGenerator:
     def __init__(self, val=b''):
         if isinstance(val, str):
             val = binascii.unhexlify(val)
@@ -163,7 +163,7 @@ PASSWORD_SECURE_HASH_ITERATIONS = 10_0000  # 默认密码迭代次数，按2017�
 SESSION_ID_GENERATOR = CustomID
 
 # 被数据库所使用的两个ID，短ID与长ID
-POST_ID_GENERATOR = AutoGenerator  # 代表SQL自动生成
+POST_ID_GENERATOR = SQLSerialGenerator  # 代表SQL自动生成
 LONG_ID_GENERATOR = CustomID
 
 ##########################################

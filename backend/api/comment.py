@@ -77,7 +77,7 @@ class CommentView(UserViewMixin, PeeweeView):
 
                 values['reply_to_cmt_id'] = rtid.to_bin()
 
-            if not isinstance(config.LONG_ID_GENERATOR, config.AutoGenerator):
+            if not isinstance(config.LONG_ID_GENERATOR, config.SQLSerialGenerator):
                 values['id'] = config.LONG_ID_GENERATOR().to_bin()
             values['related_id'] = cid.to_bin()
             values['related_type'] = int(values['related_type'])

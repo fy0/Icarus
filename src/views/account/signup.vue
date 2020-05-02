@@ -1,5 +1,5 @@
 <template>
-<account-signup-legacy v-if="useLegacy" />
+<account-signup-direct v-if="useLegacy" />
 <redirecting v-else-if="regDone" :countdown="30">
     <h2>注册成功！</h2>
     <div style="align-items: none">
@@ -105,7 +105,7 @@
 
 <script>
 import { retcode } from 'slim-tools'
-import AccountSignupLegacy from '@/views/account/signup_legacy.vue'
+import AccountSignupDirect from '@/views/account/signup_by_direct.vue'
 
 export default {
     data () {
@@ -168,8 +168,7 @@ export default {
                 this.$store.commit('LOADING_INC', 1)
                 let info = _.clone(this.info)
                 info.password = await $.passwordHash(info.password)
-                info.password2 = await $.passwordHash(info.password2)
-                let ret = await this.$api.user.requestSignupByEmail(info)
+                let ret = await this.$api.user.signupRequestByEmail(info)
 
                 if (ret.code === retcode.SUCCESS) {
                     this.regDone = true
@@ -186,7 +185,7 @@ export default {
         }
     },
     components: {
-        AccountSignupLegacy
+        AccountSignupDirect
     }
 }
 </script>

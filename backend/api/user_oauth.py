@@ -71,7 +71,7 @@ class UserOAuthView(UserViewMixin, PeeweeView):
             else:
                 ins = [{'login_id': response['id'], 'time': time.time(), 'platform': 'github',
                         'state': POST_STATE.APPLY}]
-                if not isinstance(config.LONG_ID_GENERATOR, config.AutoGenerator):
+                if not isinstance(config.LONG_ID_GENERATOR, config.SQLSerialGenerator):
                     ins[0]['id'] = config.LONG_ID_GENERATOR().to_bin()
 
                 UserOAuth.insert_many(ins).execute()

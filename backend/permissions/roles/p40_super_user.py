@@ -44,7 +44,6 @@ superuser = Ability({
         'nickname': A.ALL,
         'credit': A.ALL,
         'repute': A.ALL,
-        'key_time': (A.READ,),
         'access_time': (A.READ,),
         'last_check_in_time': (A.READ,),
 

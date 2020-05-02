@@ -44,7 +44,7 @@ class BoardView(PeeweeView, UserViewMixin):
             if not form.validate():
                 return self.finish(RETCODE.FAILED, form.errors)
 
-            if not config.POST_ID_GENERATOR == config.AutoGenerator:
+            if not config.POST_ID_GENERATOR == config.SQLSerialGenerator:
                 values['id'] = config.POST_ID_GENERATOR().digest()
             values['time'] = int(time.time())
             values['user_id'] = self.current_user.id

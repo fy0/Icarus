@@ -9,14 +9,19 @@ export class UserAPI extends SlimSQLAPI {
     return ret
   }
 
+  /** 注册（直接形式，不开启邮件注册） */
+  async signupByDirect (email: string, password: string, nickname: string) {
+    return this.request('/signup_by_direct', 'POST', { data: { email, password, nickname } })
+  }
+
   // 准备进行邮件注册
-  async requestSignupByEmail (data: any) {
-    return this.request('/request_signup_by_email', 'POST', { data })
+  async signupRequestByEmail (data: any) {
+    return this.request('/signup_request_by_email', 'POST', { data })
   }
 
   // 拿到激活码，进行邮件注册
-  async signupByEmail (email: string, code: string) {
-    return this.request('/signup_by_email', 'POST', { data: { email, code } })
+  async signupConfirmByEmail (email: string, code: string) {
+    return this.request('/signup_confirm_by_email', 'POST', { data: { email, code } })
   }
 
   async checkIn () {
@@ -77,6 +82,12 @@ export class WikiAPI extends SlimSQLAPI {
 export class SearchAPI extends SlimSQLAPI {
   async random (keywords: Array<string>) {
     return this.request('/search', 'GET', { params: { keywords } })
+  }
+}
+
+export class MiscAPI extends SlimSQLAPI {
+  async info () {
+    return this.request('/info', 'GET')
   }
 }
 

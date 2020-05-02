@@ -42,58 +42,6 @@ def nickname_check(form, field):
     if config.USER_NICKNAME_CHECK_FUNC and not config.USER_NICKNAME_CHECK_FUNC(name):
         raise ValidationError('昵称被保留')
 
-
-class RequestSignupByEmailForm(ValidateForm):
-    """
-    邮件注册
-    """
-    email = StringField('邮箱', validators=[
-        va.required(),
-        va.Length(3, config.USER_EMAIL_MAX),
-        va.Email(),
-        email_exists_check
-    ])
-
-    password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
-
-    password2 = StringField('重复密码', validators=[
-        va.required(),
-        va.EqualTo('password')
-    ])
-
-
-class SigninByEmailForm(ValidateForm):
-    """
-    邮箱登录
-    """
-    email = StringField('邮箱', validators=[va.required(), va.Length(3, config.USER_EMAIL_MAX), va.Email()])
-
-    password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
-
-
-class SigninByNicknameForm(ValidateForm):
-    """
-    昵称登录
-    """
-    # 注意，这里前端提交的字段仍是email，所以不用nickname而是email，并非笔误
-    # 同时不做长度检查也是有意的，因为某一时期注册的帐号，昵称长度可能会不符合后期的规则，但要可以登录
-    email = StringField('昵称', validators=[
-        va.required(),
-        # nickname_check
-    ])
-
-    password = StringField('密码', validators=[
-        va.required(),
-        # va.Length(config.USER_PASSWORD_MIN, config.USER_PASSWORD_MAX)
-    ])
-
-
 class PasswordForm(ValidateForm):
     """
     用于重置密码时设置密码
