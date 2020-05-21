@@ -102,7 +102,7 @@ div.markdown-editor > div.editor-toolbar {
 import { mapState, mapGetters } from 'vuex'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
 import * as qiniu from 'qiniu-js'
-import Objectid from 'objectid-js'
+import Objectid from 'bson-objectid'
 // import marked from '@/md.js'
 import './../forum/topic-edit-fa.js'
 import { retcode } from 'slim-tools'

@@ -1,4 +1,4 @@
-import ObjectId from 'objectid-js'
+import ObjectId from 'bson-objectid'
 import config from './config.js'
 
 const remote = config.remote
