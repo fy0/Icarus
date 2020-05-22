@@ -20,47 +20,47 @@
 
 <script>
 export default {
-    props: {
-        item: {},
-        simple: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data () {
-        return {
-            MOP: this.$misc.MANAGE_OPERATION,
-            MOPT: this.$misc.MANAGE_OPERATION_TXT
-        }
-    },
-    computed: {
-        simpleChangeOP: function () {
-            let MOP = this.MOP
-            return [
-                MOP.POST_TITLE_CHANGE,
-                MOP.USER_CREDIT_CHANGE,
-                MOP.USER_REPUTE_CHANGE,
-                MOP.USER_EXP_CHANGE,
-                MOP.USER_NICKNAME_CHANGE,
-                MOP.TOPIC_BOARD_MOVE,
-                MOP.TOPIC_AWESOME_CHANGE,
-                MOP.TOPIC_STICKY_WEIGHT_CHANGE
-            ]
-        }
-    },
-    methods: {
-        postStateTxt: function (postState) {
-            return this.$misc.POST_STATE_TXT[postState]
-        },
-        postVisibleTxt: function (i) {
-            return this.$misc.POST_VISIBLE_TXT[i]
-        },
-        postGroupTxt: function (i) {
-            return this.$misc.USER_GROUP_TXT[i]
-        },
-        getOP: function (item) {
-            return item.operation || item.op
-        }
+  props: {
+    item: {},
+    simple: {
+      type: Boolean,
+      default: false
     }
+  },
+  data () {
+    return {
+      MOP: this.$misc.MANAGE_OPERATION,
+      MOPT: this.$misc.MANAGE_OPERATION_TXT
+    }
+  },
+  computed: {
+    simpleChangeOP: function () {
+      let MOP = this.MOP
+      return [
+        MOP.POST_TITLE_CHANGE,
+        MOP.USER_CREDIT_CHANGE,
+        MOP.USER_REPUTE_CHANGE,
+        MOP.USER_EXP_CHANGE,
+        MOP.USER_NICKNAME_CHANGE,
+        MOP.TOPIC_BOARD_MOVE,
+        MOP.TOPIC_AWESOME_CHANGE,
+        MOP.TOPIC_STICKY_WEIGHT_CHANGE
+      ]
+    }
+  },
+  methods: {
+    postStateTxt: function (postState) {
+      return this.$misc.POST_STATE_TXT[postState]
+    },
+    postVisibleTxt: function (i) {
+      return this.$misc.POST_VISIBLE_TXT[i]
+    },
+    postGroupTxt: function (i) {
+      return this.$misc.USER_GROUP_TXT[i]
+    },
+    getOP: function (item) {
+      return item.operation || item.op
+    }
+  }
 }
 </script>

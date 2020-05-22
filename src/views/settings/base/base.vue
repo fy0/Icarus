@@ -28,19 +28,19 @@
 import Sidebar from './sidebar.vue'
 
 export default {
-    data () {
-        return {}
-    },
-    head () {
-        return {
-            title: '用户设置',
-            meta: [
-                { hid: 'description', name: 'description', content: '用户设置页面' }
-            ]
-        }
-    },
-    components: {
-        Sidebar
+  data () {
+    return {}
+  },
+  head () {
+    return {
+      title: '用户设置',
+      meta: [
+        { hid: 'description', name: 'description', content: '用户设置页面' }
+      ]
     }
+  },
+  components: {
+    Sidebar
+  }
 }
 </script>

@@ -57,13 +57,13 @@ footer.ic-container {
 
 <script>
 export default {
-    data () {
-        return {}
-    },
-    computed: {
-        extraHtml: function () {
-            return this.$store.getters.BACKEND_CONFIG.FOOTER_EXTRA_HTML
-        }
+  data () {
+    return {}
+  },
+  computed: {
+    extraHtml: function () {
+      return this.$store.getters.BACKEND_CONFIG.FOOTER_EXTRA_HTML
     }
+  }
 }
 </script>

@@ -148,190 +148,190 @@ import { mapState, mapGetters } from 'vuex'
 import { retcode } from 'slim-tools'
 
 export default {
-    data () {
-        return {
-            save: { title: '' },
-            vSticky: '0',
-            vWeight: 0,
-            vCredit: 0,
-            vState: '0',
-            vVisible: 0,
-            vRepute: 0,
-            vAwesome: false,
-            stage: 1,
-            currentApply: 0,
-            applyValue: 0
-        }
-    },
-    computed: {
-        ...mapState('dialog', [
-            'topicManage',
-            'topicManageData'
-        ]),
-        ...mapGetters([
-            'POST_TYPES',
-            'POST_TYPES_TXT',
-            'POST_STATE_TXT',
-            'POST_VISIBLE_TXT'
-        ]),
-        topic: function () {
-            // TODO: 重构此页面。
-            // 看起来不合理是早期很多工具没有，又嫁接了一些后期需求导致的。
-            return this.save
-        },
-        changed: function () {
-            let change = {}
-            let topic = this.save
-            // 置顶
-            if (parseInt(this.vSticky) !== topic.sticky_weight) {
-                change.vSticky = [topic.sticky_weight, parseInt(this.vSticky)]
-            }
-            // 提升下沉
-            if (this.vWeight !== 0) {
-                change.vWeight = [0, this.vWeight]
-            }
-            // 积分奖励
-            if (this.vCredit !== 0) {
-                change.vCredit = [0, this.vCredit]
-            }
-            // 文章状态
-            if (parseInt(this.vState) !== topic.state) {
-                change.vState = [topic.state, parseInt(this.vState)]
-            }
-            // 文章可见性
-            if (this.vVisible !== topic.visible) {
-                change.vVisible = [topic.visible, this.vVisible]
-            }
-            // 声望奖励
-            if (this.vRepute !== 0) {
-                change.vRepute = [0, this.vRepute]
-            }
-            // 精华文章
-            if (this.vAwesome !== Boolean(topic.awesome)) {
-                change.vAwesome = [false, this.vAwesome]
-            }
-            return change
-        }
-    },
-    methods: {
-        next: async function () {
-            this.stage++
-            if (this.stage === 3) {
-                let change = this.changed
-
-                let i = 0
-                let len = Object.keys(change).length
-
-                let updateOne = () => {
-                    this.currentApply = i++
-                    this.applyValue = this.currentApply * 100.0 / len
-                }
-
-                // 置顶
-                if (change.vSticky) {
-                    updateOne()
-                    let ret = await this.$api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] })
-                    if (ret.code === 0) this.$message.success('文章置顶设置成功')
-                    else this.$message.byCode(ret.code)
-                }
-
-                // 真正的提升下沉实现起来比较难，直接改变权重值吧
-                if (change.vWeight) {
-                    updateOne()
-                    let ret = await this.$api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] })
-                    if (ret.code === 0) this.$message.success('提升/下沉设置成功')
-                    else this.$message.byCode(ret.code)
-                }
-
-                // 文章状态
-                if (change.vState) {
-                    updateOne()
-                    let ret = await this.$api.topic.set({ id: this.topic.id }, { state: change.vState[1] })
-                    if (ret.code === 0) this.$message.success('文章状态修改成功')
-                    else this.$message.byCode(ret.code)
-                }
-
-                // 文章可见性
-                if (change.vVisible) {
-                    updateOne()
-                    let ret = await this.$api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] })
-                    if (ret.code === 0) this.$message.success('文章可见性修改成功')
-                    else this.$message.byCode(ret.code)
-                }
-
-                // 积分奖励
-                if (change.vCredit) {
-                    updateOne()
-                    let ret = await this.$api.user.set({ id: this.topic.user_id }, {
-                        'credit.incr': change.vCredit[1],
-                        '$src': JSON.stringify({
-                            'id': this.topic.id,
-                            'type': this.POST_TYPES.TOPIC
-                        })
-                    })
-                    if (ret.code === 0) this.$message.success('加分/扣分设置成功')
-                    else this.$message.byCode(ret.code)
-                }
-
-                // 声望奖励
-                if (change.vRepute) {
-                    updateOne()
-                    let ret = await this.$api.user.set({ id: this.topic.user_id }, {
-                        'repute.incr': change.vCredit[1],
-                        '$src': JSON.stringify({
-                            'id': this.topic.id,
-                            'type': this.POST_TYPES.TOPIC
-                        })
-                    })
-                    if (ret.code === 0) this.$message.success('声望变更设置成功')
-                    else this.$message.byCode(ret.code)
-                }
-
-                // 优秀文章
-                if (change.vAwesome) {
-                    updateOne()
-                    let ret = await this.$api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 })
-                    if (ret.code === 0) this.$message.success('优秀文章设置成功')
-                    else this.$message.byCode(ret.code)
-                }
-
-                // done
-                this.currentApply = -1
-                this.applyValue = 100
-                this.stage = 4
-            }
-        },
-        closeOutside () {
-            if (this.stage === 1) this.close()
-        },
-        close () {
-            if (this.stage === 2) this.stage = 1
-            else this.$store.commit('dialog/SET_TOPIC_MANAGE', { val: false })
-            if (this.stage === 4) {
-                this.$router.go(0)
-            }
-        }
-    },
-    watch: {
-        'topicManage': async function (val) {
-            if (val) {
-                let info = await this.$api.topic.get({
-                    id: this.topicManageData.id
-                })
-
-                if (info.code === retcode.SUCCESS) {
-                    this.save = info.data
-                    let topic = info.data
-                    this.vSticky = topic.sticky_weight
-                    this.vState = topic.state
-                    this.vVisible = topic.visible
-                    this.vAwesome = Boolean(topic.awesome)
-                    this.stage = 1
-                } else {
-                    this.$message.byCode(info.code, info)
-                }
-            }
-        }
+  data () {
+    return {
+      save: { title: '' },
+      vSticky: '0',
+      vWeight: 0,
+      vCredit: 0,
+      vState: '0',
+      vVisible: 0,
+      vRepute: 0,
+      vAwesome: false,
+      stage: 1,
+      currentApply: 0,
+      applyValue: 0
     }
+  },
+  computed: {
+    ...mapState('dialog', [
+      'topicManage',
+      'topicManageData'
+    ]),
+    ...mapGetters([
+      'POST_TYPES',
+      'POST_TYPES_TXT',
+      'POST_STATE_TXT',
+      'POST_VISIBLE_TXT'
+    ]),
+    topic: function () {
+      // TODO: 重构此页面。
+      // 看起来不合理是早期很多工具没有，又嫁接了一些后期需求导致的。
+      return this.save
+    },
+    changed: function () {
+      let change = {}
+      let topic = this.save
+      // 置顶
+      if (parseInt(this.vSticky) !== topic.sticky_weight) {
+        change.vSticky = [topic.sticky_weight, parseInt(this.vSticky)]
+      }
+      // 提升下沉
+      if (this.vWeight !== 0) {
+        change.vWeight = [0, this.vWeight]
+      }
+      // 积分奖励
+      if (this.vCredit !== 0) {
+        change.vCredit = [0, this.vCredit]
+      }
+      // 文章状态
+      if (parseInt(this.vState) !== topic.state) {
+        change.vState = [topic.state, parseInt(this.vState)]
+      }
+      // 文章可见性
+      if (this.vVisible !== topic.visible) {
+        change.vVisible = [topic.visible, this.vVisible]
+      }
+      // 声望奖励
+      if (this.vRepute !== 0) {
+        change.vRepute = [0, this.vRepute]
+      }
+      // 精华文章
+      if (this.vAwesome !== Boolean(topic.awesome)) {
+        change.vAwesome = [false, this.vAwesome]
+      }
+      return change
+    }
+  },
+  methods: {
+    next: async function () {
+      this.stage++
+      if (this.stage === 3) {
+        let change = this.changed
+
+        let i = 0
+        let len = Object.keys(change).length
+
+        let updateOne = () => {
+          this.currentApply = i++
+          this.applyValue = this.currentApply * 100.0 / len
+        }
+
+        // 置顶
+        if (change.vSticky) {
+          updateOne()
+          let ret = await this.$api.topic.set({ id: this.topic.id }, { 'sticky_weight': change.vSticky[1] })
+          if (ret.code === 0) this.$message.success('文章置顶设置成功')
+          else this.$message.byCode(ret.code)
+        }
+
+        // 真正的提升下沉实现起来比较难，直接改变权重值吧
+        if (change.vWeight) {
+          updateOne()
+          let ret = await this.$api.topic.set({ id: this.topic.id }, { 'weight.incr': change.vWeight[1] })
+          if (ret.code === 0) this.$message.success('提升/下沉设置成功')
+          else this.$message.byCode(ret.code)
+        }
+
+        // 文章状态
+        if (change.vState) {
+          updateOne()
+          let ret = await this.$api.topic.set({ id: this.topic.id }, { state: change.vState[1] })
+          if (ret.code === 0) this.$message.success('文章状态修改成功')
+          else this.$message.byCode(ret.code)
+        }
+
+        // 文章可见性
+        if (change.vVisible) {
+          updateOne()
+          let ret = await this.$api.topic.set({ id: this.topic.id }, { visible: change.vVisible[1] })
+          if (ret.code === 0) this.$message.success('文章可见性修改成功')
+          else this.$message.byCode(ret.code)
+        }
+
+        // 积分奖励
+        if (change.vCredit) {
+          updateOne()
+          let ret = await this.$api.user.set({ id: this.topic.user_id }, {
+            'credit.incr': change.vCredit[1],
+            '$src': JSON.stringify({
+              'id': this.topic.id,
+              'type': this.POST_TYPES.TOPIC
+            })
+          })
+          if (ret.code === 0) this.$message.success('加分/扣分设置成功')
+          else this.$message.byCode(ret.code)
+        }
+
+        // 声望奖励
+        if (change.vRepute) {
+          updateOne()
+          let ret = await this.$api.user.set({ id: this.topic.user_id }, {
+            'repute.incr': change.vCredit[1],
+            '$src': JSON.stringify({
+              'id': this.topic.id,
+              'type': this.POST_TYPES.TOPIC
+            })
+          })
+          if (ret.code === 0) this.$message.success('声望变更设置成功')
+          else this.$message.byCode(ret.code)
+        }
+
+        // 优秀文章
+        if (change.vAwesome) {
+          updateOne()
+          let ret = await this.$api.topic.set({ id: this.topic.id }, { awesome: change.vAwesome[1] ? 1 : 0 })
+          if (ret.code === 0) this.$message.success('优秀文章设置成功')
+          else this.$message.byCode(ret.code)
+        }
+
+        // done
+        this.currentApply = -1
+        this.applyValue = 100
+        this.stage = 4
+      }
+    },
+    closeOutside () {
+      if (this.stage === 1) this.close()
+    },
+    close () {
+      if (this.stage === 2) this.stage = 1
+      else this.$store.commit('dialog/SET_TOPIC_MANAGE', { val: false })
+      if (this.stage === 4) {
+        this.$router.go(0)
+      }
+    }
+  },
+  watch: {
+    'topicManage': async function (val) {
+      if (val) {
+        let info = await this.$api.topic.get({
+          id: this.topicManageData.id
+        })
+
+        if (info.code === retcode.SUCCESS) {
+          this.save = info.data
+          let topic = info.data
+          this.vSticky = topic.sticky_weight
+          this.vState = topic.state
+          this.vVisible = topic.visible
+          this.vAwesome = Boolean(topic.awesome)
+          this.stage = 1
+        } else {
+          this.$message.byCode(info.code, info)
+        }
+      }
+    }
+  }
 }
 </script>

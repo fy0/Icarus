@@ -6,7 +6,7 @@
                 <label for="nickname">当前昵称</label>
                 <div>{{$user.data.nickname}}</div>
             </check-row>
-            <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
+            <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNicknameOK" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
                 <label for="nickname">新昵称</label>
                 <input class="ic-input" type="text" name="nickname" id="nickname" v-model="info.nickname">
             </check-row>
@@ -53,55 +53,56 @@
 <script>
 import { mapState } from 'vuex'
 import { retcode } from 'slim-tools'
+import { checkNickname } from '@/utils/user'
 
 export default {
-    data () {
-        return {
-            formErrors: {
-                nickname: []
-            },
-            info: {
-                nickname: ''
-            },
-            sending: false
-        }
-    },
-    computed: {
-        ...mapState('dialog', [
-            'userSetNickname'
-        ])
-    },
-    methods: {
-        ok: async function () {
-            if (await this.changeNickname()) {
-                this.$dialogs.setUserNickname(false)
-            }
-        },
-        cancel: async function () {
-            this.$dialogs.setUserNickname(false)
-        },
-        checkNickname: function () {
-            return $.checkNickname(this.info.nickname)
-        },
-        changeNickname: async function () {
-            if (this.sending) return
-            this.sending = true
-
-            let ret = await this.$api.user.changeNickname(this.info.nickname)
-            if (ret.code === retcode.SUCCESS) {
-                this.$message.success('修改成功！')
-                let newData = Object.assign({}, this.$user.data)
-                newData.nickname = ret.data.nickname
-                newData.change_nickname_chance = ret.data.change_nickname_chance
-                newData.is_new_user = false
-                this.$store.commit('user/SET_USER_DATA', newData)
-                this.sending = false
-                return true
-            } else if (ret.code === retcode.INVALID_POSTDATA) {
-                this.formErrors = ret.data
-            }
-            this.sending = false
-        }
+  data () {
+    return {
+      formErrors: {
+        nickname: []
+      },
+      info: {
+        nickname: ''
+      },
+      sending: false
     }
+  },
+  computed: {
+    ...mapState('dialog', [
+      'userSetNickname'
+    ])
+  },
+  methods: {
+    ok: async function () {
+      if (await this.changeNickname()) {
+        this.$dialogs.setUserNickname(false)
+      }
+    },
+    cancel: async function () {
+      this.$dialogs.setUserNickname(false)
+    },
+    checkNicknameOK: function () {
+      return checkNickname(this.info.nickname)
+    },
+    changeNickname: async function () {
+      if (this.sending) return
+      this.sending = true
+
+      let ret = await this.$api.user.changeNickname(this.info.nickname)
+      if (ret.code === retcode.SUCCESS) {
+        this.$message.success('修改成功！')
+        let newData = Object.assign({}, this.$user.data)
+        newData.nickname = ret.data.nickname
+        newData.change_nickname_chance = ret.data.change_nickname_chance
+        newData.is_new_user = false
+        this.$store.commit('user/SET_USER_DATA', newData)
+        this.sending = false
+        return true
+      } else if (ret.code === retcode.INVALID_POSTDATA) {
+        this.formErrors = ret.data
+      }
+      this.sending = false
+    }
+  }
 }
 </script>

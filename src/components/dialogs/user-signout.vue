@@ -41,31 +41,31 @@
 import { mapState } from 'vuex'
 
 export default {
-    data () {
-        return {
-            quiting: false
-        }
-    },
-    computed: {
-        ...mapState('dialog', [
-            'userSignout'
-        ])
-    },
-    methods: {
-        ok: async function () {
-            if (this.quiting) return
-            this.quiting = true
-            await this.$store.dispatch('user/apiSignout')
-            // 更新板块信息 - 退出登录
-            await this.$store.dispatch('forum/load')
-            // TODO: 这里先假设退出登录一定会成功吧
-            this.$router.replace('/')
-            this.quiting = false
-            this.$dialogs.setUserSignout(false)
-        },
-        close: async function () {
-            this.$dialogs.setUserSignout(false)
-        }
+  data () {
+    return {
+      quiting: false
     }
+  },
+  computed: {
+    ...mapState('dialog', [
+      'userSignout'
+    ])
+  },
+  methods: {
+    ok: async function () {
+      if (this.quiting) return
+      this.quiting = true
+      await this.$store.dispatch('user/apiSignout')
+      // 更新板块信息 - 退出登录
+      await this.$store.dispatch('forum/load')
+      // TODO: 这里先假设退出登录一定会成功吧
+      this.$router.replace('/')
+      this.quiting = false
+      this.$dialogs.setUserSignout(false)
+    },
+    close: async function () {
+      this.$dialogs.setUserSignout(false)
+    }
+  }
 }
 </script>

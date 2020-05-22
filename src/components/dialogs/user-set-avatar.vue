@@ -307,218 +307,219 @@ $i_h: 42px;
 import { mapState } from 'vuex'
 import * as qiniu from 'qiniu-js'
 import { retcode } from 'slim-tools'
+import { asyncGetUploadToken } from '@/utils/upload'
 
 export default {
-    data () {
-        return {
-            image: '',
-            imageResult: '',
-            loading: false,
+  data () {
+    return {
+      image: '',
+      imageResult: '',
+      loading: false,
 
-            tooSmall: false,
-            offsetX: 0,
-            offsetY: 0,
-            shadeWidth: 30,
+      tooSmall: false,
+      offsetX: 0,
+      offsetY: 0,
+      shadeWidth: 30,
 
-            scale: 0,
+      scale: 0,
 
-            imgBox: {
-                w: 260,
-                h: 200
-            },
+      imgBox: {
+        w: 260,
+        h: 200
+      },
 
-            imgMax: {
-                w: 0,
-                h: 0
-            },
+      imgMax: {
+        w: 0,
+        h: 0
+      },
 
-            imgMin: {
-                w: 0,
-                h: 0
-            },
+      imgMin: {
+        w: 0,
+        h: 0
+      },
 
-            camera: {
-                top: 0,
-                left: 0,
-                w: 0,
-                h: 0,
+      camera: {
+        top: 0,
+        left: 0,
+        w: 0,
+        h: 0,
 
-                moving: false,
-                movePoint: { x: 0, y: 0 }
-            }
-        }
-    },
-    computed: {
-        ...mapState('dialog', [
-            'userSetAvatar'
-        ]),
-        imgStyle: function () {
-            return {
-                top: `${this.camera.top}px`,
-                left: `${this.camera.left}px`,
-                width: `${this.camera.w}px`,
-                height: `${this.camera.h}px`,
-                transform: `translate(${-this.offsetX}px, ${-this.offsetY}px)`
-            }
-        }
-    },
-    watch: {
-        scale: function (val) {
-            let ncw = (this.imgMax.w - this.imgMin.w) * (val / 100) + this.imgMin.w
-            let nch = (this.imgMax.h - this.imgMin.h) * (val / 100) + this.imgMin.h
-            this.camera.left -= (ncw - this.camera.w) / 2
-            this.camera.top -= (nch - this.camera.h) / 2
-            this.camera.w = ncw
-            this.camera.h = nch
-            this.debounceRefreshResult()
-        },
-        'camera.left': function (val) {
-            let ocx = this.camera.w - this.imgMin.w
-            this.camera.left = -this.clamp(-val, -this.offsetX - this.shadeWidth, this.offsetX + this.shadeWidth + ocx)
-        },
-        'camera.top': function (val) {
-            let ocy = this.camera.h - this.imgMin.h
-            this.camera.top = -this.clamp(-val, -this.offsetY, this.offsetY + ocy)
-        }
-    },
-    methods: {
-        backToStep1: function () {
-            this.image = ''
-        },
-        clamp: function (val, a, b) {
-            if (val < a) return a
-            if (val > b) return b
-            return val
-        },
-        selectFile: async function () {
-            this.$refs.inputFile.click()
-        },
-        cameraMoveStart: function (e) {
-            this.camera.movePoint.x = e.clientX
-            this.camera.movePoint.y = e.clientY
-            this.camera.moving = true
-        },
-        cameraMoveEnd: function (e) {
-            this.camera.moving = false
-            this.refreshResult()
-        },
-        refreshResult: function () {
-            let width = this.imgBox.h
-            let img = this.$refs.img
-            let canvas = this.$refs.canvas
-            let ctx = canvas.getContext('2d')
-            ctx.clearRect(0, 0, width, width)
-
-            let factor = this.imgMax.w / this.camera.w
-            ctx.drawImage(img,
-                (-this.camera.left + this.offsetX + this.shadeWidth) * factor,
-                (-this.camera.top + this.offsetY) * factor,
-                width * factor, width * factor, 0, 0, width, width)
-            this.imageResult = canvas.toDataURL('image/png')
-        },
-        debounceRefreshResult: _.debounce(function () {
-            this.refreshResult()
-        }, 500),
-        cameraMove: function (e) {
-            if (this.camera.moving) {
-                this.camera.left += e.clientX - this.camera.movePoint.x
-                this.camera.top += e.clientY - this.camera.movePoint.y
-                this.camera.movePoint.x = e.clientX
-                this.camera.movePoint.y = e.clientY
-            }
-        },
-        imgChanged: function (e) {
-            this.scale = 0
-            if (e.target.naturalWidth < 200 || e.target.naturalHeight < 200) {
-                this.image = ''
-                this.tooSmall = true
-                return
-            }
-            this.tooSmall = false
-            this.imgMax.w = e.target.naturalWidth
-            this.imgMax.h = e.target.naturalHeight
-
-            let ratioImg = this.imgMax.w / this.imgMax.h
-            let ratioStd = this.imgBox.w / this.imgBox.h
-
-            if (ratioImg > ratioStd) {
-                // 横向宽于标准尺寸
-                this.imgMin.w = this.imgBox.h * ratioImg
-                this.imgMin.h = this.imgBox.h
-                this.offsetX = (this.imgMin.w - this.imgBox.w) / 2
-                this.offsetY = 0
-            } else if (ratioImg < ratioStd) {
-                // 横向窄于标准尺寸
-                if (ratioImg === 1) {
-                    // 正方形
-                    this.imgMin.w = this.imgBox.h
-                    this.imgMin.h = this.imgBox.h
-                    this.offsetX = (this.imgMin.w - this.imgBox.w) / 2
-                    this.offsetY = (this.imgMin.h - this.imgBox.h) / 2
-                } else {
-                    // 长方形
-                    this.imgMin.w = this.imgBox.w
-                    this.imgMin.h = this.imgBox.w / ratioImg
-                    this.offsetX = 0
-                    this.offsetY = (this.imgMin.h - this.imgBox.h) / 2
-                }
-            } else {
-                // 正好标准比例
-                this.imgMin.w = this.imgBox.w
-                this.imgMin.h = this.imgBox.h
-                this.offsetX = 0
-                this.offsetY = 0
-            }
-
-            this.camera.w = this.imgMin.w
-            this.camera.h = this.imgMin.h
-            this.refreshResult()
-        },
-        onFileChange: async function (e) {
-            let files = e.target.files || e.dataTransfer.files
-            if (!files.length) return
-            this.createImage(files[0])
-        },
-        createImage: function (file) {
-            let reader = new FileReader()
-            reader.onload = (e) => {
-                this.image = e.target.result
-                this.scale = 0
-            }
-            reader.readAsDataURL(file)
-        },
-        close: function () {
-            this.image = ''
-            this.imageResult = ''
-            this.$dialogs.setUserAvatar(false)
-        },
-        saveAvatarImage: async function () {
-            this.loading = true
-            let pngFile = $.dataURItoBlob(this.imageResult)
-            let token = await $.asyncGetUploadToken(true)
-
-            if (token !== null) {
-                let ob = qiniu.upload(pngFile, null, token, null)
-                ob.subscribe({
-                    complete: (res) => {
-                        // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
-                        // console.log('done', res)
-                        if (res.code === retcode.SUCCESS) {
-                            let newData = Object.assign({}, this.$user.data)
-                            newData.avatar = res.data
-                            this.$store.commit('user/SET_USER_DATA', newData)
-                        }
-                        // TODO: 完成的效果先不弄了，直接关掉了事
-                        this.loading = false
-                        this.close()
-                    }
-                })
-            } else {
-                this.$message.error('操作失败！可能是网络原因或帐户权限不够。')
-                this.loading = false
-                this.close()
-            }
-        }
+        moving: false,
+        movePoint: { x: 0, y: 0 }
+      }
     }
+  },
+  computed: {
+    ...mapState('dialog', [
+      'userSetAvatar'
+    ]),
+    imgStyle: function () {
+      return {
+        top: `${this.camera.top}px`,
+        left: `${this.camera.left}px`,
+        width: `${this.camera.w}px`,
+        height: `${this.camera.h}px`,
+        transform: `translate(${-this.offsetX}px, ${-this.offsetY}px)`
+      }
+    }
+  },
+  watch: {
+    scale: function (val) {
+      let ncw = (this.imgMax.w - this.imgMin.w) * (val / 100) + this.imgMin.w
+      let nch = (this.imgMax.h - this.imgMin.h) * (val / 100) + this.imgMin.h
+      this.camera.left -= (ncw - this.camera.w) / 2
+      this.camera.top -= (nch - this.camera.h) / 2
+      this.camera.w = ncw
+      this.camera.h = nch
+      this.debounceRefreshResult()
+    },
+    'camera.left': function (val) {
+      let ocx = this.camera.w - this.imgMin.w
+      this.camera.left = -this.clamp(-val, -this.offsetX - this.shadeWidth, this.offsetX + this.shadeWidth + ocx)
+    },
+    'camera.top': function (val) {
+      let ocy = this.camera.h - this.imgMin.h
+      this.camera.top = -this.clamp(-val, -this.offsetY, this.offsetY + ocy)
+    }
+  },
+  methods: {
+    backToStep1: function () {
+      this.image = ''
+    },
+    clamp: function (val, a, b) {
+      if (val < a) return a
+      if (val > b) return b
+      return val
+    },
+    selectFile: async function () {
+      this.$refs.inputFile.click()
+    },
+    cameraMoveStart: function (e) {
+      this.camera.movePoint.x = e.clientX
+      this.camera.movePoint.y = e.clientY
+      this.camera.moving = true
+    },
+    cameraMoveEnd: function (e) {
+      this.camera.moving = false
+      this.refreshResult()
+    },
+    refreshResult: function () {
+      let width = this.imgBox.h
+      let img = this.$refs.img
+      let canvas = this.$refs.canvas
+      let ctx = canvas.getContext('2d')
+      ctx.clearRect(0, 0, width, width)
+
+      let factor = this.imgMax.w / this.camera.w
+      ctx.drawImage(img,
+        (-this.camera.left + this.offsetX + this.shadeWidth) * factor,
+        (-this.camera.top + this.offsetY) * factor,
+        width * factor, width * factor, 0, 0, width, width)
+      this.imageResult = canvas.toDataURL('image/png')
+    },
+    debounceRefreshResult: _.debounce(function () {
+      this.refreshResult()
+    }, 500),
+    cameraMove: function (e) {
+      if (this.camera.moving) {
+        this.camera.left += e.clientX - this.camera.movePoint.x
+        this.camera.top += e.clientY - this.camera.movePoint.y
+        this.camera.movePoint.x = e.clientX
+        this.camera.movePoint.y = e.clientY
+      }
+    },
+    imgChanged: function (e) {
+      this.scale = 0
+      if (e.target.naturalWidth < 200 || e.target.naturalHeight < 200) {
+        this.image = ''
+        this.tooSmall = true
+        return
+      }
+      this.tooSmall = false
+      this.imgMax.w = e.target.naturalWidth
+      this.imgMax.h = e.target.naturalHeight
+
+      let ratioImg = this.imgMax.w / this.imgMax.h
+      let ratioStd = this.imgBox.w / this.imgBox.h
+
+      if (ratioImg > ratioStd) {
+        // 横向宽于标准尺寸
+        this.imgMin.w = this.imgBox.h * ratioImg
+        this.imgMin.h = this.imgBox.h
+        this.offsetX = (this.imgMin.w - this.imgBox.w) / 2
+        this.offsetY = 0
+      } else if (ratioImg < ratioStd) {
+        // 横向窄于标准尺寸
+        if (ratioImg === 1) {
+          // 正方形
+          this.imgMin.w = this.imgBox.h
+          this.imgMin.h = this.imgBox.h
+          this.offsetX = (this.imgMin.w - this.imgBox.w) / 2
+          this.offsetY = (this.imgMin.h - this.imgBox.h) / 2
+        } else {
+          // 长方形
+          this.imgMin.w = this.imgBox.w
+          this.imgMin.h = this.imgBox.w / ratioImg
+          this.offsetX = 0
+          this.offsetY = (this.imgMin.h - this.imgBox.h) / 2
+        }
+      } else {
+        // 正好标准比例
+        this.imgMin.w = this.imgBox.w
+        this.imgMin.h = this.imgBox.h
+        this.offsetX = 0
+        this.offsetY = 0
+      }
+
+      this.camera.w = this.imgMin.w
+      this.camera.h = this.imgMin.h
+      this.refreshResult()
+    },
+    onFileChange: async function (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      this.createImage(files[0])
+    },
+    createImage: function (file) {
+      let reader = new FileReader()
+      reader.onload = (e) => {
+        this.image = e.target.result
+        this.scale = 0
+      }
+      reader.readAsDataURL(file)
+    },
+    close: function () {
+      this.image = ''
+      this.imageResult = ''
+      this.$dialogs.setUserAvatar(false)
+    },
+    saveAvatarImage: async function () {
+      this.loading = true
+      let pngFile = $.dataURItoBlob(this.imageResult)
+      let token = await asyncGetUploadToken(true)
+
+      if (token !== null) {
+        let ob = qiniu.upload(pngFile, null, token, null)
+        ob.subscribe({
+          complete: (res) => {
+            // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
+            // console.log('done', res)
+            if (res.code === retcode.SUCCESS) {
+              let newData = Object.assign({}, this.$user.data)
+              newData.avatar = res.data
+              this.$store.commit('user/SET_USER_DATA', newData)
+            }
+            // TODO: 完成的效果先不弄了，直接关掉了事
+            this.loading = false
+            this.close()
+          }
+        })
+      } else {
+        this.$message.error('操作失败！可能是网络原因或帐户权限不够。')
+        this.loading = false
+        this.close()
+      }
+    }
+  }
 }
 </script>

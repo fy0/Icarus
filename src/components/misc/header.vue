@@ -323,73 +323,73 @@ import Media from 'vue-media'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
-    data () {
-        return {
-            m: $.media,
-            isXs: true,
-            showNavmenuBtn: false,
-            searchText: ''
-        }
-    },
-    computed: {
-        ...mapState([
-            'config'
-        ]),
-        ...mapGetters([
-            'isAboutPageEnable', 'isSearchEnable'
-        ]),
-        ...mapState('user', ['userData', 'unread']),
-        ...mapGetters('user', ['isSiteAdmin'])
-    },
-    mounted: function () {
-    },
-    watch: {
-        '$route' (to, from) {
-            if (this.isXs) {
-                this.showNavmenuBtn = false
-            } else {
-                this.showNavmenuBtn = true
-            }
-        }
-    },
-    methods: {
-        doSearch: function () {
-            // if (!this.searchText) return
-            this.$router.push({
-                name: 'search',
-                query: {
-                    q: this.searchText.trim()
-                }
-            })
-        },
-        flagClick: function () {
-            ;
-        },
-        navmenuToggle: function () {
-            this.showNavmenuBtn = !this.showNavmenuBtn
-        },
-        xsEnter: function () {
-            this.isXs = true
-            this.showNavmenuBtn = false
-        },
-        xsLeave: function () {
-            this.isXs = false
-            this.showNavmenuBtn = true
-        },
-        navActive: function (...names) {
-            for (let name of names) {
-                if (this.$route.name && this.$route.name.startsWith(name)) {
-                    return 'link-active'
-                }
-            }
-            return 'flag'
-        },
-        signout: async function () {
-            this.$store.commit('dialog/SET_USER_SIGNOUT', { val: true })
-        }
-    },
-    components: {
-        Media
+  data () {
+    return {
+      m: $.media,
+      isXs: true,
+      showNavmenuBtn: false,
+      searchText: ''
     }
+  },
+  computed: {
+    ...mapState([
+      'config'
+    ]),
+    ...mapGetters([
+      'isAboutPageEnable', 'isSearchEnable'
+    ]),
+    ...mapState('user', ['userData', 'unread']),
+    ...mapGetters('user', ['isSiteAdmin'])
+  },
+  mounted: function () {
+  },
+  watch: {
+    '$route' (to, from) {
+      if (this.isXs) {
+        this.showNavmenuBtn = false
+      } else {
+        this.showNavmenuBtn = true
+      }
+    }
+  },
+  methods: {
+    doSearch: function () {
+      // if (!this.searchText) return
+      this.$router.push({
+        name: 'search',
+        query: {
+          q: this.searchText.trim()
+        }
+      })
+    },
+    flagClick: function () {
+      ;
+    },
+    navmenuToggle: function () {
+      this.showNavmenuBtn = !this.showNavmenuBtn
+    },
+    xsEnter: function () {
+      this.isXs = true
+      this.showNavmenuBtn = false
+    },
+    xsLeave: function () {
+      this.isXs = false
+      this.showNavmenuBtn = true
+    },
+    navActive: function (...names) {
+      for (let name of names) {
+        if (this.$route.name && this.$route.name.startsWith(name)) {
+          return 'link-active'
+        }
+      }
+      return 'flag'
+    },
+    signout: async function () {
+      this.$store.commit('dialog/SET_USER_SIGNOUT', { val: true })
+    }
+  },
+  components: {
+    Media
+  }
 }
 </script>

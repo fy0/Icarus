@@ -9,13 +9,13 @@
 
 <script>
 export default {
-    props: {
-        user: {},
-        nickname: {
-            default: true
-        }
-    },
-    methods: {
+  props: {
+    user: {},
+    nickname: {
+      default: true
     }
+  },
+  methods: {
+  }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-<setting-base>
+  <setting-base>
     <h3 class="ic-header">个人信息</h3>
 
     <div class="box">
@@ -105,136 +105,136 @@
         </div>
     </div>
     <dialog-user-set-nickname />
-</setting-base>
+  </setting-base>
 </template>
 
 <style scoped>
 .box-avatar {
-    position: relative;
+  position: relative;
 }
 
 a.resend {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 .box-avatar > .btn-upload {
-    bottom: 0;
-    position: absolute;
-    opacity: 0.7;
-    width: calc(100% - 6px);
-    margin-right: 3px;
-    margin-left: 3px;
+  bottom: 0;
+  position: absolute;
+  opacity: 0.7;
+  width: calc(100% - 6px);
+  margin-right: 3px;
+  margin-left: 3px;
 }
 
 .lbox {
-    width: 85%;
+  width: 85%;
 }
 
 .commentArea {
-    width: 100%;
+  width: 100%;
 }
 
 .setting-item {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .setting-item > .label {
-    font-size: 17px;
-    font-weight: 500;
-    display: block;
-    margin-bottom: 6px;
+  font-size: 17px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
 }
 
 .box {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .box > .left {
-    display: flex;
-    flex: 3 0 0%;
+  display: flex;
+  flex: 3 0 0%;
 
-    /* border: 1px solid #ccc; */
-    flex-direction: column;
+  /* border: 1px solid #ccc; */
+  flex-direction: column;
 }
 
 .box > .right {
-    flex: 1 0 0%;
+  flex: 1 0 0%;
 }
 
 .right > .rbox {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .change-nickname {
-    color: #777;
-    font-size: 14px;
-    margin-left: 10px;
-    cursor: pointer;
+  color: #777;
+  font-size: 14px;
+  margin-left: 10px;
+  cursor: pointer;
 }
 </style>
 
 <script>
 import SettingBase from '../base/base.vue'
-import { retcode } from 'slim-tools'
+// import { retcode } from 'slim-tools'
 
 export default {
-    data () {
-        return {
-            sending: false,
-            userSave: null,
-            updating: false
-        }
-    },
-    head () {
-        return {
-            title: '个人信息 - 用户设置'
-        }
-    },
-    computed: {
-        user: function () {
-            if (!this.userSave) {
-                this.$set(this, 'userSave', _.clone(this.$user.data))
-            }
-            return this.userSave
-        },
-        changed: function () {
-            let data = $.objDiff(this.userSave, this.$user.data)
-            return Object.keys(data).length
-        }
-    },
-    methods: {
-        fetchData: async function () {
-        },
-        // resendActivationMail: async function () {
-        //     if (this.sending) return
-        //     this.sending = true
-        //     let ret = await this.$api.user.resendActivationMail()
-        //     if (ret.code === retcode.SUCCESS) {
-        //         this.$message.success('激活邮件发送成功！请检查邮箱。')
-        //     } else {
-        //         this.$message.error('发送失败，每30分钟只能发送一次。')
-        //     }
-        //     this.sending = false
-        // },
-        updateInfo: async function () {
-            if (this.updating) return
-            this.updating = true
-            await this.$store.dispatch('user/apiSetUserData', this.user)
-            this.updating = false
-        }
-    },
-    created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
-    },
-    watch: {
-        // 如果路由有变化，会再次执行该方法
-        '$route': 'fetchData'
-    },
-    components: {
-        SettingBase
+  data () {
+    return {
+      sending: false,
+      userSave: null,
+      updating: false
     }
+  },
+  head () {
+    return {
+      title: '个人信息 - 用户设置'
+    }
+  },
+  computed: {
+    user: function () {
+      if (!this.userSave) {
+        this.$set(this, 'userSave', _.clone(this.$user.data))
+      }
+      return this.userSave
+    },
+    changed: function () {
+      let data = $.objDiff(this.userSave, this.$user.data)
+      return Object.keys(data).length
+    }
+  },
+  methods: {
+    fetchData: async function () {
+    },
+    // resendActivationMail: async function () {
+    //     if (this.sending) return
+    //     this.sending = true
+    //     let ret = await this.$api.user.resendActivationMail()
+    //     if (ret.code === retcode.SUCCESS) {
+    //         this.$message.success('激活邮件发送成功！请检查邮箱。')
+    //     } else {
+    //         this.$message.error('发送失败，每30分钟只能发送一次。')
+    //     }
+    //     this.sending = false
+    // },
+    updateInfo: async function () {
+      if (this.updating) return
+      this.updating = true
+      await this.$store.dispatch('user/apiSetUserData', this.user)
+      this.updating = false
+    }
+  },
+  created: async function () {
+    this.$store.commit('LOADING_INC', 1)
+    await this.fetchData()
+    this.$store.commit('LOADING_DEC', 1)
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'fetchData'
+  },
+  components: {
+    SettingBase
+  }
 }
 </script>

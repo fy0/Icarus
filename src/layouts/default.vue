@@ -49,7 +49,7 @@
 }
 </style>
 
-// <script lang="ts">
+<script lang="ts">
 // import {
 //   Component,
 //   Prop,

@@ -194,7 +194,7 @@ $sf: 1.5;
 
 <script>
 export default {
-    computed: {
-    }
+  computed: {
+  }
 }
 </script>

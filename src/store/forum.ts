@@ -2,6 +2,7 @@ import Color from 'color'
 import { retcode } from 'slim-tools'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { $api } from '../plugins/api'
+import { boardColor } from '@/utils/style'
 
 @Module({
   // name: 'forum',
@@ -98,7 +99,7 @@ export default class ForumModule extends VuexModule {
           lst.push(i)
         }
 
-        const color = $.boardColor(i)
+        const color = boardColor(i)
         commit('SET_BOARD_EXINFO', {
           id: i.id,
           data: {

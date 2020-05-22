@@ -23,49 +23,49 @@
 
 <script>
 export default {
-    props: {
-        value: {
-            type: String
-        }
-    },
-    data () {
-        return {
-            tabs: []
-        }
-    },
-    computed: {
-        lineStyle: function () {
-            let width = 0
-            let translate = 0
-            if (this.tabs.length) {
-                width = 1 / this.tabs.length
-                translate = this.tabs.indexOf(this.value) / (this.tabs.length - 1)
-            }
-            return {
-                'width': `${width * 100}%`,
-                'transform': `translateX(${translate * 100}%)`
-            }
-        }
-    },
-    provide () {
-        return {
-            'addTab': this.addTab,
-            'setActive': this.setActive,
-            'getCurrentActive': this.getCurrentActive
-        }
-    },
-    mounted: async function () {
-    },
-    methods: {
-        addTab: function (tab) {
-            this.tabs.push(tab.value)
-        },
-        setActive: function (name) {
-            this.$emit('input', name)
-        },
-        getCurrentActive: function () {
-            return this.value
-        }
+  props: {
+    value: {
+      type: String
     }
+  },
+  data () {
+    return {
+      tabs: []
+    }
+  },
+  computed: {
+    lineStyle: function () {
+      let width = 0
+      let translate = 0
+      if (this.tabs.length) {
+        width = 1 / this.tabs.length
+        translate = this.tabs.indexOf(this.value) / (this.tabs.length - 1)
+      }
+      return {
+        'width': `${width * 100}%`,
+        'transform': `translateX(${translate * 100}%)`
+      }
+    }
+  },
+  provide () {
+    return {
+      'addTab': this.addTab,
+      'setActive': this.setActive,
+      'getCurrentActive': this.getCurrentActive
+    }
+  },
+  mounted: async function () {
+  },
+  methods: {
+    addTab: function (tab) {
+      this.tabs.push(tab.value)
+    },
+    setActive: function (name) {
+      this.$emit('input', name)
+    },
+    getCurrentActive: function () {
+      return this.value
+    }
+  }
 }
 </script>

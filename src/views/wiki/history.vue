@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <wiki-base>
         <div class="box ic-paper ic-z1">
             <div class="title">
@@ -23,20 +23,20 @@
             <page-not-found v-if="notFound" />
         </div>
     </wiki-base>
-</div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .box {
-    background: $white;
-    padding: 10px;
-    height: 100%;
+  background: $white;
+  padding: 10px;
+  height: 100%;
 }
 
 .title {
-    display: flex;
-    position: relative;
-    justify-content: space-between;
+  display: flex;
+  position: relative;
+  justify-content: space-between;
 }
 </style>
 
@@ -48,83 +48,83 @@ import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { retcode } from 'slim-tools'
 
 class FetchCls extends BaseWrapper {
-    async fetchData () {
-        let wrong = false
-        let params = this.$route.params
-        let pageNumber = params.page || 1
+  async fetchData () {
+    let wrong = false
+    let params = this.$route.params
+    let pageNumber = params.page || 1
 
-        let getArticle = async () => {
-            let ret = await this.$api.wiki.get({
-                id: params.id,
-                select: ['id', 'title', 'ref']
-            }, { role: this.basicRole })
-            if (ret.code === retcode.SUCCESS) {
-                this.article = ret.data
-            } else if (ret.code === retcode.NOT_FOUND) {
-                this.notFound = true
-            } else {
-                wrong = ret
-            }
-        }
-
-        let getHistory = async () => {
-            let ret = await this.$api.logManage.list({
-                related_id: params.id,
-                order: 'time.desc',
-                loadfk: { 'user_id': null }
-            }, pageNumber, { role: this.basicRole })
-
-            if (ret.code === retcode.SUCCESS) {
-                this.page = ret.data
-            } else if (ret.code === retcode.NOT_FOUND) {
-                this.page.items = []
-            } else {
-                wrong = ret
-            }
-        }
-
-        await Promise.all([getHistory(), getArticle()])
-        if (wrong) {
-            this.$message.byCode(wrong.code)
-        }
+    let getArticle = async () => {
+      let ret = await this.$api.wiki.get({
+        id: params.id,
+        select: ['id', 'title', 'ref']
+      }, { role: this.basicRole })
+      if (ret.code === retcode.SUCCESS) {
+        this.article = ret.data
+      } else if (ret.code === retcode.NOT_FOUND) {
+        this.notFound = true
+      } else {
+        wrong = ret
+      }
     }
+
+    let getHistory = async () => {
+      let ret = await this.$api.logManage.list({
+        related_id: params.id,
+        order: 'time.desc',
+        loadfk: { 'user_id': null }
+      }, pageNumber, { role: this.basicRole })
+
+      if (ret.code === retcode.SUCCESS) {
+        this.page = ret.data
+      } else if (ret.code === retcode.NOT_FOUND) {
+        this.page.items = []
+      } else {
+        wrong = ret
+      }
+    }
+
+    await Promise.all([getHistory(), getArticle()])
+    if (wrong) {
+      this.$message.byCode(wrong.code)
+    }
+  }
 }
 
 export default {
-    data () {
-        return {
-            marked,
-            notFound: false,
-            article: {},
-            page: {
-                items: []
-            }
-        }
-    },
-    head () {
-        return {
-            title: `[历史记录]${this.article.title} - 百科`,
-            meta: [
-                { hid: 'description', name: 'description', content: '百科文章编辑历史' }
-            ]
-        }
-    },
-    computed: {
-        ...mapState(['config']),
-        ...mapGetters(['MANAGE_OPERATION_TXT']),
-        ...mapGetters('user', ['basicRole'])
-    },
-    methods: {
-    },
-    created: async function () {
-    },
-    async asyncData (ctx) {
-        let f = createFetchWrapper(FetchCls, ctx)
-        await f.fetchData()
-        return f._data
-    },
-    components: {
-        WikiBase
+  data () {
+    return {
+      marked,
+      notFound: false,
+      article: {},
+      page: {
+        items: []
+      }
     }
+  },
+  head () {
+    return {
+      title: `[历史记录]${this.article.title} - 百科`,
+      meta: [
+        { hid: 'description', name: 'description', content: '百科文章编辑历史' }
+      ]
+    }
+  },
+  computed: {
+    ...mapState(['config']),
+    ...mapGetters(['MANAGE_OPERATION_TXT']),
+    ...mapGetters('user', ['basicRole'])
+  },
+  methods: {
+  },
+  created: async function () {
+  },
+  async asyncData (ctx) {
+    let f = createFetchWrapper(FetchCls, ctx)
+    await f.fetchData()
+    return f._data
+  },
+  components: {
+    WikiBase
+  }
 }
 </script>

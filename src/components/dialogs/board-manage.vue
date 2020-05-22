@@ -1,5 +1,5 @@
 <template>
-<ic-dialog :width="'70%'" v-model="boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
+  <ic-dialog :width="'70%'" v-model="boardManage" :title="`对板块 ${board.name} 进行管理操作`" @close="close" scrollable>
     <div class="wrapper ic-form">
         <div class="manage-form-item" style="margin-top: 0px;">
             <span class="label">ID</span>
@@ -97,24 +97,24 @@
             </div>
         </div>
     </div>
-</ic-dialog>
+  </ic-dialog>
 </template>
 
 <style lang="scss" scoped>
 .wrapper {
-    height: 70vh;
+  height: 70vh;
 }
 
 .ic-input[type=text], .ic-input[type=number], textarea.ic-input {
-    width: 70%;
+  width: 70%;
 }
 
 .bottom {
-    .ic-btn {
-        padding-left: 30px;
-        padding-right: 30px;
-        margin-right: 10px;
-    }
+  .ic-btn {
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-right: 10px;
+  }
 }
 </style>
 
@@ -126,97 +126,97 @@ import '@/assets/css/_manage.scss'
 import { retcode } from 'slim-tools'
 
 export default {
-    data () {
-        return {
-            value: 1,
-            save: {},
-            board: { name: '' },
-            boardList: [],
-            boardsInfoDict: {}
-        }
-    },
-    computed: {
-        ...mapState('dialog', [
-            'boardManage',
-            'boardManageData'
-        ]),
-        ...mapGetters([
-            'POST_STATE_TXT',
-            'POST_VISIBLE_TXT'
-        ])
-    },
-    methods: {
-        getSelectOptionName (id) {
-            if (!this.boardsInfoDict[id]) return '无'
-            const { name, brief } = this.boardsInfoDict[id]
-            return `${name} — [${brief}]`
-        },
-        handleChange (value) {
-            this.value = value
-        },
-        ok: async function () {
-            let data = $.objDiff(this.board, this.save)
-
-            if (Object.keys(data).length === 0) {
-                // 什么都没修改
-                return this.quit()
-            }
-
-            // let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible', 'can_post_rank'])
-            let ret = await this.$api.board.set({ id: this.board.id }, data)
-
-            if (ret.code === 0) {
-                if (this.boardManageData) {
-                    this.$store.commit('dialog/WRITE_BOARD_MANAGE_DATA', data)
-                }
-                // 重新载入板块数据
-                await this.$store.dispatch('forum/load')
-                this.$message.success('板块信息设置成功')
-            } else this.$message.byCode(ret.code)
-
-            this.quit()
-        },
-        quit () {
-            this.$store.commit('dialog/SET_BOARD_MANAGE', { val: false })
-        },
-        close () {
-            this.quit()
-        }
-    },
-    watch: {
-        'boardManage': async function (val) {
-            if (val) {
-                let info = await this.$api.board.get({
-                    id: this.boardManageData.id,
-                    loadfk: { 'user_id': null }
-                })
-
-                if (info.code === retcode.SUCCESS) {
-                    this.board = info.data
-                    this.save = _.clone(this.board)
-
-                    let ret = await this.$api.board.list({
-                        order: 'weight.desc,time.asc'
-                    }, 1)
-                    if (ret.code === retcode.SUCCESS) {
-                        // vue-select 目前不允许写 null，要再等一等
-                        this.boardList = []
-                        this.boardsInfoDict = {}
-                        for (let i of ret.data.items) {
-                            if (i.id !== this.board.id) {
-                                this.boardList.push(i.id)
-                                this.boardsInfoDict[i.id] = i
-                            }
-                        }
-                    }
-                } else {
-                    this.$message.byCode(info.code)
-                }
-            }
-        }
-    },
-    components: {
-        Multiselect
+  data () {
+    return {
+      value: 1,
+      save: {},
+      board: { name: '' },
+      boardList: [],
+      boardsInfoDict: {}
     }
+  },
+  computed: {
+    ...mapState('dialog', [
+      'boardManage',
+      'boardManageData'
+    ]),
+    ...mapGetters([
+      'POST_STATE_TXT',
+      'POST_VISIBLE_TXT'
+    ])
+  },
+  methods: {
+    getSelectOptionName (id) {
+      if (!this.boardsInfoDict[id]) return '无'
+      const { name, brief } = this.boardsInfoDict[id]
+      return `${name} — [${brief}]`
+    },
+    handleChange (value) {
+      this.value = value
+    },
+    ok: async function () {
+      let data = $.objDiff(this.board, this.save)
+
+      if (Object.keys(data).length === 0) {
+        // 什么都没修改
+        return this.quit()
+      }
+
+      // let keys = new Set(['brief', 'category', 'desc', 'name', 'state', 'weight', 'color', 'parent_id', 'visible', 'can_post_rank'])
+      let ret = await this.$api.board.set({ id: this.board.id }, data)
+
+      if (ret.code === 0) {
+        if (this.boardManageData) {
+          this.$store.commit('dialog/WRITE_BOARD_MANAGE_DATA', data)
+        }
+        // 重新载入板块数据
+        await this.$store.dispatch('forum/load')
+        this.$message.success('板块信息设置成功')
+      } else this.$message.byCode(ret.code)
+
+      this.quit()
+    },
+    quit () {
+      this.$store.commit('dialog/SET_BOARD_MANAGE', { val: false })
+    },
+    close () {
+      this.quit()
+    }
+  },
+  watch: {
+    'boardManage': async function (val) {
+      if (val) {
+        let info = await this.$api.board.get({
+          id: this.boardManageData.id,
+          loadfk: { 'user_id': null }
+        })
+
+        if (info.code === retcode.SUCCESS) {
+          this.board = info.data
+          this.save = _.clone(this.board)
+
+          let ret = await this.$api.board.list({
+            order: 'weight.desc,time.asc'
+          }, 1)
+          if (ret.code === retcode.SUCCESS) {
+            // vue-select 目前不允许写 null，要再等一等
+            this.boardList = []
+            this.boardsInfoDict = {}
+            for (let i of ret.data.items) {
+              if (i.id !== this.board.id) {
+                this.boardList.push(i.id)
+                this.boardsInfoDict[i.id] = i
+              }
+            }
+          }
+        } else {
+          this.$message.byCode(info.code)
+        }
+      }
+    }
+  },
+  components: {
+    Multiselect
+  }
 }
 </script>

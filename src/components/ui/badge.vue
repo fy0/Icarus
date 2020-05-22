@@ -11,17 +11,17 @@
 
 <script>
 export default {
-    props: {
-        title: {
-            type: String
-        },
-        value: {
-            type: String
-        }
+  props: {
+    title: {
+      type: String
     },
-    data () {
-        return {
-        }
+    value: {
+      type: String
     }
+  },
+  data () {
+    return {
+    }
+  }
 }
 </script>

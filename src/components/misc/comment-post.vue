@@ -91,71 +91,71 @@
 import anime from 'animejs'
 
 export default {
-    props: {
-        item: Object,
-        postType: {}
-    },
-    data () {
-        return {
-            loading: false,
-            replyTo: null,
-            editing: false,
-            commentInfo: {
-                related_id: null,
-                related_type: null,
-                content: ''
-            }
-        }
-    },
-    created: function () {
-    },
-    mounted: function () {
-        ;
-    },
-    methods: {
-        isClosed () {
-            if (this.postType === this.$misc.POST_TYPES.TOPIC) {
-                return this.item.state <= this.$misc.POST_STATE.CLOSE
-            }
-            return false
-        },
-        setReplyTo: function (val) {
-            this.replyTo = val
-        },
-        onEditorFocus: async function () {
-            this.editing = true
-        },
-        onEditorBlur: async function () {
-            this.editing = false
-        },
-        highlightRepliedComment: function (cid) {
-            let el = document.getElementById(cid)
-            $.scrollTo(el)
-            anime({
-                targets: el,
-                duration: 2200,
-                backgroundColor: ['rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)'],
-                easing: 'easeInOutCirc'
-            })
-        },
-        commentPost: async function () {
-            if (this.loading) return
-            this.loading = true
-            this.commentInfo.related_id = this.item.id
-            this.commentInfo.related_type = this.postType
-            if (this.replyTo) this.commentInfo.reply_to_cmt_id = this.replyTo.id
-            let ret = await this.$api.comment.new(this.commentInfo, 'user')
-            this.$message.byCode(ret.code, ret.data)
-            if (ret.code === 0) {
-                this.editing = false
-                this.replyTo = null
-                this.commentInfo.content = ''
-            }
-            this.$emit('on-commented')
-            this.loading = false
-        }
-    },
-    components: {
+  props: {
+    item: Object,
+    postType: {}
+  },
+  data () {
+    return {
+      loading: false,
+      replyTo: null,
+      editing: false,
+      commentInfo: {
+        related_id: null,
+        related_type: null,
+        content: ''
+      }
     }
+  },
+  created: function () {
+  },
+  mounted: function () {
+    ;
+  },
+  methods: {
+    isClosed () {
+      if (this.postType === this.$misc.POST_TYPES.TOPIC) {
+        return this.item.state <= this.$misc.POST_STATE.CLOSE
+      }
+      return false
+    },
+    setReplyTo: function (val) {
+      this.replyTo = val
+    },
+    onEditorFocus: async function () {
+      this.editing = true
+    },
+    onEditorBlur: async function () {
+      this.editing = false
+    },
+    highlightRepliedComment: function (cid) {
+      let el = document.getElementById(cid)
+      $.scrollTo(el)
+      anime({
+        targets: el,
+        duration: 2200,
+        backgroundColor: ['rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)'],
+        easing: 'easeInOutCirc'
+      })
+    },
+    commentPost: async function () {
+      if (this.loading) return
+      this.loading = true
+      this.commentInfo.related_id = this.item.id
+      this.commentInfo.related_type = this.postType
+      if (this.replyTo) this.commentInfo.reply_to_cmt_id = this.replyTo.id
+      let ret = await this.$api.comment.new(this.commentInfo, 'user')
+      this.$message.byCode(ret.code, ret.data)
+      if (ret.code === 0) {
+        this.editing = false
+        this.replyTo = null
+        this.commentInfo.content = ''
+      }
+      this.$emit('on-commented')
+      this.loading = false
+    }
+  },
+  components: {
+  }
 }
 </script>

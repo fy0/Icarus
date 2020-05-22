@@ -79,48 +79,48 @@
 import { mapGetters } from 'vuex'
 
 export default {
-    data () {
-        return {}
+  data () {
+    return {}
+  },
+  props: {
+    item: {},
+    type: {
+      default: null
     },
-    props: {
-        item: {},
-        type: {
-            default: null
-        },
-        showType: {
-            default: false
-        },
-        typeBold: {
-            default: false
-        },
-        textLimit: {
-            default: 0
-        },
-        goto: {
-            default: false
-        },
-        useSlot: {
-            default: false
-        }
+    showType: {
+      default: false
     },
-    computed: {
-        ...mapGetters([
-            'POST_TYPES',
-            'POST_TYPES_TXT'
-        ])
+    typeBold: {
+      default: false
     },
-    methods: {
-        getPostTitle: function (i, key) {
-            if (i['post_title']) return i['post_title']
-            return i[key]
-        },
-        text: function (txt) {
-            if (this.textLimit > 0) {
-                let suffix = this.textLimit >= txt.length ? '' : '…'
-                return txt.slice(0, this.textLimit) + suffix
-            }
-            return txt
-        }
+    textLimit: {
+      default: 0
+    },
+    goto: {
+      default: false
+    },
+    useSlot: {
+      default: false
     }
+  },
+  computed: {
+    ...mapGetters([
+      'POST_TYPES',
+      'POST_TYPES_TXT'
+    ])
+  },
+  methods: {
+    getPostTitle: function (i, key) {
+      if (i['post_title']) return i['post_title']
+      return i[key]
+    },
+    text: function (txt) {
+      if (this.textLimit > 0) {
+        let suffix = this.textLimit >= txt.length ? '' : '…'
+        return txt.slice(0, this.textLimit) + suffix
+      }
+      return txt
+    }
+  }
 }
 </script>

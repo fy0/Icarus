@@ -124,97 +124,97 @@ import anime from 'animejs'
 import { retcode } from 'slim-tools'
 
 export default {
-    props: {
-        item: {
-            type: Object
-        },
-        curPage: {
-            type: Number,
-            default: 1
-        },
-        withPost: {
-            default: false
-        },
-        postType: {}
+  props: {
+    item: {
+      type: Object
     },
-    data () {
-        return {
-            marked,
-            loading: true,
-            fakeCommentsCount: 1,
-            page: { info: {}, items: [] }
-        }
+    curPage: {
+      type: Number,
+      default: 1
     },
-    created: async function () {
-        // 如果控件加载时即有数据，那么加载数据
-        if (this.item.id) {
-            this.fetchData()
-        }
+    withPost: {
+      default: false
     },
-    mounted: async function () {
-    },
-    methods: {
-        highlightRepliedComment: function (cid) {
-            let el = document.getElementById(cid)
-            $.scrollTo(el)
-            anime({
-                targets: el,
-                duration: 2200,
-                backgroundColor: ['rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)'],
-                easing: 'easeInOutCirc'
-            })
-        },
-        commented: function () {
-            let info = this.page.info
-            let newPage = Math.ceil((info.items_count + 1) / info.page_size)
-            this.fetchData(newPage)
-        },
-        replyTo: function (item) {
-            $.scrollTo(document.getElementById('ic-comment-post'))
-            document.getElementById('ic-comment-editor').focus()
-            this.$refs.post.setReplyTo(item)
-        },
-        fetchData: async function (thePage) {
-            this.loading = true
-            thePage = thePage || this.curPage
-            this.page.cur_page = thePage
-
-            // 先设置一下伪评论区域，规则非常简单
-            if (this.page.s && this.page.s.comment_count) {
-                let cc = this.page.s.comment_count
-                this.fakeCommentsCount = cc > 20 ? 20 : cc
-                if (cc === 0) {
-                    this.page = {}
-                    this.loading = false
-                }
-            }
-
-            let ret = await this.$api.comment.list({
-                related_id: this.item.id,
-                order: 'id.asc',
-                loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } }
-            }, thePage)
-            if (ret.code === retcode.SUCCESS) {
-                this.page = ret.data
-            } else if (ret.code === retcode.NOT_FOUND) {
-                ;
-            } else {
-                ;
-            }
-            this.loading = false
-        }
-    },
-    watch: {
-        'item': async function (val) {
-            // 如果控件加载时无数据，后续出现数据，那么刷新
-            this.fetchData()
-        },
-        'curPage': async function (val) {
-            this.fetchData()
-        }
-    },
-    components: {
-        CommentPost
+    postType: {}
+  },
+  data () {
+    return {
+      marked,
+      loading: true,
+      fakeCommentsCount: 1,
+      page: { info: {}, items: [] }
     }
+  },
+  created: async function () {
+    // 如果控件加载时即有数据，那么加载数据
+    if (this.item.id) {
+      this.fetchData()
+    }
+  },
+  mounted: async function () {
+  },
+  methods: {
+    highlightRepliedComment: function (cid) {
+      let el = document.getElementById(cid)
+      $.scrollTo(el)
+      anime({
+        targets: el,
+        duration: 2200,
+        backgroundColor: ['rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)', '#ffffaa', 'rgba(255, 255, 255, 0)'],
+        easing: 'easeInOutCirc'
+      })
+    },
+    commented: function () {
+      let info = this.page.info
+      let newPage = Math.ceil((info.items_count + 1) / info.page_size)
+      this.fetchData(newPage)
+    },
+    replyTo: function (item) {
+      $.scrollTo(document.getElementById('ic-comment-post'))
+      document.getElementById('ic-comment-editor').focus()
+      this.$refs.post.setReplyTo(item)
+    },
+    fetchData: async function (thePage) {
+      this.loading = true
+      thePage = thePage || this.curPage
+      this.page.cur_page = thePage
+
+      // 先设置一下伪评论区域，规则非常简单
+      if (this.page.s && this.page.s.comment_count) {
+        let cc = this.page.s.comment_count
+        this.fakeCommentsCount = cc > 20 ? 20 : cc
+        if (cc === 0) {
+          this.page = {}
+          this.loading = false
+        }
+      }
+
+      let ret = await this.$api.comment.list({
+        related_id: this.item.id,
+        order: 'id.asc',
+        loadfk: { user_id: null, reply_to_cmt_id: { loadfk: { 'user_id': null } } }
+      }, thePage)
+      if (ret.code === retcode.SUCCESS) {
+        this.page = ret.data
+      } else if (ret.code === retcode.NOT_FOUND) {
+        ;
+      } else {
+        ;
+      }
+      this.loading = false
+    }
+  },
+  watch: {
+    'item': async function (val) {
+      // 如果控件加载时无数据，后续出现数据，那么刷新
+      this.fetchData()
+    },
+    'curPage': async function (val) {
+      this.fetchData()
+    }
+  },
+  components: {
+    CommentPost
+  }
 }
 </script>

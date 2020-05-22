@@ -13,25 +13,25 @@ import 'social-share.js/dist/css/share.min.css'
 // import 'social-share.js/dist/js/social-share.min.js'
 
 export default {
-    props: {
-        title: {
-            default: '',
-            type: String
-        }
-    },
-    created () {
-        if (process.browser && window) {
-            this.$nextTick(() => {
-                require('social-share.js/dist/js/social-share.min.js')
-                window['socialShare'](this.$refs.share, {
-                    title: this.title || document.title
-                })
-            })
-        }
-    },
-    data () {
-        return {
-        }
+  props: {
+    title: {
+      default: '',
+      type: String
     }
+  },
+  created () {
+    if (process.browser && window) {
+      this.$nextTick(() => {
+        require('social-share.js/dist/js/social-share.min.js')
+        window['socialShare'](this.$refs.share, {
+          title: this.title || document.title
+        })
+      })
+    }
+  },
+  data () {
+    return {
+    }
+  }
 }
 </script>

@@ -34,31 +34,31 @@ import { mapState } from 'vuex'
 import { retcode } from 'slim-tools'
 
 export default {
-    data () {
-        return {
-            sending: false
-        }
-    },
-    computed: {
-        ...mapState('dialog', [
-            'userInactive'
-        ])
-    },
-    methods: {
-        ok: async function () {
-            this.$dialogs.setUserInactive(false)
-        },
-        resendActivationMail: async function () {
-            this.sending = true
-            await $.timeout(1000) // 先留着吧，我觉得一点即出结果体验也不好
-            let ret = await this.$api.user.resendActivationMail()
-            if (ret.code === retcode.SUCCESS) {
-                this.$message.success('激活邮件发送成功！请检查邮箱。')
-            } else {
-                this.$message.error('发送失败，每30分钟只能发送一次。')
-            }
-            this.sending = false
-        }
+  data () {
+    return {
+      sending: false
     }
+  },
+  computed: {
+    ...mapState('dialog', [
+      'userInactive'
+    ])
+  },
+  methods: {
+    ok: async function () {
+      this.$dialogs.setUserInactive(false)
+    },
+    resendActivationMail: async function () {
+      this.sending = true
+      await $.timeout(1000) // 先留着吧，我觉得一点即出结果体验也不好
+      let ret = await this.$api.user.resendActivationMail()
+      if (ret.code === retcode.SUCCESS) {
+        this.$message.success('激活邮件发送成功！请检查邮箱。')
+      } else {
+        this.$message.error('发送失败，每30分钟只能发送一次。')
+      }
+      this.sending = false
+    }
+  }
 }
 </script>

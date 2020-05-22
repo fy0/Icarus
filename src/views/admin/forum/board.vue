@@ -1,5 +1,5 @@
 <template>
-<admin-base>
+  <admin-base>
     <h3 class="ic-header">板块管理</h3>
 
     <table class="pure-table pure-table-horizontal" style="width: 100%">
@@ -41,44 +41,44 @@
         </div>
     </div>
     <dialog-board-manage />
-</admin-base>
+  </admin-base>
 </template>
 
 <style scoped>
 .board-add {
-    display: flex;
-    margin-top: 5px;
-    justify-content: space-between;
+  display: flex;
+  margin-top: 5px;
+  justify-content: space-between;
 }
 
 .board-add > .board_name {
-    flex: 6 0 0%;
-    margin-right: 10px;
+  flex: 6 0 0%;
+  margin-right: 10px;
 }
 
 .board-add > .board_brief {
-    flex: 13 0 0%;
-    margin-right: 10px;
+  flex: 13 0 0%;
+  margin-right: 10px;
 }
 
 .board-add > .btn {
-    flex: 5 0 0%;
+  flex: 5 0 0%;
 }
 
 .board-add > div > * {
-    display: block;
-    height: 100%;
-    width: 100%;
+  display: block;
+  height: 100%;
+  width: 100%;
 }
 
 .board-tr > td {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 table {
-    table-layout: fixed;
-    word-break: break-all;
-    word-wrap: break-word;
+  table-layout: fixed;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 </style>
 
@@ -88,57 +88,57 @@ import AdminBase from '../base/base.vue'
 import DialogBoardManage from '@/components/dialogs/board-manage.vue'
 
 export default {
-    data () {
-        return {
-            boardNewInfo: {
-                name: '',
-                brief: ''
-            },
-            boardInfo: {},
-            boardsInfoDict: {}
-        }
-    },
-    head () {
-        return {
-            title: '板块管理 - 管理界面',
-            meta: [
-                { hid: 'description', name: 'description', content: '板块管理 - 管理界面' }
-            ]
-        }
-    },
-    methods: {
-        boardNew: async function () {
-            let ret = await this.$api.board.new(this.boardNewInfo)
-            this.$message.byCode(ret.code)
-            if (ret.code === retcode.SUCCESS) {
-                this.fetchData()
-            }
-        },
-        fetchData: async function () {
-            let ret = await this.$api.board.list({
-                order: 'weight.desc,time.asc',
-                loadfk: { 'user_id': null }
-                // select: 'id, time, user_id, board_id, title, state',
-            }, 1, { role: this.$user.forumAdminRole })
-
-            if (ret.code === retcode.SUCCESS) {
-                this.boardInfo = ret.data
-                for (let i of ret.data.items) {
-                    this.boardsInfoDict[i.id] = i
-                }
-            } else {
-                // this.$message.byCode(ret.code)
-            }
-        }
-    },
-    created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
-    },
-    components: {
-        AdminBase,
-        DialogBoardManage
+  data () {
+    return {
+      boardNewInfo: {
+        name: '',
+        brief: ''
+      },
+      boardInfo: {},
+      boardsInfoDict: {}
     }
+  },
+  head () {
+    return {
+      title: '板块管理 - 管理界面',
+      meta: [
+        { hid: 'description', name: 'description', content: '板块管理 - 管理界面' }
+      ]
+    }
+  },
+  methods: {
+    boardNew: async function () {
+      let ret = await this.$api.board.new(this.boardNewInfo)
+      this.$message.byCode(ret.code)
+      if (ret.code === retcode.SUCCESS) {
+        this.fetchData()
+      }
+    },
+    fetchData: async function () {
+      let ret = await this.$api.board.list({
+        order: 'weight.desc,time.asc',
+        loadfk: { 'user_id': null }
+        // select: 'id, time, user_id, board_id, title, state',
+      }, 1, { role: this.$user.forumAdminRole })
+
+      if (ret.code === retcode.SUCCESS) {
+        this.boardInfo = ret.data
+        for (let i of ret.data.items) {
+          this.boardsInfoDict[i.id] = i
+        }
+      } else {
+        // this.$message.byCode(ret.code)
+      }
+    }
+  },
+  created: async function () {
+    this.$store.commit('LOADING_INC', 1)
+    await this.fetchData()
+    this.$store.commit('LOADING_DEC', 1)
+  },
+  components: {
+    AdminBase,
+    DialogBoardManage
+  }
 }
 </script>

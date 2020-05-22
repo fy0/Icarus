@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <div class="category">
         <span>论坛</span>
         <ul>
@@ -25,38 +25,37 @@
             <nuxt-link tag="li" :to="{ name: 'admin_common_manage_log' }" ><a>管理日志</a></nuxt-link>
         </ul>
     </div>
-
-</div>
+  </div>
 </template>
 
 <style scoped>
 .category > span {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .category > ul {
-    list-style-type: none;
-    padding-left: 0px;
+  list-style-type: none;
+  padding-left: 0px;
 }
 
 .category > ul > li {
-    padding: 10px;
+  padding: 10px;
 }
 
 .category > ul > li.nuxt-link-exact-active {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .category > ul > li.nuxt-link-active {
-    font-weight: bold;
+  font-weight: bold;
 }
 </style>
 
 <script>
 export default {
-    data () {
-        return {
-        }
+  data () {
+    return {
     }
+  }
 }
 </script>

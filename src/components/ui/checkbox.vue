@@ -42,43 +42,43 @@
 
 <script>
 export default {
-    props: {
-        'value': {
-            type: Boolean,
-            default: false
-        },
-        'disabled': {
-            type: Boolean,
-            default: false
-        },
-        'size': {
-            type: Number,
-            default: 16
-        }
+  props: {
+    'value': {
+      type: Boolean,
+      default: false
     },
-    data () {
-        return {}
+    'disabled': {
+      type: Boolean,
+      default: false
     },
-    computed: {
-        iconStyle: function () {
-            let blockSize = `${this.size / 0.75}px`
-            let marginOffset = `-${this.size * 0.125}px`
-            return {
-                'width': blockSize,
-                'height': blockSize,
-                'margin-left': marginOffset,
-                'margin-right': marginOffset
-            }
-        }
-    },
-    created: async function () {
-    },
-    methods: {
-        check: function () {
-            if (!this.disabled) {
-                this.$emit('input', !this.value)
-            }
-        }
+    'size': {
+      type: Number,
+      default: 16
     }
+  },
+  data () {
+    return {}
+  },
+  computed: {
+    iconStyle: function () {
+      let blockSize = `${this.size / 0.75}px`
+      let marginOffset = `-${this.size * 0.125}px`
+      return {
+        'width': blockSize,
+        'height': blockSize,
+        'margin-left': marginOffset,
+        'margin-right': marginOffset
+      }
+    }
+  },
+  created: async function () {
+  },
+  methods: {
+    check: function () {
+      if (!this.disabled) {
+        this.$emit('input', !this.value)
+      }
+    }
+  }
 }
 </script>

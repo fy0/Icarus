@@ -88,69 +88,70 @@
 <script>
 import { retcode } from 'slim-tools'
 import { marked } from '@/md.js'
+import { dateFormat } from '@/utils/time'
 import AdminBase from '../base/base.vue'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
 
 export default {
-    data () {
-        return {
-            marked,
-            page: { info: {}, items: [] },
-            postsOfComments: {},
-            MOP: this.$misc.MANAGE_OPERATION,
-            MOPT: this.$misc.MANAGE_OPERATION_TXT
-        }
-    },
-    head () {
-        return {
-            title: '管理日志 - 管理界面',
-            meta: [
-                { hid: 'description', name: 'description', content: '管理日志 - 管理界面' }
-            ]
-        }
-    },
-    methods: {
-        toMonth: function (ts) {
-            let date = new Date()
-            date.setTime(ts * 1000)
-            return $.dateFormat(date, 'MM-dd<br>hh:mm')
-        },
-        fetchData: async function () {
-            this.$store.commit('LOADING_INC', 1)
-            let params = this.$route.params
-            // let ret = await this.$api.topic.get({
-            //     id: params.id,
-            // })
-            let ret = await this.$api.logManage.list({
-                loadfk: { user_id: null },
-                order: 'time.desc'
-            }, params.page)
-
-            if (ret.code === retcode.SUCCESS) {
-                this.postsOfComments = await $.getBasePostsByIDs(async (i) => {
-                    return [
-                        {
-                            'type': i.related_type,
-                            'id': i.related_id
-                        }
-                    ]
-                }, ret.data.items, this.$user.mainRole)
-
-                this.page = ret.data // 提示：注意次序，渲染page依赖上层内容
-            }
-            this.$store.commit('LOADING_DEC', 1)
-        }
-    },
-    created: async function () {
-        await this.fetchData()
-    },
-    watch: {
-        // 如果路由有变化，会再次执行该方法
-        '$route': 'fetchData'
-    },
-    components: {
-        AdminBase,
-        ManageLogItemDetail
+  data () {
+    return {
+      marked,
+      page: { info: {}, items: [] },
+      postsOfComments: {},
+      MOP: this.$misc.MANAGE_OPERATION,
+      MOPT: this.$misc.MANAGE_OPERATION_TXT
     }
+  },
+  head () {
+    return {
+      title: '管理日志 - 管理界面',
+      meta: [
+        { hid: 'description', name: 'description', content: '管理日志 - 管理界面' }
+      ]
+    }
+  },
+  methods: {
+    toMonth: function (ts) {
+      let date = new Date()
+      date.setTime(ts * 1000)
+      return dateFormat(date, 'MM-dd<br>hh:mm')
+    },
+    fetchData: async function () {
+      this.$store.commit('LOADING_INC', 1)
+      let params = this.$route.params
+      // let ret = await this.$api.topic.get({
+      //     id: params.id,
+      // })
+      let ret = await this.$api.logManage.list({
+        loadfk: { user_id: null },
+        order: 'time.desc'
+      }, params.page)
+
+      if (ret.code === retcode.SUCCESS) {
+        this.postsOfComments = await $.getBasePostsByIDs(async (i) => {
+          return [
+            {
+              'type': i.related_type,
+              'id': i.related_id
+            }
+          ]
+        }, ret.data.items, this.$user.mainRole)
+
+        this.page = ret.data // 提示：注意次序，渲染page依赖上层内容
+      }
+      this.$store.commit('LOADING_DEC', 1)
+    }
+  },
+  created: async function () {
+    await this.fetchData()
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'fetchData'
+  },
+  components: {
+    AdminBase,
+    ManageLogItemDetail
+  }
 }
 </script>

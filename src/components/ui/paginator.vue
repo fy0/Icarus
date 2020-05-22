@@ -94,38 +94,38 @@
 */
 
 export default {
-    props: {
-        pageInfo: Object,
-        routeName: String,
-        linkMethod: {
-            type: String,
-            default: 'params' // params, query
-        },
-        pageKey: {
-            type: String,
-            default: 'page'
-        }
+  props: {
+    pageInfo: Object,
+    routeName: String,
+    linkMethod: {
+      type: String,
+      default: 'params' // params, query
     },
-    data () {
-        return {}
-    },
-    methods: {
-        toInfo: function (page) {
-            let info = {
-                name: this.routeName,
-                query: {},
-                params: {}
-            }
-
-            if (this.linkMethod === 'query') {
-                _.assign(info.query, this.$route.query)
-            } else {
-                info.query = this.$route.query
-            }
-
-            info[this.linkMethod][this.pageKey] = page
-            return info
-        }
+    pageKey: {
+      type: String,
+      default: 'page'
     }
+  },
+  data () {
+    return {}
+  },
+  methods: {
+    toInfo: function (page) {
+      let info = {
+        name: this.routeName,
+        query: {},
+        params: {}
+      }
+
+      if (this.linkMethod === 'query') {
+        _.assign(info.query, this.$route.query)
+      } else {
+        info.query = this.$route.query
+      }
+
+      info[this.linkMethod][this.pageKey] = page
+      return info
+    }
+  }
 }
 </script>

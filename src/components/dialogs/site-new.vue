@@ -32,18 +32,18 @@
 import { mapState } from 'vuex'
 
 export default {
-    data () {
-        return {}
-    },
-    computed: {
-        ...mapState('dialog', [
-            'siteNew'
-        ])
-    },
-    methods: {
-        ok: async function () {
-            this.$store.commit('dialog/SET_SITE_NEW', { val: false })
-        }
+  data () {
+    return {}
+  },
+  computed: {
+    ...mapState('dialog', [
+      'siteNew'
+    ])
+  },
+  methods: {
+    ok: async function () {
+      this.$store.commit('dialog/SET_SITE_NEW', { val: false })
     }
+  }
 }
 </script>

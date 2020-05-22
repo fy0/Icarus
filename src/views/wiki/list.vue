@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <wiki-base>
         <!-- <div v-title>全部文章 - 百科 - {{config.title}}</div> -->
         <div class="box ic-paper ic-z1">
@@ -14,14 +14,14 @@
             </template>
         </div>
     </wiki-base>
-</div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .box {
-    background: $white;
-    padding: 10px;
-    height: 100%;
+  background: $white;
+  padding: 10px;
+  height: 100%;
 }
 </style>
 
@@ -33,61 +33,61 @@ import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { retcode } from 'slim-tools'
 
 class FetchCls extends BaseWrapper {
-    async fetchData () {
-        let wrong = false
-        let params = this.$route.params
-        let pageNumber = params.page || 1
+  async fetchData () {
+    let wrong = false
+    let params = this.$route.params
+    let pageNumber = params.page || 1
 
-        let ret = await this.$api.wiki.list({
-            flag: null,
-            order: 'title.asc'
-        }, pageNumber, { role: this.basicRole })
+    let ret = await this.$api.wiki.list({
+      flag: null,
+      order: 'title.asc'
+    }, pageNumber, { role: this.basicRole })
 
-        if (ret.code === retcode.SUCCESS) {
-            this.page = ret.data
-        } else if (ret.code === retcode.NOT_FOUND) {
-            this.page.items = []
-        } else {
-            wrong = ret
-        }
-
-        if (wrong) {
-            this.$message.byCode(wrong.code)
-        }
+    if (ret.code === retcode.SUCCESS) {
+      this.page = ret.data
+    } else if (ret.code === retcode.NOT_FOUND) {
+      this.page.items = []
+    } else {
+      wrong = ret
     }
+
+    if (wrong) {
+      this.$message.byCode(wrong.code)
+    }
+  }
 }
 
 export default {
-    data () {
-        return {
-            marked,
-            page: {
-                items: []
-            }
-        }
-    },
-    head () {
-        return {
-            title: '文章列表 - 百科',
-            meta: [
-                { hid: 'description', name: 'description', content: '百科文章列表' }
-            ]
-        }
-    },
-    computed: {
-        ...mapState(['config']),
-        ...mapGetters('user', [
-            'basicRole',
-            'isWikiAdmin'
-        ])
-    },
-    async asyncData (ctx) {
-        let f = createFetchWrapper(FetchCls, ctx)
-        await f.fetchData()
-        return f._data
-    },
-    components: {
-        WikiBase
+  data () {
+    return {
+      marked,
+      page: {
+        items: []
+      }
     }
+  },
+  head () {
+    return {
+      title: '文章列表 - 百科',
+      meta: [
+        { hid: 'description', name: 'description', content: '百科文章列表' }
+      ]
+    }
+  },
+  computed: {
+    ...mapState(['config']),
+    ...mapGetters('user', [
+      'basicRole',
+      'isWikiAdmin'
+    ])
+  },
+  async asyncData (ctx) {
+    let f = createFetchWrapper(FetchCls, ctx)
+    await f.fetchData()
+    return f._data
+  },
+  components: {
+    WikiBase
+  }
 }
 </script>

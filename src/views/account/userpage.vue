@@ -1,5 +1,5 @@
 <template>
-<div class="ic-container">
+  <div class="ic-container">
     <!-- <div v-if="user.nickname" v-title>{{user.nickname}} - {{config.title}}</div> -->
     <div class="userpage">
         <div class="left ic-xs-hidden">
@@ -65,35 +65,35 @@
             </div>
         </div>
     </div>
-</div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .userpage {
-    display: flex;
+  display: flex;
 }
 
 .userpage > .left {
-    flex: 1 0 0%;
+  flex: 1 0 0%;
 }
 
 .userpage > .right {
-    flex: 8 0 0;
-    padding: 0 40px;
-    width: 0%;
+  flex: 8 0 0;
+  padding: 0 40px;
+  width: 0%;
 }
 
 .tab {
-    padding-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-content: center;
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 @media screen and (lt-rbp(sm)) {
-    .userpage > .right {
-        padding: 0 10px;
-    }
+  .userpage > .right {
+    padding: 0 10px;
+  }
 }
 </style>
 
@@ -103,97 +103,97 @@ import { mapState, mapGetters } from 'vuex'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 
 class FetchCls extends BaseWrapper {
-    async tabTopicLoad () {
-        let uid = this.user.id
-        let retList = await this.$api.topic.list({
-            user_id: uid,
-            order: 'time.desc',
-            loadfk: { 'user_id': null, 'board_id': null }
-        })
-        if (!this.tabs) this.tabs = { topic: { topics: null }, comment: { data: null } }
-        this.tabs.topic.topics = retList.data
+  async tabTopicLoad () {
+    let uid = this.user.id
+    let retList = await this.$api.topic.list({
+      user_id: uid,
+      order: 'time.desc',
+      loadfk: { 'user_id': null, 'board_id': null }
+    })
+    if (!this.tabs) this.tabs = { topic: { topics: null }, comment: { data: null } }
+    this.tabs.topic.topics = retList.data
+  }
+
+  async fetchData () {
+    let role = null
+    let params = this.$route.params
+
+    if (this.userData && (params.id === this.userData.id)) role = this.basicRole
+    let ret = await this.$api.user.get(params, { role })
+
+    if (ret.code === retcode.SUCCESS) {
+      this.user = ret.data
+      await this.tabTopicLoad()
+    } else {
+      this.$message.byCode(ret.code)
     }
-
-    async fetchData () {
-        let role = null
-        let params = this.$route.params
-
-        if (this.userData && (params.id === this.userData.id)) role = this.basicRole
-        let ret = await this.$api.user.get(params, { role })
-
-        if (ret.code === retcode.SUCCESS) {
-            this.user = ret.data
-            await this.tabTopicLoad()
-        } else {
-            this.$message.byCode(ret.code)
-        }
-    }
+  }
 }
 
 export default {
-    data () {
-        return {
-            activeTab: 'tabTopic',
-            user: {},
-            tabs: {
-                topic: {
-                    topics: null
-                },
-                comment: {
-                    data: null
-                }
-            }
-        }
-    },
-    computed: {
-        ...mapState(['config']),
-        ...mapGetters(['USER_GROUP_TXT']),
-        ...mapState('user', ['userData']),
-        ...mapGetters('user', ['basicRole'])
-    },
-    mounted: async function () {
-        ;
-    },
-    methods: {
-        atConvert: $.atConvert2,
-        tabTopicLoad: async function () {
-            let uid = this.user.id
-            let retList = await this.$api.topic.list({
-                user_id: uid,
-                order: 'time.desc',
-                loadfk: { 'user_id': null, 'board_id': null }
-            })
-            this.tabs.topic.topics = retList.data
+  data () {
+    return {
+      activeTab: 'tabTopic',
+      user: {},
+      tabs: {
+        topic: {
+          topics: null
         },
-        tabCommentLoad: async function () {
-            let uid = this.user.id
-            let retList = await this.$api.comment.list({
-                user_id: uid,
-                order: 'time.desc',
-                loadfk: {}
-            })
-            this.tabs.comment.data = retList.data
+        comment: {
+          data: null
         }
-    },
-    watch: {
-        // 如果路由有变化，会再次执行该方法
-        '$route': 'fetchData',
-        'activeTab': async function (newVal) {
-            if (newVal === 'tabTopic') {
-                await this.tabTopicLoad()
-            } else if (newVal === 'tabComment') {
-                await this.tabCommentLoad()
-            }
-        }
-    },
-    created: async function () {
-    },
-    async asyncData (ctx) {
-        let f = createFetchWrapper(FetchCls, ctx)
-        await f.fetchData()
-        return f._data
-    },
-    components: {
+      }
     }
+  },
+  computed: {
+    ...mapState(['config']),
+    ...mapGetters(['USER_GROUP_TXT']),
+    ...mapState('user', ['userData']),
+    ...mapGetters('user', ['basicRole'])
+  },
+  mounted: async function () {
+    ;
+  },
+  methods: {
+    atConvert: $.atConvert2,
+    tabTopicLoad: async function () {
+      let uid = this.user.id
+      let retList = await this.$api.topic.list({
+        user_id: uid,
+        order: 'time.desc',
+        loadfk: { 'user_id': null, 'board_id': null }
+      })
+      this.tabs.topic.topics = retList.data
+    },
+    tabCommentLoad: async function () {
+      let uid = this.user.id
+      let retList = await this.$api.comment.list({
+        user_id: uid,
+        order: 'time.desc',
+        loadfk: {}
+      })
+      this.tabs.comment.data = retList.data
+    }
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'fetchData',
+    'activeTab': async function (newVal) {
+      if (newVal === 'tabTopic') {
+        await this.tabTopicLoad()
+      } else if (newVal === 'tabComment') {
+        await this.tabCommentLoad()
+      }
+    }
+  },
+  created: async function () {
+  },
+  async asyncData (ctx) {
+    let f = createFetchWrapper(FetchCls, ctx)
+    await f.fetchData()
+    return f._data
+  },
+  components: {
+  }
 }
 </script>

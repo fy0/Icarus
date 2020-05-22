@@ -3,11 +3,11 @@
     <div class="login">
       <h3 class="title">注册</h3>
       <form class="ic-form">
-        <check-row :results="formErrors.email" :check="(!info.email) || checkEmail" :text="'邮箱格式不正确'">
+        <check-row :results="formErrors.email" :check="(!info.email) || checkEmailOK" :text="'邮箱格式不正确'">
           <label for="email">邮箱</label>
           <input class="ic-input" type="email" name="email" id="email" v-model="info.email">
         </check-row>
-        <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNickname" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
+        <check-row :results="formErrors.nickname" :check="(!info.nickname) || checkNicknameOK" :text="'至少两个汉字，或以汉字/英文字符开头至少4个字符'">
           <label for="nickname">昵称</label>
           <input class="ic-input" type="text" name="nickname" id="nickname" v-model="info.nickname">
         </check-row>
@@ -98,11 +98,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters, mapState } from 'vuex'
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import { passwordHash } from '@/tools/password'
+// import { mapGetters, mapState } from 'vuex'
+import { Component } from 'vue-property-decorator'
+import { passwordHash } from '@/utils/password'
+import { checkEmail, checkNickname } from '@/utils/user'
 import { retcode } from 'slim-tools'
-import { getters } from '../../store'
+// import { getters } from '../../store'
 
 @Component({
   computed: {
@@ -140,19 +141,19 @@ export default class DialogUserNew extends Vue {
     return this.info.password === this.info.password2
   }
 
-  get checkNickname () {
-    return $.checkNickname(this.info.nickname)
+  get checkNicknameOK () {
+    return checkNickname(this.info.nickname)
   }
 
-  get checkEmail () {
-    return $.checkEmail(this.info.email)
+  get checkEmailOK () {
+    return checkEmail(this.info.email)
   }
 
   async register () {
     if (!this.info.agreeLicense) {
       return
     }
-    if (this.checkPassword && this.checkPassword2 && this.checkEmail && this.checkNickname) {
+    if (this.checkPassword && this.checkPassword2 && this.checkEmailOK && this.checkNicknameOK) {
       this.$store.commit('LOADING_INC', 1)
       let info = this.info
       let ret = await this.$api.user.signupByDirect(info.email, await passwordHash(info.password), info.nickname)

@@ -1,6 +1,6 @@
 <template>
-<page-not-found v-if="!$user.isSiteAdmin"/>
-<div class="ic-container" v-else>
+  <page-not-found v-if="!$user.isSiteAdmin"/>
+  <div class="ic-container" v-else>
     <div class="admin-container">
         <sidebar class="admin-sidebar"></sidebar>
         <div class="admin-main"><slot></slot></div>
@@ -8,23 +8,23 @@
     <dialog-topic-manage />
     <dialog-user-manage />
     <dialog-comment-manage />
-</div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .admin-container {
-    display: flex;
+  display: flex;
 }
 
 .admin-sidebar {
-    flex: 1 0 0%;
-    max-width: $page-left-max-width;
+  flex: 1 0 0%;
+  max-width: $page-left-max-width;
 }
 
 .admin-main {
-    flex: 4 0 0%;
-    padding: 0 0;
-    width: 0%;
+  flex: 4 0 0%;
+  padding: 0 0;
+  width: 0%;
 }
 </style>
 
@@ -32,13 +32,13 @@
 import Sidebar from './sidebar.vue'
 
 export default {
-    data () {
-        return {}
-    },
-    methods: {
-    },
-    components: {
-        Sidebar
-    }
+  data () {
+    return {}
+  },
+  methods: {
+  },
+  components: {
+    Sidebar
+  }
 }
 </script>

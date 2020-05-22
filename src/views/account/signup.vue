@@ -1,6 +1,6 @@
 <template>
-<account-signup-direct v-if="useLegacy" />
-<redirecting v-else-if="regDone" :countdown="30">
+  <account-signup-direct v-if="useLegacy" />
+  <redirecting v-else-if="regDone" :countdown="30">
     <h2>注册成功！</h2>
     <div style="align-items: none">
         <div>我们已经向你的邮箱发送了一封邮件，请点击其中的激活链接完成注册。</div>
@@ -9,8 +9,8 @@
         <div>如果还是没有发现邮件，请尝试重新注册，或联系站点管理员：</div>
         <div><a :href="`mailto:${$misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}?subject=无法收到激活邮件，注册邮箱：${info.email}`">{{$misc.BACKEND_CONFIG.SITE_CONTACT_EMAIL}}</a></div>
     </div>
-</redirecting>
-<div v-else class="ic-container box">
+  </redirecting>
+  <div v-else class="ic-container box">
     <div class="login">
         <h3 class="title">注册</h3>
         <form class="ic-form">
@@ -50,56 +50,56 @@
         </div>
     </ic-dialog>
 
-</div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .bottom {
-    text-align: right;
+  text-align: right;
 
-    .ic-btn {
-        padding-left: 30px;
-        padding-right: 30px;
-        margin-left: 10px;
-    }
+  .ic-btn {
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-left: 10px;
+  }
 }
 
 .title {
-    color: #444;
-    margin-bottom: 20px;
+  color: #444;
+  margin-bottom: 20px;
 }
 
 .box {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ic-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 320px;
 
-    padding: 10px 30px;
-    border: 1px solid #ddd;
+  padding: 10px 30px;
+  border: 1px solid #ddd;
 }
 
 .ic-form-row > * {
-    width: 100%;
+  width: 100%;
 }
 
 .ic-form-row {
-    width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 </style>
 
@@ -108,84 +108,84 @@ import { retcode } from 'slim-tools'
 import AccountSignupDirect from '@/views/account/signup_by_direct.vue'
 
 export default {
-    data () {
-        return {
-            info: {
-                email: '',
-                password: '',
-                password2: '',
-                verify: '',
-                agreeLicense: false,
-                returning: true // new 之后返回记录
-            },
-            regDone: false,
-            dialogLicense: false,
-            formErrors: {},
-            passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
-            passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX,
-            signupLicense: this.$misc.BACKEND_CONFIG.SIGNUP_LICENSE_HTML
-        }
-    },
-    head () {
-        return {
-            title: '用户注册',
-            meta: [
-                { hid: 'description', name: 'description', content: '用户注册' }
-            ]
-        }
-    },
-    computed: {
-        useLegacy: function () {
-            return (!(this.$misc.BACKEND_CONFIG.EMAIL_ACTIVATION_ENABLE))
-        },
-        checkPasswordText: function () {
-            return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
-        },
-        checkPassword: function () {
-            if (this.info.password.length < this.passwordMin) return false
-            if (this.info.password.length > this.passwordMax) return false
-            return true
-        },
-        checkPassword2: function () {
-            return this.info.password === this.info.password2
-        },
-        checkEmail: function () {
-            let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
-            return mail.test(this.info.email)
-        }
-    },
-    watch: {
-        'info.email': function () {
-            this.formErrors.email = undefined
-        }
-    },
-    methods: {
-        register: async function () {
-            if (!this.info.agreeLicense) {
-                return
-            }
-            if (this.checkPassword && this.checkPassword2 && this.checkEmail) {
-                this.$store.commit('LOADING_INC', 1)
-                let info = _.clone(this.info)
-                info.password = await $.passwordHash(info.password)
-                let ret = await this.$api.user.signupRequestByEmail(info)
-
-                if (ret.code === retcode.SUCCESS) {
-                    this.regDone = true
-                } else if (ret.code === retcode.INVALID_POSTDATA) {
-                    this.formErrors = ret.data
-                } else {
-                    this.$message.byCode(ret.code, ret.data)
-                }
-
-                this.$store.commit('LOADING_DEC', 1)
-            } else {
-                this.$message.error('请正确填写所有项目')
-            }
-        }
-    },
-    components: {
-        AccountSignupDirect
+  data () {
+    return {
+      info: {
+        email: '',
+        password: '',
+        password2: '',
+        verify: '',
+        agreeLicense: false,
+        returning: true // new 之后返回记录
+      },
+      regDone: false,
+      dialogLicense: false,
+      formErrors: {},
+      passwordMin: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MIN,
+      passwordMax: this.$misc.BACKEND_CONFIG.USER_PASSWORD_MAX,
+      signupLicense: this.$misc.BACKEND_CONFIG.SIGNUP_LICENSE_HTML
     }
+  },
+  head () {
+    return {
+      title: '用户注册',
+      meta: [
+        { hid: 'description', name: 'description', content: '用户注册' }
+      ]
+    }
+  },
+  computed: {
+    useLegacy: function () {
+      return (!(this.$misc.BACKEND_CONFIG.EMAIL_ACTIVATION_ENABLE))
+    },
+    checkPasswordText: function () {
+      return `应在 ${this.passwordMin}-${this.passwordMax} 个字符之间`
+    },
+    checkPassword: function () {
+      if (this.info.password.length < this.passwordMin) return false
+      if (this.info.password.length > this.passwordMax) return false
+      return true
+    },
+    checkPassword2: function () {
+      return this.info.password === this.info.password2
+    },
+    checkEmail: function () {
+      let mail = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+      return mail.test(this.info.email)
+    }
+  },
+  watch: {
+    'info.email': function () {
+      this.formErrors.email = undefined
+    }
+  },
+  methods: {
+    register: async function () {
+      if (!this.info.agreeLicense) {
+        return
+      }
+      if (this.checkPassword && this.checkPassword2 && this.checkEmail) {
+        this.$store.commit('LOADING_INC', 1)
+        let info = _.clone(this.info)
+        info.password = await $.passwordHash(info.password)
+        let ret = await this.$api.user.signupRequestByEmail(info)
+
+        if (ret.code === retcode.SUCCESS) {
+          this.regDone = true
+        } else if (ret.code === retcode.INVALID_POSTDATA) {
+          this.formErrors = ret.data
+        } else {
+          this.$message.byCode(ret.code, ret.data)
+        }
+
+        this.$store.commit('LOADING_DEC', 1)
+      } else {
+        this.$message.error('请正确填写所有项目')
+      }
+    }
+  },
+  components: {
+    AccountSignupDirect
+  }
 }
 </script>

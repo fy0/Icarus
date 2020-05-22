@@ -91,7 +91,7 @@ export default {
   build: {
     plugins: [
       new webpack.ProvidePlugin({
-        _: path.resolve(__dirname, './src/tools/lodash.ts')
+        _: path.resolve(__dirname, './src/utils/lodash.ts')
       }),
       new webpack.ProvidePlugin({
         $: path.resolve(__dirname, './src/tools/_merge.js')

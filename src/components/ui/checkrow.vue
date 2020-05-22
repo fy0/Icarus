@@ -38,40 +38,40 @@
 
 <script>
 export default {
-    props: {
-        check: {},
-        text: String,
-        results: Array,
+  props: {
+    check: {},
+    text: String,
+    results: Array,
 
-        absolute: { // 注：multi 会覆盖此属性
-            type: Boolean,
-            default: true
-        },
-        flex: { // 用于处理 absolute 状态下 + flex 居中布局的移位
-            type: Boolean,
-            default: false
-        },
-        multi: {
-            type: Boolean,
-            default: false
-        }
+    absolute: { // 注：multi 会覆盖此属性
+      type: Boolean,
+      default: true
     },
-    computed: {
-        isError: function () {
-            let resultsCheck = this.results && this.results.length
-            if (this.multi) return resultsCheck
-            return resultsCheck || (!this.check)
-        },
-        errtext: function () {
-            if (this.results && this.results.length) {
-                return this.results[0]
-            }
-            return this.text
-        }
+    flex: { // 用于处理 absolute 状态下 + flex 居中布局的移位
+      type: Boolean,
+      default: false
     },
-    data () {
-        return {
-        }
+    multi: {
+      type: Boolean,
+      default: false
     }
+  },
+  computed: {
+    isError: function () {
+      let resultsCheck = this.results && this.results.length
+      if (this.multi) return resultsCheck
+      return resultsCheck || (!this.check)
+    },
+    errtext: function () {
+      if (this.results && this.results.length) {
+        return this.results[0]
+      }
+      return this.text
+    }
+  },
+  data () {
+    return {
+    }
+  }
 }
 </script>

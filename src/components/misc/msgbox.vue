@@ -22,13 +22,13 @@
 <script>
 
 export default {
-    data () {
-        return {}
-    },
-    mounted: async function () {
-        // $.message('warning', '123');
-        // $.message('success', '操作已完成');
-    }
+  data () {
+    return {}
+  },
+  mounted: async function () {
+    // $.message('warning', '123');
+    // $.message('success', '操作已完成');
+  }
 }
 </script>
 

@@ -16,32 +16,32 @@
 
 <script>
 export default {
-    props: {
-        title: {
-            type: String
-        },
-        value: {
-            type: String
-        }
+  props: {
+    title: {
+      type: String
     },
-    data () {
-        return {}
-    },
-    computed: {
-        isActive: function () {
-            return this.getCurrentActive() === this.value
-        }
-    },
-    created: function () {
-        // 注：这里父组件得到的参数确实是当前组件，也就是this被传递了。
-        // 但是父组件的this还是父组件
-        this.addTab(this)
-    },
-    inject: ['setActive', 'getCurrentActive', 'addTab'],
-    methods: {
-        doActive: function () {
-            this.setActive(this.value)
-        }
+    value: {
+      type: String
     }
+  },
+  data () {
+    return {}
+  },
+  computed: {
+    isActive: function () {
+      return this.getCurrentActive() === this.value
+    }
+  },
+  created: function () {
+    // 注：这里父组件得到的参数确实是当前组件，也就是this被传递了。
+    // 但是父组件的this还是父组件
+    this.addTab(this)
+  },
+  inject: ['setActive', 'getCurrentActive', 'addTab'],
+  methods: {
+    doActive: function () {
+      this.setActive(this.value)
+    }
+  }
 }
 </script>

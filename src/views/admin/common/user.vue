@@ -1,5 +1,5 @@
 <template>
-<admin-base>
+  <admin-base>
     <h3 class="ic-header">用户管理</h3>
 
     <div class="search-box">
@@ -28,33 +28,33 @@
         <div v-else>未找到结果</div>
     </div>
     <paginator :page-info='page' :route-name='"admin_common_user"' />
-</admin-base>
+  </admin-base>
 </template>
 
 <style scoped>
 .item {
-    display: flex;
+  display: flex;
 }
 
 .item > .right {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 .search-box {
-    flex: 1;
-    align-items: center;
-    display: flex;
+  flex: 1;
+  align-items: center;
+  display: flex;
 }
 
 .search-box > input {
-    width: 40%;
-    border-radius: 2px;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
+  width: 40%;
+  border-radius: 2px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
 }
 
 .search-box > .search-btn {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 </style>
 
@@ -64,137 +64,137 @@ import { retcode } from 'slim-tools'
 import AdminBase from '../base/base.vue'
 
 export default {
-    data () {
-        return {
-            searchTxt: '',
-            page: {}
-        }
-    },
-    head () {
-        return {
-            title: '用户管理 - 管理界面',
-            meta: [
-                { hid: 'description', name: 'description', content: '用户管理 - 管理界面' }
-            ]
-        }
-    },
-    methods: {
-        doSearch: async function () {
-            let found = false
-            let role = this.$user.mainRole
-
-            if ($.regex.email.test(this.searchTxt)) {
-                let retList = await this.$api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, { role })
-                if (retList.code === retcode.SUCCESS) {
-                    this.page = retList.data
-                    found = true
-                }
-            } else {
-                if ($.regex.nickname.test(this.searchTxt)) {
-                    let retList = await this.$api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, { role })
-                    if (retList.code === retcode.SUCCESS) {
-                        this.page = retList.data
-                        found = true
-                    }
-                }
-                if ($.regex.id.test(this.searchTxt)) {
-                    let retList = await this.$api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, { role })
-                    if (retList.code === retcode.SUCCESS) {
-                        if (found) {
-                            this.page.items.push(retList.data.items[0])
-                        } else {
-                            this.page = retList.data
-                        }
-                        found = true
-                    }
-                }
-            }
-            if (!found) {
-                this.page = {}
-            }
-        },
-        userPasswordReset: function (user) {
-            swal({
-                title: '重要：密码重置操作',
-                text: '请输入一个新的密码',
-                input: 'text',
-                showCancelButton: true,
-                confirmButtonText: '确认',
-                cancelButtonText: '取消',
-                showLoaderOnConfirm: true,
-                preConfirm: async (password) => {
-                    if (password === '') {
-                        swal.showValidationError('密码不能为空。')
-                    }
-                    return this.$api.user.set({ id: user.id }, { password: await $.passwordHash(password) })
-                }
-            }).then((result) => {
-                if (result.value == null) return
-                if (result.value.code === retcode.SUCCESS) {
-                    swal({
-                        title: '操作成功！',
-                        type: 'success'
-                    })
-                } else {
-                    swal({
-                        type: 'error',
-                        title: '出错了',
-                        text: result.value.data
-                    })
-                }
-            })
-        },
-        userKeyReset: function (user) {
-            swal({
-                title: '重要：重置用户会话',
-                text: '重置之后，用户的自动登录将会失效，当前登陆的用户会自动登出',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#DD6B55',
-                cancelButtonText: '取消',
-                confirmButtonText: '确定，我要重置',
-                showLoaderOnConfirm: true,
-                preConfirm: async () => {
-                    return this.$api.user.set({ id: user.id }, { 'key': '1' })
-                }
-            }).then((result) => {
-                if (result.value == null) return
-                if (result.value.code === retcode.SUCCESS) {
-                    swal({
-                        title: '如你所愿',
-                        text: '',
-                        type: 'success'
-                    })
-                } else {
-                    swal({
-                        type: 'error',
-                        title: '出错了',
-                        text: result.value.data
-                    })
-                }
-            })
-        },
-        fetchData: async function () {
-            let params = this.$route.params
-            let retList = await this.$api.user.list({
-                order: 'id.desc'
-            }, params.page)
-            if (retList.code === retcode.SUCCESS) {
-                this.page = retList.data
-            }
-        }
-    },
-    created: async function () {
-        this.$store.commit('LOADING_INC', 1)
-        await this.fetchData()
-        this.$store.commit('LOADING_DEC', 1)
-    },
-    watch: {
-        // 如果路由有变化，会再次执行该方法
-        '$route': 'fetchData'
-    },
-    components: {
-        AdminBase
+  data () {
+    return {
+      searchTxt: '',
+      page: {}
     }
+  },
+  head () {
+    return {
+      title: '用户管理 - 管理界面',
+      meta: [
+        { hid: 'description', name: 'description', content: '用户管理 - 管理界面' }
+      ]
+    }
+  },
+  methods: {
+    doSearch: async function () {
+      let found = false
+      let role = this.$user.mainRole
+
+      if ($.regex.email.test(this.searchTxt)) {
+        let retList = await this.$api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, { role })
+        if (retList.code === retcode.SUCCESS) {
+          this.page = retList.data
+          found = true
+        }
+      } else {
+        if ($.regex.nickname.test(this.searchTxt)) {
+          let retList = await this.$api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, { role })
+          if (retList.code === retcode.SUCCESS) {
+            this.page = retList.data
+            found = true
+          }
+        }
+        if ($.regex.id.test(this.searchTxt)) {
+          let retList = await this.$api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, { role })
+          if (retList.code === retcode.SUCCESS) {
+            if (found) {
+              this.page.items.push(retList.data.items[0])
+            } else {
+              this.page = retList.data
+            }
+            found = true
+          }
+        }
+      }
+      if (!found) {
+        this.page = {}
+      }
+    },
+    userPasswordReset: function (user) {
+      swal({
+        title: '重要：密码重置操作',
+        text: '请输入一个新的密码',
+        input: 'text',
+        showCancelButton: true,
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        showLoaderOnConfirm: true,
+        preConfirm: async (password) => {
+          if (password === '') {
+            swal.showValidationError('密码不能为空。')
+          }
+          return this.$api.user.set({ id: user.id }, { password: await $.passwordHash(password) })
+        }
+      }).then((result) => {
+        if (result.value == null) return
+        if (result.value.code === retcode.SUCCESS) {
+          swal({
+            title: '操作成功！',
+            type: 'success'
+          })
+        } else {
+          swal({
+            type: 'error',
+            title: '出错了',
+            text: result.value.data
+          })
+        }
+      })
+    },
+    userKeyReset: function (user) {
+      swal({
+        title: '重要：重置用户会话',
+        text: '重置之后，用户的自动登录将会失效，当前登陆的用户会自动登出',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        cancelButtonText: '取消',
+        confirmButtonText: '确定，我要重置',
+        showLoaderOnConfirm: true,
+        preConfirm: async () => {
+          return this.$api.user.set({ id: user.id }, { 'key': '1' })
+        }
+      }).then((result) => {
+        if (result.value == null) return
+        if (result.value.code === retcode.SUCCESS) {
+          swal({
+            title: '如你所愿',
+            text: '',
+            type: 'success'
+          })
+        } else {
+          swal({
+            type: 'error',
+            title: '出错了',
+            text: result.value.data
+          })
+        }
+      })
+    },
+    fetchData: async function () {
+      let params = this.$route.params
+      let retList = await this.$api.user.list({
+        order: 'id.desc'
+      }, params.page)
+      if (retList.code === retcode.SUCCESS) {
+        this.page = retList.data
+      }
+    }
+  },
+  created: async function () {
+    this.$store.commit('LOADING_INC', 1)
+    await this.fetchData()
+    this.$store.commit('LOADING_DEC', 1)
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'fetchData'
+  },
+  components: {
+    AdminBase
+  }
 }
 </script>

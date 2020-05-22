@@ -93,54 +93,54 @@ import { retcode } from 'slim-tools'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
-    data () {
-        return {
-            user: { name: '' },
-            save: {}
-        }
-    },
-    computed: {
-        ...mapState('dialog', [
-            'userManage',
-            'userManageData'
-        ]),
-        ...mapGetters([
-            'USER_GROUP_TXT',
-            'POST_STATE_TXT'
-        ])
-    },
-    methods: {
-        ok: async function () {
-            let data = $.objDiff(this.user, this.save)
-            if (data.state) data.state = Number(data.state)
-            if (data.group) data.group = Number(data.group)
-
-            let ret = await this.$api.user.set({ id: this.user.id }, data)
-            if (ret.code === 0) {
-                this.$store.commit('dialog/WRITE_USER_MANAGE_DATA', data)
-                this.$message.success('用户信息设置成功')
-            } else this.$message.byCode(ret.code)
-
-            this.$dialogs.setUserManage(false)
-        },
-        close () {
-            this.$dialogs.setUserManage(false)
-        }
-    },
-    watch: {
-        'userManage': async function (val) {
-            if (val) {
-                let info = await this.$api.user.get({ id: this.userManageData.id })
-                if (info.code === retcode.SUCCESS) {
-                    this.user = info.data
-                    this.user.state = this.user.state.toString()
-                    this.user.group = this.user.group.toString()
-                    this.save = _.clone(this.user)
-                } else {
-                    this.$message.byCode(info.code)
-                }
-            }
-        }
+  data () {
+    return {
+      user: { name: '' },
+      save: {}
     }
+  },
+  computed: {
+    ...mapState('dialog', [
+      'userManage',
+      'userManageData'
+    ]),
+    ...mapGetters([
+      'USER_GROUP_TXT',
+      'POST_STATE_TXT'
+    ])
+  },
+  methods: {
+    ok: async function () {
+      let data = $.objDiff(this.user, this.save)
+      if (data.state) data.state = Number(data.state)
+      if (data.group) data.group = Number(data.group)
+
+      let ret = await this.$api.user.set({ id: this.user.id }, data)
+      if (ret.code === 0) {
+        this.$store.commit('dialog/WRITE_USER_MANAGE_DATA', data)
+        this.$message.success('用户信息设置成功')
+      } else this.$message.byCode(ret.code)
+
+      this.$dialogs.setUserManage(false)
+    },
+    close () {
+      this.$dialogs.setUserManage(false)
+    }
+  },
+  watch: {
+    'userManage': async function (val) {
+      if (val) {
+        let info = await this.$api.user.get({ id: this.userManageData.id })
+        if (info.code === retcode.SUCCESS) {
+          this.user = info.data
+          this.user.state = this.user.state.toString()
+          this.user.group = this.user.group.toString()
+          this.save = _.clone(this.user)
+        } else {
+          this.$message.byCode(info.code)
+        }
+      }
+    }
+  }
 }
 </script>

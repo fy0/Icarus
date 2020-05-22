@@ -1,5 +1,5 @@
 <template>
-<div class="ic-container">
+  <div class="ic-container">
     <template v-if="tooFrequent">
         <span>搜索过于频繁，请稍后再试。还需等待{{needWait}}秒。</span>
     </template>
@@ -44,54 +44,54 @@
         </div>
     </template>
     <template v-else>没有指定搜索的关键字</template>
-</div>
+  </div>
 </template>
 
 <style lang="scss">
 .results {
-    > .item {
-        > .title {
-            em {
-                font-style: normal; // 移除斜体效果
-                color: $red !important;
-            }
+  > .item {
+    > .title {
+      em {
+        font-style: normal; // 移除斜体效果
+        color: $red !important;
+      }
 
-            a {
-                color: $gray-700;
-            }
-        }
-        > .brief {
-            em {
-                font-style: normal; // 移除斜体效果
-                color: darken($red, .5) !important;
-            }
-        }
-        > .link {
-            a {
-                color: $blue;
-            }
-        }
-        > .info {
-            font-weight: bold;
-            color: $gray-700;
-        }
+      a {
+        color: $gray-700;
+      }
     }
+    > .brief {
+      em {
+        font-style: normal; // 移除斜体效果
+        color: darken($red, .5) !important;
+      }
+    }
+    > .link {
+      a {
+        color: $blue;
+      }
+    }
+    > .info {
+      font-weight: bold;
+      color: $gray-700;
+    }
+  }
 }
 </style>
 
 <style lang="scss" scoped>
 .results {
-    margin-top: 20px;
-    > .item {
-        > .title {
-            > .suffix {
-                font-size: 16px;
-                margin-left: .5em;
-                color: #b53b78;
-            }
-        }
-        margin-bottom: 30px;
+  margin-top: 20px;
+  > .item {
+    > .title {
+      > .suffix {
+        font-size: 16px;
+        margin-left: .5em;
+        color: #b53b78;
+      }
     }
+    margin-bottom: 30px;
+  }
 }
 </style>
 
@@ -99,64 +99,64 @@
 import { retcode } from 'slim-tools'
 
 export default {
-    data () {
-        return {
-            tooFrequent: false,
-            needWait: 0,
-            info: {
-                hits: {}
-            }
-        }
-    },
-    head () {
-        return {
-            title: this.queryText ? `搜索 - ${this.queryText}` : '搜索',
-            meta: [
-                { hid: 'description', name: 'description', content: '文章搜索页面' }
-            ]
-        }
-    },
-    computed: {
-        queryText: function () {
-            return this.$route.query.q
-        }
-    },
-    methods: {
-        getPostPath: function (src) {
-            let name = 'forum_topic'
-            let params = { id: src.id }
-
-            switch (src.type) {
-                case this.$misc.POST_TYPES.TOPIC:
-                    name = 'forum_topic'; break
-                case this.$misc.POST_TYPES.WIKI:
-                    name = 'wiki_article_by_ref'; params.ref = src.ref; break
-            }
-
-            let info = this.$router.resolve({ name, params })
-            return window.location.origin + info.href
-        },
-        fetchData: async function () {
-            this.$store.commit('LOADING_INC', 1)
-            let ret = await this.$api.search.search(this.queryText)
-            if (ret.code === retcode.SUCCESS) {
-                this.info = ret.data
-                this.tooFrequent = false
-            } else if (ret.code === retcode.TOO_FREQUENT) {
-                this.info = { hits: {} }
-                this.tooFrequent = true
-                this.needWait = ret.data
-            }
-            this.$store.commit('LOADING_DEC', 1)
-        }
-    },
-    created: async function () {
-        await this.fetchData()
-    },
-    watch: {
-        '$route.query.q': async function (val) {
-            await this.fetchData()
-        }
+  data () {
+    return {
+      tooFrequent: false,
+      needWait: 0,
+      info: {
+        hits: {}
+      }
     }
+  },
+  head () {
+    return {
+      title: this.queryText ? `搜索 - ${this.queryText}` : '搜索',
+      meta: [
+        { hid: 'description', name: 'description', content: '文章搜索页面' }
+      ]
+    }
+  },
+  computed: {
+    queryText: function () {
+      return this.$route.query.q
+    }
+  },
+  methods: {
+    getPostPath: function (src) {
+      let name = 'forum_topic'
+      let params = { id: src.id }
+
+      switch (src.type) {
+        case this.$misc.POST_TYPES.TOPIC:
+          name = 'forum_topic'; break
+        case this.$misc.POST_TYPES.WIKI:
+          name = 'wiki_article_by_ref'; params.ref = src.ref; break
+      }
+
+      let info = this.$router.resolve({ name, params })
+      return window.location.origin + info.href
+    },
+    fetchData: async function () {
+      this.$store.commit('LOADING_INC', 1)
+      let ret = await this.$api.search.search(this.queryText)
+      if (ret.code === retcode.SUCCESS) {
+        this.info = ret.data
+        this.tooFrequent = false
+      } else if (ret.code === retcode.TOO_FREQUENT) {
+        this.info = { hits: {} }
+        this.tooFrequent = true
+        this.needWait = ret.data
+      }
+      this.$store.commit('LOADING_DEC', 1)
+    }
+  },
+  created: async function () {
+    await this.fetchData()
+  },
+  watch: {
+    '$route.query.q': async function (val) {
+      await this.fetchData()
+    }
+  }
 }
 </script>
