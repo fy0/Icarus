@@ -26,7 +26,7 @@
 </style>
 
 <script>
-import { marked } from '@/md.js'
+import { marked } from '@/utils/md.ts'
 import WikiBase from './_base.vue'
 import { mapState, mapGetters } from 'vuex'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'

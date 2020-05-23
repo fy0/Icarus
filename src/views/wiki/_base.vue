@@ -151,7 +151,7 @@ $title-text-active-color: darken(#373434, 0);
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import { marked } from '@/md.js'
+import { marked } from '@/utils/md.ts'
 import { retcode } from 'slim-tools'
 
 export default {

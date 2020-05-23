@@ -71,7 +71,7 @@
 
 <script>
 import { retcode } from 'slim-tools'
-import { marked } from '@/md.js'
+import { marked } from '@/utils/md.ts'
 import AdminBase from '../base/base.vue'
 import { dateFormat } from '@/utils/time'
 

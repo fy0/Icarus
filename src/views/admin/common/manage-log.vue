@@ -87,7 +87,7 @@
 
 <script>
 import { retcode } from 'slim-tools'
-import { marked } from '@/md.js'
+import { marked } from '@/utils/md.ts'
 import { dateFormat } from '@/utils/time'
 import AdminBase from '../base/base.vue'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'

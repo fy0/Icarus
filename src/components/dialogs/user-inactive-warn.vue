@@ -1,5 +1,5 @@
 <template>
-<ic-dialog v-if="$user.data" v-model="userInactive" :title="`还未准备好……`" scrollable>
+  <ic-dialog v-if="$user.data" v-model="userInactive" :title="`还未准备好……`" scrollable>
     <div>
         <div>你的账号需要<b>激活</b>后才能发言，请在邮箱中查收激活邮件。</div>
         <div>
@@ -14,24 +14,25 @@
     <div class="bottom">
         <span class="ic-btn primary" @click="ok">确定</span>
     </div>
-</ic-dialog>
+  </ic-dialog>
 </template>
 
 <style lang="scss" scoped>
 .bottom {
-    text-align: right;
+  text-align: right;
 
-    .ic-btn {
-        padding-left: 30px;
-        padding-right: 30px;
-        margin-left: 10px;
-    }
+  .ic-btn {
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-left: 10px;
+  }
 }
 </style>
 
 <script>
 import { mapState } from 'vuex'
 import { retcode } from 'slim-tools'
+import { timeout } from '@/utils/misc'
 
 export default {
   data () {
@@ -50,7 +51,7 @@ export default {
     },
     resendActivationMail: async function () {
       this.sending = true
-      await $.timeout(1000) // 先留着吧，我觉得一点即出结果体验也不好
+      await timeout(1000) // 先留着吧，我觉得一点即出结果体验也不好
       let ret = await this.$api.user.resendActivationMail()
       if (ret.code === retcode.SUCCESS) {
         this.$message.success('激活邮件发送成功！请检查邮箱。')

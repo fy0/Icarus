@@ -427,6 +427,7 @@ import { retcode } from 'slim-tools'
 import TopBtns from './topbtns.vue'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import { atConvert } from '@/utils/misc'
 
 class FetchCls extends BaseWrapper {
   getBoardExInfoById (boardId) {
@@ -649,7 +650,7 @@ export default {
       setTopicManage: 'SET_TOPIC_MANAGE'
     }),
     ...mapActions('forum', {}),
-    atConvert: $.atConvert2,
+    atConvert,
     boardBadgeTitleById: function (id) {
       let chain = this.getBoardChainById(id)
       let ret = ''

@@ -10,7 +10,7 @@ license: https://github.com/F-loat/vue-simplemde/blob/master/LICENSE
 </template>
 
 <script>
-import { marked } from '@/md.js'
+import { marked } from '@/utils/md.ts'
 import Prism from 'prismjs'
 // import SimpleMDE from 'easymde/src/js/easymde.js'
 import 'easymde/dist/easymde.min.css'

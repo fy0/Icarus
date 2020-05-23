@@ -1,73 +1,4 @@
 
-class Tween {
-  constructor (options) {
-    this.running = false
-    this.frame = null
-    this.opts = {
-      start: options.start || 0,
-      end: options.end || 100,
-      duration: options.duration || 500,
-      tick: options.tick,
-      complete: options.complete,
-      easing: (t, b, c, d) => {
-        if ((t /= d / 2) < 1) return c / 2 * t * t + b
-        return -c / 2 * ((--t) * (t - 2) - 1) + b
-      }
-    }
-  }
-
-  stop () {
-    this.running = false
-    if (this.frame) cancelAnimationFrame(this.frame)
-  }
-
-  start () {
-    this.running = true
-    let firstTime = null
-    const opts = this.opts
-
-    const func = (ts) => {
-      if (!this.running) return
-      firstTime = firstTime || ts
-      if (ts >= firstTime + opts.duration) {
-        if (opts.complete) opts.complete()
-        return
-      }
-
-      const elapsed = ts - firstTime
-      if (opts.tick) {
-        const val = opts.easing(elapsed, opts.start, opts.end - opts.start, opts.duration)
-        opts.tick(val)
-      }
-      this.frame = requestAnimationFrame(func)
-    }
-    this.frame = requestAnimationFrame(func)
-  }
-}
-
-let scroller = null
-
-$.scrollTo = function (el) {
-  if (!el) return
-  if (scroller) scroller.stop()
-
-  scroller = new Tween({
-    start: window.pageYOffset,
-    end: el.getBoundingClientRect().top + window.pageYOffset,
-    duration: 500,
-    tick: v => window.scrollTo(0, v),
-    complete: () => { scroller = null }
-  }).start()
-}
-
-$.timeout = function (delay) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve()
-    }, delay)
-  })
-}
-
 /**
  * Deep diff between two object, using lodash
  * @param  {Object} object Object compared
@@ -114,20 +45,4 @@ $.dataURItoBlob = function (dataURI) {
   }
 
   return new Blob([ab], { type: mimeString })
-}
-
-$.regex = {
-  id: /[a-fA-F0-9]+/,
-  email: /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,
-  nickname: /^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z0-9]+$/
-}
-
-$.atConvert = function (text) {
-  /* eslint-disable no-control-regex */
-  return text.replace(/\x01([a-zA-Z0-9]+)-(.+?)\x01/g, '<a href="javascript:userPage(\'$1\', \'$2\')">@$2</a>')
-}
-
-$.atConvert2 = function (text) {
-  /* eslint-disable no-control-regex */
-  return text.replace(/\x01([a-zA-Z0-9]+)-(.+?)\x01/g, '@$2')
 }

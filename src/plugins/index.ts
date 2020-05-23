@@ -18,7 +18,7 @@ Vue.use(VueLoaders)
 import '@/assets/css/base-ui.scss'
 import '@/assets/icons/iconfont.css'
 import '@/assets/css/_text.scss'
-import '@/md.js'
+import '@/utils/md.ts'
 
 // import ws from '@/ws.js'
 // import store from '@/store/index.js'

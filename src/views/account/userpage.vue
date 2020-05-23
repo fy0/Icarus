@@ -101,6 +101,7 @@
 import { retcode } from 'slim-tools'
 import { mapState, mapGetters } from 'vuex'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
+import { atConvert } from '@/utils/misc'
 
 class FetchCls extends BaseWrapper {
   async tabTopicLoad () {
@@ -155,7 +156,7 @@ export default {
     ;
   },
   methods: {
-    atConvert: $.atConvert2,
+    atConvert,
     tabTopicLoad: async function () {
       let uid = this.user.id
       let retList = await this.$api.topic.list({

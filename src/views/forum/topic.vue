@@ -263,13 +263,14 @@
 </style>
 
 <script>
-import { marked, mdGetIndex } from '@/md.js'
+import { marked, mdGetIndex } from '@/utils/md.ts'
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import CommentList from '@/components/misc/comment-list.vue'
 import SocialShare from '@/components/misc/social-share.vue'
 import '@/assets/css/_forum.scss'
 import { retcode } from 'slim-tools'
+import { scrollTo } from '@/utils/misc'
 
 class FetchCls extends BaseWrapper {
   async fetchData () {
@@ -346,7 +347,7 @@ export default {
     textLimit: $.textLimit,
     scrollTo: function (id) {
       let el = document.getElementById(id)
-      $.scrollTo(el)
+      scrollTo(el)
     },
     fetchData: async function () {
 
@@ -357,7 +358,7 @@ export default {
     },
     goComment: function () {
       let el = this.$refs['comment-hr']
-      $.scrollTo(el)
+      scrollTo(el)
     }
   },
   watch: {

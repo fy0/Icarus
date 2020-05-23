@@ -118,10 +118,11 @@
 </style>
 
 <script>
-import { marked } from '@/md.js'
+import { marked } from '@/utils/md.ts'
 import CommentPost from './comment-post.vue'
 import anime from 'animejs'
 import { retcode } from 'slim-tools'
+import { scrollTo } from '@/utils/misc'
 
 export default {
   props: {
@@ -156,7 +157,7 @@ export default {
   methods: {
     highlightRepliedComment: function (cid) {
       let el = document.getElementById(cid)
-      $.scrollTo(el)
+      scrollTo(el)
       anime({
         targets: el,
         duration: 2200,
@@ -170,7 +171,7 @@ export default {
       this.fetchData(newPage)
     },
     replyTo: function (item) {
-      $.scrollTo(document.getElementById('ic-comment-post'))
+      scrollTo(document.getElementById('ic-comment-post'))
       document.getElementById('ic-comment-editor').focus()
       this.$refs.post.setReplyTo(item)
     },

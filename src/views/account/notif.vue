@@ -106,6 +106,7 @@
 <script>
 import { retcode } from 'slim-tools'
 import ManageLogItemDetail from '@/components/misc/manage-log-item-detail.vue'
+import { atConvert } from '@/utils/misc'
 
 export default {
   data () {
@@ -122,7 +123,7 @@ export default {
     await this.fetchData()
   },
   methods: {
-    atConvert: $.atConvert2,
+    atConvert,
     typeName: function (type) {
       return this.$misc.POST_TYPES_TXT[type]
     },

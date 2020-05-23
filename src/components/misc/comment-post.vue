@@ -89,6 +89,7 @@
 
 <script>
 import anime from 'animejs'
+import { scrollTo } from '@/utils/misc'
 
 export default {
   props: {
@@ -130,7 +131,7 @@ export default {
     },
     highlightRepliedComment: function (cid) {
       let el = document.getElementById(cid)
-      $.scrollTo(el)
+      scrollTo(el)
       anime({
         targets: el,
         duration: 2200,

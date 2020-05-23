@@ -62,6 +62,7 @@
 import swal from 'sweetalert2'
 import { retcode } from 'slim-tools'
 import AdminBase from '../base/base.vue'
+import { regex } from '@/utils/misc'
 
 export default {
   data () {
@@ -83,21 +84,21 @@ export default {
       let found = false
       let role = this.$user.mainRole
 
-      if ($.regex.email.test(this.searchTxt)) {
+      if (regex.email.test(this.searchTxt)) {
         let retList = await this.$api.user.list({ email: this.searchTxt, order: 'id.desc' }, 1, { role })
         if (retList.code === retcode.SUCCESS) {
           this.page = retList.data
           found = true
         }
       } else {
-        if ($.regex.nickname.test(this.searchTxt)) {
+        if (regex.nickname.test(this.searchTxt)) {
           let retList = await this.$api.user.list({ nickname: this.searchTxt, order: 'id.desc' }, 1, { role })
           if (retList.code === retcode.SUCCESS) {
             this.page = retList.data
             found = true
           }
         }
-        if ($.regex.id.test(this.searchTxt)) {
+        if (regex.id.test(this.searchTxt)) {
           let retList = await this.$api.user.list({ id: this.searchTxt, order: 'id.desc' }, 1, { role })
           if (retList.code === retcode.SUCCESS) {
             if (found) {

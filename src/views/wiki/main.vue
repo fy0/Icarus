@@ -18,7 +18,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { marked } from '@/md.js'
+import { marked } from '@/utils/md.ts'
 import WikiBase from './_base.vue'
 import { BaseWrapper, createFetchWrapper } from '@/fetch-wrap'
 import { retcode } from 'slim-tools'
