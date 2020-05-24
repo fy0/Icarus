@@ -23,50 +23,11 @@ from model.user import User, USER_GROUP
 from slim.support.peewee import PeeweeView
 from slim.utils import to_hex, to_bin, get_bytes_from_blob, sentinel
 from api import ValidateForm, cooldown, same_user, get_fuzz_ip, run_in_thread
-from wtforms import StringField, validators as va
 from slim.base.permission import DataRecord
-from api.user_validate_form import PasswordForm, NicknameForm
-from api.validate.user import ValidatePasswordResetPost, ChangePasswordDataModel, SignupDirectDataModel, \
-    SignupConfirmByEmailDataModel, SignupRequestByEmailDataModel, SigninDataModel, ChangeNicknameDataModel
-
-
-class UserViewMixin(BaseAccessTokenUserViewMixin):
-    """ 用户Mixin，用于与View """
-    def get_user_by_token(self: Union['BaseUserViewMixin', 'BaseView'], token) -> Type[BaseUser]:
-        t = UserToken.get_by_token(token)
-        if t: return User.get_by_pk(t.user_id)
-
-    async def setup_user_token(self, user_id, key=None, expires=30):
-        """ setup user token """
-        t = UserToken.new(user_id)
-        await t.init(self)
-        return t
-
-    def teardown_user_token(self: Union['BaseUserViewMixin', 'BaseView'], token=sentinel):
-        """ invalidate the token here"""
-        u: User = self.current_user
-        if u:
-            if token is None:
-                # clear all tokens
-                UserToken.delete().where(UserToken.user_id == u.id).execute()
-                return
-
-            if token is sentinel:
-                # clear current token
-                try:
-                    token = to_bin(self.get_user_token())
-                except binascii.Error:
-                    return
-            UserToken.delete().where(UserToken.user_id == u.id, UserToken.id == token).execute()
-
-
-class ResetPasswordForm(ValidateForm):
-    email = StringField('邮箱', validators=[va.required(), va.Length(3, config.USER_EMAIL_MAX), va.Email()])
-    nickname = StringField('昵称', validators=[
-        va.required(),
-        va.Length(min(config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN), config.USER_NICKNAME_FOR_REG_MAX),
-        # nickname_check  # 发生了新旧可用昵称列表不同，然后找回密码出现了“昵称被占用”的情况
-    ])
+from api.validate.user import ValidatePasswordResetPostDataModel, ChangePasswordDataModel, SignupDirectDataModel, \
+    SignupConfirmByEmailDataModel, SignupRequestByEmailDataModel, SigninDataModel, ChangeNicknameDataModel, \
+    RequestResetPasswordDataModel
+from api.user_view_mixin import UserViewMixin
 
 
 async def same_email_post(view):
@@ -79,7 +40,7 @@ async def same_email_post(view):
 class UserView(UserViewMixin, PeeweeView):
     model = User
 
-    @app.route.interface('POST')
+    @app.route.interface('POST', va_post=RequestResetPasswordDataModel)
     @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_IP, b'ic_cd_user_request_reset_password_%b')
     @cooldown(config.USER_REQUEST_PASSWORD_RESET_COOLDOWN_BY_ACCOUNT, b'ic_cd_user_request_reset_password_account_%b', unique_id_func=same_email_post)
     async def request_password_reset(self):
@@ -87,13 +48,10 @@ class UserView(UserViewMixin, PeeweeView):
         申请重置密码 / 忘记密码
         :return:
         """
-        post = await self.post_data()
-        form = ResetPasswordForm(**post)
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
+        vpost: RequestResetPasswordDataModel = self._.validated_post
 
         try:
-            user = User.get(User.nickname == post['nickname'], User.email == post['email'])
+            user: User = User.get(User.nickname == vpost.nickname, User.email == vpost.email)
         except User.DoesNotExist:
             user = None
 
@@ -103,35 +61,29 @@ class UserView(UserViewMixin, PeeweeView):
                 user.reset_key = key
                 user.save()
                 await mail.send_password_reset(user)
-                self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
-            else:
-                self.finish(RETCODE.FAILED)
-        else:
-            self.finish(RETCODE.FAILED)
+                return self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
 
-    @app.route.interface('POST', summary='密码重置验证', va_post=ValidatePasswordResetPost)
+        self.finish(RETCODE.FAILED)
+
+    @app.route.interface('POST', summary='密码重置验证', va_post=ValidatePasswordResetPostDataModel)
     async def validate_password_reset(self):
         """
         忘记密码后，进入重设流程时，通过此接口提交校验码和新密码
         :return:
         """
-        post = await self.post_data()
-        form = PasswordForm(**post)
-        if not form.validate():
-            return self.finish(RETCODE.FAILED, form.errors)
-        if 'uid' not in post or 'code' not in post:
-            return self.finish(RETCODE.FAILED)
+        vpost: ValidatePasswordResetPostDataModel = self._.validated_post
 
-        user = await User.check_reset_key(post['uid'], post['code'])
+        user = await User.check_reset_key(vpost.uid, vpost.code)
         if user:
-            info = User.gen_password_and_salt(post['password'])
+            info = User.gen_password_and_salt(vpost.password)
             user.password = info['password']
             user.salt = info['salt']
             user.reset_key = None
             user.save()
-            user.refresh_key()
-            self.setup_user_key(user.key, 30)
-            self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname})
+
+            UserToken.clear_by_user_id(user.id)
+            t: UserToken = await self.setup_user_token(user.id)
+            self.finish(RETCODE.SUCCESS, {'id': user.id, 'nickname': user.nickname, 'access_token': t.get_token()})
         else:
             self.finish(RETCODE.FAILED)
 

@@ -169,13 +169,14 @@ export default {
   methods: {
     fetchData: async function () {
       let wrong = false
+      let role = this.$user ? this.$user.basicRole : null
 
       let getSidebar = async () => {
         let ret = await this.$api.wiki.get(
           {
             flag: 1
           },
-          { role: this.$user.basicRole }
+          { role }
         )
 
         if (ret.code === retcode.SUCCESS) {
@@ -190,7 +191,7 @@ export default {
             select: 'id',
             flag: 2
           },
-          { role: this.$user.basicRole }
+          { role }
         )
 
         if (ret.code === retcode.SUCCESS) {

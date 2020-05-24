@@ -76,8 +76,8 @@ class User(PostModel, BaseUser):
 
     is_new_user = BooleanField(default=True)  # 是否全新用户（刚注册，未经过修改昵称）
     phone_verified = BooleanField(default=False)  # 手机号已确认
-    change_nickname_chance = IntegerField(default=0)  # 改名机会数量
-    reset_key = BlobField(index=True, null=True, default=None)  # 重置密码所用key
+    change_nickname_chance = IntegerField(default=0, help_text='改名机会数量')  # 改名机会数量
+    reset_key = BlobField(index=True, null=True, default=None, help_text='重置密码所用key')  # 重置密码所用key
 
     class Meta:
         db_table = 'user'

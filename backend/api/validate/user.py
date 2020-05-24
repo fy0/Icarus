@@ -44,16 +44,35 @@ def nickname_check(name):
     if config.USER_NICKNAME_CHECK_FUNC and not config.USER_NICKNAME_CHECK_FUNC(name):
         raise ValidationError('昵称被保留')
 
+_email_type_kwargs = {
+    'min_length': 3,
+    'max_length': config.USER_EMAIL_MAX,
+    'metadata': ValidatorDoc('邮箱')
+}
 
-nickname_type = StringType(
-    min_length=min(config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN),
-    max_length=config.USER_NICKNAME_FOR_REG_MAX,
-    validators=[nickname_check, nickname_exists_check],
-    metadata=ValidatorDoc('昵称')
-)
+_nickname_type_kwargs = {
+    'min_length': min(config.USER_NICKNAME_CN_FOR_REG_MIN, config.USER_NICKNAME_FOR_REG_MIN),
+    'max_length': config.USER_NICKNAME_FOR_REG_MAX,
+    'validators': [nickname_check, nickname_exists_check],
+    'metadata': ValidatorDoc('昵称')
+}
+
+email_type = EmailType(**_email_type_kwargs)
+email_type_required = EmailType(required=True, **_email_type_kwargs)
+
+nickname_type = StringType(**_nickname_type_kwargs)
+nickname_type_required = StringType(required=True, **_nickname_type_kwargs)
 
 
-class ValidatePasswordResetPost(Model):
+class RequestResetPasswordDataModel(Model):
+    """
+    申请重置密码
+    """
+    email = email_type_required
+    nickname = nickname_type_required
+
+
+class ValidatePasswordResetPostDataModel(Model):
     password = StringType(required=True, metadata=ValidatorDoc('新密码'))
     uid = BlobType(required=True)
     code = BlobType(required=True)
@@ -68,20 +87,17 @@ class SigninDataModel(Model):
     """
     email和nickname是二选一，但是model中没法体现，要代码检测
     """
-    email = EmailType(min_length=3, max_length=config.USER_EMAIL_MAX, metadata=ValidatorDoc('邮箱'))
-    nickname = StringType(metadata=ValidatorDoc('昵称'))
+    email = email_type
+    nickname = nickname_type
     password = StringType(required=True, metadata=ValidatorDoc('密码'))
 
 
 class SignupConfirmByEmailDataModel(Model):
-    email = EmailType(min_length=3, max_length=config.USER_EMAIL_MAX, required=True, metadata=ValidatorDoc('邮箱'))
+    """
+    注册时点击注册邮件，进行确认
+    """
+    email = email_type_required
     code = BlobType(required=True, metadata=ValidatorDoc('验证码'))
-
-
-class SignupDirectDataModel(Model):
-    email = EmailType(min_length=3, max_length=config.USER_EMAIL_MAX, required=True, metadata=ValidatorDoc('邮箱'))
-    password = StringType(required=True, min_length=6, max_length=64, metadata=ValidatorDoc('密码'))
-    nickname = nickname_type
 
 
 class SignupRequestByEmailDataModel(Model):
@@ -91,6 +107,15 @@ class SignupRequestByEmailDataModel(Model):
     email = EmailType(min_length=3, max_length=config.USER_EMAIL_MAX, required=True, validators=[email_exists_check], metadata=ValidatorDoc('邮箱'))
     password = StringType(required=True, min_length=6, max_length=64, metadata=ValidatorDoc('密码'))
     nickname = StringType(min_length=2, max_length=10, metadata=ValidatorDoc('昵称'))
+
+
+class SignupDirectDataModel(Model):
+    """
+    直接注册（不需要邮件确认）
+    """
+    email = email_type_required
+    password = StringType(required=True, min_length=6, max_length=64, metadata=ValidatorDoc('密码'))
+    nickname = nickname_type
 
 
 class ChangeNicknameDataModel(Model):

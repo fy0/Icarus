@@ -275,10 +275,12 @@ import { scrollTo } from '@/utils/misc'
 class FetchCls extends BaseWrapper {
   async fetchData () {
     let params = this.$route.params
+    let role = this.$user ? this.$user.basicRole : null
+
     let ret = await this.$api.topic.get({
       id: params.id,
       loadfk: { user_id: null, board_id: null, last_edit_user_id: null, 'id': { 'as': 's' } }
-    }, { role: this.$user.basicRole })
+    }, { role })
 
     if (ret.code === retcode.SUCCESS) {
       let mlog = await this.$api.logManage.list({

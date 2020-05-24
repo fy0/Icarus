@@ -10,11 +10,12 @@ import os
 import time
 from typing import Optional
 
+import peewee
 from peewee import TextField, BigIntegerField, BlobField
 from slim.base.view import AbstractSQLView
 from slim.utils import to_bin, get_bytes_from_blob
 
-from model import StdUserModel, INETField
+from model import StdUserModel, INETField, db
 
 
 class UserToken(StdUserModel):
@@ -39,6 +40,13 @@ class UserToken(StdUserModel):
         return UserToken.create(id=token, time=create_time, user_id=user_id, expire=expire_time)
 
     @classmethod
+    def clear_by_user_id(cls, user_id):
+        try:
+            cls.update(deleted_at=int(time.time())).where(cls.user_id == user_id).execute()
+        except peewee.DatabaseError:
+            db.rollback()
+
+    @classmethod
     def get_by_token(cls, token) -> Optional['UserToken']:
         if isinstance(token, str):
             try:
@@ -46,9 +54,10 @@ class UserToken(StdUserModel):
             except binascii.Error:
                 return
 
-        t = cls.get_by_pk(token)
-        if t and time.time() < t.expire:
-            return t
+        try:
+            t = cls.get(cls.id == token, time.time() < cls.expire, cls.deleted_at.is_null(True))
+        except peewee.DoesNotExist:
+            pass
 
     def get_token(self):
         return get_bytes_from_blob(self.id)

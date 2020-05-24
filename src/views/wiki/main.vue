@@ -29,7 +29,7 @@ class FetchCls extends BaseWrapper {
 
     let ret = await this.$api.wiki.get({
       flag: 2
-    }, this.$user.basicRole)
+    }, { role: this.$user.basicRole })
 
     if (ret.code === retcode.SUCCESS) {
       this.mainpage = ret.data
