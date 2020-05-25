@@ -128,8 +128,12 @@ EMAIL_PASSWORD = 'pasword'
 # 可选 - 文件上传（七牛配置）
 ##########################################
 
-UPLOAD_ENABLE = False
-UPLOAD_BACKEND = 'qiniu'
+UPLOAD_ENABLE = True
+UPLOAD_BACKEND = None  # 可选：None, 'qiniu'
+UPLOAD_DIR = './uploads'
+UPLOAD_FILE_SIZE_MIN = 100
+UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024
+
 UPLOAD_STATIC_HOST = '上传的静态资源域名地址'
 UPLOAD_QINIU_ACCESS_KEY = 'PLACE_HOLDER'
 UPLOAD_QINIU_SECRET_KEY = 'PLACE_HOLDER'
@@ -138,8 +142,6 @@ UPLOAD_QINIU_SAVEKEY = '$(etag)'
 UPLOAD_QINIU_DEADLINE_OFFSET = 3600  # 上传key有效时间 10分钟
 UPLOAD_QINIU_MIME_LIMIT = 'image/*'  # 只允许上传图片
 UPLOAD_QINIU_CALLBACK_URL = 'PLACE_HOLDER'  # 开启时必填，七牛上传回调地址
-UPLOAD_FILE_SIZE_MIN = 100
-UPLOAD_FILE_SIZE_MAX = 3 * 1024 * 1024
 
 UPLOAD_QINIU_IMAGE_STYLE_TOPIC = ''  # 文章页面图片所用的七牛图片样式
 

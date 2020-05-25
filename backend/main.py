@@ -1,10 +1,8 @@
 import misc.setup
 import asyncio
 from app import app
-from lib import mail, qn
+from lib import mail
 from model.redis import init as redis_init
-from slim import Application
-from slim.ext.openapi.main import get_openapi
 from slim.utils import get_ioloop
 import config
 
@@ -22,7 +20,9 @@ if __name__ == '__main__':
         await redis_init(loop)
 
         if config.UPLOAD_ENABLE:
-            qn.init()
+            if config.UPLOAD_BACKEND == 'qiniu':
+                from lib import qn
+                qn.init()
 
     app.on_startup.append(on_startup)
     app.run(host=config.HOST, port=config.PORT)

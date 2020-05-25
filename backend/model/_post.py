@@ -138,7 +138,7 @@ class PostModel(BaseModel):
     id = BlobField(primary_key=True, constraints=[SQL("DEFAULT int2bytea(nextval('id_gen_seq'))")])
     state = IntegerField(default=POST_STATE.NORMAL, index=True)
     visible = IntegerField(default=POST_VISIBLE.NORMAL, index=True)
-    time = MyTimestampField(index=True, default=get_time)  # 发布时间
+    time = MyTimestampField(index=True, default=get_time, help_text='发布时间')
     user_id = BlobField(index=True, null=True, default=None)  # 发布用户，对 user 表来说是推荐者，对 board 来说是创建者
 
     # is_for_tests = BooleanField(default=False, help_text='单元测试标记，单元测试结束后删除')
@@ -167,8 +167,12 @@ class PostModel(BaseModel):
             values['id'] = config.POST_ID_GENERATOR().to_bin()
 
 
+def get_model_id():
+    return config.LONG_ID_GENERATOR().to_bin()
+
+
 class LongIdPostModel(PostModel):
-    id = BlobField(primary_key=True)
+    id = BlobField(primary_key=True, default=get_model_id)
 
     def get_title(self):
         """

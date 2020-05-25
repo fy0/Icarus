@@ -77,6 +77,9 @@ def work():
     sql_execute('alter table "user" drop column key')
     sql_execute('alter table "user" drop column key_time')
 
+    sql_execute('alter table "upload" add column filename text')
+    sql_execute('alter table "upload" add column source text')
+
 
 db.connect()
 work()
