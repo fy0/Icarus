@@ -95,7 +95,6 @@ div.markdown-editor > div.editor-toolbar {
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import markdownEditor from '@/components/misc/markdown-editor.vue'
-import * as qiniu from 'qiniu-js'
 import Objectid from 'bson-objectid'
 // import marked from '@/utils/md.ts'
 import './topic-edit-fa'
@@ -310,6 +309,8 @@ export default {
       return this.$router.push('/')
     }
 
+    let uploadBackend = this.$misc.BACKEND_CONFIG.UPLOAD_BACKEND
+
     await this.fetchData()
     let vm = this
 
@@ -327,32 +328,39 @@ export default {
             }
           }
           if (!theFile) return false
-          let token = await asyncGetUploadToken()
 
           let placeholder = `![Uploading ${theFile['name']} - ${(new Objectid()).toString()} ...]()`
           editor.replaceRange(placeholder, {
             line: editor.getCursor().line,
             ch: editor.getCursor().ch
           })
-          let ob = qiniu.upload(theFile, null, token, null)
 
-          ob.subscribe({
-            complete: (ret) => {
-              // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
-              // console.log('done', ret)
-              if (ret.code === retcode.SUCCESS) {
-                // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
-                let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
-                let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
-                if (suffix) url += `-${suffix}`
-                let newTxt = `![](${url})`
-                let offset = newTxt.length - placeholder.length
-                let cur = editor.getCursor()
-                editor.setValue(editor.getValue().replace(placeholder, newTxt + '\n'))
-                editor.setCursor(cur.line, cur.ch + offset)
+          if (uploadBackend === 'qiniu') {
+            let token = await asyncGetUploadToken()
+            let qiniu = require('qiniu-js')
+            let ob = qiniu.upload(theFile, null, token, null)
+
+            ob.subscribe({
+              complete: (ret) => {
+                // 注意，这里的res是本地那个callback的结果，七牛直接转发过来了
+                // console.log('done', ret)
+                if (ret.code === retcode.SUCCESS) {
+                  // let url = `${config.qiniu.host}/${ret.data}` // -${config.qiniu.suffix}
+                  let url = `${vm.$misc.BACKEND_CONFIG.UPLOAD_STATIC_HOST}/${ret.data}`
+                  let suffix = vm.$misc.BACKEND_CONFIG.UPLOAD_QINIU_IMAGE_STYLE_TOPIC
+                  if (suffix) url += `-${suffix}`
+                  let newTxt = `![](${url})`
+                  let offset = newTxt.length - placeholder.length
+                  let cur = editor.getCursor()
+                  editor.setValue(editor.getValue().replace(placeholder, newTxt + '\n'))
+                  editor.setCursor(cur.line, cur.ch + offset)
+                }
               }
-            }
-          })
+            })
+          } else {
+            let ret = await vm.$api.upload.upload(theFile, 'user')
+            console.log('file upload', ret)
+          }
         }
 
         let cm = editor.simplemde.codemirror

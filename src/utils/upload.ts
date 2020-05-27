@@ -20,7 +20,7 @@ export function staticUrl (key: string) {
 
 export async function asyncGetUploadToken (isAvatarUpload = false) {
   if (isAvatarUpload) {
-    const ret = await api.upload.token('user', isAvatarUpload)
+    const ret = await api.upload.qn_token('user', isAvatarUpload)
     if (ret.code === retcode.SUCCESS) {
       return ret.data
     }
@@ -31,7 +31,7 @@ export async function asyncGetUploadToken (isAvatarUpload = false) {
   const now = Date.parse((new Date()).toISOString()) / 1000
   // 若 token 的有效时间降至，那么申请一个新的（2min余量）
   if ((now - uploadKeyTime) > offset) {
-    const ret = await api.upload.token('user')
+    const ret = await api.upload.qn_token('user')
     if (ret.code === retcode.SUCCESS) {
       uploadKeyTime = now
       uploadToken = ret.data

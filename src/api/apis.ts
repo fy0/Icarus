@@ -64,12 +64,19 @@ export class NotifAPI extends SlimSQLAPI {
 }
 
 export class UploadAPI extends SlimSQLAPI {
-  async token (role: string, isAvatar: boolean) {
+  async qn_token (role: string, isAvatar: boolean) {
     const params: any = {}
     if (isAvatar) {
       params.is_avatar = isAvatar
     }
-    return this.request('/token', 'POST', { params, role })
+    return this.request('/qn_token', 'POST', { params, role })
+  }
+
+  async upload (file: File, role: string) {
+    let data = {
+      'file': file
+    }
+    return this.request('/upload', 'post', { data, role })
   }
 }
 

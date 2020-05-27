@@ -65,7 +65,7 @@ class UploadView(UserViewMixin, PeeweeView):
         self.finish(RETCODE.SUCCESS, upload.to_dict())
 
     @app.route.interface('POST')
-    async def token(self):
+    async def qn_token(self):
         """
         获取七牛 token
         :return:
