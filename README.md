@@ -4,160 +4,159 @@
 
 > A opensource forum project write with python3 and vue.js
 
-[更多截图(旧版)](SCREENSHOT.md)
+[More screenshots (old version)] (SCREENSHOT.md)
 
-[2.0分支开发中，路线图见此](https://t.myrpg.cn/topic/2827)
+[During the 2.0 branch development, see the roadmap here] (https://t.myrpg.cn/topic/2827)
 
-### 注意
+### NOTE
 
-目前的master分支已经合并了2.0部分内容，实际上等价于1.3的SSR版本。
+The current master branch has merged parts of 2.0, which is actually equivalent to the SSR version of 1.3.
 
-此分支将暂时不再添加新的功能，只做BUG维护。功能的开发将在2.0分支进行。
+This branch will temporarily not add new features, only for BUG maintenance. Function development will be carried out in the 2.0 branch.
 
-这个版本就不单独release了，如有bug请及时反馈，谢谢。
-
-
-## 如何部署
-
-内容较多，详见[部署文档](misc/how-to-deploy.md)
+This version will not be released separately, please report back in time if you have any bugs, thank you.
 
 
-## 开源协议
+## How to deploy
+
+More content, see [deployment document](misc/how-to-deploy.md)
+
+
+## Open source agreement
 
 [ZLIB](LICENSE)
 
-免费且商业友好，这个协议基本上和MIT相同。
+Free and business friendly, this agreement is basically the same as MIT.
 
 
-## 特性
+## Features
 
-* 全局
+* Global
 
-    * 文件上传(七牛云)
+    * File upload (Qiniu Cloud)
 
-    * 超宽屏支持
+    * Ultra widescreen support
 
-    * 简易的移动端支持
+    * Simple mobile support
 
-    * 实时在线人数
+    * Real-time online number
 
-    * Markdown发帖和评论
+    * Markdown posts and comments
 
-    * 包含主题、评论、百科内容的全文搜索(基于Elasticsearch)
+    * Full-text search with topics, comments, encyclopedia content (based on Elasticsearch)
 
-* 用户系统
+* User system
 
-    * 注册、登录
+    * register log in
 
-    * 邮件激活
+    * Mail activation
 
-    * 邮箱找回密码
+    * Retrieve password by email
 
-    * 修改个人信息
+    * edit personal information
 
-    * 上传头像（七牛云）
+    * Upload avatar (Seven Cow Cloud)
 
-    * 每日签到
+    * Daily check-in
 
-    * 个人提醒
+    * Personal reminder
 
-* 论坛
+* Forum
 
-    * 扁平化的内容展示
+    * Flat content display
 
-    * 创建和管理板块
+    * Create and manage sections
 
-    * 板块主题颜色
+    * Plate theme color
 
-    * 发表和编辑主题
+    * Post and edit topics
 
-    * 文章页自动生成快捷导航
+    * The article page automatically generates quick navigation
 
-    * @功能
+    * @Features
 
-* 百科
+* Encyclopedia
 
-    * 自定义侧边栏和主页
+    * Customize sidebar and homepage
 
-    * 文章的创建和编辑
+    * Article creation and editing
 
-    * 全部文章列表
+    * List of all articles
 
-    * 文章历史
+    * Article history
 
-    * 随机页面
+    * Random pages
 
-* 管理后台
+* Management background
 
-    * 提供对板块、主题、用户、评论的管理
+    * Provide management of sections, topics, users and comments
 
-    * 管理日志
+    * Management log
 
-* 安全机制
+* Security Mechanism
 
-    * 前端密码加密，后端不取得用户的初始密码，最大限度降低了中间人攻击和数据库泄露的危害
+    * The front-end password is encrypted, and the back-end does not obtain the user's initial password, which minimizes the harm of man-in-the-middle attacks and database leaks
 
-    * 后端二次加密，sha512加盐迭代十万次后储存用户密码
+    * Secondary back-end encryption, sha512 plus salt iterates 100,000 times to store user password
 
-    * 密码相关API均有防爆破，可设置IP请求间隔和账号请求间隔，分别提升批量撞库和单点爆破的难度
+    * Password-related APIs are all explosion-proof, and IP request interval and account request interval can be set to increase the difficulty of batch database collision and single-point blasting, respectively
 
-    * 隐私数据，例如IP地址脱敏后才可存入数据库
+    * Privacy data, such as IP addresses can be stored in the database after desensitization
 
+## Upgrade Guide
 
+First stop the service and update the source code.
 
-## 升级指南
+Then please look for the corresponding upgrade file in the `backend/misc/upgrade` directory, for example 1.2 upgrade 1.3 use `u12-u13.py`.
 
-首先停止服务并更新源码。
+It can be deleted after executing in the `backend` directory.
 
-然后请寻找 `backend/misc/upgrade` 目录下对应的升级文件，例如1.2升级1.3使用`u12-u13.py`。
+Note that if pipenv or other virtual environment is used, this operation should be done in the environment corresponding to the project.
 
-在 `backend` 目录下执行后删除即可。
+Then upgrade the project dependencies of the front-end project (root directory) and back-end project (backend directory) respectively.
 
-注意如果使用了 pipenv 或其他虚拟环境，要在项目对应环境中完成这个操作。
+If there is no special upgrade instructions for this version, just restart the service at this time.
 
-然后分别升级前端项目(根目录)和后端项目(backend目录)的项目依赖。
 
-如该版本无特别的升级说明，此时直接重新开启服务即可。
 
+## Planning
 
+Due to limited free time, and the development of the entire project alone.
 
-## 规划
+The current version still has some imperfections and missing features that are too late to complete. Let me plan as follows:
 
-由于空闲时间有限，而且是单枪匹马做整个项目的开发。
+Recently:
 
-目前的版本还有一些不完善的地方以及缺少的功能来不及完成，姑且规划如下：
+* Collection, thanks, likes
 
-近期：
+* Personal Center
 
-* 收藏、感谢、点赞
+* Enhance mobile experience
 
-* 个人中心
+* Support users to delete and edit comments
 
-* 强化移动端体验
+Follow-up:
 
-* 支持用户对评论进行自删和编辑等操作
+* Multi-terminal simultaneous login support
 
-后续：
+* Support third-party login
 
-* 多终端同时登录的支持
+* Build an independent project site
 
-* 支持第三方登录
+* RSS support
 
-* 搭建独立的项目站点
+* Improve tests
 
-* RSS支持
 
-* 完善tests
+## Donate
 
+In the process of developing this project, I paid a lot of time and energy. Hope this project can help everyone, or you can like this project.
 
-## 捐赠
+This is already a good affirmation for me, please be sure to order a star to let me know.
 
-在开发这个项目的过程中，我付出了大量的时间和精力。希望这个项目能对大家所有帮助，或者你们能够喜欢这个项目。
-
-这对我来说已经是很好的肯定，请务必点个star让我知道。
-
-也欢迎以捐助的形式来支持我的开发：
+I also welcome donations to support my development:
 
 <img src="http://wx3.sinaimg.cn/large/007474KTgy1fxcni97ntdj30u00u00x2.jpg" width=350 />
 
-微信
+WeChat
+
