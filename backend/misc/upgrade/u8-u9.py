@@ -1,7 +1,7 @@
 import time
 import peewee
 from model import db
-from model.user import User
+from model.user_model import UserModel
 from model.notif import UserNotifRecord
 
 

@@ -41,7 +41,7 @@ class USER_GROUP(StateObject):
 MAIN_ROLE_ORDER = ['admin', 'superuser', 'user', 'inactive_user', 'banned_user', None]
 
 
-class User(PostModel, BaseUser):
+class UserModel(PostModel, BaseUser):
     email = TextField(index=True, unique=True, null=True, default=None)
     phone = TextField(index=True, unique=True, null=True, default=None)  # 大陆地区
     nickname = CITextField(index=True, unique=True, null=True, help_text='用户昵称')  # CITextField
@@ -85,7 +85,8 @@ class User(PostModel, BaseUser):
     #object_type = OBJECT_TYPES.USER
 
     @classmethod
-    def new(cls, nickname, password, extra_values=None, *, auto_nickname=False, is_for_tests=True) -> Optional['User']:
+    def new(cls, nickname, password, extra_values=None, *, auto_nickname=False, is_for_tests=True) -> Optional[
+        'UserModel']:
         values = {
             'nickname': nickname,
             'is_new_user': True
@@ -100,7 +101,7 @@ class User(PostModel, BaseUser):
 
         try:
             uid = cls.insert(values).execute()
-            u: User = cls.get_by_pk(uid)
+            u: UserModel = cls.get_by_pk(uid)
 
             uchanged = False
             # 如果是第一个用户，那么自动为管理员
@@ -263,7 +264,7 @@ class User(PostModel, BaseUser):
         return code
 
     @classmethod
-    async def check_reset_key(cls, uid, code) -> Union['User', None]:
+    async def check_reset_key(cls, uid, code) -> Union['UserModel', None]:
         """
         检查uid与code这一组密码重置密钥是否有效
         :param uid:
@@ -356,13 +357,13 @@ class User(PostModel, BaseUser):
             return self
 
     @classmethod
-    def auth_by_mail(cls, email, password_text) -> ["User", bool]:
+    def auth_by_mail(cls, email, password_text) -> ["UserModel", bool]:
         try: u = cls.get(cls.email == email)
         except DoesNotExist: return None, False
         return u, u._auth_base(password_text)
 
     @classmethod
-    def auth_by_username(cls, username, password_text) -> ["User", bool]:
+    def auth_by_username(cls, username, password_text) -> ["UserModel", bool]:
         try: u = cls.get(cls.username == username)
         except DoesNotExist: return None, False
         return u, u._auth_base(password_text)

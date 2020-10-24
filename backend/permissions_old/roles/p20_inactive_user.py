@@ -1,6 +1,6 @@
 # deprecated
-from slim.base.permission import Ability, A, DataRecord
-from permissions.roles.p10_visitor import visitor
+from slim.base.permission import Ability, A, 'DataRecord'
+from permissions_old.roles.p10_visitor import visitor
 
 inactive_user = Ability({
     'user': {

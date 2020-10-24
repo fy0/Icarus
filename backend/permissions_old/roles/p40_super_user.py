@@ -1,5 +1,5 @@
-from permissions.roles.p30_normal_user import normal_user
-from slim.base.permission import Ability, A, DataRecord
+from permissions_old.roles.p30_normal_user import normal_user
+from slim.base.permission import Ability, A, 'DataRecord'
 
 
 def merge_post_permissions_of_superuser(d):

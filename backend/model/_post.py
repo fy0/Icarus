@@ -10,7 +10,6 @@ from typing import Dict, Type, Optional
 from peewee import *
 
 import config
-from slim.base.sqlquery import DataRecord
 
 from config import POST_ID_GENERATOR
 from slim.utils import get_bytes_from_blob
@@ -66,7 +65,7 @@ class POST_TYPES(StateObject):
 
     @classmethod
     def get_model(cls, related_type) -> Type['PostModel']:
-        from model.user import User
+        from model.user_model import UserModel
         from model.topic import Topic
         from model.comment import Comment
         from model.board import Board
@@ -77,7 +76,7 @@ class POST_TYPES(StateObject):
             related_type = int(related_type)
 
         if related_type == POST_TYPES.USER:
-            return User
+            return UserModel
         elif related_type == POST_TYPES.TOPIC:
             return Topic
         elif related_type == POST_TYPES.COMMENT:
@@ -91,7 +90,7 @@ class POST_TYPES(StateObject):
 
     @classmethod
     def get_post(cls, related_type, related_id) -> Optional['PostModel']:
-        from model.user import User
+        from model.user_model import UserModel
         from model.topic import Topic
         from model.wiki import WikiArticle
 
@@ -192,7 +191,7 @@ class LongIdPostModel(PostModel):
             values['id'] = config.LONG_ID_GENERATOR().to_bin()
 
 
-def get_title_by_record(post_type, record: DataRecord):
+def get_title_by_record(post_type, record: 'DataRecord'):
     """
     根据返回的 record 来获取title
     :param post_type:

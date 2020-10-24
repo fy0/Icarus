@@ -8,7 +8,7 @@ from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_do_comment
 from model.topic import Topic
 from slim.base.permission import Permissions
-from slim.base.sqlquery import SQLValuesToWrite, DataRecord
+from slim.base.sqlquery import SQLValuesToWrite, 'DataRecord'
 from slim.utils.customid import CustomID
 from model.comment import Comment
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
@@ -89,7 +89,7 @@ class CommentView(UserViewMixin, PeeweeView):
                 post: Topic
                 await post.weight_inc()
 
-    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List['DataRecord']):
         for record in records:
             post_stats_do_comment(record['related_type'], record['related_id'], record['id'])
             post_number = Comment.select().where(Comment.related_id == record['related_id'], Comment.id <= record['id']).count()
@@ -106,8 +106,8 @@ class CommentView(UserViewMixin, PeeweeView):
             if config.SEARCH_ENABLE:
                 run_in_thread(esdb.es_update_comment, record['id'])
 
-    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
-                           new_records: List[DataRecord]):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List['DataRecord'],
+                           new_records: List['DataRecord']):
         for old_record, record in zip(old_records, new_records):
             # 管理日志：修改评论状态
             ManageLog.add_by_post_changed(self, 'state', MOP.POST_STATE_CHANGE, POST_TYPES.COMMENT,

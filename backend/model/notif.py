@@ -18,7 +18,7 @@ import config
 from model import BaseModel, MyTimestampField, db
 from model._post import POST_STATE, POST_TYPES
 from model.comment import Comment
-from model.user import User
+from model.user_model import UserModel
 from slim import json_ex_dumps
 from slim.utils import StateObject, to_bin, get_bytes_from_blob
 
@@ -43,7 +43,7 @@ def fetch_notif_of_comment(user_id, last_comment_id=b'\x00'):
     # 某某 评论了你的文章 某某某： XXXXXX
     # 这个暂时不折叠了，全部显示在提醒中
     cur = db.execute_sql('''
-        SELECT "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id, 
+        SELECT "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id,
           "t"."title", left("c".content, 50), "u"."nickname"
         FROM topic AS t, comment AS c, "user" as u
         WHERE t.user_id = %s AND t.state >= %s AND t.id = c.related_id
@@ -80,7 +80,7 @@ def fetch_notif_of_reply(user_id, last_reply_id=b'\x00'):
     # 某某 在文章 某某某 中回复了你的评论： XXXXXX
     # c2 是 user_id 的原评论，c 是回复评论的评论
     cur = db.execute_sql('''
-        SELECT "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id, 
+        SELECT "c".time, "c"."id", "c"."related_id", "c"."related_type", "c".user_id,
           "t"."title", left("c".content, 50), "u"."nickname"
         FROM topic AS t, comment AS c, comment AS c2, "user" as u
         WHERE c2.user_id = %s AND c2.state >= %s AND
@@ -352,7 +352,7 @@ class Notification(BaseModel):
 
 
 if __name__ == '__main__':
-    u: User = User.select().where(User.nickname == '折影').get()
+    u: UserModel = UserModel.select().where(UserModel.nickname == '折影').get()
     r: UserNotifLastInfo = UserNotifLastInfo.get_by_pk(u.id)
     for i in r.get_notifications():
         print(i)

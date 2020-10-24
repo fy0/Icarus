@@ -11,7 +11,7 @@ from model import db
 from model._post import POST_STATE
 from model.comment import Comment
 from model.manage_log import ManageLog, MOP
-from model.user import User, USER_GROUP
+from model.user_model import UserModel, USER_GROUP
 from model.notif import UserNotifLastInfo
 
 

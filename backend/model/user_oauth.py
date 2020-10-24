@@ -4,7 +4,7 @@ from slim.base.user import BaseUser
 from peewee import *
 
 from model._post import LongIdPostModel
-from model import BaseModel, MyTimestampField, CITextField, db, SerialField, user
+from model import BaseModel, MyTimestampField, CITextField, db, SerialField, user_model
 
 
 class UserOAuth(LongIdPostModel):

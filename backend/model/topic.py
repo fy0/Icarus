@@ -5,7 +5,7 @@ from model.redis import RK_TOPIC_WEIGHT_MAX, redis
 from slim.utils import StateObject
 from peewee import *
 from model import db, BaseModel, MyTimestampField
-from model.user import User
+from model.user_model import UserModel
 from model.board import Board
 
 """

@@ -1,6 +1,6 @@
 from app import app
-from permissions.roles import *
-from permissions.tables import *
+from permissions_old.roles import *
+from permissions_old.tables import *
 
 
 app.permission.add(None, visitor)

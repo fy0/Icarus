@@ -6,7 +6,9 @@ import peewee
 import config
 from typing import Dict, List, Type, Union
 
+from api.view.curd import BaseCrudView
 from app import app
+from crud.user import User
 from lib import mail
 from model import db
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
@@ -15,15 +17,10 @@ from model._post import POST_TYPES, POST_STATE
 from model.post_stats import post_stats_new
 from model.user_token import UserToken
 from slim import D
-from slim.base.sqlquery import SQLValuesToWrite
-from slim.base.user import BaseAccessTokenUserViewMixin, BaseUser, BaseUserViewMixin
-from slim.base.view import BaseView
 from slim.retcode import RETCODE
-from model.user import User, USER_GROUP
-from slim.support.peewee import PeeweeView
+from model.user_model import UserModel, USER_GROUP
 from slim.utils import to_hex, to_bin, get_bytes_from_blob, sentinel
-from api import ValidateForm, cooldown, same_user, get_fuzz_ip, run_in_thread
-from slim.base.permission import DataRecord
+from api import cooldown, same_user, get_fuzz_ip, run_in_thread
 from api.validate.user import ValidatePasswordResetPostDataModel, ChangePasswordDataModel, SignupDirectDataModel, \
     SignupConfirmByEmailDataModel, SignupRequestByEmailDataModel, SigninDataModel, ChangeNicknameDataModel, \
     RequestResetPasswordDataModel
@@ -37,7 +34,7 @@ async def same_email_post(view):
 
 
 @app.route.view('user')
-class UserView(UserViewMixin, PeeweeView):
+class UserView(UserViewMixin, BaseCrudView):
     model = User
 
     @app.route.interface('POST', va_post=RequestResetPasswordDataModel)
@@ -51,8 +48,8 @@ class UserView(UserViewMixin, PeeweeView):
         vpost: RequestResetPasswordDataModel = self._.validated_post
 
         try:
-            user: User = User.get(User.nickname == vpost.nickname, User.email == vpost.email)
-        except User.DoesNotExist:
+            user: UserModel = UserModel.get(UserModel.nickname == vpost.nickname, UserModel.email == vpost.email)
+        except UserModel.DoesNotExist:
             user = None
 
         if user:
@@ -73,9 +70,9 @@ class UserView(UserViewMixin, PeeweeView):
         """
         vpost: ValidatePasswordResetPostDataModel = self._.validated_post
 
-        user = await User.check_reset_key(vpost.uid, vpost.code)
+        user = await UserModel.check_reset_key(vpost.uid, vpost.code)
         if user:
-            info = User.gen_password_and_salt(vpost.password)
+            info = UserModel.gen_password_and_salt(vpost.password)
             user.password = info['password']
             user.salt = info['salt']
             user.reset_key = None
@@ -102,8 +99,8 @@ class UserView(UserViewMixin, PeeweeView):
         if self.current_user:
             vpost: ChangePasswordDataModel = self._.validated_post
 
-            u: User = self.current_user
-            if User.auth_by_mail(u.email, vpost.old_password):
+            u: UserModel = self.current_user
+            if UserModel.auth_by_mail(u.email, vpost.old_password):
                 u.set_password(vpost.password)
                 k = u.refresh_key()
                 self.finish(RETCODE.SUCCESS, k['key'])
@@ -129,10 +126,10 @@ class UserView(UserViewMixin, PeeweeView):
         # check auth method
         if vpost.email:
             field_value = vpost.email
-            auth_method = User.auth_by_mail
+            auth_method = UserModel.auth_by_mail
         elif vpost.username:
             field_value = vpost.username
-            auth_method = User.auth_by_username
+            auth_method = UserModel.auth_by_username
         else:
             return self.finish(RETCODE.FAILED, msg='必须提交用户名或邮箱中的一个作为登录凭据')
 
@@ -165,15 +162,15 @@ class UserView(UserViewMixin, PeeweeView):
             post['password'] = '00'
         await super().set()
 
-    async def before_update(self, values: SQLValuesToWrite, records: List[DataRecord]):
+    async def before_update(self, values: 'SQLValuesToWrite', records: List['DataRecord']):
         raw_post = await self.post_data()
 
         if 'password' in raw_post:
-            ret = User.gen_password_and_salt(self.new_pass)
+            ret = UserModel.gen_password_and_salt(self.new_pass)
             values.update(ret)
 
-    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
-                           new_records: List[DataRecord]):
+    async def after_update(self, values: 'SQLValuesToWrite', old_records: List['DataRecord'],
+                           new_records: List['DataRecord']):
         raw_post = await self.post_data()
         for old_record, record in zip(old_records, new_records):
             manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
@@ -230,7 +227,7 @@ class UserView(UserViewMixin, PeeweeView):
         # 发送注册邮件
         if config.EMAIL_ACTIVATION_ENABLE:
             vpost: SignupRequestByEmailDataModel = self._.validated_post
-            code = await User.gen_reg_code_by_email(vpost.email, vpost.password)
+            code = await UserModel.gen_reg_code_by_email(vpost.email, vpost.password)
             await mail.send_reg_code_email(vpost.email, code)
             self.finish(RETCODE.SUCCESS)
         else:
@@ -240,7 +237,7 @@ class UserView(UserViewMixin, PeeweeView):
     async def check_reg_code_by_email(self):
         """ 检查与邮件关联的激活码是否可用 """
         vquery: SignupConfirmByEmailDataModel = self._.validated_query
-        pw = await User.check_reg_code_by_email(vquery.email, vquery.code)
+        pw = await UserModel.check_reg_code_by_email(vquery.email, vquery.code)
         self.finish(RETCODE.SUCCESS if pw else RETCODE.FAILED)
 
     @app.route.interface('POST', va_post=SignupConfirmByEmailDataModel, summary='注册确认（邮箱）')
@@ -248,11 +245,11 @@ class UserView(UserViewMixin, PeeweeView):
         """ 确认并创建账户 """
         vpost: SignupConfirmByEmailDataModel = self._.validated_post
 
-        password = await User.check_reg_code_by_email(vpost.email, vpost.code)
+        password = await UserModel.check_reg_code_by_email(vpost.email, vpost.code)
         if not password:
             return self.finish(RETCODE.FAILED, '验证码不正确')
 
-        u = User.new(None, password, {'email': vpost.email}, auto_nickname=True)
+        u = UserModel.new(None, password, {'email': vpost.email}, auto_nickname=True)
         await self.signup_cleanup(u)
 
     @app.route.interface('POST', va_post=SignupDirectDataModel, summary='注册（直接形式）')
@@ -266,7 +263,7 @@ class UserView(UserViewMixin, PeeweeView):
             'ip_registered': await get_fuzz_ip(self)
         }
 
-        u = User.new(vpost.nickname, vpost.password, extra_values=extra_values, is_for_tests=False, auto_nickname=False)
+        u = UserModel.new(vpost.nickname, vpost.password, extra_values=extra_values, is_for_tests=False, auto_nickname=False)
         await self.signup_cleanup(u)
 
     async def signup_cleanup(self, u):
@@ -276,7 +273,7 @@ class UserView(UserViewMixin, PeeweeView):
             UserNotifLastInfo.new(u.id)
 
             if u.email:
-                await User.reg_code_cleanup(u.email)
+                await UserModel.reg_code_cleanup(u.email)
 
             t: UserToken = await self.setup_user_token(u.id)
             self.finish(RETCODE.SUCCESS, {'id': u.id, 'access_token': t.get_token()})
@@ -285,7 +282,7 @@ class UserView(UserViewMixin, PeeweeView):
 
     @app.route.interface('POST', va_post=ChangeNicknameDataModel, summary='使用改名卡修改昵称')
     async def change_nickname(self):
-        u: User = self.current_user
+        u: UserModel = self.current_user
         if not u:
             return self.finish(RETCODE.PERMISSION_DENIED)
 

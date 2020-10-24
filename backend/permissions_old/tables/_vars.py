@@ -1,7 +1,7 @@
 from slim.base.sqlquery import SQLQueryInfo, SQL_OP
 from slim.base.permission import Ability
 from model._post import POST_VISIBLE, POST_STATE
-from permissions.roles import *
+from permissions_old.roles import *
 
 base_post_state_conditions = [
     ('state', '>', POST_STATE.APPLY),

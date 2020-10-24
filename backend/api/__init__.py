@@ -1,15 +1,16 @@
 import locale
 from asyncio import futures
-from wtforms import Form
 from typing import Union
+
+from slim.base.web import JSONResponse
 from slim.retcode import RETCODE
-from slim.base.view import BaseView
 from ipaddress import IPv4Address, IPv6Address
 from concurrent.futures import ThreadPoolExecutor
 
 from app import app
 from model.redis import redis
 from slim.utils import get_ioloop, get_bytes_from_blob
+from slim.view import BaseView
 
 thread_executor = ThreadPoolExecutor()
 
@@ -18,11 +19,6 @@ def run_in_thread(fn, *args, **kwargs):
     return futures.wrap_future(
         thread_executor.submit(fn, *args, **kwargs), loop=get_ioloop()
     )
-
-
-class ValidateForm(Form):
-    class Meta:
-        locales = ['zh_CN']  # locales = [locale.getdefaultlocale()[0]]
 
 
 async def get_fuzz_ip(view) -> str:
@@ -41,11 +37,11 @@ async def get_ip(view: BaseView) -> bytes:
     return (await view.get_ip()).packed
 
 
-async def same_user(view: BaseView) -> Union[bytes, None]:
+async def same_user(view: BaseView):
     if view.current_user:
         return get_bytes_from_blob(view.current_user.id)
 
-    view.finish(RETCODE.PERMISSION_DENIED)
+    view.response = JSONResponse(200, {'code': RETCODE.PERMISSION_DENIED})
 
 
 def cooldown(interval, redis_key_template, *, unique_id_func=get_ip, cd_if_unsuccessed=None):
@@ -62,12 +58,12 @@ def cooldown(interval, redis_key_template, *, unique_id_func=get_ip, cd_if_unsuc
 
             key = redis_key_template % unique_id
             if await redis.get(key):
-                self.finish(RETCODE.TOO_FREQUENT, await redis.ttl(key))
+                self.response = JSONResponse(200, {'code': RETCODE.TOO_FREQUENT, 'data': await redis.ttl(key)})
             else:
                 ret = await func(self, *args, **kwargs)
                 # 如果设定了失败返回值CD （请求完成同时未成功）
                 if self.is_finished and cd_if_unsuccessed is not None:
-                    if self.ret_val['code'] != RETCODE.SUCCESS:
+                    if self.response.data['code'] != RETCODE.SUCCESS:
                         await redis.set(key, '1', expire=cd_if_unsuccessed)
                         return ret
 

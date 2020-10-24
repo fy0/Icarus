@@ -5,19 +5,19 @@ from schematics.exceptions import ValidationError
 from schematics.types import StringType, EmailType
 
 import config
-from model.user import User
+from model.user_model import UserModel
 from slim.base.types.doc import ValidatorDoc
 from slim.utils.schematics_ext import BlobType
 
 
 def email_exists_check(email):
-    if list(User.select().where(User.email == email)):
+    if list(UserModel.select().where(UserModel.email == email)):
         raise ValidationError('此邮箱已注册')
     return True
 
 
 def nickname_exists_check(name):
-    if list(User.select().where(User.nickname == name)):
+    if list(UserModel.select().where(UserModel.nickname == name)):
         raise ValidationError('此昵称已被占用')
     return True
 

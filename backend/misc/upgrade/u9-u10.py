@@ -2,7 +2,7 @@ import time
 import peewee
 from model import db
 from model.comment import Comment
-from model.user import User
+from model.user_model import UserModel
 from model.notif import UserNotifRecord
 
 

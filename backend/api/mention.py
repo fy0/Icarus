@@ -3,11 +3,11 @@ import time
 import config
 from lib.atsearch import at_replace
 from model.mention import Mention
-from model.user import User
+from model.user_model import UserModel
 
 
 def check_content_mention(content):
-    ncontent, matched, mentioned_users = at_replace(content, User.find_by_nicknames)
+    ncontent, matched, mentioned_users = at_replace(content, UserModel.find_by_nicknames)
 
     def do_mentions(sender_id, loc_title, location, related, data=None):
         """
@@ -22,7 +22,7 @@ def check_content_mention(content):
         t = int(time.time())
 
         for i in mentioned_users.values():
-            i: User
+            i: UserModel
             if i.id == sender_id:
                 continue
             items.append({

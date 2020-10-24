@@ -5,7 +5,7 @@ from playhouse.postgres_ext import ArrayField
 from model._post import POST_VISIBLE, POST_STATE, PostModel, POST_TYPES
 from slim.utils.state_obj import StateObject
 from model import BaseModel, MyTimestampField
-from model.user import User
+from model.user_model import UserModel
 
 
 def today_midnight():

@@ -1,9 +1,9 @@
 from typing import Set
 
-from model.user import USER_GROUP
-from permissions.roles import *
+from model.user_model import USER_GROUP
+from permissions_old.roles import *
 from model._post import POST_STATE, POST_VISIBLE
-from slim.base.permission import Ability, A, DataRecord
+from slim.base.permission import Ability, A, 'DataRecord'
 from slim.base.sqlquery import SQLQueryInfo, SQL_OP
 
 
@@ -27,7 +27,7 @@ inactive_user.add_query_condition('user', func=func)
 normal_user.add_query_condition('user', func=func)
 
 
-def check_is_me(ability, user, action, record: DataRecord, available_columns: list):
+def check_is_me(ability, user, action, record: 'DataRecord', available_columns: list):
     # 拒绝其他人写入自己的个人资料
     if user:
         if record.get('id') != get_bytes_from_blob(user.id):
@@ -35,7 +35,7 @@ def check_is_me(ability, user, action, record: DataRecord, available_columns: li
     return True
 
 
-def check_is_admin(ability, user, action, record: DataRecord, available_columns: Set):
+def check_is_admin(ability, user, action, record: 'DataRecord', available_columns: Set):
     # 阻止superuser写入superuser或更高权限用户组
     if user:
         if record.get('group') in (USER_GROUP.SUPERUSER, USER_GROUP.ADMIN):

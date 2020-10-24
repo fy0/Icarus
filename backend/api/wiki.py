@@ -10,7 +10,7 @@ from model._post import POST_TYPES
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_new, post_stats_incr, PostStats, post_stats_do_edit
 from model.wiki import WikiArticle
-from slim.base.permission import Permissions, DataRecord
+from slim.base.permission import Permissions, 'DataRecord'
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -67,7 +67,7 @@ class WikiView(UserViewMixin, PeeweeView):
         else:
             self.finish(RETCODE.NOT_FOUND)
 
-    def after_read(self, records: List[DataRecord]):
+    def after_read(self, records: List['DataRecord']):
         for i in records:
             self._val_bak = i['id']
 
@@ -82,15 +82,15 @@ class WikiView(UserViewMixin, PeeweeView):
     async def new(self):
         return await super().new()
 
-    async def before_update(self, values: SQLValuesToWrite, records: List[DataRecord]):
+    async def before_update(self, values: SQLValuesToWrite, records: List['DataRecord']):
         raw_post = await self.post_data()
         record = records[0]
         form = WikiEditForm(**raw_post)
         if not form.validate():
             return self.finish(RETCODE.FAILED, form.errors)
 
-    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
-                           new_records: List[DataRecord]):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List['DataRecord'],
+                           new_records: List['DataRecord']):
         for old_record, record in zip(old_records, new_records):
             manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
                 self, column, op, POST_TYPES.WIKI, values, old_record, record
@@ -126,7 +126,7 @@ class WikiView(UserViewMixin, PeeweeView):
             if not ref: ref = values['title']
             values['ref'] = quote(ref).replace('/', '')
 
-    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List['DataRecord']):
         for record in records:
             # 添加统计记录
             post_stats_new(POST_TYPES.WIKI, record['id'])

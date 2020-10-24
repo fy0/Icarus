@@ -1,4 +1,4 @@
-from model.user import User
+from model.user_model import UserModel
 from slim.base.ws import WSRouter
 from slim.utils import to_bin
 

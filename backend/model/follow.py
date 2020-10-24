@@ -1,6 +1,6 @@
 from peewee import *
 from model import BaseModel, MyTimestampField
-from model.user import User
+from model.user_model import UserModel
 # 关注（对人） + 收藏（对文章）
 
 

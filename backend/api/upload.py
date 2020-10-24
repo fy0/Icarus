@@ -8,7 +8,7 @@ from slim.ext.decorator import require_role
 import config
 from app import app
 from model.upload import Upload
-from model.user import User
+from model.user_model import UserModel
 from slim.base.permission import Permissions
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -34,7 +34,7 @@ class UploadView(UserViewMixin, PeeweeView):
         """
         size = 0
         cid = CustomID()
-        user: User = self.current_user
+        user: UserModel = self.current_user
         fn = os.path.join(upload_dir, str(cid.to_hex()))
         m = hashlib.blake2b()
 
@@ -102,7 +102,7 @@ class UploadView(UserViewMixin, PeeweeView):
                 Upload.new(uid, key, info['size'], info['ext'], info['type_name'], info['image_info'])
                 if info['type_name'] == 'avatar':
                     # 更换用户头像
-                    u = User.get_by_pk(uid)
+                    u = UserModel.get_by_pk(uid)
                     if u:
                         u.avatar = key
                         u.save()

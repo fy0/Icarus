@@ -12,7 +12,7 @@ from model.post_stats import PostStats, StatsLog
 from model.test import Test
 from model.topic import Topic
 from model.upload import Upload
-from model.user import User
+from model.user_model import UserModel
 from model.user_oauth import UserOAuth
 from model.user_token import UserToken
 from model.wiki import WikiArticle
@@ -84,7 +84,7 @@ def work():
 db.connect()
 work()
 
-db.create_tables([Test, Board, Follow, Comment, Topic, User,
+db.create_tables([Test, Board, Follow, Comment, Topic, UserModel,
                   WikiArticle,
                   Notification, UserNotifLastInfo,
                   UserOAuth,

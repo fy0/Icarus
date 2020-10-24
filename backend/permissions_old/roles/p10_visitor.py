@@ -1,4 +1,4 @@
-from slim.base.permission import Ability, A, DataRecord
+from slim.base.permission import Ability, A, 'DataRecord'
 
 
 def merge_post_permissions_of_visitor(d):

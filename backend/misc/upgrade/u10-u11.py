@@ -6,7 +6,7 @@ import peewee
 from model import db
 from model._post import POST_STATE
 from model.comment import Comment
-from model.user import User, USER_GROUP
+from model.user_model import UserModel, USER_GROUP
 from model.notif import UserNotifLastInfo
 
 
@@ -27,7 +27,7 @@ def work():
     sql_execute('drop table "user_notif_record";')
 
     db.create_tables([UserNotifLastInfo], safe=True)
-    for i in User.select().execute():
+    for i in UserModel.select().execute():
         try:
             UserNotifLastInfo.create(id=i.id, update_time=int(time.time()))
         except peewee.IntegrityError as e:

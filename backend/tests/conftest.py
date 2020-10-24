@@ -6,7 +6,7 @@ from slim.utils import get_ioloop
 from slim.utils.autoload import import_path
 
 from app import app
-from model.user import User
+from model.user_model import UserModel
 
 import model._models
 
@@ -29,7 +29,7 @@ user_name_to_id = {}
 
 def user_new(username, *args, **kwargs):
     user_names.append(username)
-    u = User.new(username, *args, **kwargs)
+    u = UserModel.new(username, *args, **kwargs)
     user_name_to_id[username] = u.id
     return u
 
@@ -49,4 +49,4 @@ def do_setup(request: pytest.Session):
 
 
 def pytest_sessionfinish(session, exitstatus):
-    n = User.delete().where(User.username.in_(user_names)).execute()
+    n = UserModel.delete().where(UserModel.username.in_(user_names)).execute()

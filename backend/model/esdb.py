@@ -9,7 +9,7 @@ from slim.utils import to_hex
 
 from model._post import POST_TYPES, POST_STATE, POST_VISIBLE
 from model.topic import Topic
-from model.user import User
+from model.user_model import UserModel
 from model.wiki import WikiArticle
 
 INDEX_NAME = config.ES_INDEX_NAME
@@ -97,7 +97,7 @@ def get_post_base_body(post):
 def es_update_topic(id):
     post: Topic = Topic.get_by_id(id)
     if not post: return
-    u: User = User.get_by_id(post.user_id)
+    u: UserModel = UserModel.get_by_id(post.user_id)
     if not u: return
 
     body = get_post_base_body(post)
@@ -118,7 +118,7 @@ def es_update_wiki(id):
     post: WikiArticle = WikiArticle.get_by_id(id)
     if not post: return
     if post.flag: return
-    u: User = User.get_by_id(post.user_id)
+    u: UserModel = UserModel.get_by_id(post.user_id)
     if not u: return
 
     body = get_post_base_body(post)
@@ -139,7 +139,7 @@ def es_update_wiki(id):
 def es_update_comment(id):
     post: Comment = Comment.get_by_id(id)
     if not post: return
-    u: User = User.get_by_id(post.user_id)
+    u: UserModel = UserModel.get_by_id(post.user_id)
     if not u: return
 
     p = POST_TYPES.get_post(post.related_type, post.related_id)

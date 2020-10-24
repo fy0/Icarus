@@ -3,7 +3,6 @@ from peewee import *
 from playhouse.postgres_ext import BinaryJSONField
 
 from lib.textdiff import save_couple
-from slim.base.sqlquery import DataRecord
 
 import config
 from model import BaseModel, MyTimestampField
@@ -107,7 +106,7 @@ class ManageLog(BaseModel):
         )
 
     @classmethod
-    def post_new_base(cls, user_id, role, post_type, post_record: DataRecord):
+    def post_new_base(cls, user_id, role, post_type, post_record: 'DataRecord'):
         """
         新建post，要注意的是这并非是只有管理员能做的操作，因此多数post不计入其中。
         只有wiki和board是管理员创建的，予以计入。
@@ -122,7 +121,7 @@ class ManageLog(BaseModel):
                              MOP.POST_CREATE, {'title': title})
 
     @classmethod
-    def post_new(cls, view, post_type, post_record: DataRecord):
+    def post_new(cls, view, post_type, post_record: 'DataRecord'):
         user_id, role = _get_info(view)
         return cls.post_new_base(user_id, role, post_type, post_record)
 
@@ -178,7 +177,7 @@ class ManageLog(BaseModel):
 
         def get_val(r, k):
             if r is None: return
-            if isinstance(r, (DataRecord, dict)):
+            if isinstance(r, ('DataRecord', dict)):
                 return r[k]
             elif isinstance(r, BaseModel):
                 return getattr(r, k)

@@ -10,7 +10,7 @@ from model.board import Board
 from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
 from model.post_stats import post_stats_add_topic_click, post_stats_topic_move, post_stats_topic_new, post_stats_do_edit
 from model.topic import Topic
-from slim.base.permission import Permissions, DataRecord
+from slim.base.permission import Permissions, 'DataRecord'
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -105,11 +105,11 @@ class TopicView(UserViewMixin, PeeweeView):
     async def new(self):
         return await super().new()
 
-    def after_read(self, records: List[DataRecord]):
+    def after_read(self, records: List['DataRecord']):
         for i in records:
             self._val_bak = [i['id'], i['board_id']]
 
-    async def before_update(self, values: SQLValuesToWrite, records: List[DataRecord]):
+    async def before_update(self, values: SQLValuesToWrite, records: List['DataRecord']):
         raw_post = await self.post_data()
         record = records[0]
         form = TopicEditForm(**raw_post)
@@ -133,8 +133,8 @@ class TopicView(UserViewMixin, PeeweeView):
             values['edit_time'] = int(time.time())
             values['last_edit_user_id'] = self.current_user.id
 
-    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
-                           new_records: List[DataRecord]):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List['DataRecord'],
+                           new_records: List['DataRecord']):
         for old_record, record in zip(old_records, new_records):
             manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
                 self, column, op, POST_TYPES.TOPIC, values, old_record, record
@@ -182,7 +182,7 @@ class TopicView(UserViewMixin, PeeweeView):
             # 主题不再支持 @
             # values['content'], self.do_mentions = check_content_mention(values['content'])
 
-    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List['DataRecord']):
         for record in records:
             # if self.do_mentions:
             #     self.do_mentions(record['user_id'], POST_TYPES.TOPIC, record['id'], {
@@ -196,7 +196,7 @@ class TopicView(UserViewMixin, PeeweeView):
                 run_in_thread(esdb.es_update_topic, record['id'])
 
 '''
-from slim.utils.debug import Debug 
+from slim.utils.debug import Debug
 
 debug = Debug()
 debug.add_view(TopicView, TopicForm)

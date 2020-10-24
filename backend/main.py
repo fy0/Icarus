@@ -9,7 +9,6 @@ import config
 if __name__ == '__main__':
     import model._models
     import api._views
-    import permissions
 
     async def on_startup():
         loop = get_ioloop()

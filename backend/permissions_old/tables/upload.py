@@ -1,6 +1,6 @@
-from permissions.roles import *
+from permissions_old.roles import *
 from model._post import POST_STATE, POST_VISIBLE
-from slim.base.permission import Ability, A, DataRecord
+from slim.base.permission import Ability, A, 'DataRecord'
 from slim.base.sqlquery import SQLQueryInfo, SQL_OP
 
 

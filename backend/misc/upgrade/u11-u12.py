@@ -6,7 +6,7 @@ import peewee
 from model import db
 from model._post import POST_STATE
 from model.comment import Comment
-from model.user import User, USER_GROUP
+from model.user_model import UserModel, USER_GROUP
 from model.notif import UserNotifLastInfo
 
 
@@ -36,12 +36,12 @@ def work():
     sql_execute('ALTER TABLE "user" ADD is_new_user BOOLEAN DEFAULT TRUE  NOT NULL;')
 
     # 注册的激活机制改了，变通一下吧
-    for i in User.select().where(User.group == USER_GROUP.INACTIVE):
+    for i in UserModel.select().where(UserModel.group == USER_GROUP.INACTIVE):
         i.group = USER_GROUP.NORMAL
         i.save()
 
     # 老用户全部设置为非新用户
-    for i in User.select().where(User.is_new_user == False):
+    for i in UserModel.select().where(UserModel.is_new_user == False):
         i.is_new_user = True
         i.save()
 

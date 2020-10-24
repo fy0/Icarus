@@ -5,7 +5,7 @@ from typing import Mapping, Dict, List
 from app import app
 from model._post import POST_TYPES
 from model.post_stats import post_stats_new
-from slim.base.permission import Permissions, DataRecord
+from slim.base.permission import Permissions, 'DataRecord'
 from slim.base.sqlquery import SQLValuesToWrite
 from slim.retcode import RETCODE
 from slim.support.peewee import PeeweeView
@@ -49,8 +49,8 @@ class BoardView(PeeweeView, UserViewMixin):
             values['time'] = int(time.time())
             values['user_id'] = self.current_user.id
 
-    async def after_update(self, values: SQLValuesToWrite, old_records: List[DataRecord],
-                           new_records: List[DataRecord]):
+    async def after_update(self, values: SQLValuesToWrite, old_records: List['DataRecord'],
+                           new_records: List['DataRecord']):
         for old_record, record in zip(old_records, new_records):
             # 注：此处记录不考虑可写不可读的情况。代码比较丑陋，后面改吧
             o = old_record.to_dict()
@@ -70,7 +70,7 @@ class BoardView(PeeweeView, UserViewMixin):
             ManageLog.new(self.current_user, self.current_request_role, POST_TYPES.BOARD, record['id'],
                           record['user_id'], MOP.BOARD_INFO_CHANGE, [o, n])
 
-    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List[DataRecord]):
+    async def after_insert(self, values_lst: List[SQLValuesToWrite], records: List['DataRecord']):
         for record in records:
             # 添加统计记录
             post_stats_new(POST_TYPES.BOARD, record['id'])

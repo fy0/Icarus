@@ -1,10 +1,10 @@
 from typing import Set
 
 from model.board import Board
-from permissions.roles import *
+from permissions_old.roles import *
 from model._post import POST_STATE, POST_VISIBLE
-from permissions.tables._vars import post_visible_work
-from slim.base.permission import Ability, A, DataRecord
+from permissions_old.tables._vars import post_visible_work
+from slim.base.permission import Ability, A, 'DataRecord'
 from slim.base.sqlquery import SQLQueryInfo, SQL_OP
 from slim.utils import get_bytes_from_blob
 
@@ -12,7 +12,7 @@ post_visible_work('topic')
 
 
 # 非登录不能查看内容的正文
-def check_remove_content_for_select(ability, user, action, record: DataRecord, available_columns: list):
+def check_remove_content_for_select(ability, user, action, record: 'DataRecord', available_columns: list):
     if record.get('visible') == POST_VISIBLE.CONTENT_IF_LOGIN:
         if not user:
             available_columns.remove('content')
@@ -56,7 +56,7 @@ normal_user.add_query_condition('topic', func=ignore_hide_board)
 
 
 # 不准其他用户写入当前用户的文章
-def check_is_users_post(ability, user, action, record: DataRecord, available_columns: Set):
+def check_is_users_post(ability, user, action, record: 'DataRecord', available_columns: Set):
     if user:
         if record.get('user_id') != get_bytes_from_blob(user.id):
             available_columns.clear()

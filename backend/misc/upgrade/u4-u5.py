@@ -2,7 +2,7 @@ import time
 import peewee
 from model import db
 from model import _models
-from model.user import User
+from model.user_model import UserModel
 from model.notif import UserNotifRecord
 
 
@@ -12,7 +12,7 @@ def work():
     except:
         db.rollback()
 
-    for i in User.select().execute():
+    for i in UserModel.select().execute():
         try:
             UserNotifRecord.create(id=i.id, update_time=int(time.time()))
         except peewee.IntegrityError:
