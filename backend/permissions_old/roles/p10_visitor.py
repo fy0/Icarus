@@ -1,4 +1,4 @@
-from slim.base.permission import Ability, A, 'DataRecord'
+from slim.tools.migrate._permission import A, Ability, role_convert
 
 
 def merge_post_permissions_of_visitor(d):
@@ -82,6 +82,7 @@ visitor = Ability({
     # 以下并非post类型
     'post_stats': {
         '*': {A.READ},
+        '|': {A.DELETE, A.WRITE},
         'id': (A.READ, A.QUERY),
     },
     'manage_log': {

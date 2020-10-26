@@ -63,4 +63,4 @@ def check_is_users_post(ability, user, action, record: 'DataRecord', available_c
     return True
 
 
-normal_user.add_record_check((A.WRITE,), 'topic', func=check_is_users_post)
+normal_user.add_record_check((A.UPDATE,), 'topic', func=check_is_users_post)

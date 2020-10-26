@@ -45,8 +45,8 @@ def check_is_admin(ability, user, action, record: 'DataRecord', available_column
     return True
 
 
-banned_user.add_record_check((A.WRITE,), 'user', func=check_is_me)
-inactive_user.add_record_check((A.WRITE,), 'user', func=check_is_me)
-normal_user.add_record_check((A.WRITE,), 'user', func=check_is_me)
+banned_user.add_record_check((A.UPDATE,), 'user', func=check_is_me)
+inactive_user.add_record_check((A.UPDATE,), 'user', func=check_is_me)
+normal_user.add_record_check((A.UPDATE,), 'user', func=check_is_me)
 
-superuser.add_record_check((A.WRITE,), 'user', func=check_is_admin)
+superuser.add_record_check((A.UPDATE,), 'user', func=check_is_admin)

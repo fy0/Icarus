@@ -1,6 +1,7 @@
 from permissions_old.roles.p10_visitor import merge_post_permissions_of_visitor
 from permissions_old.roles.p20_inactive_user import inactive_user
-from slim.base.permission import Ability, A, 'DataRecord'
+from slim.tools.migrate._permission import A, Ability
+
 
 normal_user = Ability({
     'user': {

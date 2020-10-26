@@ -7,8 +7,15 @@ from pycurd.types import RecordMapping, IDList
 from pycurd.values import ValuesToWrite
 
 
-class User(RecordMapping):
+class Post(RecordMapping):
     id: bytes
+    state: int
+    visible: int
+    time: int
+    user_id: Optional[bytes]
+
+
+class User(Post):
     email: Optional[str]
     phone: Optional[str]
     nickname: Optional[str]

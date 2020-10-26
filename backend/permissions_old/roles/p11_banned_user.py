@@ -1,5 +1,5 @@
-from slim.base.permission import Ability, A
-from permissions_old.roles.p10_visitor import visitor
+from permissions_old import visitor
+from slim.tools.migrate._permission import A, Ability
 
 # 除了访问自己的用户信息之外，与visitor平权
 banned_user = Ability({
