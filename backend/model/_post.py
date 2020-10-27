@@ -66,10 +66,10 @@ class POST_TYPES(StateObject):
     @classmethod
     def get_model(cls, related_type) -> Type['PostModel']:
         from model.user_model import UserModel
-        from model.topic import Topic
-        from model.comment import Comment
-        from model.board import Board
-        from model.wiki import WikiArticle
+        from model.topic_model import TopicModel
+        from model.comment_model import CommentModel
+        from model.board_model import BoardModel
+        from model.wiki import WikiArticleModel
         from model.mention import Mention
 
         if isinstance(related_type, str):
@@ -78,21 +78,21 @@ class POST_TYPES(StateObject):
         if related_type == POST_TYPES.USER:
             return UserModel
         elif related_type == POST_TYPES.TOPIC:
-            return Topic
+            return TopicModel
         elif related_type == POST_TYPES.COMMENT:
-            return Comment
+            return CommentModel
         elif related_type == POST_TYPES.BOARD:
-            return Board
+            return BoardModel
         elif related_type == POST_TYPES.MENTION:
             return Mention
         elif related_type == POST_TYPES.WIKI:
-            return WikiArticle
+            return WikiArticleModel
 
     @classmethod
     def get_post(cls, related_type, related_id) -> Optional['PostModel']:
         from model.user_model import UserModel
-        from model.topic import Topic
-        from model.wiki import WikiArticle
+        from model.topic_model import TopicModel
+        from model.wiki import WikiArticleModel
 
         if type(related_id) == POST_ID_GENERATOR:
             related_id = related_id.to_bin()

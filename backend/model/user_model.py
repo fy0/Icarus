@@ -11,7 +11,7 @@ from playhouse.postgres_ext import ArrayField
 import config
 from lib.utils import get_today_start_timestamp
 from model._post import PostModel, POST_STATE, POST_TYPES
-from model.manage_log import ManageLog
+from model.manage_log import ManageLogModel
 from model.redis import redis, RK_USER_ACTCODE_BY_USER_ID, RK_USER_RESET_KEY_BY_USER_ID, \
     RK_USER_LAST_REQUEST_RESET_KEY_BY_USER_ID, RK_USER_REG_CODE_BY_EMAIL, \
     RK_USER_REG_CODE_AVAILABLE_TIMES_BY_EMAIL, RK_USER_REG_PASSWORD
@@ -318,8 +318,8 @@ class UserModel(PostModel, BaseUser):
             self.exp += 5
             self.save()
 
-            ManageLog.add_by_credit_changed_sys(get_bytes_from_blob(self.id), credit, self.credit, note='每日签到')
-            ManageLog.add_by_exp_changed_sys(get_bytes_from_blob(self.id), exp, self.exp, note='每日签到')
+            ManageLogModel.add_by_credit_changed_sys(get_bytes_from_blob(self.id), credit, self.credit, note='每日签到')
+            ManageLogModel.add_by_exp_changed_sys(get_bytes_from_blob(self.id), exp, self.exp, note='每日签到')
 
             return {
                 'credit': 5,
@@ -337,7 +337,7 @@ class UserModel(PostModel, BaseUser):
             exp = self.exp
             self.exp += 5
             self.save()
-            ManageLog.add_by_exp_changed_sys(get_bytes_from_blob(self.id), exp, self.exp, note='每日登录')
+            ManageLogModel.add_by_exp_changed_sys(get_bytes_from_blob(self.id), exp, self.exp, note='每日登录')
             return {'exp': 5}
 
     def _auth_base(self, password_text):

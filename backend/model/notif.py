@@ -17,7 +17,7 @@ from playhouse.postgres_ext import ArrayField, BinaryJSONField
 import config
 from model import BaseModel, MyTimestampField, db
 from model._post import POST_STATE, POST_TYPES
-from model.comment import Comment
+from model.comment_model import CommentModel
 from model.user_model import UserModel
 from slim import json_ex_dumps
 from slim.utils import StateObject, to_bin, get_bytes_from_blob
@@ -143,24 +143,24 @@ def fetch_notif_of_metion(user_id, last_mention_id=b'\x00'):
 
 
 def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
-    from model.manage_log import ManageLog, MOP
+    from model.manage_log import ManageLogModel, MOP
 
     if last_manage_log_id is None:
         last_manage_log_id = b'\x00'
-    item_lst = ManageLog.select().where(
-        ManageLog.related_user_id == user_id,
-        ManageLog.id > last_manage_log_id,
-        ManageLog.operation.in_(
+    item_lst = ManageLogModel.select().where(
+        ManageLogModel.related_user_id == user_id,
+        ManageLogModel.id > last_manage_log_id,
+        ManageLogModel.operation.in_(
             (MOP.POST_STATE_CHANGE, MOP.USER_PASSWORD_CHANGE,
             MOP.USER_PASSWORD_RESET, MOP.USER_KEY_RESET, MOP.USER_GROUP_CHANGE, MOP.USER_CREDIT_CHANGE,
             MOP.USER_REPUTE_CHANGE, MOP.USER_NICKNAME_CHANGE,
             MOP.TOPIC_BOARD_MOVE, MOP.TOPIC_AWESOME_CHANGE, MOP.TOPIC_STICKY_WEIGHT_CHANGE)
         )
-    ).order_by(ManageLog.id.desc())
+    ).order_by(ManageLogModel.id.desc())
 
     moves = []
 
-    def wrap(item: ManageLog):
+    def wrap(item: ManageLogModel):
         # 总不能把MANAGE_OPERATION的内容换个号码，抄一遍写在上面。
         # 因此选择过滤掉一些，其他全部归为一类。
         if item.operation == MOP.USER_CREDIT_CHANGE:
@@ -211,7 +211,7 @@ def fetch_notif_of_log(user_id, last_manage_log_id=b'\x00'):
 
         if i['related_type'] == POST_TYPES.COMMENT:
             # 这里不是批量，可能要付出较大代价
-            c: Comment = Comment.get_by_id(i['related_id'])
+            c: CommentModel = CommentModel.get_by_id(i['related_id'])
             if not c: continue
             p = POST_TYPES.get_post(c.related_type, c.related_id)
             if not p: continue
@@ -282,7 +282,7 @@ class UserNotifLastInfo(BaseModel):
         db_table = 'user_notif_last_info'
 
 
-class Notification(BaseModel):
+class NotificationModel(BaseModel):
     id = BlobField(primary_key=True)
     type = IntegerField(index=True)  # 行为
     time = MyTimestampField(index=True)  # 行为发生时间

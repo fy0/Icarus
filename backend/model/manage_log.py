@@ -78,7 +78,7 @@ def _gen_add_by_resource_changed(field, op):
     return classmethod(_)
 
 
-class ManageLog(BaseModel):
+class ManageLogModel(BaseModel):
     id = BlobField(primary_key=True)  # 使用长ID
     user_id = BlobField(index=True, null=True)  # 操作用户
     role = TextField(null=True)  # 操作身份
@@ -117,8 +117,8 @@ class ManageLog(BaseModel):
         :return:
         """
         title = get_title_by_record(post_type, post_record)
-        return ManageLog.new(user_id, role, post_type, post_record['id'], post_record['user_id'],
-                             MOP.POST_CREATE, {'title': title})
+        return ManageLogModel.new(user_id, role, post_type, post_record['id'], post_record['user_id'],
+                                  MOP.POST_CREATE, {'title': title})
 
     @classmethod
     def post_new(cls, view, post_type, post_record: 'DataRecord'):

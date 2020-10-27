@@ -1,7 +1,7 @@
 import time
 import peewee
 from model import db
-from model.comment import Comment
+from model.comment_model import CommentModel
 from model.user_model import UserModel
 from model.notif import UserNotifRecord
 
@@ -39,9 +39,9 @@ def work():
         print('failed')
         db.rollback()
 
-    for i in Comment.select():
-        post_number = Comment.select().where(Comment.related_id == i.related_id, Comment.id <= i.id).count()
-        Comment.update(post_number=post_number).where(Comment.id == i.id).execute()
+    for i in CommentModel.select():
+        post_number = CommentModel.select().where(CommentModel.related_id == i.related_id, CommentModel.id <= i.id).count()
+        CommentModel.update(post_number=post_number).where(CommentModel.id == i.id).execute()
 
 
 if __name__ == '__main__':

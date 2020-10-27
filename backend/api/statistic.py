@@ -1,14 +1,10 @@
+from api.view.curd import BaseCrudUserView
 from app import app
-from model.comment import Comment
-from model.post_stats import PostStats
-from slim.base.permission import Permissions
-from slim.support.peewee import PeeweeView
-from api import ValidateForm
-from api.user import UserViewMixin
+from crud.schemas.post_stats import PostStats
 
 
 @app.route.view('stats', None)
-class StatsView(UserViewMixin, PeeweeView):
+class StatsView(BaseCrudUserView):
     model = PostStats
 
     @classmethod

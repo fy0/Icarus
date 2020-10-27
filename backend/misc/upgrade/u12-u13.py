@@ -9,8 +9,8 @@ import time
 import peewee
 from model import db
 from model._post import POST_STATE
-from model.comment import Comment
-from model.manage_log import ManageLog, MOP
+from model.comment_model import CommentModel
+from model.manage_log import ManageLogModel, MOP
 from model.user_model import UserModel, USER_GROUP
 from model.notif import UserNotifLastInfo
 
@@ -56,19 +56,19 @@ def work():
     sql_execute('CREATE INDEX user_is_forum_master_index ON "user" (is_forum_master);')
 
     # 移除 MOP.TOPIC_TITLE_CHANGE 300
-    ManageLog.update(operation=MOP.POST_TITLE_CHANGE).where(ManageLog.operation == 300).execute()
+    ManageLogModel.update(operation=MOP.POST_TITLE_CHANGE).where(ManageLogModel.operation == 300).execute()
     # 移除 MOP.TOPIC_CONTENT_CHANGE 301
-    ManageLog.update(operation=MOP.POST_CONTENT_CHANGE).where(ManageLog.operation == 301).execute()
+    ManageLogModel.update(operation=MOP.POST_CONTENT_CHANGE).where(ManageLogModel.operation == 301).execute()
     # 移除 MOP.COMMENT_STATE_CHANGE 500
-    ManageLog.update(operation=MOP.POST_STATE_CHANGE).where(ManageLog.operation == 500).execute()
+    ManageLogModel.update(operation=MOP.POST_STATE_CHANGE).where(ManageLogModel.operation == 500).execute()
 
     # BOARD_NEW 200
-    for i in ManageLog.select().where(ManageLog.operation == 200):
+    for i in ManageLogModel.select().where(ManageLogModel.operation == 200):
         i.operation = MOP.POST_CREATE
         i.value = {'title': i.value}
         i.save()
 
-    for i in ManageLog.select():
+    for i in ManageLogModel.select():
         if i and i.value:
             if i.operation == MOP.POST_CREATE:
                 # wiki 改动

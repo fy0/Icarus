@@ -3,22 +3,20 @@ from urllib.parse import quote
 from typing import Dict, List
 from peewee import fn
 import config
+from api.view.curd import BaseCrudUserView
 from app import app
+from crud.schemas.wiki_article import WikiArticle
 from lib.textdiff import diff
 from model import esdb
 from model._post import POST_TYPES
-from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
-from model.post_stats import post_stats_new, post_stats_incr, PostStats, post_stats_do_edit
-from model.wiki import WikiArticle
-from slim.base.permission import Permissions, 'DataRecord'
-from slim.base.sqlquery import SQLValuesToWrite
+from model.manage_log import ManageLogModel, MANAGE_OPERATION as MOP
+from model.post_stats import post_stats_new, post_stats_incr, PostStatsModel, post_stats_do_edit
+from model.wiki import WikiArticleModel
 from slim.retcode import RETCODE
-from slim.support.peewee import PeeweeView
-from api import cooldown, same_user, ValidateForm, run_in_thread
+from api import cooldown, same_user, run_in_thread
 from wtforms import validators as va, StringField, IntegerField
-from api.user import UserViewMixin
 
-
+'''
 class WikiNewForm(ValidateForm):
     title = StringField('标题', validators=[
         va.required(),
@@ -45,10 +43,11 @@ class WikiEditForm(ValidateForm):
     # ref = StringField('地址', validators=[
     #     va.required(),
     # ])
+'''
 
 
 @app.route.view('wiki')
-class WikiView(UserViewMixin, PeeweeView):
+class WikiView(BaseCrudUserView):
     """
     文档有一个简单的版本设定，但忽略任何并发导致的同步问题
     """
@@ -61,7 +60,7 @@ class WikiView(UserViewMixin, PeeweeView):
 
     @app.route.interface('GET')
     async def random(self):
-        wa = WikiArticle.get_random_one()
+        wa = WikiArticleModel.get_random_one()
         if wa:
             self.finish(RETCODE.SUCCESS, {'ref': wa})
         else:
@@ -75,13 +74,14 @@ class WikiView(UserViewMixin, PeeweeView):
         await super().get()
         if self.ret_val['code'] == RETCODE.SUCCESS:
             val = getattr(self, '_val_bak', None)
-            if val: post_stats_incr(PostStats.click_count, val)
+            if val: post_stats_incr(PostStatsModel.click_count, val)
 
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_IP, b'ic_cd_wiki_new_%b', cd_if_unsuccessed=10)
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_wiki_new_account_%b', unique_id_func=same_user, cd_if_unsuccessed=10)
-    async def new(self):
-        return await super().new()
+    async def insert(self):
+        return await super().insert()
 
+    '''
     async def before_update(self, values: SQLValuesToWrite, records: List['DataRecord']):
         raw_post = await self.post_data()
         record = records[0]
@@ -92,10 +92,10 @@ class WikiView(UserViewMixin, PeeweeView):
     async def after_update(self, values: SQLValuesToWrite, old_records: List['DataRecord'],
                            new_records: List['DataRecord']):
         for old_record, record in zip(old_records, new_records):
-            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
+            manage_try_add = lambda column, op: ManageLogModel.add_by_post_changed(
                 self, column, op, POST_TYPES.WIKI, values, old_record, record
             )
-            manage_try_add_with_diff = lambda column, op: ManageLog.add_by_post_changed(
+            manage_try_add_with_diff = lambda column, op: ManageLogModel.add_by_post_changed(
                 self, column, op, POST_TYPES.WIKI, values, old_record, record, diff_func=diff
             )
 
@@ -131,7 +131,8 @@ class WikiView(UserViewMixin, PeeweeView):
             # 添加统计记录
             post_stats_new(POST_TYPES.WIKI, record['id'])
             # 添加创建记录
-            ManageLog.post_new(self, POST_TYPES.WIKI, record)
+            ManageLogModel.post_new(self, POST_TYPES.WIKI, record)
 
             if config.SEARCH_ENABLE:
                 run_in_thread(esdb.es_update_wiki, record['id'])
+    '''

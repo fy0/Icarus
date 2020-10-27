@@ -1,5 +1,6 @@
 from typing import Type
 
+from api.user_view_mixin import UserViewMixin
 from crud.crud import c
 from pycurd.crud.base_crud import BaseCrud
 from slim.base.web import JSONResponse
@@ -16,3 +17,7 @@ class BaseCrudView(CrudView):
             'data': data,
             'msg': msg
         })
+
+
+class BaseCrudUserView(UserViewMixin, BaseCrudView):
+    is_base_class = True

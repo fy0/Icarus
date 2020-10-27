@@ -3,17 +3,17 @@ import json
 import os
 
 from aiohttp.web_request import FileField
+
+from api.view.curd import BaseCrudUserView
+from crud.schemas.upload import Upload
 from slim.ext.decorator import require_role
 
 import config
 from app import app
-from model.upload import Upload
+from model.upload_model import UploadModel
 from model.user_model import UserModel
-from slim.base.permission import Permissions
 from slim.retcode import RETCODE
-from slim.support.peewee import PeeweeView
 from slim.utils import binhex, CustomID
-from api.user import UserViewMixin
 
 
 upload_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', config.UPLOAD_DIR))
@@ -21,7 +21,7 @@ os.makedirs(upload_dir, exist_ok=True)
 
 
 @app.route.view('upload')
-class UploadView(UserViewMixin, PeeweeView):
+class UploadView(BaseCrudUserView):
     model = Upload
 
     @app.route.interface('POST')
@@ -54,14 +54,14 @@ class UploadView(UserViewMixin, PeeweeView):
                 m.update(chunk)
 
         key = m.hexdigest()
-        if not Upload.get_by_key(key):
+        if not UploadModel.get_by_key(key):
             # 如果不存在，那么改名为hash值
             os.rename(fn, os.path.join(upload_dir, key))
         else:
             # 如果已存在，那么删除
             os.remove(fn)
 
-        upload = Upload.new_with_user(user.id, m.digest(), field.filename, size)
+        upload = UploadModel.new_with_user(user.id, m.digest(), field.filename, size)
         self.finish(RETCODE.SUCCESS, upload.to_dict())
 
     @app.route.interface('POST')
@@ -99,7 +99,7 @@ class UploadView(UserViewMixin, PeeweeView):
                 # 说明一下，这个哈希值不是base64 hex等编码，具体比较奇怪看了就知道了
                 # 总之因此直接使用了TextField来存放
                 key = info['key']
-                Upload.new(uid, key, info['size'], info['ext'], info['type_name'], info['image_info'])
+                UploadModel.new(uid, key, info['size'], info['ext'], info['type_name'], info['image_info'])
                 if info['type_name'] == 'avatar':
                     # 更换用户头像
                     u = UserModel.get_by_pk(uid)

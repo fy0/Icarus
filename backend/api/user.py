@@ -1,30 +1,25 @@
-import binascii
 import json
-import os
-import time
 import peewee
 import config
-from typing import Dict, List, Type, Union
+from typing import List
 
-from api.view.curd import BaseCrudView
+from api.view.curd import BaseCrudView, BaseCrudUserView
 from app import app
-from crud.user import User
+from crud.schemas.user import User
 from lib import mail
 from model import db
-from model.manage_log import ManageLog, MANAGE_OPERATION as MOP
+from model.manage_log import ManageLogModel, MANAGE_OPERATION as MOP
 from model.notif import UserNotifLastInfo
-from model._post import POST_TYPES, POST_STATE
+from model._post import POST_TYPES
 from model.post_stats import post_stats_new
 from model.user_token import UserToken
-from slim import D
 from slim.retcode import RETCODE
-from model.user_model import UserModel, USER_GROUP
-from slim.utils import to_hex, to_bin, get_bytes_from_blob, sentinel
+from model.user_model import UserModel
+from slim.utils import to_bin
 from api import cooldown, same_user, get_fuzz_ip, run_in_thread
 from api.validate.user import ValidatePasswordResetPostDataModel, ChangePasswordDataModel, SignupDirectDataModel, \
     SignupConfirmByEmailDataModel, SignupRequestByEmailDataModel, SigninDataModel, ChangeNicknameDataModel, \
     RequestResetPasswordDataModel
-from api.user_view_mixin import UserViewMixin
 
 
 async def same_email_post(view):
@@ -34,7 +29,7 @@ async def same_email_post(view):
 
 
 @app.route.view('user')
-class UserView(UserViewMixin, BaseCrudView):
+class UserView(BaseCrudUserView):
     model = User
 
     @app.route.interface('POST', va_post=RequestResetPasswordDataModel)
@@ -162,28 +157,21 @@ class UserView(UserViewMixin, BaseCrudView):
             post['password'] = '00'
         await super().set()
 
-    async def before_update(self, values: 'SQLValuesToWrite', records: List['DataRecord']):
-        raw_post = await self.post_data()
-
-        if 'password' in raw_post:
-            ret = UserModel.gen_password_and_salt(self.new_pass)
-            values.update(ret)
-
     async def after_update(self, values: 'SQLValuesToWrite', old_records: List['DataRecord'],
                            new_records: List['DataRecord']):
         raw_post = await self.post_data()
         for old_record, record in zip(old_records, new_records):
-            manage_try_add = lambda column, op: ManageLog.add_by_post_changed(
+            manage_try_add = lambda column, op: ManageLogModel.add_by_post_changed(
                 self, column, op, POST_TYPES.USER, values, old_record, record
             )
 
             # 管理日志：重置访问令牌
-            ManageLog.add_by_post_changed(self, 'key', MOP.USER_KEY_RESET, POST_TYPES.USER,
-                                          values, old_record, record, value=None)
+            ManageLogModel.add_by_post_changed(self, 'key', MOP.USER_KEY_RESET, POST_TYPES.USER,
+                                               values, old_record, record, value=None)
 
             # 管理日志：重置密码
-            ManageLog.add_by_post_changed(self, 'password', MOP.USER_PASSWORD_CHANGE, POST_TYPES.USER,
-                                          values, old_record, record, value=None)
+            ManageLogModel.add_by_post_changed(self, 'password', MOP.USER_PASSWORD_CHANGE, POST_TYPES.USER,
+                                               values, old_record, record, value=None)
 
             manage_try_add('state', MOP.POST_STATE_CHANGE)
             manage_try_add('visible', MOP.POST_VISIBLE_CHANGE)
@@ -202,7 +190,7 @@ class UserView(UserViewMixin, BaseCrudView):
                     info['related_id'] = to_bin(src['id'])
                     info['related_user_id'] = uid
 
-                ManageLog.add_by_post_changed(self, column, op, POST_TYPES.USER, values, old_record, record, cb=func)
+                ManageLogModel.add_by_post_changed(self, column, op, POST_TYPES.USER, values, old_record, record, cb=func)
 
             manage_try_add_resource('credit', MOP.USER_CREDIT_CHANGE)
             manage_try_add_resource('repute', MOP.USER_REPUTE_CHANGE)
@@ -297,8 +285,8 @@ class UserView(UserViewMixin, BaseCrudView):
                 u.save()
                 self.finish(RETCODE.SUCCESS, {'nickname': u.nickname, 'change_nickname_chance': u.change_nickname_chance})
                 # note: 虽然有点奇怪，但下面这句其实没问题 18.11.13
-                ManageLog.add_by_post_changed(self, 'nickname', MOP.USER_NICKNAME_CHANGE, POST_TYPES.USER,
-                                              True, {'nickname': old_nickname}, u)
+                ManageLogModel.add_by_post_changed(self, 'nickname', MOP.USER_NICKNAME_CHANGE, POST_TYPES.USER,
+                                                   True, {'nickname': old_nickname}, u)
                 return
             except peewee.DatabaseError:
                 db.rollback()

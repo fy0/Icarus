@@ -31,7 +31,7 @@ DEFAULT_WIKI_CONTENT = '''
 '''
 
 
-class WikiArticle(PostModel):
+class WikiArticleModel(PostModel):
     title = TextField(index=True)
     content = TextField()
     ref = TextField(index=True, unique=True, null=True)

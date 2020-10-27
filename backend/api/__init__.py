@@ -7,7 +7,6 @@ from slim.retcode import RETCODE
 from ipaddress import IPv4Address, IPv6Address
 from concurrent.futures import ThreadPoolExecutor
 
-from app import app
 from model.redis import redis
 from slim.utils import get_ioloop, get_bytes_from_blob
 from slim.view import BaseView

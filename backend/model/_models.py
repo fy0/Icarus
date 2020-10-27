@@ -2,20 +2,20 @@ import traceback
 import peewee
 
 from model import db, BaseModel
-from model.board import Board
+from model.board_model import BoardModel
 from model.follow import Follow
-from model.comment import Comment
-from model.manage_log import ManageLog
+from model.comment_model import CommentModel
+from model.manage_log import ManageLogModel
 from model.mention import Mention
-from model.notif import Notification, UserNotifLastInfo
-from model.post_stats import PostStats, StatsLog
+from model.notif import NotificationModel, UserNotifLastInfo
+from model.post_stats import PostStatsModel, StatsLog
 from model.test import Test
-from model.topic import Topic
-from model.upload import Upload
+from model.topic_model import TopicModel
+from model.upload_model import UploadModel
 from model.user_model import UserModel
 from model.user_oauth import UserOAuth
 from model.user_token import UserToken
-from model.wiki import WikiArticle
+from model.wiki import WikiArticleModel
 
 
 def sql_execute(sql):
@@ -84,15 +84,15 @@ def work():
 db.connect()
 work()
 
-db.create_tables([Test, Board, Follow, Comment, Topic, UserModel,
-                  WikiArticle,
-                  Notification, UserNotifLastInfo,
+db.create_tables([Test, BoardModel, Follow, CommentModel, TopicModel, UserModel,
+                  WikiArticleModel,
+                  NotificationModel, UserNotifLastInfo,
                   UserOAuth,
                   UserToken,
-                  Upload,
-                  ManageLog,
+                  UploadModel,
+                  ManageLogModel,
                   Mention,
-                  PostStats,
+                  PostStatsModel,
                   StatsLog], safe=True)
 
 work()
@@ -104,5 +104,5 @@ ALTER TABLE "user" ALTER COLUMN "id" SET DEFAULT int2bytea(nextval('id_gen_seq')
 ALTER TABLE "user" ALTER COLUMN "number" SET DEFAULT nextval('user_count_seq')::bigint;
 """)
 
-WikiArticle.get_sidebar_article()
-WikiArticle.get_main_page_article()
+WikiArticleModel.get_sidebar_article()
+WikiArticleModel.get_main_page_article()

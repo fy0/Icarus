@@ -17,7 +17,7 @@ class UPLOAD_SOURCE(StateObject):
     txt = {DEFAULT: "默认", QINIU: '七牛'}
 
 
-class Upload(LongIdPostModel):
+class UploadModel(LongIdPostModel):
     key = TextField(index=True, help_text='哈希值')  # 为text的目的是兼容七牛等cdn站点，否则应该为blob
     size = BigIntegerField(help_text='图片文件大小')
     ext = TextField(null=True)

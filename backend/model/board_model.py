@@ -13,7 +13,7 @@ def today_midnight():
     return time.mktime(today.timetuple())
 
 
-class Board(PostModel):
+class BoardModel(PostModel):
     name = TextField(unique=True)  # max 128
     parent_id = BlobField(index=True, null=True, default=None)  # 上级板块ID
     brief = TextField(null=True)  # max 256

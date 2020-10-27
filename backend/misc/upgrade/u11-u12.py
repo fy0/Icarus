@@ -5,7 +5,7 @@ import time
 import peewee
 from model import db
 from model._post import POST_STATE
-from model.comment import Comment
+from model.comment_model import CommentModel
 from model.user_model import UserModel, USER_GROUP
 from model.notif import UserNotifLastInfo
 

@@ -1,18 +1,11 @@
-from typing import Optional, List, Any, Callable, Awaitable
+from typing import Optional, List, Callable, Awaitable
 
+from crud.schemas._post import Post
 from model.user_model import USER_GROUP, UserModel
 from pycurd.crud.base_crud import PermInfo
 from pycurd.query import QueryInfo
-from pycurd.types import RecordMapping, IDList
+from pycurd.types import IDList
 from pycurd.values import ValuesToWrite
-
-
-class Post(RecordMapping):
-    id: bytes
-    state: int
-    visible: int
-    time: int
-    user_id: Optional[bytes]
 
 
 class User(Post):
@@ -54,13 +47,14 @@ class User(Post):
     reset_key: Optional[bytes]
 
     @classmethod
-    async def on_update(cls,
-                        info: QueryInfo,
-                        values: 'ValuesToWrite',
-                        when_before_update: List[Callable[[IDList], Awaitable]],
-                        when_complete: List[Callable[[], Awaitable]],
-                        perm: PermInfo = None):
-
+    async def on_update(
+        cls,
+        info: QueryInfo,
+        values: 'ValuesToWrite',
+        when_before_update: List[Callable[[IDList], Awaitable]],
+        when_complete: List[Callable[[], Awaitable]],
+        perm: PermInfo = None
+    ):
         if 'password' in values:
             ret = UserModel.gen_password_and_salt(values['password'])
             values.update(ret)

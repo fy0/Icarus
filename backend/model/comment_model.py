@@ -5,7 +5,7 @@ from model import BaseModel, MyTimestampField
 from model._post import POST_STATE, POST_VISIBLE, LongIdPostModel, POST_TYPES
 
 
-class Comment(LongIdPostModel):
+class CommentModel(LongIdPostModel):
     related_id = BlobField(index=True)  # 被评论文章
     related_type = IntegerField(index=True)  # 被评论文章的类型
     reply_to_cmt_id = BlobField(null=True)  # 是否指定回复某个评论

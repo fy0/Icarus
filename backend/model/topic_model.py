@@ -6,7 +6,7 @@ from slim.utils import StateObject
 from peewee import *
 from model import db, BaseModel, MyTimestampField
 from model.user_model import UserModel
-from model.board import Board
+from model.board_model import BoardModel
 
 """
 顶贴机制：
@@ -16,7 +16,7 @@ from model.board import Board
 """
 
 
-class Topic(PostModel):
+class TopicModel(PostModel):
     title = TextField(index=True)
     board_id = BlobField(index=True)
 

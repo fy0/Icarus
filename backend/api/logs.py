@@ -1,11 +1,10 @@
+from api.view.curd import BaseCrudUserView
 from app import app
-from model.manage_log import ManageLog
-from slim.base.permission import Permissions
-from slim.support.peewee import PeeweeView
+from crud.schemas.manage_log import ManageLog
 
 
 @app.route.view('log/manage')
-class LogManageView(PeeweeView):
+class LogManageView(BaseCrudUserView):
     model = ManageLog
 
     @classmethod
