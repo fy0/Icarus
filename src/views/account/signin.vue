@@ -111,6 +111,7 @@
 
 <script>
 import { retcode } from 'slim-tools'
+import { passwordHash } from '@/utils/password'
 
 export default {
   data () {
@@ -160,7 +161,7 @@ export default {
         // 登录请求
         let ret = await this.$api.user.signin({
           email: this.info.email,
-          password: await $.passwordHash(this.info.password)
+          password: await passwordHash(this.info.password)
         })
         if (ret.code === retcode.SUCCESS) {
           // 刷新用户信息

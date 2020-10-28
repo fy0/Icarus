@@ -14,7 +14,6 @@ from model.post_stats import post_stats_new, post_stats_incr, PostStatsModel, po
 from model.wiki import WikiArticleModel
 from slim.retcode import RETCODE
 from api import cooldown, same_user, run_in_thread
-from wtforms import validators as va, StringField, IntegerField
 
 '''
 class WikiNewForm(ValidateForm):
@@ -72,9 +71,9 @@ class WikiView(BaseCrudUserView):
 
     async def get(self):
         await super().get()
-        if self.ret_val['code'] == RETCODE.SUCCESS:
-            val = getattr(self, '_val_bak', None)
-            if val: post_stats_incr(PostStatsModel.click_count, val)
+        # if self.ret_val['code'] == RETCODE.SUCCESS:
+        #     val = getattr(self, '_val_bak', None)
+        #     if val: post_stats_incr(PostStatsModel.click_count, val)
 
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_IP, b'ic_cd_wiki_new_%b', cd_if_unsuccessed=10)
     @cooldown(config.TOPIC_NEW_COOLDOWN_BY_ACCOUNT, b'ic_cd_wiki_new_account_%b', unique_id_func=same_user, cd_if_unsuccessed=10)

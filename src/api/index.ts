@@ -2,7 +2,8 @@ import { TokenStoreNuxt, newRequestClient, SlimSQLAPI } from 'slim-tools'
 import config from '@/config'
 import { UserAPI, NotifAPI, UploadAPI, SearchAPI, WikiAPI, MiscAPI } from './apis'
 import { Context } from '@nuxt/types'
-import { AxiosResponse } from 'axios'
+import { SlimCrudAPI } from './crud'
+// import { AxiosResponse } from 'axios'
 
 let client = newRequestClient(config.remote.API_SERVER)
 
@@ -16,13 +17,13 @@ export interface APIInterface {
   saveAccessToken: any, // function
 
   user: UserAPI,
-  board: SlimSQLAPI,
-  topic: SlimSQLAPI,
-  stats: SlimSQLAPI,
-  comment: SlimSQLAPI,
+  board: SlimCrudAPI,
+  topic: SlimCrudAPI,
+  stats: SlimCrudAPI,
+  comment: SlimCrudAPI,
   notif: NotifAPI,
   upload: UploadAPI,
-  logManage: SlimSQLAPI,
+  logManage: SlimCrudAPI,
   wiki: WikiAPI,
   search: SearchAPI
 }
@@ -59,13 +60,13 @@ export function createAPIRequester (ctx: Context): APIInterface {
 
     // misc: new MiscAPI(client, ts, '/api/misc', getRole),
     user: new UserAPI(client, ts, '/api/user', getRole),
-    board: new SlimSQLAPI(client, ts, '/api/board', getRole),
-    topic: new SlimSQLAPI(client, ts, '/api/topic', getRole),
-    stats: new SlimSQLAPI(client, ts, '/api/stats', getRole),
-    comment: new SlimSQLAPI(client, ts, '/api/comment', getRole),
+    board: new SlimCrudAPI(client, ts, '/api/board', getRole),
+    topic: new SlimCrudAPI(client, ts, '/api/topic', getRole),
+    stats: new SlimCrudAPI(client, ts, '/api/stats', getRole),
+    comment: new SlimCrudAPI(client, ts, '/api/comment', getRole),
     notif: new NotifAPI(client, ts, '/api/notif', getRole),
     upload: new UploadAPI(client, ts, '/api/upload', getRole),
-    logManage: new SlimSQLAPI(client, ts, '/api/log/manage', getRole),
+    logManage: new SlimCrudAPI(client, ts, '/api/log/manage', getRole),
     wiki: new WikiAPI(client, ts, '/api/wiki', getRole),
     search: new SearchAPI(client, ts, '/api/search', getRole)
   }

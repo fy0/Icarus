@@ -9,7 +9,6 @@ from model._post import POST_TYPES
 from model.post_stats import post_stats_new
 from slim.retcode import RETCODE
 from model.board_model import BoardModel
-from wtforms import StringField, validators as va
 from model.manage_log import ManageLogModel, MANAGE_OPERATION as MOP
 
 

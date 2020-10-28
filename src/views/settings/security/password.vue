@@ -60,6 +60,7 @@
 <script>
 import SettingBase from '../base/base.vue'
 import { retcode } from 'slim-tools'
+import { passwordHash } from '@/utils/password'
 
 export default {
   data () {
@@ -102,9 +103,9 @@ export default {
       if (this.checkPassword && this.checkPassword2) {
         // 提交修改请求
         let info = _.clone(this.info)
-        info.password = await $.passwordHash(info.password)
-        info.password2 = await $.passwordHash(info.password2)
-        info.old_password = await $.passwordHash(info.old_password)
+        info.password = await passwordHash(info.password)
+        info.password2 = await passwordHash(info.password2)
+        info.old_password = await passwordHash(info.old_password)
         let ret = await this.$api.user.changePassword(info)
 
         if (ret.code !== retcode.SUCCESS) {
