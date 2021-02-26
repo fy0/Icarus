@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 slim = "==0.3.14"
-aiohttp = "==3.3"
+aiohttp = "==3.7.4"
 aiohttp-cors = "==0.7.0"
 peewee = "==3.7"
 asyncpg = "==0.18"
